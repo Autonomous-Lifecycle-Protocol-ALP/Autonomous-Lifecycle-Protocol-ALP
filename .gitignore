@@ -55,3 +55,8 @@ docs-site/.vitepress/.temp/
 docs-site/src/.vitepress/dist/
 docs-site/src/.vitepress/cache/
 docs-site/src/.vitepress/.temp/
+
+# VS Code extension build artifacts
+vscode/server/src/*.js
+vscode/server/src/*.js.map
+vscode/*.vsix

@@ -1,6 +1,7 @@
 {
   "name": "@alp/schemas",
-  "version": "36.0.0",
+  "version": "38.0.0",
+  "type": "module",
   "description": "JSON Schema definitions for the Autonomous Lifecycle Protocol (ALP)",
   "main": "index.js",
   "scripts": {

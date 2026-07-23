@@ -20,16 +20,22 @@ This repository is managed by the Autonomous Lifecycle Protocol (ALP). As an aut
 ## Sub-Agents & Handoff
 If a task specifies `owner: -> agent-reviewer`, and you are `agent-developer`, you must NOT mark the task as `[x]`. You may mark it `[~]` and leave a comment for the reviewer.
 
-## Execution (V3)
+## Execution
 - Use `node cli/dist/index.js run` to compile the context bundle for the next available task and pipe it into your loop. In swarm mode, `node cli/dist/index.js run --concurrent N` spins up N parallel agents.
-- When reporting progress, use `node cli/dist/index.js checkpoint <taskId> <status>` (e.g. `node cli/dist/index.js checkpoint task-login-ui in-progress`). To hand off for review, use `node cli/dist/index.js checkpoint <taskId> --ask-human "<message>"`, which marks the task `[?]`.
+- When reporting progress, use `node cli/dist/index.js checkpoint <taskId> <status>` (e.g. `node cli/dist/index.js checkpoint task-login-ui in-progress`). To hand off for human review, use `node cli/dist/index.js checkpoint <taskId> --ask-human "<message>"`, which marks the task `[?]`.
 - Never claim a task whose blocking dependencies (`depends_on`, `blocked_by`, `requires`) are not `[x]`. Reference links such as `feature:` or `owner:` do NOT block a task.
 
-## Federation & Supply Chain (V4 → V5)
-ALP 4.0.0 adds cross-machine and cross-repository coordination; V5.0.0 hardens the SDK and adds registry signature verification. Use these when the workspace spans more than one machine, repo, or package:
+## Governance & Supply Chain (V4 → V14)
+
+ALP spans networked swarms, cross-repo orchestration, registry trust, and autonomous governance. Use these surfaces when operating across machines, repos, or packages:
+
 - **Networked swarms:** Join a coordinator with `node cli/dist/index.js swarm join <id>` and execute tasks across machines via `node cli/dist/index.js run --swarm <id>`. List live nodes with `node cli/dist/index.js swarm roster <id>`. The coordinator assigns task claims so no two nodes double-claim.
 - **Cross-repo orchestration:** If the workspace references external repos via `@repo` objects, run `node cli/dist/index.js repo resolve --fetch` to merge their graphs and resolve `-> repo::object` references (read-only). Use `node cli/dist/index.js repo ls` / `node cli/dist/index.js repo graph` to inspect the federation.
-- **Policy governance:** Respect `@policy` guardrails. Before running a shell command or editing a path, check it with `node cli/dist/index.js policy --command "…"` or `node cli/dist/index.js policy --path "…"`. A strict policy that denies an action means you MUST NOT perform it.
+- **Policy governance:** Respect `@policy` guardrails. Before running a shell command or editing a path, check it with `node cli/dist/index.js policy --command "…"` or `node cli/dist/index.js policy --path "…"`. A strict policy that denies an action means you MUST NOT perform it. v8.1.0 adds time-windows (`allow_during`), human approval (`require_approval`), and signed proposals (`--proposal` / `--trust`).
+- **Scheduling:** Discover deferred work via `node cli/dist/index.js schedule` evaluating `@timeline` cron / `at` triggers.
+- **Contracts:** Respect `@contract` boundaries enforced at handoff points; violations are denied/warned/logged per the contract's `on_violation` mode.
+- **Vault secrets:** Inject secrets via `node cli/dist/index.js vault get <key>` rather than committing them. Secrets are sealed at rest with X25519 + AES-256-GCM.
 - **Registry & packages:** Install shared knowledge with `node cli/dist/index.js registry install @community/<pack>@<range>`. Publish your own with `node cli/dist/index.js registry publish ./my-pack`, or host a registry via `node cli/dist/index.js serve --registry`.
 - **Registry trust & verification:** Pin maintainer keys in `.alprc` `trustedKeys` (or via `node cli/dist/index.js keys trust add <ns|*> <fingerprint|file>`); installs are then verified automatically. Audit any package — local or remote — with `node cli/dist/index.js registry verify <name>[@version]` and `node cli/dist/index.js registry verify <name>[@version] --url <host>` without installing.
 - **Live observability:** `node cli/dist/index.js serve` starts a dashboard (HTTP + SSE) showing task status, claims, and analytics in real time.
+- **MCP integration:** If the IDE supports MCP, connect to `node cli/dist/index.js` via the `@alp/mcp-server` for 19 workspace tools including policy checks, visualization, registry search, and timeline evaluation.

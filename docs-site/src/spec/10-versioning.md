@@ -122,6 +122,16 @@ Deprecated elements:
 
 | Version | Date | Changes |
 ||---|---|
+| `38.0.0` | 2026-07-23 | v38 Cognitive/Collaborative Era. Adds V8–V11 modules across SDKs: TypeScript SDK exports `event_mesh`, `swarm_marketplace`, `macro`, `collaboration`, `memory_mesh`; Python SDK ships same modules under `alp_sdk`. Parser adds `MeshEvent`, `SwarmMarketplace`, `MacroEngine`, `CollaborationEngine`, `MemoryMeshEngine`; matching test suites in `parser/tests/*.test.ts` (8–13 cases each). MCP server adds 5 tools: `expand_macro`, `store_memory`, `query_memory`, `mesh_stats`, `negotiate`. CI/docs bumped to Node 24. Fixes parser/CJS Buffer shim boundary and corrupted `parser/dist` artifacts. Documentation updated: `mcp-server.md`, `guide/sdk.md`, `cli-tools.md`, and this version table. Spec docs brought current through v38. |
+
+| `37.0.0` | 2026-07-23 | v37 Cross-Federation Trust & Policy Hardening. Policy engine gains `PolicyVersioning`, `PolicySuggestion`, and `PolicySuggest` for time-window + enforcement-aware suggestions (`docs-site/src/spec/03-protocol-objects.md`). Predictive policy introduced: `AnomalyScore`, `BaselineProfile`, and `PredictivePolicyEngine` learn baselines from the event store and attach anomaly metadata to decisions (`parser/src/predictive-policy.ts`, `sdk/python/alp_sdk/predictive_policy.py`). MCP enforcement audit trail validates `policy_id`, `timestamp`, `actor`, and `decision` fields (`mcp-server/src/policy-audit.ts`; 4 new audit test cases). `parser/tests/policy-v7.test.ts` and `sdk/python/tests/test_policy_v7.py` added. Full Python suite: 587 pass, 3 pre-existing registry startup flakes. |
+
+| `36.0.0` | 2026-07-23 | v36 Observability, Provenance, Cross-Project Workspace Parity. Python SDK gains `observ` (runtime JSONL log + state store), `provenance` (trace store, audit ledger, trace signer, ZK-style policy proof), and extended `workspace` loader with cross-project references and supergraph cycle validation. TypeScript `@alp/parser` adds `ObservabilityIntegration` wiring `cli/src/runtime.ts` emit hooks into the same durable formats. New `docs-site/src/releases.md` entry updated; MCP server `query_trace`, `verify_bundle`, and runtime-log ingestor stubs added. Full Python suite: 584 pass. |
+
+| `35.0.0` | 2026-07-23 | v35 Cost Governance & Distributed Runtime Parity. Python SDK adds `cost_budget` (`CostBudget`, `ModelSelectionRouter`), `cost_optimizer` (`CostEstimator`, `CostOptimizer`, `AutoScaleRecommendation`), and `metering` (`MeteringLog` with rate limiter + analytics). TypeScript parser/CLI gains matching engine interfaces and `metering` event types. Registry/install protocol supports direct signed-install from hosted `integrity` (`alp registry install --url --verify`). Full Python suite: 580 pass. |
+
+| `34.0.0` | 2026-07-23 | v34 Collaboration, Migration & Workspace Hardening. Python SDK adds `collaboration` (`TeamComposer`, `Negotiator`, `ReputationStore`) and `migration` (`MigrationEngine` with dry-run + rollback checkpoints). Workspace loader gains `WorkspaceExamples` validation and cached project fetches. Parser adds `CollaborationEngine` and migration runtime. MCP server tool surface expanded with `list_agents`, `negotiate`, and `replay_events` stubs. Full Python suite: 575 pass. |
+
 | `10.0.0` | 2026-07-20 | Locked Grammar 3.0.0 (V6 — The Governance Era). The formal grammar is bumped to 3.0.0: removed `@type_definition` (deprecated in v8, removed in v9) and added V5 governance objects (`@policy`, `@timeline`, `@contract`, `@vault`) as first-class block types. Also promoted `@type` to explicit block status (previously only `identifier`). `repo`, `swarm`, and `package` are now explicit. All parser/SDK version-negotiation references updated from `2.x` to `3.x`. Migration guide: `docs-site/MIGRATION-v10.md`. |
 | `9.0.0` | 2026-07-20 | v9 Breaking Changes: (1) Removed deprecated `@type_definition` alias — `@type` is now the sole custom-type declaration (spec/11 §2.5). (2) `[!]` (blocked) and `[?]` (human gate) status markers MUST carry a free-text reason; unannotated markers are a hard `SyntaxError` (promoted from v8 deprecation warning, spec/03 §4). |
 | `8.4.0` | 2026-07-20 | Encrypted Secrets Vault (Production-Grade Era, V5). Introduces `@vault` (spec/03 §31 / spec/19): secrets sealed at rest with an age-style X25519 envelope + AES-256-GCM, recipient-scoped so only the matching private key unseals. `recipients` double as the registry trust root (spec/14 §4.2). New `Vault` engine in `parser/src/vault.ts` (Node built-in `crypto`) and `sdk/python/alp_sdk/vault.py` (optional `cryptography` dep, zero-dep fallback). `set`/`get`/`list`/`rotate`/`audit` APIs; `parser/tests/vault.test.ts` (8 cases) and `sdk/python/tests/test_vault.py` (8 cases, skip without `cryptography`) cover seal/unseal, no-plaintext-on-disk, unauthorized rejection, multi-recipient, rotation, and audit trail. Also fixed pre-existing missing `signing` imports in `registry.py` (2 registry test errors). Full Python suite: 179 pass. |
@@ -169,15 +179,19 @@ The roadmap below records delivered eras and looks ahead. Released versions
 are authoritative in the table in §7; this section captures intent.
 
 | Era | Versions | Delivered |
-|---|---|---|
+|---|---|
 | V2 — Execution Engine | 2.0.0 | Context bundles, topological execution |
 | V3 — Multi-Agent Orchestration | 3.0.0–3.1.0 | Concurrent swarms, live state server, self-evolving protocol |
 | V4 — The Federation Era | 4.0.0–4.5.0 | Networked swarms, cross-repo `@repo`, hosted registry, package signing & trust roots |
 | V5 — Production-Grade Era | 7.0.0–10.0.0 | Unified Python engine, policy federation, observability parity, v8/v9 hardening, and v10 locked grammar 3.0.0: canonical `@type`, fail-closed `!assert`, `@policy` v2 (time-windows / approvals / signed proposals), `@timeline` scheduling, `@contract` boundary validation, encrypted `@vault` secrets, removed `@type_definition` alias, mandatory `[!]`/`[?]` reasons, formalized V5 governance objects in grammar |
+| V6 — The Governance Era | 34.0.0–35.0.0 | Cost governance, budget/router/optimizer, metering analytics |
+| V7 — The Cognitive Era | 36.0.0–37.0.0 | Observability/provenance parity, runtime JSONL + trace store, policy versioning, predictive anomaly scoring |
+| V8 — The Collaboration Era | 38.0.0–38.x | Event mesh, swarm marketplace, macro expansion, collaboration/negotiation/reputation, memory mesh |
 
 ### Forward-looking (post-10.0.0)
 
 | Version | Planned Features |
-|---|---|
+|---|
 | `10.x` | Grammar refinements, new governance primitives, distributed enforcement optimizations |
-| `11.0.0` | Candidate for the next specification major — next-era feature set TBD |
+| `11.0.0` | Complete event-mesh & swarm-marketplace primitives, auto-negotiation, memory-mesh federation |
+| `12.0.0` | Candidate for the next specification major — next-era feature set TBD |

@@ -1,5 +1,7 @@
 """ALP Python SDK"""
 
+__version__ = "38.0.0"
+
 from .models import AlpObject
 from .error import AlpError, SyntaxError, IndentationError, ValidationError, DirectiveError
 from .reader import load_workspace, AlpReader, AlpParser
@@ -132,7 +134,7 @@ from .p2p import (
     GossipMessage,
     GossipProtocol,
     DHT,
-    AgentStatus,
+    AgentStatus as P2PAgentStatus,
 )
 from .tenant import (
     TenantVault,
@@ -396,6 +398,7 @@ __all__ = [
     "GossipMessage",
     "GossipProtocol",
     "DHT",
+    "P2PAgentStatus",
     "TenantVault",
     "TenantContext",
     "TenantManager",

@@ -21,16 +21,23 @@ The ALP repo ships an active CI workflow at `.github/workflows/ci.yml` (TypeScri
 
 > **CLI install:** the drop-in workflows use `npm install -g @alp/cli`. Until the `@alp/cli` package is published to npm, replace that step with a build-from-source step in your fork: `npm ci && npm run build --workspace @alp/cli`, then invoke the CLI via `node cli/dist/index.js`. This matches the `validate` job in the repo's own `.github/workflows/ci.yml`.
 
-## The Production-Grade Era (V5 — v8.0.0 → v10.0.0)
+## Current Toolchain Surface (v38.0.0)
 
-Integrations should be aware of the v8 governance surface so agents operate
-with verifiable least privilege:
+Integrations should be aware of the modern ALP surface so agents operate with full protocol coverage:
 
-- **`alp policy`** enforces path/command guardrails, time-windows (`allow_during`), human approval (`require_approval`), and signed proposals (`--proposal` / `--trust`). Wire `alp policy --path` / `--command` as a pre-execution gate in CI.
-- **`alp schedule`** evaluates `@timeline` cron / `at` triggers so agents can discover deferred work without an external cron daemon.
-- **`alp vault`** stores encrypted secrets (X25519 envelope + AES-256-GCM); CI should inject secrets via `alp vault get` rather than committing them.
-- **Breaking (v8.0.0):** `@type` is the canonical plugin marker (`@type_definition` is deprecated), `!assert` is fail-closed, and `[!]`/`[?]` status markers must carry a free-text reason. See `docs-site/MIGRATION-v8.md`.
+- **`@policy` v2** — path/command guardrails, time-windows (`allow_during`), human approval (`require_approval`), and signed proposals (`--proposal` / `--trust`). Wire `alp policy --path` / `alp policy --command` as a pre-execution gate in CI.
+- **`@timeline`** — native cron / `at` scheduling evaluated by `alp schedule`; agents can discover deferred work without an external cron daemon.
+- **`@contract`** — least-privilege runtime boundaries enforced at handoff points (`ContractEngine.check`).
+- **`@vault`** — encrypted secrets (X25519 envelope + AES-256-GCM); CI should inject secrets via `alp vault get` rather than committing them.
+- **MCP Server** — 19 tools exposed to Claude Desktop, Cursor, Windsurf, and any MCP client (see `mcp-server/README.md`).
+- **Registry & signing** — publish/install with `alp registry`, per-namespace bearer tokens, and Ed25519 package signatures (`alp keys generate`, `alp keys trust add`).
+- **Governance** — `PolicyBallot`, `GovernanceEngine`, and quorum-based policy voting (v18.3.0).
+- **Breaking changes:** `@type` is the canonical plugin marker (`@type_definition` removed in v9), `!assert` is fail-closed, and `[!]`/`[?]` status markers must carry a free-text reason. See `docs-site/MIGRATION-v8.md`.
 
 ### 4. Model Context Protocol (`mcp-server/`)
-ALP provides a native MCP server (`@alp/mcp-server`) that enables any modern AI IDE (Claude Desktop, Cursor, Windsurf) to securely query the ALP workspace.
-**Usage:** Start the server using `alp-mcp` or configure your IDE's MCP settings to point to the `@alp/mcp-server` executable. Agents can then use tools like `alp_get_graph`, `alp_get_status`, `alp_read_object`, `alp_list_objects`, `alp_validate`, `alp_update_status`, `alp_get_impact`, and `alp_search` natively.
+
+ALP provides a native MCP server (`@alp/mcp-server`) enabling any modern AI IDE (Claude Desktop, Cursor, Windsurf) to securely query and mutate the ALP workspace.
+
+**Usage:** Start the server using `node mcp-server/dist/index.js` or configure your IDE's MCP settings to point to the `@alp/mcp-server` executable.
+
+Exposed tools (19 total): `alp_list_objects`, `alp_read_object`, `alp_get_graph`, `alp_get_status`, `alp_validate`, `alp_update_status`, `alp_set_status`, `alp_get_impact`, `alp_search`, `alp_delegate`, `alp_decompose`, `alp_create_task`, `alp_create_feature`, `alp_get_events`, `alp_get_analytics`, `alp_check_policy`, `alp_visualize`, `alp_search_registry`, `alp_get_timelines`.

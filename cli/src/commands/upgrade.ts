@@ -41,7 +41,7 @@ export function upgradeCommand() {
 
         if (needsUpgrade) {
           fs.writeFileSync(fullPath, content, 'utf-8');
-          console.log(`✅ Upgraded ${path.relative(process.cwd(), fullPath)} to v2.0.0`);
+          console.log(`✅ Upgraded ${path.relative(process.cwd(), fullPath)} to v3.0.0`);
           upgradedCount++;
         }
       }
@@ -53,6 +53,6 @@ export function upgradeCommand() {
   if (upgradedCount === 0) {
     console.log('✅ All files are already up-to-date with the latest ALP version.');
   } else {
-    console.log(`\n🎉 Successfully upgraded ${upgradedCount} files to ALP v2.0.0!`);
+    console.log(`\n🎉 Successfully upgraded ${upgradedCount} files to ALP v3.0.0!`);
   }
 }

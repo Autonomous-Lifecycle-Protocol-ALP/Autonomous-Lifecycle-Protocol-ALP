@@ -1,6 +1,25 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { AlpParser, AlpObject, AlpGraph, GraphNode } from '@alp/parser';
+import {
+  AlpParser,
+  AlpObject,
+  AlpGraph,
+  GraphNode,
+  EventMeshEngine,
+  MeshEvent,
+  SwarmMarketplaceEngine,
+  SkillListing,
+  SkillInvocationResult,
+  MacroEngine,
+  MacroDefinition,
+  CollaborationEngine,
+  CollabSession,
+  CollabBranch,
+  MemoryMeshEngine,
+  MemoryNode,
+  MemoryQueryResult,
+  MemoryMeshStats,
+} from '@alp/parser';
 
 export class AlpWorkspace {
   private parser: AlpParser;
@@ -17,7 +36,7 @@ export class AlpWorkspace {
   public load(workspaceDir: string): void {
     this.objects = [];
     const files = this.findAlpFiles(workspaceDir);
-    
+
     for (const file of files) {
       const content = fs.readFileSync(file, 'utf8');
       const parsed = this.parser.parseAndValidate(content);
@@ -77,5 +96,23 @@ export class AlpWorkspace {
   }
 }
 
-// Re-export core types
-export { AlpObject, AlpGraph, GraphNode };
+// Core parser surface
+export { AlpObject, AlpGraph, GraphNode, AlpParser };
+
+// v35-v38 engine surface
+export {
+  EventMeshEngine,
+  MeshEvent,
+  SwarmMarketplaceEngine,
+  SkillListing,
+  SkillInvocationResult,
+  MacroEngine,
+  MacroDefinition,
+  CollaborationEngine,
+  CollabSession,
+  CollabBranch,
+  MemoryMeshEngine,
+  MemoryNode,
+  MemoryQueryResult,
+  MemoryMeshStats,
+};

@@ -157,7 +157,7 @@ When knowledge changes, agents SHOULD update the existing memory entry rather th
   scope: -> feat-dashboard
   importance: critical
   source: "agent-architect"
-  updated: 2025-07-15T10:00:00Z    // Updated
+  updated: 2026-07-23T10:00:00Z    // Updated
 ```
 
 ### 5.5 Delete / Prune

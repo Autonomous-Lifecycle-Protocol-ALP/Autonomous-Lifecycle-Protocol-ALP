@@ -6,7 +6,7 @@
   <br/>
 
    [![Status](https://img.shields.io/badge/status-stable-success.svg)](#)
-   [![Version](https://img.shields.io/badge/version-36.0.0-blue.svg)](#)
+    [![Version](https://img.shields.io/badge/version-38.0.0-blue.svg)](#)
    [![License](https://img.shields.io/badge/license-MIT-green.svg)](#)
    [![Tests](https://img.shields.io/badge/tests-1013%20passed-brightgreen.svg)](#)
    [![Docs](https://img.shields.io/badge/docs-live-green.svg)](https://younglord3302.github.io/Autonomous-Lifecycle-Protocol-ALP/)
@@ -82,7 +82,7 @@ graph TD
     end
 ```
 
-### 2. Autonomous Swarm & Event Mesh Topology (v36.0.0)
+### 2. Autonomous Swarm & Event Mesh Topology (v38.0.0)
 
 Distributed agents coordinate through a pub/sub Event Mesh, discover skills via the Swarm Marketplace, and sync state in real time.
 
@@ -120,14 +120,14 @@ alp run --provider openai --model gpt-4o
 alp run | claude-code
 ```
 
-### 2. Autonomous Swarm Marketplace (`alp marketplace`) — *v36.0.0*
+### 2. Autonomous Swarm Marketplace (`alp marketplace`) — *v38.0.0*
 Register, discover, invoke, and rate agent skills dynamically with real-time metering and cost tracking:
 ```bash
 alp marketplace register s1 agent-coder code-review --category analysis --cost 0.05
 alp marketplace invoke s1 agent-reader "Review pull request #42"
 ```
 
-### 3. Decoupled Event Mesh (`alp event-mesh`) — *v35.0.0*
+### 3. Decoupled Event Mesh (`alp event-mesh`) — *v38.0.0*
 Pub/sub topic routing and asynchronous event dispatch across distributed swarm nodes:
 ```bash
 alp event-mesh subscribe agent-1 telemetry.logs
@@ -151,13 +151,13 @@ alp verify task-auth
 
 | Package | Purpose | Version |
 | :--- | :--- | :---: |
-| [`@alp/cli`](cli/) | Terminal interface (`run`, `serve`, `marketplace`, `policy`, `vault`, `verify`) | `36.0.0` |
-| [`@alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `36.0.0` |
-| [`@alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `36.0.0` |
-| [`@alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `36.0.0` |
-| [`@alp/sdk`](sdk/) | Official TypeScript SDK | `36.0.0` |
-| [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `36.0.0` |
-| [`docs-site`](docs-site/) | Official VitePress documentation site | `36.0.0` |
+| [`@alp/cli`](cli/) | Terminal interface (`run`, `serve`, `marketplace`, `policy`, `vault`, `verify`) | `38.0.0` |
+| [`@alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `38.0.0` |
+| [`@alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `38.0.0` |
+| [`@alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `38.0.0` |
+| [`@alp/sdk`](sdk/) | Official TypeScript SDK | `38.0.0` |
+| [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `38.0.0` |
+| [`docs-site`](docs-site/) | Official VitePress documentation site | `38.0.0` |
 
 ---
 

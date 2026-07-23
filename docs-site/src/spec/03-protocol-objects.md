@@ -23,8 +23,8 @@ Every protocol object MUST have these fields:
 @<type>
   id: my-object
   version: 1.0.0
-  created: 2025-07-14T18:00:00Z
-  updated: 2025-07-14T20:30:00Z
+  created: 2026-07-23T18:00:00Z
+  updated: 2026-07-23T20:30:00Z
   tags:
     - { key: "team", value: "backend" }
     - { key: "sprint", value: "3" }
@@ -713,7 +713,7 @@ High-level objectives the project aims to achieve.
   name: "MVP Launch"
   description: "Launch the minimum viable product with core features"
   priority: critical
-  deadline: 2025-09-01
+  deadline: 2026-07-23
   progress: 25
   status: [~]
   success_criteria:

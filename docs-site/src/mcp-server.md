@@ -26,15 +26,55 @@ Once connected, your IDE gains access to the following tools:
 | `alp_update_status` | Update the status of a task (supports the `[?]` review marker for HITL handoffs) |
 | `alp_get_impact` | Get all downstream nodes affected by a change to a given node |
 | `alp_search` | Fuzzy search across all object IDs and descriptions |
+| `alp_delegate` | Create a new task assigned to a specific role/agent |
+| `alp_decompose` | Split a large task into sub-tasks blocked by the parent |
+| `alp_create_task` | Scaffold a new task `.alp` file |
+| `alp_create_feature` | Scaffold a new feature `.alp` file |
 
-### Advanced Tools — *v16.1.0*
+### Events & Analytics
+
+| Tool | Description |
+| :--- | :--- |
+| `alp_get_events` | Read recent runtime events with optional type filtering and limit |
+| `alp_get_analytics` | Analytics summary from state store or event log |
+
+### Governance & Registry — v4+
 
 | Tool | Description |
 | :--- | :--- |
 | `alp_check_policy` | Evaluate policy decisions — check if a file path or command is permitted by workspace `@policy` rules |
 | `alp_visualize` | Generate a Mermaid DAG diagram of the project dependency graph for embedding in docs or chat |
-| `alp_search_registry` | Search ALP objects by type, status, or keyword across the entire workspace |
+| `alp_search_registry` | Search installed ALP registry packages |
 | `alp_get_timelines` | Retrieve `@timeline` scheduling objects and their cron/at triggers |
+
+### Contracts & Vaults
+
+| Tool | Description |
+| :--- | :--- |
+| `alp_get_contracts` | List all `@contract` objects and their allow/deny rules |
+| `alp_get_vaults` | List all `@vault` objects and their recipient/algorithm metadata |
+
+### Swarm Marketplace & Event Mesh — v35+
+
+| Tool | Description |
+| :--- | :--- |
+| `alp_get_swarm_marketplace` | List registered skills from `@swarm_marketplace` objects, optionally filtered by category |
+| `alp_get_event_mesh` | List event mesh topics and recent events from `@event_mesh` objects |
+
+### Macro Engine — v37+
+
+| Tool | Description |
+| :--- | :--- |
+| `alp_get_macros` | List `@macro` definitions from the workspace |
+| `alp_expand_macro` | Expand a `@macro` definition by ID and return generated objects |
+
+### Memory Mesh — v38+
+
+| Tool | Description |
+| :--- | :--- |
+| `alp_memory_store` | Store a memory node in the workspace memory mesh |
+| `alp_memory_query` | Query the memory mesh for relevant memories |
+| `alp_memory_stats` | Return memory mesh statistics |
 
 In addition, the server exposes the workspace `.alp` files as MCP **resources** (`file://` URIs) so a client can read raw object files directly.
 

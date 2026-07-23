@@ -17,18 +17,42 @@ npm start
 
 Once connected via MCP, the server exposes the following tools to the LLM agent:
 
-- **`alp_get_graph`**: Get the full dependency graph of the ALP workspace as a sorted execution order.
-- **`alp_get_status`**: Get the current project status, including task counts by state (`[x]`, `[~]`, `[ ]`, `[!]`, `[?]`).
-- **`alp_read_object`**: Read a specific ALP object by its ID and return all its properties.
-- **`alp_list_objects`**: List all objects, optionally filtered by type (e.g. `task`, `agent`, `memory`).
-- **`alp_validate`**: Validate the ALP workspace and return any syntax or schema errors.
-- **`alp_update_status`**: Update the status of a task (supports the `[?]` review marker for HITL handoffs).
-- **`alp_get_impact`**: Get all downstream nodes affected by a change to a given node.
-- **`alp_search`**: Fuzzy search across all object IDs and descriptions.
-- **`alp_delegate`**: Create a new task assigned to a specific role/agent (sub-agent delegation).
-- **`alp_decompose`**: Split a large task into sub-tasks, each blocked by the parent.
+**Workspace & Graph**
+- **`alp_list_objects`**: List all ALP objects, optionally filtered by type.
+- **`alp_read_object`**: Read a specific ALP object by ID.
+- **`alp_get_graph`**: Full dependency graph as sorted execution order.
+- **`alp_get_status`**: Project status summary with task counts by state.
+- **`alp_get_impact`**: Downstream nodes affected by a change.
 
-### Policy governance (v4)
+**Search & Mutation**
+- **`alp_search`**: Fuzzy search across IDs and descriptions.
+- **`alp_validate`**: Validate workspace syntax/schemas.
+- **`alp_update_status`**: Update task/feature status.
+- **`alp_set_status`**: Alias-style status update by object ID.
+- **`alp_delegate`**: Create a sub-task assigned to a role/agent.
+- **`alp_decompose`**: Split a task into sub-tasks blocked by the parent.
+- **`alp_create_task`**: Scaffold a new task `.alp` file.
+- **`alp_create_feature`**: Scaffold a new feature `.alp` file.
+
+**Events & Analytics**
+- **`alp_get_events`**: Read recent runtime events with filtering.
+- **`alp_get_analytics`**: Analytics summary from state store or event log.
+
+**Governance & Registry**
+- **`alp_check_policy`**: Check path/command against `@policy` guardrails.
+- **`alp_visualize`**: Render `@workflow` objects as Mermaid/JSON diagrams.
+- **`alp_search_registry`**: Search/list installed registry packages.
+- **`alp_get_timelines`**: List/evaluate `@timeline` schedules.
+
+**Contracts & Vaults**
+- **`alp_get_contracts`**: List all `@contract` objects and their allow/deny rules.
+- **`alp_get_vaults`**: List all `@vault` objects and their recipient/algorithm metadata.
+
+**Swarm Marketplace & Event Mesh (v35+)**
+- **`alp_get_swarm_marketplace`**: List registered skills from `@swarm_marketplace` objects, optionally filtered by category.
+- **`alp_get_event_mesh`**: List event mesh topics and recent events from `@event_mesh` objects.
+
+### Policy governance
 
 Mutating tools (`alp_update_status`, `alp_delegate`, `alp_decompose`) are
 subject to `@policy` guardrails. If a strict policy denies the target path,

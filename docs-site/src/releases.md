@@ -14,6 +14,15 @@ ALP versioning tracks two independent axes:
 
 ## Toolchain
 
+### 38.0.0 — Memory Mesh Engine
+- **Memory Mesh Engine** (`MemoryMeshEngine` in TS & Python SDK): Cross-agent semantic memory sharing with decay scoring, memory node relationships, and distributed knowledge graph queries.
+- **CLI & Schema**: `alp memory-mesh` CLI command and `memory_mesh.schema.json` protocol schema. Full Vitest (434 tests) & Pytest (579 tests) suite passing.
+
+### 37.0.0 — Macro Engine & Collaboration Engine
+- **Macro Engine** (`MacroEngine`): Dynamic `@macro` object generation with parameterized templates and runtime expansion.
+- **Collaboration Engine** (`CollaborationEngine`): Real-time multiplayer conflict resolution with operational transforms, presence tracking, and branch synchronization.
+- **CLI & Schema**: `alp macro` and `alp collab` CLI commands with corresponding JSON schemas.
+
 ### 36.0.0 — Autonomous Swarm Marketplace & Skill Registry
 - **Swarm Marketplace Engine** (`SwarmMarketplaceEngine` in TS & Python SDK): Agent skill registration, category discovery, skill invocation, rating, cost per call tracking, and audit logging.
 - **CLI & Schema**: `alp marketplace` CLI command and `swarm_marketplace.schema.json` object validation. Full Vitest (434 tests) & Pytest (579 tests) suite passing.

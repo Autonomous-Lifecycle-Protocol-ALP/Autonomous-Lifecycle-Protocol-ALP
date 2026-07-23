@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: "ALP v36.0.0"
+  name: "ALP v38.0.0"
   text: "The Autonomous Lifecycle Protocol"
   tagline: "The open standard & high-performance execution engine for AI-driven software engineering. Write a machine-readable spec — let your agents plan, build, verify, and remember."
   image:
@@ -16,16 +16,16 @@ hero:
       text: View the Spec
       link: '/spec/01-overview'
     - theme: alt
-      text: GitHub (v36.0.0)
+      text: GitHub (v38.0.0)
       link: 'https://github.com/younglord3302/Autonomous-Lifecycle-Protocol-ALP'
       target: _blank
 
 features:
   - title: Execution Engine (alp run)
     details: Topologically sorts your dependency graph in < 2ms, compiles precise context bundles, and orchestrates agents through the full lifecycle.
-  - title: Swarm Marketplace (v36.0.0)
+  - title: Swarm Marketplace (v38.0.0)
     details: Autonomous agent skill registration, category-based discovery, skill invocation, rating systems, and real-time cost tracking.
-  - title: Pub/Sub Event Mesh (v35.0.0)
+  - title: Pub/Sub Event Mesh (v38.0.0)
     details: Decoupled event mesh topic routing and message broadcasting across distributed autonomous swarm nodes.
   - title: Quality Gates (alp verify)
     details: "Tasks aren't 'done' until their verify scripts exit 0. Failures are marked [!] Blocked, halting the engine."
@@ -232,7 +232,7 @@ files with **one deterministic protocol stored natively in your repository** (`.
 
 <div class="alp-stats">
   <div class="alp-stat"><span class="alp-stat-num">49</span><span class="alp-stat-label">JSON Schemas</span></div>
-  <div class="alp-stat"><span class="alp-stat-num">36.0.0</span><span class="alp-stat-label">Toolchain Release</span></div>
+  <div class="alp-stat"><span class="alp-stat-num">38.0.0</span><span class="alp-stat-label">Toolchain Release</span></div>
   <div class="alp-stat"><span class="alp-stat-num">1013+</span><span class="alp-stat-label">Passed Tests</span></div>
   <div class="alp-stat"><span class="alp-stat-num">1:1</span><span class="alp-stat-label">TS &amp; Python Parity</span></div>
 </div>
@@ -304,8 +304,8 @@ files with **one deterministic protocol stored natively in your repository** (`.
     <tr><td>Context Bundle Latency</td><td>145 ms</td><td>24.5 ms</td><td>480 ms</td><td>1250 ms</td><td class="alp-col">⚡ 1.8 ms</td></tr>
     <tr><td>Token Efficiency</td><td>0% (Full Dump)</td><td>22% Saved</td><td>-40% (Bloated)</td><td>N/A (Siloed)</td><td class="alp-col">⚡ 78% Saved</td></tr>
     <tr><td>Lifecycle State Machine</td><td>No</td><td>No</td><td>No</td><td>Manual Tickets</td><td class="alp-col">Native (6-State Machine)</td></tr>
-    <tr><td>Swarm Marketplace &amp; Skills</td><td>No</td><td>No</td><td>No</td><td>No</td><td class="alp-col">Native (<code>v36.0.0</code>)</td></tr>
-    <tr><td>Pub/Sub Event Mesh</td><td>No</td><td>No</td><td>No</td><td>No</td><td class="alp-col">Native (<code>v35.0.0</code>)</td></tr>
+    <tr><td>Swarm Marketplace &amp; Skills</td><td>No</td><td>No</td><td>No</td><td>No</td><td class="alp-col">Native (<code>v38.0.0</code>)</td></tr>
+    <tr><td>Pub/Sub Event Mesh</td><td>No</td><td>No</td><td>No</td><td>No</td><td class="alp-col">Native (<code>v38.0.0</code>)</td></tr>
     <tr><td>Quality Gate Enforcement</td><td>No</td><td>No</td><td>No</td><td>Manual</td><td class="alp-col">Native (<code>alp verify</code>)</td></tr>
     <tr><td>Encrypted Secrets Vault</td><td>No</td><td>No</td><td>No</td><td>External Vault</td><td class="alp-col">Native (X25519 / AES-GCM)</td></tr>
     <tr><td>Schema Validation</td><td>No</td><td>Limited</td><td>No</td><td>Rest API</td><td class="alp-col">Strict (49 Schemas)</td></tr>
@@ -339,7 +339,7 @@ graph TD
     end
 ```
 
-### 2. Autonomous Swarm Mesh & Skill Marketplace (v36.0.0)
+### 2. Autonomous Swarm Mesh & Skill Marketplace (v38.0.0)
 
 ```mermaid
 flowchart LR
@@ -365,7 +365,7 @@ flowchart LR
   <a class="alp-eco-card" href="/mcp-server"><h3>@alp/mcp-server</h3><p>Real-time MCP integration for Claude Desktop, Cursor, and any compliant client.</p></a>
   <a class="alp-eco-card" href="/vscode-extension"><h3>alp-vscode</h3><p>Language Server with IntelliSense, go-to-definition, and rich hover metadata.</p></a>
   <a class="alp-eco-card" href="/guide/sdk"><h3>@alp/sdk &amp; alp-sdk</h3><p>Official TypeScript and Python SDKs with complete 1:1 implementation parity.</p></a>
-  <a class="alp-eco-card" href="/spec/22-autonomous-marketplace"><h3>@swarm_marketplace</h3><p>Autonomous skill registry, provider discovery, invocation, and cost tracking (v36.0.0).</p></a>
+  <a class="alp-eco-card" href="/spec/22-autonomous-marketplace"><h3>@swarm_marketplace</h3><p>Autonomous skill registry, provider discovery, invocation, and cost tracking (v38.0.0).</p></a>
 </div>
 
 ---

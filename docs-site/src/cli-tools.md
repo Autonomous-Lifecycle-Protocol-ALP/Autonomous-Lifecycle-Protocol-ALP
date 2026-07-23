@@ -988,4 +988,46 @@ alp edge-model register edge-1 llama-3-8b 0.001 8192
 alp edge-model route 4000
 ```
 
+## Macro (`alp macro`)
+
+*New in v37.0.0.* Dynamic `@macro` object generation with template interpolation.
+
+```bash
+# Expand a macro definition
+alp macro expand demo-macro
+
+# Dry-run macro expansion
+alp macro dry-run "['auth', 'billing']" --as svc
+```
+
+## Collaboration (`alp collab`)
+
+*New in v37.0.0.* Real-time multi-agent collaboration with merge and presence.
+
+```bash
+# Start a collaboration session
+alp collab start my-doc
+
+# Join a session
+alp collab join my-doc --agent agent-frontend
+
+# Show session status
+alp collab status my-doc
+
+# Merge a branch
+alp collab merge my-doc branch-1
+```
+
+## Memory Mesh (`alp memory-mesh`)
+
+*New in v38.0.0.* Cross-agent memory with decay-scored semantic retrieval.
+
+```bash
+# Query memory mesh
+ alp memory-mesh query "auth refactor" --agent agent-coder --tag security --top-k 5
+
+# View mesh statistics
+alp memory-mesh stats
+```
+
 

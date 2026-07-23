@@ -391,3 +391,211 @@
 .summary-item strong {
   color: var(--text-primary);
 }
+.summary-item.done { color: #34d399; }
+.summary-item.in-progress { color: #38bdf8; }
+.summary-item.blocked { color: #fb7185; }
+.summary-item.review { color: #c084fc; }
+.summary-item.edges-count { color: #fbbf24; }
+
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.2s ease;
+}
+.sidebar.collapsed {
+  width: 36px;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header h3 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.sidebar-toggle {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.sidebar-toggle:hover {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.05);
+}
+
+.sidebar-filters {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-search {
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.sidebar-search:focus {
+  border-color: var(--accent-cyan);
+}
+
+.sidebar-type-filter {
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 5px 8px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  outline: none;
+  cursor: pointer;
+}
+
+.sidebar-object-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px;
+}
+
+.sidebar-empty {
+  padding: 12px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.sidebar-object-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+.sidebar-object-item:hover {
+  background: rgba(0, 240, 255, 0.05);
+  border-color: rgba(0, 240, 255, 0.15);
+}
+.sidebar-object-item.selected {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: rgba(0, 240, 255, 0.4);
+}
+
+.sidebar-object-icon {
+  font-size: 1rem;
+}
+
+.sidebar-object-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sidebar-object-id {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-object-status {
+  font-size: 0.7rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-footer {
+  padding: 6px 12px;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  border-top: 1px solid var(--border-color);
+}
+
+/* Center Area */
+.center-area {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Log Panel */
+.log-panel {
+  background: rgba(0,0,0,0.5);
+  border-top: 1px solid var(--border-color);
+  font-family: var(--font-mono);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+.log-panel.collapsed {
+  max-height: 32px;
+}
+.log-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.log-panel-title {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.log-panel-content {
+  overflow-y: auto;
+  padding: 8px 12px;
+  max-height: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.log-entry {
+  font-size: 0.75rem;
+  padding: 2px 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.log-entry.info { color: var(--text-secondary); }
+.log-entry.warn { color: #fbbf24; }
+.log-entry.error { color: #f87171; }
+.log-entry.success { color: #34d399; }
+
+/* Action Button active state */
+.action-btn.active {
+  background: rgba(0, 240, 255, 0.12);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+

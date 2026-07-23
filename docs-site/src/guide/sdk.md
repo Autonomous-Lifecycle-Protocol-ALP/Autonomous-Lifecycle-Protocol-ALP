@@ -22,6 +22,18 @@ ws.load('./my-project');
 console.log(ws.getGraph());
 ```
 
+Available since v38.0.0, `@alp/sdk` also exposes the underlying engine types directly:
+
+```ts
+import {
+  MacroEngine,
+  CollaborationEngine,
+  MemoryMeshEngine,
+  EventMeshEngine,
+  SwarmMarketplaceEngine,
+} from '@alp/sdk';
+```
+
 ## Python
 
 ```python
@@ -41,7 +53,7 @@ report = verify_workspace("./my-project")
 print(report["passed"], [(t["id"], t["verified"]) for t in report["tasks"]])
 ```
 
-### V12–V14 Additions
+### V12–V38 Additions
 
 ```python
 from alp_sdk.cost_optimizer import CostEstimator, CostOptimizer, AutoScaleRecommendation
@@ -55,6 +67,13 @@ from alp_sdk.p2p import P2PSwarm, P2PNode, GossipMessage, GossipProtocol, DHT, P
 from alp_sdk.tenant import TenantVault, TenantContext, TenantManager, TenantIsolationError, create_tenant_key
 from alp_sdk.governance import PolicyBallot, GovernanceEngine, BallotRecord, GovernanceReport, Vote, VoteValue
 from alp_sdk.domain_trust import DomainTrustAnchor, DomainTrustManager, TrustRoot, DomainLink, TrustStatus, create_domain_keypair
+from alp_sdk.formal_verification import FormalVerificationEngine, Transition
+from alp_sdk.visualize import WorkflowVisualizer, read_workflow
+from alp_sdk.event_mesh import EventMeshEngine, MeshEvent, MeshEventConfig
+from alp_sdk.swarm_marketplace import SwarmMarketplaceEngine, SkillListing, SkillInvocationResult
+from alp_sdk.macro import MacroEngine, MacroDefinition
+from alp_sdk.collaboration import CollaborationEngine, CollabSession, CollabBranch, CollabOperation, PresenceInfo
+from alp_sdk.memory_mesh import MemoryMeshEngine, MemoryNode, MemoryQueryResult, MemoryMeshStats
 ```
 
 | Module | Version | Description |
@@ -70,6 +89,13 @@ from alp_sdk.domain_trust import DomainTrustAnchor, DomainTrustManager, TrustRoo
 | `tenant` | `18.2.0` | Multi-tenant workspace isolation with cryptographic sealing |
 | `governance` | `18.3.0` | Agent voting on policy changes with quorum enforcement |
 | `domain_trust` | `18.4.0` | Cross-domain trust bootstrapping via signed trust roots |
+| `formal_verification` | `10.x` | TLA+-style safety invariant and deadlock analysis |
+| `visualize` | `10.2.0` | Mermaid/DOT/JSON workflow rendering |
+| `event_mesh` | `35.0.0` | Pub/sub event mesh for streaming state changes and broadcasts |
+| `swarm_marketplace` | `36.0.0` | Autonomous skill registry, discovery, invocation, rating, and cost tracking |
+| `macro` | `37.0.0` | Dynamic `@macro` object generation with template interpolation |
+| `collaboration` | `37.0.0` | Real-time multi-agent collaboration with OT/CRDT merge, presence, and branching |
+| `memory_mesh` | `38.0.0` | Distributed memory mesh with recency decay and cross-agent semantic retrieval |
 
 ## What an SDK Provides
 

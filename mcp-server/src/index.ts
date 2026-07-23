@@ -41,7 +41,7 @@ import {
   UnsubscribeRequestSchema,
   ResourceUpdatedNotificationSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { AlpParser, AlpObject, AlpGraph, PolicyEngine, updateObjectStatus } from '@alp/parser';
+import { AlpParser, AlpObject, AlpGraph, PolicyEngine, updateObjectStatus, MacroEngine, MacroDefinition, MemoryMeshEngine, MemoryQueryResult } from '@alp/parser';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -55,14 +55,30 @@ function toKebab(input: string): string {
 }
 
 // ─── Workspace Loader ─────────────────────────────────────────────────────
+const workspaceCache = new Map<string, { mtime: number; objects: AlpObject[] }>();
+
+function getAlpDirMtime(dir: string): number {
+  try {
+    return fs.statSync(dir).mtimeMs;
+  } catch {
+    return 0;
+  }
+}
+
 function loadWorkspace(rootDir: string): AlpObject[] {
   const alpDir = path.join(rootDir, '.alp');
   if (!fs.existsSync(alpDir)) {
     return [];
   }
+  const mtime = getAlpDirMtime(alpDir);
+  const cached = workspaceCache.get(rootDir);
+  if (cached && cached.mtime === mtime) {
+    return cached.objects;
+  }
   const parser = new AlpParser();
   const objects: AlpObject[] = [];
   loadDirectory(alpDir, parser, objects);
+  workspaceCache.set(rootDir, { mtime, objects });
   return objects;
 }
 
@@ -178,7 +194,7 @@ function audit(
 
 // ─── MCP Server ───────────────────────────────────────────────────────────
 const server = new Server(
-  { name: 'alp-mcp-server', version: '10.4.0' },
+  { name: 'alp-mcp-server', version: '38.0.0' },
   { capabilities: { tools: {}, resources: { subscribe: true }, prompts: {} } }
 );
 
@@ -468,6 +484,118 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           due_only: { type: 'boolean', description: 'If true, only return timelines due now' },
           cwd: { type: 'string' }
         }
+      }
+    },
+    {
+      name: 'alp_get_contracts',
+      description: 'List all @contract objects and their allow/deny rules.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          id: { type: 'string', description: 'Optional contract ID to filter by' },
+          cwd: { type: 'string' }
+        }
+      }
+    },
+    {
+      name: 'alp_get_vaults',
+      description: 'List all @vault objects and their recipient/algorithm metadata.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          id: { type: 'string', description: 'Optional vault ID to filter by' },
+          cwd: { type: 'string' }
+        }
+      }
+    },
+    {
+      name: 'alp_get_swarm_marketplace',
+      description: 'List registered skills from @swarm_marketplace objects, optionally filtered by category.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          category: { type: 'string', description: 'Optional category filter' },
+          cwd: { type: 'string' }
+        }
+      }
+    },
+    {
+      name: 'alp_get_event_mesh',
+      description: 'List event mesh topics and recent events from @event_mesh objects.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          topic: { type: 'string', description: 'Optional topic filter' },
+          limit: { type: 'number', description: 'Maximum events to return per topic (default 20)' },
+          cwd: { type: 'string' }
+        },
+        required: []
+      }
+    },
+    {
+      name: 'alp_get_macros',
+      description: 'List @macro definitions from the workspace.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          cwd: { type: 'string' }
+        },
+        required: []
+      }
+    },
+    {
+      name: 'alp_expand_macro',
+      description: 'Expand a @macro definition by ID and return generated objects.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          id: { type: 'string', description: 'Macro ID to expand' },
+          context: { type: 'object', description: 'Optional ALPEL context map' },
+          cwd: { type: 'string' }
+        },
+        required: ['id']
+      }
+    },
+    {
+      name: 'alp_memory_store',
+      description: 'Store a memory node in the workspace memory mesh.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          id: { type: 'string', description: 'Memory node ID' },
+          agentId: { type: 'string', description: 'Owning agent ID' },
+          key: { type: 'string', description: 'Memory key' },
+          content: { type: 'string', description: 'Memory content' },
+          tags: { type: 'array', items: { type: 'string' }, description: 'Memory tags' },
+          cwd: { type: 'string' }
+        },
+        required: ['id', 'agentId', 'key', 'content']
+      }
+    },
+    {
+      name: 'alp_memory_query',
+      description: 'Query the memory mesh for relevant memories.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          query: { type: 'string', description: 'Search query' },
+          agentId: { type: 'string', description: 'Optional agent ID filter' },
+          tag: { type: 'string', description: 'Optional tag filter' },
+          topK: { type: 'number', description: 'Maximum results (default 5)' },
+          cwd: { type: 'string' }
+        },
+        required: ['query']
+      }
+    },
+    {
+      name: 'alp_memory_stats',
+      description: 'Return memory mesh statistics.',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          cwd: { type: 'string' }
+        },
+        required: []
       }
     },
   ],
@@ -841,6 +969,173 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }));
       return {
         content: [{ type: 'text', text: JSON.stringify(dueOnly ? results.filter((r) => r.status !== '[x]') : results, null, 2) }],
+      };
+    }
+
+    case 'alp_get_contracts': {
+      const objects = loadWorkspace(cwd);
+      const contracts = objects.filter((o) => o._type === 'contract');
+      const contractId = args?.id as string | undefined;
+      const filtered = contractId
+        ? contracts.filter((c) => c.id === contractId)
+        : contracts;
+      const results = filtered.map((c: any) => ({
+        id: c.id,
+        from: c.from || null,
+        to: c.to || null,
+        allows: c.allows || [],
+        denies: c.denies || [],
+        requires: c.requires || [],
+        on_violation: c.on_violation || null,
+        description: c.description || '',
+      }));
+      return {
+        content: [{ type: 'text', text: JSON.stringify(results, null, 2) }],
+      };
+    }
+
+    case 'alp_get_vaults': {
+      const objects = loadWorkspace(cwd);
+      const vaults = objects.filter((o) => o._type === 'vault');
+      const vaultId = args?.id as string | undefined;
+      const filtered = vaultId
+        ? vaults.filter((v) => v.id === vaultId)
+        : vaults;
+      const results = filtered.map((v: any) => ({
+        id: v.id,
+        algorithm: v.algorithm || 'X25519+AES-256-GCM',
+        recipients: (v.recipients || []).map((r: any) => ({
+          id: r.id || r,
+          algorithm: r.algorithm || 'X25519',
+        })),
+        description: v.description || '',
+      }));
+      return {
+        content: [{ type: 'text', text: JSON.stringify(results, null, 2) }],
+      };
+    }
+
+    case 'alp_get_swarm_marketplace': {
+      const objects = loadWorkspace(cwd);
+      const category = args?.category as string | undefined;
+      const listings = objects
+        .filter((o) => o._type === 'swarm_marketplace')
+        .map((mp: any) => ({
+          id: mp.id,
+          providerAgent: mp.provider_agent || mp.providerAgent || '',
+          skillName: mp.skill_name || mp.skillName || '',
+          category: mp.category || '',
+          costPerCall: Number(mp.cost_per_call ?? mp.costPerCall ?? 0.01),
+          rating: Number(mp.rating ?? 5.0),
+          totalInvocations: Number(mp.total_invocations ?? mp.totalInvocations ?? 0),
+          description: mp.description || '',
+        }));
+      const filtered = category
+        ? listings.filter((l) => l.category === category)
+        : listings;
+      return {
+        content: [{ type: 'text', text: JSON.stringify(filtered, null, 2) }],
+      };
+    }
+
+    case 'alp_get_event_mesh': {
+      const objects = loadWorkspace(cwd);
+      const meshes = objects.filter((o) => o._type === 'event_mesh');
+      const topicFilter = args?.topic as string | undefined;
+      const limit = (args?.limit as number) || 20;
+      const results: any[] = [];
+      for (const mesh of meshes) {
+        const subscriptions = (mesh as any).subscriptions || [];
+        const buffered = (mesh as any).events || [];
+        const filteredEvents = topicFilter
+          ? buffered.filter((e: any) => e.topic === topicFilter)
+          : buffered;
+        results.push({
+          id: mesh.id,
+          subscriptions: subscriptions.map((s: any) => s.topic || s),
+          events: filteredEvents.slice(-limit),
+        });
+      }
+      return {
+        content: [{ type: 'text', text: JSON.stringify(results, null, 2) }],
+      };
+    }
+
+    case 'alp_get_macros': {
+      const objects = loadWorkspace(cwd);
+      const macros = objects.filter((o) => o._type === 'macro');
+      const results = macros.map((m: any) => ({
+        id: m.id,
+        name: m.name || '',
+        iterate_over: m.iterate_over || '',
+        as: m.as || 'item',
+        template: m.template || {},
+      }));
+      return {
+        content: [{ type: 'text', text: JSON.stringify(results, null, 2) }],
+      };
+    }
+
+    case 'alp_expand_macro': {
+      const macroId = args?.id as string;
+      const context = (args?.context as Record<string, any>) || {};
+      const objects = loadWorkspace(cwd);
+      const macroObj = objects.find((o) => o._type === 'macro' && o.id === macroId);
+      if (!macroObj) {
+        return {
+          content: [{ type: 'text', text: `Error: @macro '${macroId}' not found.` }],
+          isError: true,
+        };
+      }
+      const engine = new MacroEngine();
+      const expanded = engine.expand(macroObj as unknown as MacroDefinition, context);
+      return {
+        content: [{ type: 'text', text: JSON.stringify(expanded, null, 2) }],
+      };
+    }
+
+    case 'alp_memory_store': {
+      const engine = new MemoryMeshEngine();
+      const node = engine.storeMemory(
+        (args?.id as string) || '',
+        (args?.agentId as string) || '',
+        (args?.key as string) || '',
+        (args?.content as string) || '',
+        (args?.tags as string[]) || [],
+      );
+      return {
+        content: [{ type: 'text', text: JSON.stringify(node, null, 2) }],
+      };
+    }
+
+    case 'alp_memory_query': {
+      const engine = new MemoryMeshEngine();
+      const results = engine.queryMemoryMesh((args?.query as string) || '', {
+        agentId: args?.agentId as string | undefined,
+        tag: args?.tag as string | undefined,
+        topK: (args?.topK as number) || 5,
+      });
+      const out = results.map((r: MemoryQueryResult) => ({
+        score: r.score,
+        decayFactor: r.decayFactor,
+        node: {
+          id: r.node.id,
+          agentId: r.node.agentId,
+          key: r.node.key,
+          content: r.node.content,
+          tags: r.node.tags,
+        },
+      }));
+      return {
+        content: [{ type: 'text', text: JSON.stringify(out, null, 2) }],
+      };
+    }
+
+    case 'alp_memory_stats': {
+      const engine = new MemoryMeshEngine();
+      const stats = engine.getMeshStats();
+      return {
+        content: [{ type: 'text', text: JSON.stringify(stats, null, 2) }],
       };
     }
 

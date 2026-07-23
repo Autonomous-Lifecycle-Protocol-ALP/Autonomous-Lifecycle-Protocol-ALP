@@ -32,7 +32,7 @@ import {
 } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { AlpParser, AlpObject } from '@alp/parser';
+import { AlpParser, AlpObject, ValidationError } from '@alp/parser';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -86,6 +86,40 @@ const BLOCK_TYPES: Record<string, string> = {
   offer: 'A negotiation offer from one agent to another with terms and constraints.',
   trace: 'A signed execution trace for end-to-end provenance tracking.',
   migration: 'A live upgrade manifest defining steps and rollback procedures for version migration.',
+  workspace: 'A multi-project workspace root declaring shared config, imports, and governance policies.',
+  agent_state: 'Tracks the current runtime state of an agent (status, capabilities, session context).',
+  agent_override: 'Restricts a workspace agent\'s capabilities within a member project.',
+  swarm_marketplace: 'Autonomous skill registry, provider discovery, invocation, rating, and cost tracking.',
+  arch_decomposer: 'Analyzes a monolith and emits a microservice plan with boundaries and data contracts.',
+  edge_model: 'Configuration for offline-capable edge inference models with fallback strategies.',
+  cost_optimizer: 'Predictive token and execution cost reduction via prompt compression, batching, and caching.',
+  identity: 'Declares an agent identity (name, keys, capabilities) for authentication and authorization.',
+  negotiate: 'Agent negotiation engine for bartering resources, deadlines, and contract terms.',
+  vector_store: 'Vector similarity search and semantic retrieval over embedded ALP objects.',
+  sandbox_env: 'Containerized sandbox environment for safe execution of untrusted code or plugins.',
+  crdt_sync: 'Distributed CRDT state synchronization across multiple nodes using LWW-Register.',
+  self_healing: 'Automatic diagnosis and patch generation for syntax/schema violations and broken refs.',
+  formal_verification: 'Formal verification engine using transition systems, model checking, and proof generation.',
+  asset_context: 'Workspace asset linking and context binding for multi-modal content (images, video, audio).',
+  cost_budget: 'Hard-stop token spending limits and financial budget enforcement per project or agent.',
+  tenant_mesh: 'Enterprise mesh topology for cross-tenant collaboration with role-based access.',
+  zk_proof: 'Zero-knowledge proof generation for private compliance and verifiable assertions.',
+  anomaly: 'Statistical runtime behavior anomaly detection against learned baselines.',
+  prompt_optimizer: 'Prompt optimization engine: few-shot selection, chain-of-thought, and DPO tuning.',
+  code_index: 'Semantic code indexing with chunking strategies for RAG and symbol search.',
+  code_transform: 'Automated code transformations: rename, extract, inline, and migration rewrites.',
+  consensus_vote: 'Multi-agent consensus engine with majority, weighted, unanimous, and Borda count strategies.',
+  eval_suite: 'Evaluation harness for benchmarking accuracy, speed, safety, robustness, and token efficiency.',
+  event_mesh: 'Pub/sub event mesh for streaming state changes, task updates, and agent broadcasts.',
+  memory_mesh: 'Distributed memory mesh with CRDT-backed cross-node knowledge sharing.',
+  collaboration: 'Real-time multi-user collaboration with OT/CRDT merge, presence, and branching.',
+  bridge: 'Protocol bridge converting between OpenAPI, GraphQL, gRPC, and AsyncAPI specifications.',
+  did_identity: 'W3C DID-based agent identity with anchor receipts and verifiable credentials.',
+  p2p: 'Decentralized peer-to-peer swarm coordination without central servers.',
+  tenant: 'Multi-tenant workspace isolation with vault segregation and policy scoping.',
+  governance: 'Policy ballot voting and quorum-based governance engine for autonomous decision-making.',
+  domain_trust: 'Cross-domain trust anchor for bootstrapping trust between federated workspaces.',
+  resilience: 'Fault-tolerant execution policies: circuit breakers, retries, timeouts, and fallbacks.',
 };
 
 const DIRECTIVE_DESCRIPTIONS: Record<string, string> = {
@@ -158,7 +192,7 @@ function indexDirectory(dir: string) {
 function indexFile(filePath: string) {
   try {
     const content = fs.readFileSync(filePath, 'utf-8');
-    const uri = 'file:///' + filePath.replace(/\\/g, '/');
+    const uri = 'file:///' + encodeURI(filePath.replace(/\\/g, '/'));
     const parser = new AlpParser();
     const objects = parser.parse(content);
     const lines = content.split('\n');
@@ -187,8 +221,8 @@ function indexFile(filePath: string) {
         });
       }
     }
-  } catch {
-    // Silently skip files with parse errors during indexing
+  } catch (err) {
+    console.error(`Failed to index ${filePath}: ${(err as Error).message}`);
   }
 }
 
@@ -216,7 +250,7 @@ function validateDocument(doc: TextDocument) {
     }
 
     diagnostics.push({
-      severity: message.includes('Validation')
+      severity: err instanceof ValidationError || err?.name === 'ValidationError'
         ? DiagnosticSeverity.Warning
         : DiagnosticSeverity.Error,
       range: Range.create(line, 0, line, Number.MAX_SAFE_INTEGER),
@@ -324,7 +358,7 @@ connection.onHover((params: HoverParams): Hover | null => {
   }
 
   // Hover over directives
-  const directiveMatch = line.match(/^\\s+(![a-zA-Z_][a-zA-Z0-9_-]*)/);
+  const directiveMatch = line.match(/^\s*(![a-zA-Z_][a-zA-Z0-9_-]*)/);
   if (directiveMatch) {
     const desc = DIRECTIVE_DESCRIPTIONS[directiveMatch[1]];
     if (desc) {
@@ -357,15 +391,7 @@ connection.onCompletion((params: CompletionParams): CompletionItem[] => {
     }
   } else if (textBeforeCursor.match(/^@$/)) {
     // Suggest block markers
-    const blockTypes = [
-      'project', 'task', 'feature', 'workflow', 'agent',
-      'memory', 'state', 'artifact', 'decision', 'constraint',
-      'verification', 'dependency', 'resource', 'event', 'goal',
-      'context', 'rule', 'plugin', 'policy', 'timeline',
-      'contract', 'vault', 'type', 'macro', 'repo',
-      'swarm', 'package', 'plan', 'lesson', 'offer',
-      'trace', 'migration',
-    ];
+    const blockTypes = Object.keys(BLOCK_TYPES);
     for (const t of blockTypes) {
       items.push({
         label: t,
@@ -423,8 +449,8 @@ connection.onRenameRequest((params: RenameParams): WorkspaceEdit | null => {
         if (entry.isDirectory()) walk(fullPath);
         else if (fullPath.endsWith('.alp')) {
           const content = fs.readFileSync(fullPath, 'utf8');
-          const lines = content.split('\\n');
-          const uri = 'file:///' + fullPath.replace(/\\\\/g, '/');
+          const lines = content.split('\n');
+          const uri = 'file:///' + encodeURI(fullPath.replace(/\\/g, '/'));
           const edits: TextEdit[] = [];
           
           for (let i = 0; i < lines.length; i++) {
@@ -495,14 +521,14 @@ connection.languages.semanticTokens.on((params: SemanticTokensParams): SemanticT
   const builder = new SemanticTokensBuilder();
   const doc = documents.get(params.textDocument.uri);
   if (doc) {
-    const lines = doc.getText().split('\\n');
+    const lines = doc.getText().split('\n');
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
       const typeMatch = line.match(/^@([a-z_]+)$/);
       if (typeMatch) {
-        builder.push(i, 0, typeMatch[0].length, 0, 0);
+        builder.push(i, 0, typeMatch[0].length, 1, 0);
       }
-      const propMatch = line.match(/^(\\s*)([a-z_!][a-z0-9_-]*):\\s*(.*)$/);
+      const propMatch = line.match(/^(\s*)([a-z_!][a-z0-9_-]*):\s*(.*)$/);
       if (propMatch) {
         const propName = propMatch[2];
         if (propName.startsWith('!')) {
@@ -511,7 +537,7 @@ connection.languages.semanticTokens.on((params: SemanticTokensParams): SemanticT
           builder.push(i, propMatch[1].length, propName.length, 4, 0);
         }
       }
-      const refRegex = /(->\\s+)([a-zA-Z0-9_-]+)/g;
+      const refRegex = /(->\s+)([a-zA-Z0-9_-]+)/g;
       let refMatch;
       while ((refMatch = refRegex.exec(line)) !== null) {
          builder.push(i, refMatch.index, 2, 0, 0);
@@ -547,6 +573,36 @@ connection.onCodeAction((params: CodeActionParams): CodeAction[] => {
           }
         }
       }
+    }
+
+    if (diag.message.includes("Status marker '[!]' requires a reason")) {
+      const markerRange = new Range(diag.range.start.line, diag.range.start.character, diag.range.start.line, diag.range.end.character);
+      actions.push(CodeAction.create(
+        "Add placeholder reason for [!]",
+        {
+          changes: {
+            [params.textDocument.uri]: [
+              TextEdit.replace(markerRange, '[!] pending review')
+            ]
+          }
+        },
+        CodeActionKind.QuickFix
+      ));
+    }
+
+    if (diag.message.includes("Status marker '[?]' requires a reason")) {
+      const markerRange = new Range(diag.range.start.line, diag.range.start.character, diag.range.start.line, diag.range.end.character);
+      actions.push(CodeAction.create(
+        "Add placeholder reason for [?]",
+        {
+          changes: {
+            [params.textDocument.uri]: [
+              TextEdit.replace(markerRange, '[?] awaiting human approval')
+            ]
+          }
+        },
+        CodeActionKind.QuickFix
+      ));
     }
   }
   return actions;

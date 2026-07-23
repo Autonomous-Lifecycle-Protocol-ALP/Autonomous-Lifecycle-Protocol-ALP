@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Editor from '@monaco-editor/react';
 import ReactFlow, {
   Background,
@@ -6,6 +6,7 @@ import ReactFlow, {
   Position,
   Handle,
   MarkerType,
+  MiniMap,
   useNodesState,
   useEdgesState,
 } from 'reactflow';
@@ -64,7 +65,7 @@ const TEMPLATES: Record<string, { label: string; code: string }> = {
 
 @task
   id: task-stripe-integration
-  status: [!]
+  status: [!] Stripe key not configured
   feature: -> feat-checkout
   depends_on:
     - -> task-cart-api
@@ -157,7 +158,7 @@ const TEMPLATES: Record<string, { label: string; code: string }> = {
 
 @task
   id: task-deploy-service
-  status: [?]
+  status: [?] Awaiting production approval
   policy: -> policy-prod-deploy
   contract: -> contract-deploy-boundary
   vault: -> vault-prod-db
@@ -165,9 +166,21 @@ const TEMPLATES: Record<string, { label: string; code: string }> = {
   },
 };
 
+// ── Helpers ────────────────────────────────────────────────────────────
+const statusIcon = (st: string) => {
+  if (st.includes('[x]')) return '✅';
+  if (st.includes('[~]')) return '🔄';
+  if (st.includes('[!]')) return '🚫';
+  if (st.includes('[?]')) return '🔍';
+  return '⬜';
+};
+
+type TypeFilter = 'all' | string;
+
 // ── Custom ReactFlow Node ─────────────────────────────────────────────
 function AlpCustomNode({ data, selected }: NodeProps) {
-  const status = data.status || '[ ]';
+  const rawStatus: string = data.status || '[ ]';
+  const normalizedStatus = rawStatus.split(' ')[0];
   const getStatusClass = (st: string) => {
     switch (st) {
       case '[x]': return 'done';
@@ -184,10 +197,10 @@ function AlpCustomNode({ data, selected }: NodeProps) {
       <div className="node-type-badge">@{data.type}</div>
       <div className="node-title">{data.id}</div>
       <div className="node-footer">
-        <span className={`status-badge ${getStatusClass(status)}`}>
-          {status} {status === '[x]' ? 'Done' : status === '[~]' ? 'In Progress' : status === '[!]' ? 'Blocked' : status === '[?]' ? 'Review' : 'Todo'}
+        <span className={`status-badge ${getStatusClass(rawStatus)}`}>
+          {statusIcon(normalizedStatus)} {normalizedStatus.replace(/[\[\]]/g, '') || 'todo'}
         </span>
-        {data.owner && <span className="node-owner">{data.owner}</span>}
+        {data.owner && <span className="node-owner">{data.owner.replace('-> ', '')}</span>}
       </div>
       <Handle type="source" position={Position.Right} style={{ background: '#9d4edd', width: 8, height: 8 }} />
     </div>
@@ -201,23 +214,43 @@ export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [error, setError] = useState<string | null>(null);
+  const [validationLogs, setValidationLogs] = useState<string[]>([]);
   const [selectedObj, setSelectedObj] = useState<AlpObject | null>(null);
   const [copied, setCopied] = useState<boolean>(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [logPanelCollapsed, setLogPanelCollapsed] = useState(true);
+  const [minimapEnabled, setMinimapEnabled] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
+  const [parsedObjects, setParsedObjects] = useState<AlpObject[]>([]);
 
   // Register custom node types
   const nodeTypes = useMemo(() => ({ alpNode: AlpCustomNode }), []);
+  const processTimerRef = useRef<number | undefined>(undefined);
 
-  // ── Hierarchical Graph Layout Algorithm ─────────────────────────────
   const processCode = useCallback((newCode: string) => {
     setCode(newCode);
-    try {
-      const parser = new AlpParser();
-      const objects = parser.parseAndValidate(newCode);
+    if (processTimerRef.current) {
+      clearTimeout(processTimerRef.current);
+    }
+    processTimerRef.current = window.setTimeout(() => {
+      const logs: string[] = [];
+      try {
+        const parser = new AlpParser();
+        const objects = parser.parseAndValidate(newCode);
+        setParsedObjects(objects);
 
       const graph = new AlpGraph();
       graph.buildGraph(objects);
 
-      // Map edges & build dependency map for topological depth layering
+      logs.push(`[INFO] Parsed ${objects.length} objects`);
+      logs.push(`[INFO] Discovered ${graph.edges.length} edges`);
+
+      const blockedCount = objects.filter(o => o.status && o.status.includes('[!]')).length;
+      const inProgressCount = objects.filter(o => o.status && o.status.includes('[~]')).length;
+      if (blockedCount > 0) logs.push(`[WARN] ${blockedCount} blocked object(s) detected`);
+      if (inProgressCount > 0) logs.push(`[INFO] ${inProgressCount} in-progress item(s)`);
+
       const edgeList: { from: string; to: string; type: string }[] = [];
       const inDegree: Record<string, number> = {};
       const adj: Record<string, string[]> = {};
@@ -233,7 +266,6 @@ export default function App() {
         if (inDegree[e.target] !== undefined) inDegree[e.target] += 1;
       });
 
-      // Calculate depth levels (Kahn's layer assignment)
       const depth: Record<string, number> = {};
       const queue: string[] = [];
 
@@ -244,8 +276,10 @@ export default function App() {
         }
       });
 
+      let processed = 0;
       while (queue.length > 0) {
         const curr = queue.shift()!;
+        processed++;
         const d = depth[curr];
         (adj[curr] || []).forEach((next) => {
           depth[next] = Math.max(depth[next] || 0, d + 1);
@@ -254,7 +288,14 @@ export default function App() {
         });
       }
 
-      // Group nodes by depth column
+      if (processed < objects.length) {
+        logs.push('[ERROR] Cyclic dependency detected in graph');
+        setError('Cyclic dependency detected in graph');
+      } else {
+        logs.push('[OK] DAG verified: no cycles detected');
+        setError(null);
+      }
+
       const columns: Record<number, AlpObject[]> = {};
       objects.forEach((obj) => {
         const d = depth[obj.id] ?? 0;
@@ -262,7 +303,6 @@ export default function App() {
         columns[d].push(obj);
       });
 
-      // Position nodes dynamically into clean matrix grid (Left to Right)
       const newNodes: Node[] = [];
       const colWidth = 260;
       const rowHeight = 120;
@@ -285,7 +325,6 @@ export default function App() {
         });
       });
 
-      // Build styled edges with smooth bezier lines & neon glow colors
       const newEdges: Edge[] = edgeList.map((e, idx) => {
         let strokeColor = '#00f0ff';
         if (e.type === 'feature') strokeColor = '#9d4edd';
@@ -312,9 +351,13 @@ export default function App() {
       setNodes(newNodes);
       setEdges(newEdges);
       setError(null);
+      setValidationLogs(logs);
     } catch (err: any) {
-      setError(err.message || 'Syntax Error in ALP specification');
+      const errMsg = err.message || 'Syntax Error in ALP specification';
+      setError(errMsg);
+      setValidationLogs(prev => [`[ERROR] ${errMsg}`, ...prev]);
     }
+    });
   }, [setNodes, setEdges]);
 
   useEffect(() => {
@@ -340,11 +383,65 @@ export default function App() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleExportJSON = () => {
+    try {
+      const parser = new AlpParser();
+      const objects = parser.parseAndValidate(code);
+      const blob = new Blob([JSON.stringify(objects, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'spec.json';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      // no-op: export fails silently when spec is invalid
+    }
+  };
+
   // Stats calculation
   const totalTasks = nodes.filter((n) => n.data.type === 'task').length;
   const doneTasks = nodes.filter((n) => n.data.status === '[x]').length;
   const inProgressTasks = nodes.filter((n) => n.data.status === '[~]').length;
   const blockedTasks = nodes.filter((n) => n.data.status === '[!]').length;
+  const reviewTasks = nodes.filter((n) => n.data.status === '[?]').length;
+
+  // Sidebar filtered objects
+  const filteredObjects = useMemo(() => {
+    return parsedObjects.filter((obj) => {
+      const matchesType = typeFilter === 'all' || obj._type === typeFilter;
+      const matchesSearch = !searchQuery || obj.id.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesType && matchesSearch;
+    });
+  }, [parsedObjects, searchQuery, typeFilter]);
+
+  const uniqueTypes = useMemo(() => {
+    const types = new Set(parsedObjects.map(o => o._type));
+    return Array.from(types).sort();
+  }, [parsedObjects]);
+
+  // Navigation helper: focus node
+  const handleFocusNode = (id: string) => {
+    setSelectedObj(parsedObjects.find(o => o.id === id) || null);
+  };
+
+  // Inspector fields builder
+  const renderInspectorFields = (obj: AlpObject) => {
+    const fields: { label: string; value: string }[] = [];
+    fields.push({ label: 'Type', value: obj._type });
+    fields.push({ label: 'ID', value: obj.id });
+    if (obj.status) fields.push({ label: 'Status', value: obj.status });
+    if (obj.description) fields.push({ label: 'Description', value: obj.description });
+
+    Object.entries(obj).forEach(([key, value]) => {
+      if (['_type', 'id', 'status', 'description'].includes(key)) return;
+      if (value === undefined || value === null || value === '') return;
+      const displayValue = Array.isArray(value) ? value.join('\n') : typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value);
+      fields.push({ label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()), value: displayValue });
+    });
+
+    return fields;
+  };
 
   return (
     <div className="playground">
@@ -353,7 +450,7 @@ export default function App() {
         <div className="brand-section">
           <div className="brand-logo">ALP</div>
           <span className="brand-title">Execution Engine &amp; DAG Playground</span>
-          <span className="brand-badge">v16.0.0</span>
+          <span className="brand-badge">v38.0.0</span>
         </div>
 
         <div className="header-controls">
@@ -373,6 +470,26 @@ export default function App() {
             {copied ? '✅ Copied' : '📋 Copy Bundle'}
           </button>
 
+          <button className="action-btn" onClick={handleExportJSON} title="Export spec as JSON">
+            ⬇ Export JSON
+          </button>
+
+          <button
+            className={`action-btn ${!logPanelCollapsed ? 'active' : ''}`}
+            onClick={() => setLogPanelCollapsed(prev => !prev)}
+            title="Toggle validation log panel"
+          >
+            📟 Logs
+          </button>
+
+          <button
+            className={`action-btn ${minimapEnabled ? 'active' : ''}`}
+            onClick={() => setMinimapEnabled(prev => !prev)}
+            title="Toggle graph minimap"
+          >
+            🗺 Minimap
+          </button>
+
           <div className={`status-indicator ${error ? 'invalid' : 'valid'}`}>
             {error ? '❌ Invalid Spec' : '⚡ Verified DAG'}
           </div>
@@ -381,101 +498,191 @@ export default function App() {
 
       {/* Main Workspace Split-Pane */}
       <div className="main-workspace">
-        {/* Left: Code Editor */}
-        <div className="editor-container">
-          <div className="editor-header">
-            <span>spec.alp — Autonomous LifeCycle Protocol</span>
-            <span>UTF-8</span>
+        {/* Left Sidebar: Object Explorer */}
+        <div className={`sidebar ${sidebarCollapsed ? 'collapsed' : ''}`} id="object-sidebar">
+          <div className="sidebar-header">
+            <h3>Explorer</h3>
+            <button className="sidebar-toggle" onClick={() => setSidebarCollapsed(prev => !prev)}>
+              {sidebarCollapsed ? '→' : '←'}
+            </button>
           </div>
-          <Editor
-            height="100%"
-            defaultLanguage="yaml"
-            theme="vs-dark"
-            value={code}
-            onChange={(val) => processCode(val || '')}
-            options={{
-              minimap: { enabled: false },
-              fontSize: 13,
-              fontFamily: 'JetBrains Mono',
-              scrollBeyondLastLine: false,
-              padding: { top: 12 },
-              lineNumbersMinChars: 3,
-            }}
-          />
-        </div>
 
-        {/* Right: DAG Visualizer */}
-        <div className="graph-container">
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            nodeTypes={nodeTypes}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onNodeClick={handleNodeClick}
-            fitView
-          >
-            <Background color="#1e2338" gap={20} size={1} />
-            <Controls />
-          </ReactFlow>
+          {!sidebarCollapsed && (
+            <>
+              <div className="sidebar-filters">
+                <input
+                  type="text"
+                  placeholder="🔍 Search objects..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="sidebar-search"
+                />
+                <select
+                  className="sidebar-type-filter"
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value as TypeFilter)}
+                >
+                  <option value="all">All Types</option>
+                  {uniqueTypes.map(t => (
+                    <option key={t} value={t}>@{t}</option>
+                  ))}
+                </select>
+              </div>
 
-          {/* Node Inspector Sidebar */}
-          {selectedObj && (
-            <div className="inspector-panel">
-              <div className="inspector-header">
-                <h3>@{selectedObj._type} Details</h3>
-                <button className="close-btn" onClick={() => setSelectedObj(null)}>
-                  ✕
-                </button>
-              </div>
-              <div className="inspector-field">
-                <div className="field-label">Object ID</div>
-                <div className="field-value">{selectedObj.id}</div>
-              </div>
-              {selectedObj.status && (
-                <div className="inspector-field">
-                  <div className="field-label">Lifecycle Status</div>
-                  <div className="field-value">{selectedObj.status}</div>
-                </div>
-              )}
-              {selectedObj.description && (
-                <div className="inspector-field">
-                  <div className="field-label">Description</div>
-                  <div className="field-value">{selectedObj.description}</div>
-                </div>
-              )}
-              {(selectedObj as any).verify && (
-                <div className="inspector-field">
-                  <div className="field-label">Quality Gates (verify)</div>
-                  <div className="field-value">
-                    {JSON.stringify((selectedObj as any).verify, null, 2)}
+              <div className="sidebar-object-list">
+                {filteredObjects.length === 0 && (
+                  <div className="sidebar-empty">No objects found</div>
+                )}
+                {filteredObjects.map((obj) => (
+                  <div
+                    key={obj.id}
+                    className={`sidebar-object-item ${selectedObj?.id === obj.id ? 'selected' : ''}`}
+                    onClick={() => handleFocusNode(obj.id)}
+                  >
+                    <div className="sidebar-object-icon">{statusIcon(obj.status || '[ ]')}</div>
+                    <div className="sidebar-object-info">
+                      <div className="sidebar-object-id">@{obj._type} · {obj.id}</div>
+                      <div className="sidebar-object-status">{obj.status || ''}</div>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-          )}
+                ))}
+              </div>
 
-          {/* Error Banner */}
-          {error && <div className="error-toast">⚠️ {error}</div>}
+              <div className="sidebar-footer">
+                <span>{filteredObjects.length} object{filteredObjects.length !== 1 ? 's' : ''}</span>
+              </div>
+            </>
+          )}
         </div>
+
+        {/* Editor + Graph Area */}
+        <div className="center-area">
+          {/* Left: Code Editor */}
+          <div className="editor-container">
+            <div className="editor-header">
+              <span>spec.alp — Autonomous LifeCycle Protocol</span>
+              <span>UTF-8</span>
+            </div>
+            <Editor
+              height="100%"
+              defaultLanguage="yaml"
+              theme="vs-dark"
+              value={code}
+              onChange={(val) => processCode(val || '')}
+              options={{
+                minimap: { enabled: false },
+                fontSize: 13,
+                fontFamily: 'JetBrains Mono',
+                scrollBeyondLastLine: false,
+                padding: { top: 12 },
+                lineNumbersMinChars: 3,
+              }}
+            />
+          </div>
+
+          {/* Right: DAG Visualizer */}
+          <div className="graph-container">
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              nodeTypes={nodeTypes}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onNodeClick={handleNodeClick}
+              fitView
+            >
+              <Background color="#1e2338" gap={20} size={1} />
+              <Controls />
+              {minimapEnabled && (
+                <MiniMap
+                  nodeStrokeColor="#00f0ff"
+                  nodeColor="#1a1f35"
+                  nodeBorderRadius={4}
+                  maskColor="rgba(0, 0, 0, 0.6)"
+                  style={{ background: '#0d1017' }}
+                />
+              )}
+            </ReactFlow>
+
+            {/* Node Inspector Sidebar */}
+            {selectedObj && (
+              <div className="inspector-panel">
+                <div className="inspector-header">
+                  <h3>@{selectedObj._type} Details</h3>
+                  <button className="close-btn" onClick={() => setSelectedObj(null)}>
+                    ✕
+                  </button>
+                </div>
+                <div className="inspector-content">
+                  {renderInspectorFields(selectedObj).map((field) => (
+                    <div key={field.label} className="inspector-field">
+                      <div className="field-label">{field.label}</div>
+                      <div className="field-value">{field.value}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Error Banner */}
+            {error && <div className="error-toast">⚠️ {error}</div>}
+          </div>
+        </div>
+      </div>
+
+      {/* Validation Log Panel */}
+      <div className={`log-panel ${logPanelCollapsed ? 'collapsed' : ''}`}>
+        <div className="log-panel-header">
+          <span className="log-panel-title">📟 Validation Logs</span>
+          <button className="sidebar-toggle" onClick={() => setLogPanelCollapsed(prev => !prev)}>
+            {logPanelCollapsed ? '↑' : '↓'}
+          </button>
+        </div>
+        {!logPanelCollapsed && (
+          <div className="log-panel-content">
+            {validationLogs.length === 0 && (
+              <div className="log-entry info">[INFO] Awaiting validation...</div>
+            )}
+            {validationLogs.map((log, idx) => {
+              let level = 'info';
+              if (log.startsWith('[ERROR]')) level = 'error';
+              else if (log.startsWith('[WARN]')) level = 'warn';
+              else if (log.startsWith('[OK]')) level = 'success';
+              return (
+                <div key={idx} className={`log-entry ${level}`}>
+                  {log}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Summary Footer */}
       <footer className="summary-bar">
         <div className="summary-item">
-          Total Objects: <strong>{nodes.length}</strong>
+          Total: <strong>{nodes.length}</strong>
+        </div>
+        <div className="summary-item">
+          By Type: <strong>{uniqueTypes.length}</strong>
         </div>
         <div className="summary-item">
           Tasks: <strong>{totalTasks}</strong>
         </div>
-        <div className="summary-item" style={{ color: '#34d399' }}>
+        <div className="summary-item done">
           Done: <strong>{doneTasks}</strong>
         </div>
-        <div className="summary-item" style={{ color: '#38bdf8' }}>
+        <div className="summary-item in-progress">
           In Progress: <strong>{inProgressTasks}</strong>
         </div>
-        <div className="summary-item" style={{ color: '#fb7185' }}>
+        <div className="summary-item blocked">
           Blocked: <strong>{blockedTasks}</strong>
+        </div>
+        <div className="summary-item review">
+          Review: <strong>{reviewTasks}</strong>
+        </div>
+        <div className="summary-item edges-count">
+          Edges: <strong>{edges.length}</strong>
         </div>
       </footer>
     </div>

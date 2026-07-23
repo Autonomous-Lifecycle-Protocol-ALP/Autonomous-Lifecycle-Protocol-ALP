@@ -1,61 +1,139 @@
 import { describe, it, expect } from 'vitest';
-import { CollaborationEngine } from '../src/collaboration';
+import { AlpParser, CollaborationEngine } from '../src/index';
+
+function engineFrom() {
+  return new CollaborationEngine();
+}
 
 describe('CollaborationEngine (v37.0.0)', () => {
-  it('manages sessions and agent presence', () => {
-    const engine = new CollaborationEngine();
-    const session = engine.createSession('doc-1');
-    expect(session.docId).toBe('doc-1');
+  it('creates a session and returns it on duplicate create', () => {
+    const engine = engineFrom();
+    const first = engine.createSession('doc-1', { title: 'Hello' });
+    const second = engine.createSession('doc-1', { title: 'Overridden' });
 
-    const p1 = engine.joinSession('doc-1', 'agent-a');
-    expect(p1?.agentId).toBe('agent-a');
-    expect(p1?.status).toBe('active');
-
-    const presence = engine.getPresence('doc-1');
-    expect(presence.length).toBe(1);
-
-    const left = engine.leaveSession('doc-1', 'agent-a');
-    expect(left).toBe(true);
-    expect(engine.getPresence('doc-1').length).toBe(0);
+    expect(first).toBe(second);
+    expect(first.state.title).toBe('Hello');
   });
 
-  it('applies operations with LWW state convergence', () => {
-    const engine = new CollaborationEngine();
-    engine.createSession('doc-state');
-    engine.joinSession('doc-state', 'agent-1');
+  it('joins and leaves a session', () => {
+    const engine = engineFrom();
+    engine.createSession('doc-1');
 
-    const op1 = engine.applyOperation('doc-state', 'insert', 'title', 'agent-1', 'Initial Title');
-    expect(op1?.value).toBe('Initial Title');
-    expect(engine.getSnapshot('doc-state').title).toBe('Initial Title');
+    const presence = engine.joinSession('doc-1', 'agent-1');
+    expect(presence).not.toBeNull();
+    expect(presence!.status).toBe('active');
+    expect(engine.getPresence('doc-1')).toHaveLength(1);
 
-    engine.applyOperation('doc-state', 'update', 'title', 'agent-1', 'Updated Title');
-    expect(engine.getSnapshot('doc-state').title).toBe('Updated Title');
-    expect(engine.getOperationLog('doc-state').length).toBe(2);
+    expect(engine.leaveSession('doc-1', 'agent-1')).toBe(true);
+    expect(engine.getPresence('doc-1')).toHaveLength(0);
   });
 
-  it('handles branch and three-way merge', () => {
-    const engine = new CollaborationEngine();
-    engine.createSession('doc-main', { status: 'draft', version: '1.0' });
+  it('returns null when joining a missing session', () => {
+    const engine = engineFrom();
+    expect(engine.joinSession('missing', 'agent-1')).toBeNull();
+  });
 
-    const branch = engine.fork('doc-main', 'feature-branch');
-    expect(branch?.branchId).toBe('feature-branch');
+  it('applies insert/update/delete operations', () => {
+    const engine = engineFrom();
+    engine.createSession('doc-1');
 
-    // Make edits on branch
-    branch!.state.status = 'review';
-    branch!.state.author = 'agent-dev';
-    branch!.operations.push({
-      id: 'op-b1',
-      docId: 'doc-main',
-      type: 'update',
-      path: 'status',
-      agentId: 'agent-dev',
-      timestamp: Date.now(),
-      vectorClock: {},
-    });
+    const ins = engine.applyOperation('doc-1', 'insert', 'title', 'agent-1', 'Hello');
+    expect(ins).not.toBeNull();
+    expect(ins!.type).toBe('insert');
+    expect(engine.getSnapshot('doc-1').title).toBe('Hello');
 
-    const mergeResult = engine.mergeBranch('doc-main', 'feature-branch');
-    expect(mergeResult).not.toBeNull();
-    expect(mergeResult!.merged.status).toBe('review');
-    expect(mergeResult!.merged.author).toBe('agent-dev');
+    const upd = engine.applyOperation('doc-1', 'update', 'title', 'agent-1', 'World');
+    expect(upd!.type).toBe('update');
+    expect(engine.getSnapshot('doc-1').title).toBe('World');
+
+    const del = engine.applyOperation('doc-1', 'delete', 'title', 'agent-1');
+    expect(del!.type).toBe('delete');
+    expect(engine.getSnapshot('doc-1').title).toBeUndefined();
+  });
+
+  it('returns null when applying to a missing session', () => {
+    const engine = engineFrom();
+    expect(engine.applyOperation('missing', 'insert', 'x', 'a', 'y')).toBeNull();
+  });
+
+  it('tracks operation log and vector clocks', () => {
+    const engine = engineFrom();
+    engine.createSession('doc-1');
+
+    engine.applyOperation('doc-1', 'insert', 'a', 'agent-1', '1');
+    engine.applyOperation('doc-1', 'update', 'a', 'agent-2', '2');
+
+    const log = engine.getOperationLog('doc-1');
+    expect(log).toHaveLength(2);
+    expect(log[0].agentId).toBe('agent-1');
+    expect(log[1].agentId).toBe('agent-2');
+    expect(log[1].vectorClock['agent-1']).toBe(1);
+    expect(log[1].vectorClock['agent-2']).toBe(1);
+  });
+
+  it('forks a branch and merges it back when main is unchanged', () => {
+    const engine = engineFrom();
+    engine.createSession('doc-1', { a: '1', b: '2' });
+
+    const branch = engine.fork('doc-1', 'branch-1');
+    expect(branch).not.toBeNull();
+    expect(branch!.state).toEqual({ a: '1', b: '2' });
+
+    // No main-side edits after fork -> no conflicts, branch state is merged as-is.
+    const result = engine.mergeBranch('doc-1', 'branch-1');
+    expect(result).not.toBeNull();
+    expect(result!.merged).toEqual({ a: '1', b: '2' });
+    expect(result!.conflicts).toHaveLength(0);
+  });
+
+  it('detects conflicts and applies LWW resolution on merge', () => {
+    const engine = engineFrom();
+    engine.createSession('doc-1', { title: 'v1' });
+
+    engine.fork('doc-1', 'branch-1');
+    engine.applyOperation('doc-1', 'update', 'title', 'agent-1', 'v1-main');
+
+    // Mutate branch snapshot to simulate a diverging edit.
+    const branch = (engine as any).sessions.get('doc-1').branches.get('branch-1');
+    branch.state.title = 'v1-branch';
+
+    const result = engine.mergeBranch('doc-1', 'branch-1');
+    expect(result).not.toBeNull();
+    expect(result!.conflicts).toHaveLength(1);
+    expect(result!.conflicts[0].path).toBe('title');
+    // LWW: branch wins when timestamps are equal.
+    expect(result!.merged.title).toBe('v1-branch');
+  });
+
+  it('returns null when merging a missing branch', () => {
+    const engine = engineFrom();
+    engine.createSession('doc-1');
+    expect(engine.mergeBranch('doc-1', 'missing')).toBeNull();
+  });
+
+  it('returns null when getting a missing session', () => {
+    const engine = engineFrom();
+    expect(engine.getSession('missing')).toBeUndefined();
+  });
+
+  it('assigns distinct colors to different agents', () => {
+    const engine = engineFrom();
+    engine.createSession('doc-1');
+
+    const p1 = engine.joinSession('doc-1', 'agent-1');
+    const p2 = engine.joinSession('doc-1', 'agent-2');
+    expect(p1!.color).not.toBe(p2!.color);
+  });
+
+  it('updates presence on applyOperation', () => {
+    const engine = engineFrom();
+    engine.createSession('doc-1');
+    engine.joinSession('doc-1', 'agent-1');
+
+    engine.applyOperation('doc-1', 'insert', 'x', 'agent-1', 'y');
+
+    const [presence] = engine.getPresence('doc-1');
+    expect(presence.status).toBe('active');
+    expect(presence.cursor).toBe('x');
   });
 });

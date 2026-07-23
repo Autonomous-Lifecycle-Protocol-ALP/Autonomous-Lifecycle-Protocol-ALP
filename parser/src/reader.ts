@@ -173,9 +173,9 @@ export class AlpReader {
           }
 
           // Remove quotes if present
-          if (value.startsWith('"') && value.endsWith('"')) {
+          if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
             value = value.substring(1, value.length - 1);
-          } else if (value.startsWith('"') && !value.endsWith('"')) {
+          } else if ((value.startsWith('"') && !value.endsWith('"')) || (value.startsWith("'") && !value.endsWith("'"))) {
             throw new SyntaxError('Unclosed string literal', lineNum);
           }
 
@@ -236,7 +236,7 @@ export class AlpReader {
         }
 
         // Nested properties (e.g., limits block in agents)
-        const nestedPropMatch = trimmed.match(/^([a-z_][a-z0-9_-]*):\s*(.*)$/);
+        const nestedPropMatch = trimmed.match(/^([a-z_][a-z0-9_.-]*):\s*(.*)$/);
         if (nestedPropMatch && this.currentListProp) {
            // We convert currentListProp from array to object if it's the first nested property
            if (Array.isArray(this.currentObject[this.currentListProp])) {

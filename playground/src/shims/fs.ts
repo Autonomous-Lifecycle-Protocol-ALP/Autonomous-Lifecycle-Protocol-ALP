@@ -27,6 +27,8 @@ export function statSync(_path: string): unknown {
 
 export function unlinkSync(_path: string): void {}
 
+export function appendFileSync(_path: string, _data: unknown, _encoding?: unknown): void {}
+
 export const constants = {} as Record<string, number>;
 
 export default {

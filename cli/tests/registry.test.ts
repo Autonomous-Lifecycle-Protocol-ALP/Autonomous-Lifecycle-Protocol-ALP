@@ -8,14 +8,27 @@ import * as http from 'node:http';
 
 const CLI = path.resolve(process.cwd(), 'cli/dist/index.js');
 
-function waitFor(port: number) {
-  return new Promise<void>((resolve, reject) => {
-    const tryOnce = (n: number) => {
-      const req = http.get({ host: '127.0.0.1', port, path: '/api/state' }, (r) => { r.resume(); resolve(); });
-      req.on('error', () => (n > 40 ? reject(new Error('server timeout')) : setTimeout(() => tryOnce(n + 1), 100)));
-    };
-    tryOnce(0);
+function httpGet(port: number, pathname: string): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const req = http.get({ host: '127.0.0.1', port, path: pathname }, (res) => {
+      res.resume();
+      resolve(res.statusCode || 0);
+    });
+    req.on('error', reject);
+    req.setTimeout(3500, () => req.destroy(new Error('timeout')));
   });
+}
+
+async function waitFor(port: number): Promise<void> {
+  for (let i = 0; i < 60; i++) {
+    try {
+      await httpGet(port, '/api/state');
+      return;
+    } catch {
+      await new Promise((r) => setTimeout(r, 150));
+    }
+  }
+  throw new Error('server did not start');
 }
 
 describe('alp registry (Pillar 3: hosted registry & marketplace)', () => {

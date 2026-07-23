@@ -1,20 +1,48 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as fs from 'fs';
 import {
   LanguageClient,
   LanguageClientOptions,
   ServerOptions,
   TransportKind,
 } from 'vscode-languageclient/node';
-import { AlpParser, AlpGraph } from '@alp/parser';
+import { AlpParser } from '@alp/parser';
+
+function escapeHtml(value: string | undefined | null): string {
+  if (value == null) return '';
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 let client: LanguageClient;
+const panels = new Map<string, vscode.WebviewPanel>();
+const parserCache = new Map<string, { result: any[]; version: number }>();
+
+function getParsedObjects(document: vscode.TextDocument | undefined): any[] {
+  if (!document) return [];
+  const key = `${document.uri.toString()}:${document.version}`;
+  const cached = parserCache.get(key);
+  if (cached) return cached.result;
+  const result = new AlpParser().parseAndValidate(document.getText());
+  parserCache.set(key, { result, version: document.version });
+  return result;
+}
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('ALP Language Support v16.0.0 is now active.');
+  console.log('ALP Language Support v38.0.0 is now active.');
+
+  const serverModule = context.asAbsolutePath(path.join('server', 'dist', 'server.js'));
+  if (!fs.existsSync(serverModule)) {
+    vscode.window.showErrorMessage('ALP extension: server not built. Run `npm run compile` in the vscode directory.');
+    return;
+  }
 
   // ─── Language Server ────────────────────────────────────────────────
-  const serverModule = context.asAbsolutePath(path.join('server', 'dist', 'server.js'));
 
   const serverOptions: ServerOptions = {
     run: { module: serverModule, transport: TransportKind.ipc },
@@ -47,64 +75,34 @@ export function activate(context: vscode.ExtensionContext) {
 
   // ─── Register alp.showVisualizer Webview Command ────────────────────
   const visualizerCmd = vscode.commands.registerCommand('alp.showVisualizer', () => {
-    const editor = vscode.window.activeTextEditor;
-    const documentText = editor ? editor.document.getText() : '';
-
-    const panel = vscode.window.createWebviewPanel(
+    openTypeWebview(
       'alpVisualizer',
       'ALP Interactive DAG Visualizer',
-      vscode.ViewColumn.Beside,
-      {
-        enableScripts: true,
-        retainContextWhenHidden: true,
-      }
+      () => true,
+      (o) => {
+        const status = o.status || '[ ]';
+        const cls = status === '[x]' ? 'done' : status === '[~]' ? 'progress' : status === '[!]' ? 'blocked' : 'todo';
+        return `<div class="node-card ${escapeHtml(cls)}"><span class="badge">@${escapeHtml(o._type)}</span><div class="title">${escapeHtml(o.id)}</div><span class="status-tag">${escapeHtml(status)}</span></div>`;
+      },
+      'Open an .alp specification file to view its live dependency graph.',
+      (err) => `<div class="error-box">⚠️ Syntax / Validation Error: ${escapeHtml(err.message || err)}</div>`,
     );
-
-    let parsedGraphHtml = '';
-    try {
-      if (documentText.trim()) {
-        const parser = new AlpParser();
-        const objects = parser.parseAndValidate(documentText);
-        const graph = new AlpGraph();
-        graph.buildGraph(objects);
-
-        const nodesHtml = objects
-          .map((o) => {
-            const status = o.status || '[ ]';
-            const cls = status === '[x]' ? 'done' : status === '[~]' ? 'progress' : status === '[!]' ? 'blocked' : 'todo';
-            return `<div class="node-card ${cls}"><span class="badge">@${o._type}</span><div class="title">${o.id}</div><span class="status-tag">${status}</span></div>`;
-          })
-          .join('');
-
-        parsedGraphHtml = `<div class="nodes-grid">${nodesHtml}</div>`;
-      } else {
-        parsedGraphHtml = `<div class="placeholder">Open an .alp specification file to view its live dependency graph.</div>`;
-      }
-    } catch (err: any) {
-      parsedGraphHtml = `<div class="error-box">⚠️ Syntax / Validation Error: ${err.message || err}</div>`;
-    }
-
-    panel.webview.html = getWebviewContent(parsedGraphHtml);
   });
 
   // ─── Register alp.checkPolicy Command ─────────────────────────────
-  const policyCmd = vscode.commands.registerCommand('alp.checkPolicy', async () => {
+  const policyCmd = vscode.commands.registerCommand('alp.checkPolicy', () => {
     const editor = vscode.window.activeTextEditor;
-    const filePath = editor ? editor.document.uri.fsPath : '';
-    
-    if (!filePath) {
+    if (!editor) {
       vscode.window.showInformationMessage('ALP Policy Check: No active file open to check.');
       return;
     }
 
     try {
-      const parser = new AlpParser();
-      const text = editor ? editor.document.getText() : '';
-      const objects = parser.parseAndValidate(text);
+      const objects = getParsedObjects(editor.document);
       const policies = objects.filter((o: any) => o._type === 'policy');
 
       if (policies.length === 0) {
-        vscode.window.showInformationMessage(`ALP Policy Check: Permitted (No policies declared in file)`);
+        vscode.window.showInformationMessage('ALP Policy Check: Permitted (No policies declared in file)');
       } else {
         vscode.window.showInformationMessage(`ALP Policy Check: Found ${policies.length} policy object(s) in active spec.`);
       }
@@ -115,54 +113,131 @@ export function activate(context: vscode.ExtensionContext) {
 
   // ─── Register alp.showTimelines Command ───────────────────────────
   const timelinesCmd = vscode.commands.registerCommand('alp.showTimelines', () => {
-    const editor = vscode.window.activeTextEditor;
-    const documentText = editor ? editor.document.getText() : '';
-
-    const panel = vscode.window.createWebviewPanel(
+    openTypeWebview(
       'alpTimelines',
       'ALP Scheduled Timelines',
-      vscode.ViewColumn.Beside,
-      { enableScripts: true }
+      'timeline',
+      (t) => `
+        <div class="node-card progress">
+          <span class="badge">@timeline</span>
+          <div class="title">${escapeHtml(t.id)}</div>
+          <div><strong>Cron:</strong> <code>${escapeHtml(t.cron || t.at || 'N/A')}</code></div>
+          <div>${escapeHtml(t.description || '')}</div>
+        </div>
+      `,
+      'No @timeline objects declared in this file.',
     );
-
-    let html = '';
-    try {
-      if (documentText.trim()) {
-        const parser = new AlpParser();
-        const objects = parser.parseAndValidate(documentText);
-        const timelines = objects.filter((o: any) => o._type === 'timeline');
-
-        if (timelines.length === 0) {
-          html = `<div class="placeholder">No @timeline objects declared in this file.</div>`;
-        } else {
-          const list = timelines.map((t: any) => `
-            <div class="node-card progress">
-              <span class="badge">@timeline</span>
-              <div class="title">${t.id}</div>
-              <div><strong>Cron:</strong> <code>${t.cron || t.at || 'N/A'}</code></div>
-              <div>${t.description || ''}</div>
-            </div>
-          `).join('');
-          html = `<div class="nodes-grid">${list}</div>`;
-        }
-      } else {
-        html = `<div class="placeholder">Open an .alp specification file to view timelines.</div>`;
-      }
-    } catch (err: any) {
-      html = `<div class="error-box">⚠️ Parsing Error: ${err.message || err}</div>`;
-    }
-
-    panel.webview.html = getWebviewContent(html);
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd);
+  // ─── Register alp.showPolicies Command ────────────────────────────
+  const policiesCmd = vscode.commands.registerCommand('alp.showPolicies', () => {
+    openTypeWebview(
+      'alpPolicies',
+      'ALP Policies',
+      'policy',
+      (p) => `
+        <div class="node-card blocked">
+          <span class="badge">@policy</span>
+          <div class="title">${escapeHtml(p.id)}</div>
+          <div><strong>Enforcement:</strong> <code>${escapeHtml(p.enforcement || 'N/A')}</code></div>
+          <div><strong>Applies to:</strong> <code>${escapeHtml(p.applies_to || 'N/A')}</code></div>
+          <div>${escapeHtml(p.description || '')}</div>
+        </div>
+      `,
+      'No @policy objects declared in this file.',
+    );
+  });
+
+  // ─── Register alp.showContracts Command ───────────────────────────
+  const contractsCmd = vscode.commands.registerCommand('alp.showContracts', () => {
+    openTypeWebview(
+      'alpContracts',
+      'ALP Contracts',
+      'contract',
+      (c) => `
+        <div class="node-card progress">
+          <span class="badge">@contract</span>
+          <div class="title">${escapeHtml(c.id)}</div>
+          <div><strong>From:</strong> <code>${escapeHtml(c.from || 'N/A')}</code></div>
+          <div><strong>To:</strong> <code>${escapeHtml(c.to || 'N/A')}</code></div>
+          <div><strong>On violation:</strong> <code>${escapeHtml(c.on_violation || 'N/A')}</code></div>
+          <div>${escapeHtml(c.description || '')}</div>
+        </div>
+      `,
+      'No @contract objects declared in this file.',
+    );
+  });
+
+  // ─── Register alp.showVaults Command ──────────────────────────────
+  const vaultsCmd = vscode.commands.registerCommand('alp.showVaults', () => {
+    openTypeWebview(
+      'alpVaults',
+      'ALP Vaults',
+      'vault',
+      (v) => `
+        <div class="node-card done">
+          <span class="badge">@vault</span>
+          <div class="title">${escapeHtml(v.id)}</div>
+          <div><strong>Recipients:</strong> <code>${(v.recipients || []).length} configured</code></div>
+          <div><strong>Algorithm:</strong> <code>${escapeHtml(v.algorithm || 'N/A')}</code></div>
+          <div>${escapeHtml(v.description || '')}</div>
+        </div>
+      `,
+      'No @vault objects declared in this file.',
+    );
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {
+  for (const panel of panels.values()) {
+    panel.dispose();
+  }
+  panels.clear();
   if (!client) {
     return undefined;
   }
   return client.stop();
+}
+
+function openTypeWebview(
+  viewId: string,
+  title: string,
+  typeFilter: string | ((o: any) => boolean),
+  renderCard: (obj: any) => string,
+  emptyMessage: string,
+  errorRenderer?: (err: any) => string,
+) {
+  const editor = vscode.window.activeTextEditor;
+  const objects = getParsedObjects(editor?.document);
+
+  const existing = panels.get(viewId);
+  const panel = existing || vscode.window.createWebviewPanel(
+    viewId,
+    title,
+    vscode.ViewColumn.Beside,
+    { enableScripts: true, retainContextWhenHidden: true },
+  );
+  panels.set(viewId, panel);
+
+  const predicate = typeof typeFilter === 'function' ? typeFilter : (o: any) => o._type === typeFilter;
+
+  let html = '';
+  try {
+    const items = objects.filter(predicate);
+    if (items.length === 0) {
+      html = `<div class="placeholder">${escapeHtml(emptyMessage)}</div>`;
+    } else {
+      html = `<div class="nodes-grid">${items.map(renderCard).join('')}</div>`;
+    }
+  } catch (err: any) {
+    html = errorRenderer
+      ? errorRenderer(err)
+      : `<div class="error-box">⚠️ Parsing Error: ${escapeHtml(err.message || err)}</div>`;
+  }
+
+  panel.webview.html = getWebviewContent(html);
 }
 
 function getWebviewContent(graphHtml: string): string {
