@@ -10,7 +10,7 @@ Contains a `.cursorrules` file.
 
 ### 2. Claude Code & Cline (`claude-code/`)
 Contains `instructions.md`.
-**Usage:** Copy these instructions into your agent's system prompt or custom instructions file (e.g., `.claudecode.md`). It teaches CLI-based agents how to use the `@alp/cli` to validate the workspace and view the dependency graph before writing code. In V3, agents drive execution via `alp run` (and `alp run --concurrent N` for swarm mode) and report status with `alp checkpoint` (including `--ask-human` for Human-in-the-Loop review handoffs).
+**Usage:** Copy these instructions into your agent's system prompt or custom instructions file (e.g., `.claudecode.md`). It teaches CLI-based agents how to use the `@alp/cli` to validate the workspace and view the dependency graph before writing code. In the current era, agents drive execution via `alp run` (and `alp run --concurrent N` for swarm mode) and report status with `alp checkpoint` (including `--ask-human` for Human-in-the-Loop review handoffs).
 
 ### 3. GitHub Actions (`github/`)
 The ALP repo ships an active CI workflow at `.github/workflows/ci.yml` (TypeScript + Python SDK tests and example validation). For your own repositories, copy the drop-in templates from this directory into `.github/workflows/`:
@@ -31,7 +31,7 @@ Integrations should be aware of the modern ALP surface so agents operate with fu
 - **`@vault`** — encrypted secrets (X25519 envelope + AES-256-GCM); CI should inject secrets via `alp vault get` rather than committing them.
 - **MCP Server** — 19 tools exposed to Claude Desktop, Cursor, Windsurf, and any MCP client (see `mcp-server/README.md`).
 - **Registry & signing** — publish/install with `alp registry`, per-namespace bearer tokens, and Ed25519 package signatures (`alp keys generate`, `alp keys trust add`).
-- **Governance** — `PolicyBallot`, `GovernanceEngine`, and quorum-based policy voting (v18.3.0).
+- **Governance** — `PolicyBallot`, `GovernanceEngine`, and quorum-based policy voting.
 - **Breaking changes:** `@type` is the canonical plugin marker (`@type_definition` removed in v9), `!assert` is fail-closed, and `[!]`/`[?]` status markers must carry a free-text reason. See `docs-site/MIGRATION-v8.md`.
 
 ### 4. Model Context Protocol (`mcp-server/`)

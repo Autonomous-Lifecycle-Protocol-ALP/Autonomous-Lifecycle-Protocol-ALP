@@ -1,4 +1,4 @@
-/** ALP Self-Sovereign Identity (v18.0.0 — V14 The Sovereign Era).
+/** ALP Self-Sovereign Identity (V8 — The Collaboration Era).
  *
  * W3C DID-based agent identity without a central authority:
  *

@@ -73,7 +73,7 @@ describe('alp domain-trust (v18.4.0)', () => {
   });
 });
 
-describe('alp governance (v18.3.0)', () => {
+describe('alp governance (V8)', () => {
   it('proposes a ballot', () => {
     const tmp = makeWorkspace();
     try {

@@ -1,4 +1,4 @@
-"""ALP Cost Optimization (v16.4.0 — V12 The Sentinel Era).
+"""ALP Cost Optimization (V8 — The Collaboration Era).
 
 Extends ``observ.py`` ``CostAnalyzer`` with workflow-level optimization:
 

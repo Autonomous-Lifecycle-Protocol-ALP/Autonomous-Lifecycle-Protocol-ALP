@@ -1,4 +1,4 @@
-"""ALP Self-Healing Workflows (v16.1.0 — V12 The Sentinel Era).
+"""ALP Self-Healing Workflows (V8 — The Collaboration Era).
 
 Provides:
 - HealingStrategy: enum of recovery strategies (retry, skip, rollback, escalate).

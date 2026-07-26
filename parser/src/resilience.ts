@@ -1,4 +1,4 @@
-/** ALP Swarm Resilience (v16.3.0 — V12 The Sentinel Era).
+/** ALP Swarm Resilience (V8 — The Collaboration Era).
  *
  * Wraps swarm coordination with automatic node replacement, quorum-based
  * decision making, and fault-tolerant task redistribution. Detects agent

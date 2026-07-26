@@ -366,6 +366,7 @@ flowchart LR
   <a class="alp-eco-card" href="/vscode-extension"><h3>alp-vscode</h3><p>Language Server with IntelliSense, go-to-definition, and rich hover metadata.</p></a>
   <a class="alp-eco-card" href="/guide/sdk"><h3>@alp/sdk &amp; alp-sdk</h3><p>Official TypeScript and Python SDKs with complete 1:1 implementation parity.</p></a>
   <a class="alp-eco-card" href="/spec/22-autonomous-marketplace"><h3>@swarm_marketplace</h3><p>Autonomous skill registry, provider discovery, invocation, and cost tracking (v38.0.0).</p></a>
+  <a class="alp-eco-card" href="/sham"><h3>SHAM IDE</h3><p>The unified ALP desktop IDE (Mac/Windows/Linux). Faster, more secure, and error-free vs. fragmented multi-IDE setups. Native `@alp/parser`, Monaco editor, agent manager, and integrated terminal.</p></a>
 </div>
 
 ---
@@ -382,3 +383,23 @@ alp init --template react
 # Start the execution engine
 alp run
 ```
+
+---
+
+## 🗺️ Future Plans & Roadmap
+
+Released versions are tracked in the [versioning spec](/spec/10-versioning.md). This section captures active and planned focus areas.
+
+| Era | Versions | Focus |
+||---|---|
+| V8 — The Collaboration Era | 38.0.0–38.x | Event mesh, swarm marketplace, macro expansion, collaboration/negotiation/reputation, memory mesh |
+| V9 — Native Desktop | 39.0.0 | SHAM IDE cross-platform release, native ALP integration, Monaco editor, agent manager, auto-updater, Pro/Enterprise licensing |
+| Post-10 forward look | 10.x–12.x | Grammar refinements, distributed enforcement optimizations, auto-negotiation, memory-mesh federation, next-era specification candidate |
+
+### What’s Next
+- **SHAM IDE** — cross-platform desktop application for Mac, Windows, and Linux with native ALP integration.
+- **Event Mesh & Swarm Marketplace** — decoupled pub/sub topic routing, autonomous skill discovery, category-based listings, cost tracking, and invocation.
+- **Memory Mesh Federation** — persistent cross-agent query/store/mesh-stats APIs for long-running collaborative tasks.
+- **Macro Expansion** — declarative `@macro` blocks with `iterate_over`, `as`, and template expansion.
+- **Collaboration** — `TeamComposer`, `Negotiator`, `ReputationStore`, and `Capability` objects.
+- **Predictive Policy** — `PredictivePolicyEngine` with anomaly scoring and baseline profiles for adaptive governance.

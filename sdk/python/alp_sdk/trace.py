@@ -1,4 +1,4 @@
-"""ALP Immutable Execution Traces (v16.0.0 — V12 The Sentinel Era).
+"""ALP Immutable Execution Traces (V8 — The Collaboration Era).
 
 Provides:
 - TraceEntry: a single execution trace event with metadata.

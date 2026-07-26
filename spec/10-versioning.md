@@ -244,16 +244,13 @@ are authoritative in the table in §7; this section captures intent.
 
 ---
 
-### Next major versions (planned)
+### Forward-looking (post-38.x)
 
-`17.0.0` (V13 — The Universal Era) is the latest implemented version.
-The next planned era is **V14 — The Sovereign Era** (18.0.0–18.x).
+The current release is **v38.0.0** (V8 — The Collaboration Era). Future versions are tracked in `docs/ROADMAP_V17_V36.md` and the versioning spec's roadmap table. Planned focus areas include:
 
 | Version | Theme | Planned Features |
-|---|---|
-| `17.0.0` | Universal Protocol Bridge (delivered) | `ProtocolBridge` adapts ALP objects to and from OpenAPI 3.0, GraphQL SDL, gRPC proto, and AsyncAPI specs. Implemented in `sdk/python/alp_sdk/bridge.py`; tests in `sdk/python/tests/test_bridge.py`. |
-| `18.0.0` | Self-Sovereign Identity (V14 — The Sovereign Era) | W3C DID-based agent identity: agents own verifiable identities without a central authority. `AgentIdentity` creates/manages DIDs, `IdentityResolver` verifies presentations, and `TrustRegistry` maps DIDs to permission scopes. New `sdk/python/alp_sdk/identity.py`; tests in `sdk/python/tests/test_identity.py`. |
-| `18.1.0` | Decentralized Coordination (V14 — The Sovereign Era) | P2P swarm coordination without a central coordinator: agents discover each other via DHT, negotiate directly, and form ad-hoc federations. `P2PSwarm` replaces `ResilientSwarm`'s central coordinator with gossip-based state sync. New `sdk/python/alp_sdk/p2p.py`; tests in `sdk/python/tests/test_p2p.py`. |
-| `18.2.0` | Multi-Tenant Isolation (V14 — The Sovereign Era) | Cryptographic workspace boundaries: each tenant's `.alp/` directory is sealed with a tenant-specific key, preventing cross-tenant data leakage. `TenantVault` extends `Vault` with namespace isolation; `alp tenant create` / `alp tenant switch` commands. New `sdk/python/alp_sdk/tenant.py`; tests in `sdk/python/tests/test_tenant.py`. |
-| `18.3.0` | Autonomous Governance (V14 — The Sovereign Era) | Agents vote on policy changes: `PolicyBallot` collects signed votes from qualified agents, `GovernanceEngine` tallies results and enforces quorum rules. Immutable ballot records stored in `ProvenanceStore`. New `sdk/python/alp_sdk/governance.py`; tests in `sdk/python/tests/test_governance.py`. |
-| `18.4.0` | Cross-Domain Trust (V14 — The Sovereign Era) | Trust bootstrapping between sovereign domains: `DomainTrustAnchor` exchanges signed trust roots with foreign domains, enabling cross-domain agent authentication without a global CA. `alp trust link <domain>` establishes bilateral trust. New `sdk/python/alp_sdk/domain_trust.py`; tests in `sdk/python/tests/test_domain_trust.py`. |
+|---|---|---|
+| `39.0.0` | Autonomous Orchestration | Fully autonomous multi-agent workflows with self-healing DAGs, auto-negotiation between agents, and zero-human lifecycle management. New `@autonomy` block type and `AutonomyController` engine. |
+| `40.0.0` | Distributed Enforcement Mesh | Cross-realm policy federation with cryptographic attestation, distributed enforcement across sovereign nodes, and automated compliance auditing at scale. |
+
+The full 20-version strategic roadmap (v17–v38) is documented in `docs/ROADMAP_V17_V36.md`.

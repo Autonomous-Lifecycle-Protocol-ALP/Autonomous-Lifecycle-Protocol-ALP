@@ -48,7 +48,7 @@ Once connected via MCP, the server exposes the following tools to the LLM agent:
 - **`alp_get_contracts`**: List all `@contract` objects and their allow/deny rules.
 - **`alp_get_vaults`**: List all `@vault` objects and their recipient/algorithm metadata.
 
-**Swarm Marketplace & Event Mesh (v35+)**
+**Swarm Marketplace & Event Mesh (v38.0.0)**
 - **`alp_get_swarm_marketplace`**: List registered skills from `@swarm_marketplace` objects, optionally filtered by category.
 - **`alp_get_event_mesh`**: List event mesh topics and recent events from `@event_mesh` objects.
 

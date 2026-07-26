@@ -1,4 +1,4 @@
-"""ALP Predictive Governance (v16.2.0 — V12 The Sentinel Era).
+"""ALP Predictive Governance (V8 — The Collaboration Era).
 
 Extends ``PolicyEngine`` with anomaly detection: learns normal behavior
 baselines from ``EventStore`` history and flags anomalous requests before

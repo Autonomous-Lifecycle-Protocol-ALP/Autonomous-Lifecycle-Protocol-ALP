@@ -17,7 +17,7 @@ function tmpDir(): string {
   return fs.mkdtempSync(path.join(os.tmpdir(), 'alp-gov-'))
 }
 
-describe('Vote (v18.3.0)', () => {
+describe('Vote (V8)', () => {
   it('round-trips through toDict', () => {
     const vote = new Vote('did1', 'ballot1', VoteValue.APPROVE, 'good', '2024-01-01T00:00:00Z', 'sig')
     const dict = vote.toDict()
@@ -33,7 +33,7 @@ describe('Vote (v18.3.0)', () => {
   })
 })
 
-describe('BallotRecord (v18.3.0)', () => {
+describe('BallotRecord (V8)', () => {
   it('tallies votes correctly', () => {
     const ballot = new BallotRecord('b1', 'p1', 'desc')
     ballot.votes.push(new Vote('did1', 'b1', VoteValue.APPROVE))
@@ -47,7 +47,7 @@ describe('BallotRecord (v18.3.0)', () => {
   })
 })
 
-describe('PolicyBallot (v18.3.0)', () => {
+describe('PolicyBallot (V8)', () => {
   it('opens, votes, and closes a ballot', () => {
     const dir = tmpDir()
     const ballot_store = new PolicyBallot(dir)
@@ -82,7 +82,7 @@ describe('PolicyBallot (v18.3.0)', () => {
   })
 })
 
-describe('GovernanceEngine (v18.3.0)', () => {
+describe('GovernanceEngine (V8)', () => {
   it('proposes and tallies a ballot', () => {
     const dir = tmpDir()
     const engine = new GovernanceEngine(dir, 2)

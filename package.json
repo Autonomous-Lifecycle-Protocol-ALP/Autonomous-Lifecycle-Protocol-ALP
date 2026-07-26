@@ -11,7 +11,8 @@
     "playground",
     "vscode",
     "docs-site",
-    "mcp-server"
+    "mcp-server",
+    "sham"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",

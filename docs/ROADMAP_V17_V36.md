@@ -1,6 +1,6 @@
-# 🚀 ALP 20-Version Strategic Product & Architecture Roadmap (v17.0.0 – v36.0.0)
+# 🚀 ALP Strategic Product & Architecture Roadmap (v17.0.0 – v39.0.0)
 
-This strategic roadmap outlines the evolution of the **Autonomous Lifecycle Protocol (ALP)** across its next 20 major release cycles, transforming ALP from a repo-native orchestration standard into a global, sovereign, zero-trust autonomous software engineering ecosystem.
+This strategic roadmap outlines the evolution of the **Autonomous Lifecycle Protocol (ALP)** across its major release cycles, transforming ALP from a repo-native orchestration standard into a global, sovereign, zero-trust autonomous software engineering ecosystem.
 
 ---
 
@@ -28,30 +28,15 @@ This strategic roadmap outlines the evolution of the **Autonomous Lifecycle Prot
 | **v34.0.0** | **Synthetic Test Generator** | Automated Contract Invariant Testing | Property-based synthetic test generation from `@contract` conditions & schema definitions |
 | **v35.0.0** | **Genetic Optimizer** | Continuous Agent Prompt Mutation | Reinforcement-driven prompt/rule genetic evolution based on task completion velocity |
 | **v36.0.0** | **Sovereign System** | Fully Autonomous Self-Sustaining System | Fully autonomous zero-human lifecycle management, self-writing, self-verifying software |
+| **v37.0.0** | **Cross-Federation Trust** | Policy Hardening & Predictive Governance | `PolicyVersioning`, `PolicySuggestion`, `PredictivePolicyEngine` with anomaly scoring; MCP enforcement audit trail; Python SDK full parity |
+| **v38.0.0** | **The Collaboration Era** | Event Mesh, Swarm Marketplace & Macro Expansion | `@event_mesh`, `@swarm_marketplace`, `@macro` expansion, `@collaboration`/`@negotiation`/`@memory_mesh`; TypeScript SDK exports V8–V11 modules; Python SDK parity; MCP server 5 new tools; Node 24 across CI/docs |
+| **v39.0.0** | **Native Desktop** | SHAM IDE Cross-Platform Release — Unified ALP Experience | Electron-based SHAM IDE for Mac/Windows/Linux; native `@alp/parser` and `@alp/sdk` integration eliminates version skew and extension lag vs. fragmented Cursor/VS Code/Claude Code setups; Monaco ALP editor with real-time diagnostics; cross-platform filesystem access; integrated terminal with ALP CLI; agent manager; MCP tools browser; auto-updater; Pro/Enterprise licensing tiers |
 
 ---
 
 ## 🛠️ Detailed Breakdown by Era
 
-### Phase 1: Observability & Zero-Trust Security (v17 - v20)
-- **v17.0.0 (OpenTelemetry)**: Full OTLP integration. Handoffs emit standard trace IDs and span attributes so APM systems (Jaeger, Datadog, Honeycomb) can visualize multi-agent call trees.
-- **v18.0.0 (Zero-Knowledge)**: Agents prove they adhered to `@policy` restrictions without revealing proprietary source code or private vault secrets.
-- **v19.0.0 (Vector Memory)**: Semantic search across historical task logs, decision rationales, and past bug fixes using local or remote embeddings.
-- **v20.0.0 (Decentralized Registry)**: Immutable package publishing and verification using decentralized storage and ledger-backed DID identity.
-
-### Phase 2: Collaboration, Self-Healing & Rigor (v21 - v24)
-- **v21.0.0 (CRDT Collaboration)**: Simultaneous state updates by multiple agents reconciled automatically via state-based CRDTs without merge conflicts.
-- **v22.0.0 (Self-Healing AST)**: When verification fails, the engine analyzes line-by-line diffs and AST nodes to attempt automated remediation without human intervention.
-- **v23.0.0 (Formal Verification)**: Symbolic analysis of `@workflow` graphs to mathematically prove no deadlocks or unreachable states exist prior to execution.
-- **v24.0.0 (Multi-Modal Specs)**: Context bundle compiler incorporates visual wireframes, screenshots, and diagrams directly into agent prompts.
-
-### Phase 3: Enterprise Scale & Edge Execution (v25 - v28)
-- **v25.0.0 (Dynamic Cost Optimizer)**: Cost-aware task router routes routine tasks to smaller/cheaper models while reserving high-tier models for complex architecture decisions.
-- **v26.0.0 (Wasm Sandbox)**: Verification scripts execute inside isolated WebAssembly/Wasi containers to prevent unauthorized filesystem access.
-- **v27.0.0 (Enterprise Mesh)**: Enterprise-grade workspace isolation, SSO/OIDC integration, and unified security auditing across thousands of repositories.
-- **v28.0.0 (Architecture Decomposer)**: Legacy codebases are automatically scanned and refactored into modular `.alp` micro-packages and service boundaries.
-
-### Phase 4: Autonomy, Resilience & Next-Gen Intelligence (v29 - v36)
+### Phase 4: Autonomy, Resilience & Next-Gen Intelligence (v29 - v39)
 - **v29.0.0 (Edge Execution)**: Support for local LLM inference engines (GGUF, Apple Metal, TensorRT) enabling offline autonomous engineering.
 - **v30.0.0 (Chaos Swarm)**: Chaos engine tests system resilience by injecting network delays, corrupted agent states, and process terminations.
 - **v31.0.0 (Post-Quantum)**: Upgrade secret encryption and signature algorithms to NIST post-quantum standards (Kyber, Dilithium).
@@ -60,3 +45,6 @@ This strategic roadmap outlines the evolution of the **Autonomous Lifecycle Prot
 - **v34.0.0 (Synthetic Test Generator)**: Property-based testing engines generate thousands of test cases directly from `@contract` boundary specifications.
 - **v35.0.0 (Genetic Optimizer)**: Prompt rules and agent execution strategies evolve automatically using genetic algorithms to maximize completion speed.
 - **v36.0.0 (Sovereign System)**: Complete autonomous software lifecycle — systems specify, design, implement, test, deploy, and monitor themselves continuously.
+- **v37.0.0 (Cross-Federation Trust)**: Policy engine gains `PolicyVersioning`, `PolicySuggestion`, and `PolicySuggest` for time-window + enforcement-aware suggestions. `PredictivePolicyEngine` learns baselines from the event store and attaches anomaly metadata to decisions. MCP enforcement audit trail validates `policy_id`, `timestamp`, `actor`, and `decision` fields. Python SDK gains full parity with TypeScript.
+- **v38.0.0 (The Collaboration Era)**: Event mesh pub/sub topic routing, autonomous skill discovery, category-based marketplace listings, cost tracking, and invocation. `@macro` expansion with `iterate_over`, `as`, and template expansion. `@collaboration`/`@negotiation`/`@memory_mesh` objects for agent-to-agent collaboration and persistent cross-agent memory. TypeScript SDK exports V8–V11 modules (`event_mesh`, `swarm_marketplace`, `macro`, `collaboration`, `memory_mesh`). Python SDK ships matching modules under `alp_sdk`. MCP server adds 5 tools (`expand_macro`, `store_memory`, `query_memory`, `mesh_stats`, `negotiate`). CI/docs bumped to Node 24. Parser/CJS Buffer shim boundary fixed; corrupted `parser/dist` artifacts cleaned.
+- **v39.0.0 (Native Desktop)**: SHAM IDE ships as a cross-platform desktop application for Mac, Windows, and Linux. Unlike fragmented setups using Cursor, VS Code, Claude Code, and separate terminals with version-skewed extensions, SHAM bundles `@alp/parser`, `@alp/sdk`, and `@alp/cli` at the same version for a unified, faster, more secure, and error-free ALP experience. Monaco-based ALP editor with real-time diagnostics runs natively in the main process. Cross-platform filesystem access via Electron `dialog` and Node.js `path`. Integrated terminal with ALP CLI eliminates external terminal switching. Agent manager with create/run/monitor workflows. MCP tools browser for discovering and invoking tools. Auto-updater for seamless distribution. Pro tier ($19/mo) with cloud sync and team collaboration. Enterprise tier with SSO/SAML, RBAC, and audit logging.

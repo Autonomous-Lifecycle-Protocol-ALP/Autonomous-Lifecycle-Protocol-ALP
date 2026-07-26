@@ -1,0 +1,106 @@
+import React, { useState, useEffect } from 'react';
+import { Sidebar } from './components/Sidebar.js';
+import { EditorPanel } from './components/EditorPanel.js';
+import { TerminalPanel } from './components/TerminalPanel.js';
+import { AgentPanel } from './components/AgentPanel.js';
+import { MCPBrowser } from './components/MCPBrowser.js';
+import { WelcomeScreen } from './components/WelcomeScreen.js';
+import { theme } from './styles/theme.js';
+import { fetchBlockTypes, runAgent, validateALPFile, onAppReady } from './shared/alp-client.js';
+import type { SHAMState } from './shared/types.js';
+
+const defaultState: SHAMState = {
+  activeFile: null,
+  openFiles: [],
+  selectedAgent: null,
+  terminalOutput: [],
+  diagnostics: [],
+  blockTypes: [],
+  agents: [],
+  mcpTools: [],
+  parseResult: null,
+};
+
+export function App(): React.JSX.Element {
+  const [state, setState] = useState<SHAMState>(defaultState);
+  const [activePanel, setActivePanel] = useState<'editor' | 'terminal' | 'agents' | 'mcp'>('editor');
+  const [showWelcome, setShowWelcome] = useState(true);
+
+  useEffect(() => {
+    onAppReady((payload: unknown) => {
+      setState((prev) => ({ ...prev }));
+    });
+
+    fetchBlockTypes().then((result) => {
+      if (result.success) {
+        setState((prev) => ({ ...prev, blockTypes: result.blockTypes }));
+      }
+    });
+  }, []);
+
+  const handleOpenFile = (filePath: string) => {
+    setState((prev) => {
+      const openFiles = prev.openFiles.includes(filePath) ? prev.openFiles : [...prev.openFiles, filePath];
+      return { ...prev, activeFile: filePath, openFiles };
+    });
+    setShowWelcome(false);
+  };
+
+  const handleCloseFile = (filePath: string) => {
+    setState((prev) => ({
+      ...prev,
+      openFiles: prev.openFiles.filter((f) => f !== filePath),
+      activeFile: prev.activeFile === filePath ? null : prev.activeFile,
+    }));
+  };
+
+  const handleRunAgent = async (agentId: string, config: Record<string, unknown>) => {
+    const result = await runAgent(agentId, config);
+    if (result.success) {
+      setState((prev) => ({
+        ...prev,
+        terminalOutput: [...prev.terminalOutput, `[Agent ${agentId}] Run started`],
+        agents: prev.agents.map((a) =>
+          a.id === agentId ? { ...a, status: 'running' as const, lastRun: new Date().toISOString() } : a,
+        ),
+      }));
+    }
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: theme.bgPrimary, color: theme.textPrimary }}>
+      <header style={{ display: 'flex', alignItems: 'center', padding: '0 12px', height: 36, backgroundColor: theme.headerBackground, borderBottom: `1px solid ${theme.border}` }}>
+        <span style={{ fontWeight: 700, fontSize: 14, color: theme.accent }}>SHAM</span>
+        <span style={{ marginLeft: 8, fontSize: 12, color: theme.textMuted }}>Smart Hosted Agent Manager</span>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
+          {(['editor', 'terminal', 'agents', 'mcp'] as const).map((panel) => (
+            <button key={panel} onClick={() => setActivePanel(panel)} style={{ padding: '4px 10px', background: activePanel === panel ? theme.bgSurface : 'transparent', border: 'none', color: activePanel === panel ? theme.textPrimary : theme.textMuted, borderRadius: 4, cursor: 'pointer', fontSize: 12 }}>
+              {panel.charAt(0).toUpperCase() + panel.slice(1)}
+            </button>
+          ))}
+        </div>
+      </header>
+      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+        <Sidebar state={state} onOpenFile={handleOpenFile} onCloseFile={handleCloseFile} onSelectAgent={(id) => setState((prev) => ({ ...prev, selectedAgent: id }))} activePanel={activePanel} setActivePanel={setActivePanel} />
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          {showWelcome ? (
+            <WelcomeScreen onOpenFile={handleOpenFile} />
+          ) : activePanel === 'editor' ? (
+            <EditorPanel state={state} onValidate={async (content, filePath) => {
+              const result = await validateALPFile(content, filePath);
+              if (result.success) {
+                setState((prev) => ({ ...prev, diagnostics: result.diagnostics }));
+              }
+            }} />
+          ) : activePanel === 'terminal' ? (
+            <TerminalPanel output={state.terminalOutput} />
+          ) : activePanel === 'agents' ? (
+            <AgentPanel agents={state.agents} onRunAgent={handleRunAgent} />
+          ) : (
+            <MCPBrowser tools={state.mcpTools} />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

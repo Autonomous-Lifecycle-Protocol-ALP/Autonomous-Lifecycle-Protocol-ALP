@@ -1,4 +1,4 @@
-/** ALP Cross-Domain Trust (v18.4.0 — V14 The Sovereign Era).
+/** ALP Cross-Domain Trust (V8 — The Collaboration Era).
  *
  * Trust bootstrapping between sovereign domains:
  *

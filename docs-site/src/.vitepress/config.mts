@@ -34,6 +34,7 @@ export default defineConfig({
     nav: [
       { text: 'Home', link: '/' },
       { text: 'Guide', link: '/guide/cli' },
+      { text: 'SHAM IDE', link: '/sham' },
       { text: 'Specification', link: '/spec/01-overview' },
       { text: 'Releases', link: '/releases' }
     ],
@@ -43,11 +44,12 @@ export default defineConfig({
         text: 'Guide',
         items: [
           { text: 'CLI Usage', link: '/guide/cli' },
-          { text: 'SDKs', link: '/guide/sdk' }
+          { text: 'SDKs', link: '/guide/sdk' },
+          { text: 'SHAM IDE', link: '/sham' }
         ]
       },
       {
-        text: 'Ecosystem & Execution (V2)',
+        text: 'Ecosystem & Execution (V8)',
         items: [
           { text: 'Execution Engine (alp run)', link: '/execution-engine' },
           { text: 'CLI Verification & Tools', link: '/cli-tools' },

@@ -1,0 +1,1 @@
+{"appId":"com.alp.sham","productName":"SHAM","directories":{"output":"release"},"files":["dist/**/*","package.json"],"win":{"target":["nsis"]},"mac":{"target":["dmg"]},"linux":{"target":["AppImage"]},"extraResources":["assets/**"]}

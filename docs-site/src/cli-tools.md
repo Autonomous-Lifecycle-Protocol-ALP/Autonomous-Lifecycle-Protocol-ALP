@@ -613,9 +613,9 @@ alp tenant delete my-tenant
 | `vault <id> list\|seal <secret> [value]\|unseal <secret>` | Manage tenant secrets |
 | `delete <id>` | Delete a tenant |
 
-## Autonomous Governance (`alp governance`) — *v18.3.0*
+## Autonomous Governance (`alp governance`) — *v38.0.0*
 
-*New in V14 — The Sovereign Era.* Agents vote on policy changes through
+*New in V8 — The Collaboration Era.* Agents vote on policy changes through
 cryptographic ballots. Quorum rules, signed votes, and tallied results ensure
 transparent policy evolution.
 

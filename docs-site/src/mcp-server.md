@@ -54,7 +54,7 @@ Once connected, your IDE gains access to the following tools:
 | `alp_get_contracts` | List all `@contract` objects and their allow/deny rules |
 | `alp_get_vaults` | List all `@vault` objects and their recipient/algorithm metadata |
 
-### Swarm Marketplace & Event Mesh — v35+
+### Swarm Marketplace & Event Mesh — v38.0.0
 
 | Tool | Description |
 | :--- | :--- |

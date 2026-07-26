@@ -1,4 +1,4 @@
-/** ALP Multi-Tenant Isolation (v18.2.0 — V14 The Sovereign Era).
+/** ALP Multi-Tenant Isolation (V8 — The Collaboration Era).
  *
  * Cryptographic workspace boundaries: each tenant's `.alp/` directory is
  * sealed with a tenant-specific key, preventing cross-tenant data leakage.

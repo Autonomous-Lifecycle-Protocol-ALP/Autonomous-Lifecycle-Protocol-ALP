@@ -1,4 +1,4 @@
-/** ALP Autonomous Governance (v18.3.0 — V14 The Sovereign Era).
+/** ALP Autonomous Governance (V8 — The Collaboration Era).
  *
  * Agents vote on policy changes:
  *

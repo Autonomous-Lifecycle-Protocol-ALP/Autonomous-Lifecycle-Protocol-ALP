@@ -1,4 +1,4 @@
-/** ALP Decentralized Coordination (v18.1.0 — V14 The Sovereign Era).
+/** ALP Decentralized Coordination (V8 — The Collaboration Era).
  *
  * P2P swarm coordination without a central coordinator:
  *

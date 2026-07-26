@@ -1,4 +1,4 @@
-"""ALP Universal Protocol Bridge (v17.0.0 — V13 The Universal Era).
+"""ALP Universal Protocol Bridge (V8 — The Collaboration Era).
 
 Adapts ALP objects to and from external protocol descriptions:
 

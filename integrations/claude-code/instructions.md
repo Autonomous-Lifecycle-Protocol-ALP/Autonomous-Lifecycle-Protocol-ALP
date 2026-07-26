@@ -25,7 +25,7 @@ If a task specifies `owner: -> agent-reviewer`, and you are `agent-developer`, y
 - When reporting progress, use `node cli/dist/index.js checkpoint <taskId> <status>` (e.g. `node cli/dist/index.js checkpoint task-login-ui in-progress`). To hand off for human review, use `node cli/dist/index.js checkpoint <taskId> --ask-human "<message>"`, which marks the task `[?]`.
 - Never claim a task whose blocking dependencies (`depends_on`, `blocked_by`, `requires`) are not `[x]`. Reference links such as `feature:` or `owner:` do NOT block a task.
 
-## Governance & Supply Chain (V4 → V14)
+## Governance & Supply Chain (V4+)
 
 ALP spans networked swarms, cross-repo orchestration, registry trust, and autonomous governance. Use these surfaces when operating across machines, repos, or packages:
 
