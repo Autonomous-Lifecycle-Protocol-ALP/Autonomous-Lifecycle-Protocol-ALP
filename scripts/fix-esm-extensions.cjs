@@ -1,12 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 
+const SCRIPT_DIR = path.resolve(__dirname, '..');
+const PARSER_DIST = path.join(SCRIPT_DIR, 'parser', 'dist');
+const CLI_DIST = path.join(SCRIPT_DIR, 'cli', 'dist');
+const BUFFER_SHIM_PATH = path.join(SCRIPT_DIR, 'scripts', '__buffer-shim-tpl.js');
+
 const targets = [
-  'C:/Users/KGN/Desktop/new file sys/parser/dist',
-  'C:/Users/KGN/Desktop/new file sys/cli/dist',
+  PARSER_DIST,
+  CLI_DIST,
 ];
 
-const BUFFER_SHIM_PATH = 'C:/Users/KGN/Desktop/new file sys/scripts/__buffer-shim-tpl.js';
 const BUFFER_SHIM_CONTENT = fs.readFileSync(BUFFER_SHIM_PATH, 'utf8');
 const BUFFER_IMPORT = "import Buffer from './buffer.js';\n";
 
