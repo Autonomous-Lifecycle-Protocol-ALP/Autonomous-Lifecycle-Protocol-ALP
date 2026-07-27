@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alp-protocol/alp.git"
+    "url": "git+https://github.com/younglord3302/Autonomous-Lifecycle-Protocol-ALP.git"
   },
   "keywords": [
     "alp",
@@ -34,9 +34,9 @@
   "author": "ALP Contributors",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/alp-protocol/alp/issues"
+    "url": "https://github.com/younglord3302/Autonomous-Lifecycle-Protocol-ALP/issues"
   },
-  "homepage": "https://github.com/alp-protocol/alp#readme",
+  "homepage": "https://github.com/younglord3302/Autonomous-Lifecycle-Protocol-ALP#readme",
   "devDependencies": {
     "vitest": "^4.1.10"
   }
