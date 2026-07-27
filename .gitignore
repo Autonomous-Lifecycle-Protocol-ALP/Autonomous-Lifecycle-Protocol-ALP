@@ -60,3 +60,8 @@ docs-site/src/.vitepress/.temp/
 vscode/server/src/*.js
 vscode/server/src/*.js.map
 vscode/*.vsix
+
+# SHAM desktop build artifacts
+sham/dist-installer/
+sham/release/
+sham/test-results/
