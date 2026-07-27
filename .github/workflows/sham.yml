@@ -1,0 +1,50 @@
+name: "SHAM Desktop Packaging"
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  package:
+    name: Package SHAM for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build workspaces
+        run: npm run build
+
+      - name: Package SHAM for ${{ matrix.os }}
+        run: npm run package --workspace sham
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+          ELECTRON_RUN_AS_NODE: ""
+
+      - name: Upload installers
+        uses: actions/upload-artifact@v4
+        with:
+          name: sham-installers-${{ matrix.os }}
+          path: |
+            sham/dist-installer/*.exe
+            sham/dist-installer/*.dmg
+            sham/dist-installer/*.AppImage
+            sham/dist-installer/*.deb
+            sham/dist-installer/*.rpm
+          retention-days: 7
