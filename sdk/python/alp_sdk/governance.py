@@ -46,6 +46,7 @@ class Vote:
     value: str
     rationale: str = ""
     timestamp: str = ""
+    signature: str = ""
 
     def __post_init__(self):
         if not self.timestamp:
@@ -58,6 +59,7 @@ class Vote:
             "value": self.value,
             "rationale": self.rationale,
             "timestamp": self.timestamp,
+            "signature": self.signature,
         }
 
     def sign(self, private_key: str) -> str:

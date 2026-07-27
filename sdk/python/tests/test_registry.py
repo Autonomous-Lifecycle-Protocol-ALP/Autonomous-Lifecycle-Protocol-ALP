@@ -112,14 +112,16 @@ class TestRegistryServer(unittest.TestCase):
         if proc and proc.poll() is None:
             proc.kill()
 
-    def _wait_for(self, port, tries=50):
+    def _wait_for(self, port, tries=60):
         import time
         for _ in range(tries):
             try:
-                with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/state", timeout=1):
-                    return
+                req = urllib.request.Request(f"http://127.0.0.1:{port}/api/state")
+                req.timeout = 3500
+                urllib.request.urlopen(req, timeout=3.5).read()
+                return
             except Exception:
-                time.sleep(0.1)
+                time.sleep(0.15)
         raise RuntimeError("registry server did not start")
 
     def test_install_over_http(self):
@@ -171,21 +173,23 @@ class TestRegistryHardening(unittest.TestCase):
         if proc and proc.poll() is None:
             proc.kill()
 
-    def _wait_for(self, port, tries=50):
+    def _wait_for(self, port, tries=60):
         import time
         for _ in range(tries):
             try:
-                with urllib.request.urlopen(f"http://127.0.0.1:{port}/api/state", timeout=1):
-                    return
+                req = urllib.request.Request(f"http://127.0.0.1:{port}/api/state")
+                req.timeout = 3500
+                urllib.request.urlopen(req, timeout=3.5).read()
+                return
             except Exception:
-                time.sleep(0.1)
+                time.sleep(0.15)
         raise RuntimeError("registry server did not start")
 
     def _get_status(self, path, token=None):
         headers = {"Authorization": "Bearer " + token} if token else {}
         req = urllib.request.Request(f"http://127.0.0.1:{self.port}{path}", headers=headers)
         try:
-            with urllib.request.urlopen(req) as resp:
+            with urllib.request.urlopen(req, timeout=3.5) as resp:
                 return resp.status
         except urllib.error.HTTPError as e:
             return e.code
