@@ -109,6 +109,26 @@ npm run package -- --mac    # macOS
 npm run package -- --linux  # Linux
 ```
 
+## Screenshots
+
+### Main Window
+
+![SHAM Main Window](/.vitepress/public/sham/screenshot-main.svg)
+
+The SHAM main window showing the Monaco editor, sidebar, and header with Pro tab.
+
+### Welcome Screen
+
+![SHAM Welcome Screen](/.vitepress/public/sham/screenshot-welcome.svg)
+
+The welcome screen with quick actions for opening files and getting started.
+
+### Pro Panel
+
+![SHAM Pro Panel](/.vitepress/public/sham/screenshot-pro.svg)
+
+The Pro features panel with license activation, cloud sync, and team management.
+
 ## Architecture
 
 ```

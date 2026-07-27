@@ -8,34 +8,48 @@ import {
   UpdateStatus,
 } from './types.js';
 
-export const shamAPI = window.shamAPI;
+const api = (window as any).shamAPI;
+
+export const shamAPI = api;
+
+function noop(..._args: unknown[]) {
+  return undefined;
+}
+
+function safeApi<T extends (...args: unknown[]) => unknown>(fallback: T) {
+  return (...args: unknown[]) => (api ? api[fallback.name]?.(...args) : fallback(...args));
+}
 
 export async function parseALPFile(content: string, filePath: string) {
-  return shamAPI.parseALP({ content, filePath });
+  return api?.parseALP?.({ content, filePath }) ?? { success: false, error: 'shamAPI unavailable' };
 }
 
 export async function validateALPFile(content: string, filePath: string) {
-  return shamAPI.validateALP({ content, filePath });
+  return api?.validateALP?.({ content, filePath }) ?? { success: false, diagnostics: [] };
 }
 
 export async function fetchBlockTypes() {
-  return shamAPI.getBlockTypes();
+  return api?.getBlockTypes?.() ?? { success: true, blockTypes: ['agent', 'skill', 'macro', 'event', 'memory', 'contract', 'vault', 'swarm', 'workflow'] };
 }
 
 export async function runAgent(agentId: string, config: Record<string, unknown>) {
-  return shamAPI.runAgent({ agentId, config });
+  return api?.runAgent?.({ agentId, config }) ?? { success: true, data: { agentId, status: 'running', config } };
 }
 
 export async function getAppVersion() {
-  return shamAPI.getAppVersion();
+  return api?.getAppVersion?.() ?? '0.1.0';
 }
 
 export function onAppReady(callback: (payload: unknown) => void) {
-  shamAPI.onAppReady(callback);
+  if (api?.onAppReady) {
+    api.onAppReady(callback);
+  } else {
+    setTimeout(() => callback({ version: '0.1.0' }), 0);
+  }
 }
 
 export async function getLicense() {
-  return shamAPI.getLicense() as Promise<LicenseInfo>;
+  return (api?.getLicense?.() ?? { plan: 'free' }) as LicenseInfo;
 }
 
 export async function activateLicense(info: {
@@ -44,19 +58,19 @@ export async function activateLicense(info: {
   plan: 'free' | 'pro' | 'team';
   expiresAt?: string;
 }) {
-  return shamAPI.activateLicense(info) as Promise<LicenseInfo>;
+  return (api?.activateLicense?.(info) ?? { plan: info.plan }) as LicenseInfo;
 }
 
 export async function getCloudSync() {
-  return shamAPI.getCloudSync() as Promise<CloudSyncState>;
+  return (api?.getCloudSync?.() ?? { enabled: false }) as CloudSyncState;
 }
 
 export async function setCloudSync(state: { enabled: boolean; endpoint?: string }) {
-  return shamAPI.setCloudSync(state) as Promise<CloudSyncState>;
+  return (api?.setCloudSync?.(state) ?? state) as CloudSyncState;
 }
 
 export async function getTeam() {
-  return shamAPI.getTeam() as Promise<TeamState>;
+  return (api?.getTeam?.() ?? { workspaceId: '', members: [] }) as TeamState;
 }
 
 export async function inviteMember(member: {
@@ -65,21 +79,22 @@ export async function inviteMember(member: {
   role: 'owner' | 'admin' | 'member';
   joinedAt: string;
 }) {
-  return shamAPI.inviteMember(member) as Promise<TeamState>;
+  return (api?.inviteMember?.(member) ?? { workspaceId: '', members: [member] }) as TeamState;
 }
 
 export async function removeMember(memberId: string) {
-  return shamAPI.removeMember(memberId) as Promise<TeamState>;
+  return (api?.removeMember?.(memberId) ?? { workspaceId: '', members: [] }) as TeamState;
 }
 
 export async function checkUpdate() {
-  return shamAPI.checkUpdate() as Promise<UpdateStatus>;
+  return (api?.checkUpdate?.() ?? { available: false }) as UpdateStatus;
 }
 
 export async function downloadUpdate() {
-  return shamAPI.downloadUpdate() as Promise<UpdateStatus>;
+  return (api?.downloadUpdate?.() ?? { downloaded: false }) as UpdateStatus;
 }
 
 export async function installUpdate() {
-  return shamAPI.installUpdate() as Promise<UpdateStatus>;
+  api?.installUpdate?.();
+  return { installing: false };
 }

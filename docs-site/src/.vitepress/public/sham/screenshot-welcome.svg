@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#1e1e2e"/>
+  <rect x="0" y="0" width="1200" height="36" fill="#181825"/>
+  <text x="12" y="24" font-family="system-ui" font-size="14" font-weight="700" fill="#cba6f7">SHAM</text>
+  <text x="600" y="400" font-family="system-ui" font-size="16" fill="#a6adc8" text-anchor="middle">Welcome Screen Screenshot Placeholder</text>
+  <text x="600" y="420" font-family="system-ui" font-size="12" fill="#a6adc8" text-anchor="middle" opacity="0.6">Replace with actual SHAM welcome screen capture</text>
+</svg>

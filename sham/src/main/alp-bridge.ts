@@ -1,9 +1,14 @@
-import { BrowserWindow, ipcMain } from 'electron';
-import { AlpParser, AlpObject } from '@alp/parser';
+import { ipcMain } from 'electron';
 
-export function setupALPBridge(win: BrowserWindow): void {
+async function loadParser() {
+  const parser = await import('@alp/parser');
+  return parser;
+}
+
+export function setupALPBridge() {
   ipcMain.handle('alp-parse', async (_event, { content, filePath }: { content: string; filePath: string }) => {
     try {
+      const { AlpParser } = await loadParser();
       const parser = new AlpParser();
       const result = parser.parse(content);
       return { success: true, data: { objects: result, warnings: parser.warnings, filePath } };
@@ -14,20 +19,18 @@ export function setupALPBridge(win: BrowserWindow): void {
 
   ipcMain.handle('alp-validate', async (_event, { content, filePath }: { content: string; filePath: string }) => {
     try {
+      const { AlpParser } = await loadParser();
       const parser = new AlpParser();
       const objects = parser.parseAndValidate(content);
       const diagnostics: Array<{ line: number; column: number; message: string; severity: 'error' | 'warning' }> = [];
-
       for (const obj of objects) {
         if (!obj.metadata?.name) {
           diagnostics.push({ line: obj.location?.line ?? 1, column: obj.location?.column ?? 1, message: 'Missing required metadata.name', severity: 'error' });
         }
       }
-
       if (objects.length === 0) {
         diagnostics.push({ line: 1, column: 1, message: 'No blocks defined in ALP document', severity: 'warning' });
       }
-
       return { success: true, diagnostics };
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : String(error) };

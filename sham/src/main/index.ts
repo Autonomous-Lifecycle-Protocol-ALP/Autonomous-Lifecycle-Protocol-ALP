@@ -8,7 +8,7 @@ let mainWindow: BrowserWindow | null = null;
 
 app.whenReady().then(() => {
   mainWindow = createWindow();
-  setupALPBridge(mainWindow);
+  setupALPBridge();
   setupProFeatures();
 
   mainWindow.webContents.on('did-finish-load', () => {
@@ -29,7 +29,7 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     mainWindow = createWindow();
-    setupALPBridge(mainWindow);
+    setupALPBridge();
     setupProFeatures();
   }
 });
