@@ -11,4 +11,26 @@ contextBridge.exposeInMainWorld('shamAPI', {
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
   onAppReady: (callback: (payload: unknown) => void) =>
     ipcRenderer.on('app-ready', (_event, payload) => callback(payload)),
+  getLicense: () => ipcRenderer.invoke('pro-get-license'),
+  activateLicense: (info: {
+    key: string;
+    email: string;
+    plan: 'free' | 'pro' | 'team';
+    expiresAt?: string;
+  }) => ipcRenderer.invoke('pro-activate-license', info),
+  getCloudSync: () => ipcRenderer.invoke('pro-get-cloud-sync'),
+  setCloudSync: (state: { enabled: boolean; endpoint?: string }) =>
+    ipcRenderer.invoke('pro-set-cloud-sync', state),
+  getTeam: () => ipcRenderer.invoke('pro-get-team'),
+  inviteMember: (member: {
+    id: string;
+    email: string;
+    role: 'owner' | 'admin' | 'member';
+    joinedAt: string;
+  }) => ipcRenderer.invoke('pro-invite-member', member),
+  removeMember: (memberId: string) =>
+    ipcRenderer.invoke('pro-remove-member', memberId),
+  checkUpdate: () => ipcRenderer.invoke('pro-check-update'),
+  downloadUpdate: () => ipcRenderer.invoke('pro-download-update'),
+  installUpdate: () => ipcRenderer.invoke('pro-install-update'),
 });

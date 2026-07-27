@@ -5,6 +5,7 @@ import { TerminalPanel } from './components/TerminalPanel.js';
 import { AgentPanel } from './components/AgentPanel.js';
 import { MCPBrowser } from './components/MCPBrowser.js';
 import { WelcomeScreen } from './components/WelcomeScreen.js';
+import { ProPanel } from './components/ProPanel.js';
 import { theme } from './styles/theme.js';
 import { fetchBlockTypes, runAgent, validateALPFile, onAppReady } from './shared/alp-client.js';
 import type { SHAMState } from './shared/types.js';
@@ -23,7 +24,7 @@ const defaultState: SHAMState = {
 
 export function App(): React.JSX.Element {
   const [state, setState] = useState<SHAMState>(defaultState);
-  const [activePanel, setActivePanel] = useState<'editor' | 'terminal' | 'agents' | 'mcp'>('editor');
+  const [activePanel, setActivePanel] = useState<'editor' | 'terminal' | 'agents' | 'mcp' | 'pro'>('editor');
   const [showWelcome, setShowWelcome] = useState(true);
 
   useEffect(() => {
@@ -73,7 +74,7 @@ export function App(): React.JSX.Element {
         <span style={{ fontWeight: 700, fontSize: 14, color: theme.accent }}>SHAM</span>
         <span style={{ marginLeft: 8, fontSize: 12, color: theme.textMuted }}>Smart Hosted Agent Manager</span>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
-          {(['editor', 'terminal', 'agents', 'mcp'] as const).map((panel) => (
+          {(['editor', 'terminal', 'agents', 'mcp', 'pro'] as const).map((panel) => (
             <button key={panel} onClick={() => setActivePanel(panel)} style={{ padding: '4px 10px', background: activePanel === panel ? theme.bgSurface : 'transparent', border: 'none', color: activePanel === panel ? theme.textPrimary : theme.textMuted, borderRadius: 4, cursor: 'pointer', fontSize: 12 }}>
               {panel.charAt(0).toUpperCase() + panel.slice(1)}
             </button>
@@ -96,8 +97,10 @@ export function App(): React.JSX.Element {
             <TerminalPanel output={state.terminalOutput} />
           ) : activePanel === 'agents' ? (
             <AgentPanel agents={state.agents} onRunAgent={handleRunAgent} />
-          ) : (
+          ) : activePanel === 'mcp' ? (
             <MCPBrowser tools={state.mcpTools} />
+          ) : (
+            <ProPanel />
           )}
         </div>
       </div>

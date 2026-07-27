@@ -41,3 +41,35 @@ export interface SHAMState {
   mcpTools: ALPMCPTool[];
   parseResult: ParseResult | null;
 }
+
+export interface LicenseInfo {
+  key: string;
+  email: string;
+  plan: 'free' | 'pro' | 'team';
+  activatedAt?: string;
+  expiresAt?: string;
+}
+
+export interface CloudSyncState {
+  enabled: boolean;
+  lastSyncAt?: string;
+  endpoint?: string;
+}
+
+export interface TeamMember {
+  id: string;
+  email: string;
+  role: 'owner' | 'admin' | 'member';
+  joinedAt: string;
+}
+
+export interface TeamState {
+  workspaceId: string;
+  members: TeamMember[];
+}
+
+export interface UpdateStatus {
+  available: boolean;
+  downloaded?: boolean;
+  installing?: boolean;
+}
