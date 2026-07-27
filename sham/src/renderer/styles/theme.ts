@@ -17,4 +17,118 @@ export const theme = {
   terminalBackground: '#11111b',
   sidebarBackground: '#181825',
   headerBackground: '#313244',
+  pro: {
+    background: '#181825',
+    border: '#313244',
+    sectionBackground: '#1e1e2e',
+    inputBackground: '#11111b',
+    buttonPrimary: '#cba6f7',
+    buttonPrimaryHover: '#b4befe',
+    buttonDanger: '#f38ba8',
+    buttonDangerHover: '#eba0ac',
+    success: '#a6e3a1',
+    error: '#f38ba8',
+    badgeFree: '#6c7086',
+    badgePro: '#cba6f7',
+    badgeTeam: '#89b4fa',
+  },
 } as const;
+
+export const proStyles = {
+  panel: {
+    padding: 16,
+    gap: 16,
+    display: 'flex',
+    flexDirection: 'column' as const,
+    height: '100%',
+    overflowY: 'auto' as const,
+    backgroundColor: theme.pro.background,
+    color: theme.textPrimary,
+  },
+  section: {
+    backgroundColor: theme.pro.sectionBackground,
+    border: `1px solid ${theme.pro.border}`,
+    borderRadius: 8,
+    padding: 12,
+    display: 'flex',
+    flexDirection: 'column' as const,
+    gap: 8,
+  },
+  sectionTitle: {
+    margin: 0,
+    fontSize: 14,
+    fontWeight: 600,
+    color: theme.textPrimary,
+  },
+  feedback: (type: 'success' | 'error') => ({
+    padding: '8px 12px',
+    borderRadius: 6,
+    fontSize: 13,
+    backgroundColor: type === 'success' ? 'rgba(166, 227, 161, 0.1)' : 'rgba(243, 139, 168, 0.1)',
+    color: type === 'success' ? theme.pro.success : theme.pro.error,
+    border: `1px solid ${type === 'success' ? theme.pro.success : theme.pro.error}`,
+  }),
+  input: {
+    width: '100%',
+    padding: '8px 10px',
+    borderRadius: 6,
+    border: `1px solid ${theme.border}`,
+    backgroundColor: theme.pro.inputBackground,
+    color: theme.textPrimary,
+    fontSize: 13,
+    outline: 'none',
+    boxSizing: 'border-box' as const,
+  },
+  button: (variant: 'primary' | 'danger' | 'default') => {
+    const colors = {
+      primary: { bg: theme.pro.buttonPrimary, hover: theme.pro.buttonPrimaryHover },
+      danger: { bg: theme.pro.buttonDanger, hover: theme.pro.buttonDangerHover },
+      default: { bg: theme.bgSurface, hover: theme.bgHover },
+    };
+    const c = colors[variant];
+    return {
+      padding: '8px 12px',
+      borderRadius: 6,
+      border: 'none',
+      backgroundColor: c.bg,
+      color: variant === 'default' ? theme.textPrimary : '#11111b',
+      fontSize: 13,
+      fontWeight: 600,
+      cursor: 'pointer',
+      opacity: 1,
+      transition: 'background-color 0.15s ease',
+    };
+  },
+  badge: (plan: string) => {
+    const colors: Record<string, string> = {
+      free: theme.pro.badgeFree,
+      pro: theme.pro.badgePro,
+      team: theme.pro.badgeTeam,
+    };
+    return {
+      display: 'inline-block',
+      padding: '2px 8px',
+      borderRadius: 999,
+      fontSize: 12,
+      fontWeight: 600,
+      textTransform: 'uppercase' as const,
+      backgroundColor: colors[plan] ?? theme.pro.badgeFree,
+      color: '#11111b',
+    };
+  },
+  licenseRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '6px 0',
+    borderBottom: `1px solid ${theme.border}`,
+  },
+  teamItem: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    gap: 8,
+    padding: '6px 0',
+    borderBottom: `1px solid ${theme.border}`,
+  },
+};
