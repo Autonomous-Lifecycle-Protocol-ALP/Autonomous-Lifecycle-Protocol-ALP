@@ -196,4 +196,4 @@ class MigrationEngine:
     @staticmethod
     def _now() -> str:
         import datetime
-        return datetime.datetime.utcnow().isoformat() + "Z"
+        return datetime.datetime.now(datetime.UTC).isoformat()
