@@ -16,10 +16,13 @@ jobs:
         include:
           - os: windows-latest
             package_target: nsis
+            builder_target: --win nsis
           - os: macos-latest
             package_target: dmg
+            builder_target: --mac dmg
           - os: ubuntu-latest
             package_target: AppImage
+            builder_target: --linux AppImage
 
     steps:
       - name: Checkout repository
@@ -38,7 +41,7 @@ jobs:
         run: npm run build
 
       - name: Package SHAM for ${{ matrix.os }}
-        run: npm run package --workspace sham -- --${{ matrix.package_target }}
+        run: npm run package --workspace sham -- ${{ matrix.builder_target }}
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: false
           ELECTRON_RUN_AS_NODE: ""
