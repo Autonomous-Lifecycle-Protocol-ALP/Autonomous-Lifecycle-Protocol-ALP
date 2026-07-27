@@ -4,15 +4,11 @@ const path = require('path');
 const SCRIPT_DIR = path.resolve(__dirname, '..');
 const PARSER_DIST = path.join(SCRIPT_DIR, 'parser', 'dist');
 const CLI_DIST = path.join(SCRIPT_DIR, 'cli', 'dist');
-const BUFFER_SHIM_PATH = path.join(SCRIPT_DIR, 'scripts', '__buffer-shim-tpl.js');
 
 const targets = [
   PARSER_DIST,
   CLI_DIST,
 ];
-
-const BUFFER_SHIM_CONTENT = fs.readFileSync(BUFFER_SHIM_PATH, 'utf8');
-const BUFFER_IMPORT = "import Buffer from './buffer.js';\n";
 
 function walk(dir) {
   let results = [];
@@ -28,14 +24,11 @@ function walk(dir) {
   return results;
 }
 
-function fixJs(code, needsBufferImport) {
+function fixJs(code) {
   code = code.replace(
     /(?<=from\s+['"])(\.[^'"]+)(?=['"])/g,
     (match, p1) => (p1.endsWith('.js') ? match : `${p1}.js`)
   );
-  if (needsBufferImport && !code.includes("import Buffer from './buffer.js'") && !code.includes("import * as Buffer") && /\bBuffer\.[a-zA-Z]/.test(code)) {
-    code = BUFFER_IMPORT + code;
-  }
   return code;
 }
 
@@ -49,15 +42,6 @@ function fixDts(code) {
 let count = 0;
 for (const dir of targets) {
   if (!fs.existsSync(dir)) continue;
-  const isParser = dir.endsWith('parser/dist');
-
-  if (isParser) {
-    const bufferDest = path.join(dir, 'buffer.js');
-    if (!fs.existsSync(bufferDest)) {
-      fs.writeFileSync(bufferDest, BUFFER_SHIM_CONTENT);
-      count++;
-    }
-  }
 
   const files = walk(dir).filter(f => f.endsWith('.js') || f.endsWith('.d.ts'));
   for (const full of files) {
@@ -66,7 +50,7 @@ for (const dir of targets) {
     const original = code;
 
     if (file.endsWith('.js')) {
-      code = fixJs(code, !isParser);
+      code = fixJs(code);
     } else if (file.endsWith('.d.ts')) {
       code = fixDts(code);
     }
