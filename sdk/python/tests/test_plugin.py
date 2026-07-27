@@ -100,9 +100,8 @@ class TestPluginResolver(unittest.TestCase):
             "b.alp": '!import: "a.alp"\n@feature\n  id: b\n',
         })
         with self.assertRaises(AlpSyntaxError):
-            self.resolver.parse_workspace(
-                open(os.path.join(root, "a.alp"), encoding="utf-8").read(), root
-            )
+            with open(os.path.join(root, "a.alp"), encoding="utf-8") as f:
+                self.resolver.parse_workspace(f.read(), root)
 
     def test_rejects_remote_imports(self):
         # http (non-https) is rejected even though remote imports are supported.
