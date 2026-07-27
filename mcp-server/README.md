@@ -52,6 +52,15 @@ Once connected via MCP, the server exposes the following tools to the LLM agent:
 - **`alp_get_swarm_marketplace`**: List registered skills from `@swarm_marketplace` objects, optionally filtered by category.
 - **`alp_get_event_mesh`**: List event mesh topics and recent events from `@event_mesh` objects.
 
+**Macro Expansion (v37.0.0)**
+- **`alp_get_macros`**: List all `@macro` definitions in the workspace.
+- **`alp_expand_macro`**: Expand a `@macro` definition by ID and return the generated objects.
+
+**Memory Mesh (v38.0.0)**
+- **`alp_memory_store`**: Store a memory node in the workspace memory mesh.
+- **`alp_memory_query`**: Query the memory mesh for relevant memories by keyword, agent, or tag.
+- **`alp_memory_stats`**: Return memory mesh statistics (node count, decay scores, top tags).
+
 ### Policy governance
 
 Mutating tools (`alp_update_status`, `alp_delegate`, `alp_decompose`) are

@@ -55,7 +55,7 @@ The extension provides hover documentation and autocomplete for all ALP object t
 | `!alp-version` | Declares the ALP specification version |
 | `!import` | Imports another `.alp` file or remote URL |
 | `!deprecated` | Marks an object as deprecated with migration note |
-| `!assert` | Boolean precondition that must hold (fail-closed since V9) |
+| `!assert` | Boolean precondition that must hold (fail-closed since V8) |
 | `!if` | Conditionally includes the next object based on ALPEL expression |
 | `!integrity` | SHA-256 integrity hash for remote imports |
 

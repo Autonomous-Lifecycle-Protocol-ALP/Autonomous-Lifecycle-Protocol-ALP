@@ -374,14 +374,14 @@ flowchart LR
 ## 🛠️ Quick Start
 
 ```bash
-# Install the CLI globally
-npm install -g @alp/cli
+# Install the CLI from source (not yet published to npm)
+npm ci && npm run build --workspace @alp/cli
 
 # Scaffold a new ALP workspace
-alp init --template react
+node cli/dist/index.js init
 
 # Start the execution engine
-alp run
+node cli/dist/index.js run
 ```
 
 ---
@@ -391,15 +391,11 @@ alp run
 Released versions are tracked in the [versioning spec](/spec/10-versioning.md). This section captures active and planned focus areas.
 
 | Era | Versions | Focus |
-||---|---|
+|---|---|---|
 | V8 — The Collaboration Era | 38.0.0–38.x | Event mesh, swarm marketplace, macro expansion, collaboration/negotiation/reputation, memory mesh |
 | V9 — Native Desktop | 39.0.0 | SHAM IDE cross-platform release, native ALP integration, Monaco editor, agent manager, auto-updater, Pro/Enterprise licensing |
 | Post-10 forward look | 10.x–12.x | Grammar refinements, distributed enforcement optimizations, auto-negotiation, memory-mesh federation, next-era specification candidate |
 
 ### What’s Next
-- **SHAM IDE** — cross-platform desktop application for Mac, Windows, and Linux with native ALP integration.
-- **Event Mesh & Swarm Marketplace** — decoupled pub/sub topic routing, autonomous skill discovery, category-based listings, cost tracking, and invocation.
-- **Memory Mesh Federation** — persistent cross-agent query/store/mesh-stats APIs for long-running collaborative tasks.
-- **Macro Expansion** — declarative `@macro` blocks with `iterate_over`, `as`, and template expansion.
-- **Collaboration** — `TeamComposer`, `Negotiator`, `ReputationStore`, and `Capability` objects.
-- **Predictive Policy** — `PredictivePolicyEngine` with anomaly scoring and baseline profiles for adaptive governance.
+- **SHAM IDE** (V9, 39.0.0) — cross-platform desktop application for Mac, Windows, and Linux with native ALP integration, Monaco editor, agent manager, auto-updater, and Pro/Enterprise licensing.
+- **Post-10 Forward Look** (10.x–12.x) — grammar refinements, distributed enforcement optimizations, auto-negotiation, memory-mesh federation, and next-era specification candidate.

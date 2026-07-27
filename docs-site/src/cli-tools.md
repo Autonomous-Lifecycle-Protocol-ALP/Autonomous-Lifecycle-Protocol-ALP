@@ -1,6 +1,6 @@
 # CLI Verification & Tools
 
-The `@alp/cli` is more than a validator; it's a complete ecosystem manager. Here is the full suite of **38 CLI commands** available in `16.1.0`. New in v16.1: E2E integration tests, enriched examples, and expanded MCP tooling.
+The `@alp/cli` is more than a validator; it's a complete ecosystem manager. Here is the full suite of CLI commands available.
 
 ## Execution Engine (`alp run`)
 
@@ -681,7 +681,7 @@ alp resilience report default
 ## Project Initialization (`alp init`)
 
 Scaffold a new ALP workspace in the current directory. Creates the `.alp/`
-directory with starter `project.alp`, `agents.alp`, and `workflows.alp` files.
+directory with a starter `project.alp` file.
 
 ```bash
 # Initialize a new ALP workspace
