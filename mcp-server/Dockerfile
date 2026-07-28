@@ -13,7 +13,7 @@ RUN npm ci --ignore-scripts
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build --workspace @alp/parser --workspace @alp/mcp-server
+RUN npm run build --workspace @autonomous-lifecycle-protocol-alp/parser --workspace @autonomous-lifecycle-protocol-alp/mcp-server
 
 FROM base AS runner
 RUN addgroup --system --gid 1001 alp && \

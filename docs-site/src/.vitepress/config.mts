@@ -87,7 +87,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/younglord3302/Autonomous-Lifecycle-Protocol-ALP' }
+      { icon: 'github', link: 'https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP' }
     ]
   }
 })
