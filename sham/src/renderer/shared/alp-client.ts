@@ -71,7 +71,7 @@ export async function getCloudSync() {
   return (api?.getCloudSync?.() ?? { enabled: false }) as CloudSyncState;
 }
 
-export async function setCloudSync(state: { enabled: boolean; endpoint?: string }) {
+export async function setCloudSync(state: { enabled: boolean; endpoint?: string; workspaceId?: string }) {
   return (api?.setCloudSync?.(state) ?? state) as CloudSyncState;
 }
 

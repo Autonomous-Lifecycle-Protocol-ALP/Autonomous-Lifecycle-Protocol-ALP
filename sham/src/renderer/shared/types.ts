@@ -59,6 +59,7 @@ export interface CloudSyncState {
   enabled: boolean;
   lastSyncAt?: string;
   endpoint?: string;
+  workspaceId?: string;
 }
 
 export interface TeamMember {

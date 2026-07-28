@@ -19,7 +19,7 @@ contextBridge.exposeInMainWorld('shamAPI', {
     expiresAt?: string;
   }) => ipcRenderer.invoke('pro-activate-license', info),
   getCloudSync: () => ipcRenderer.invoke('pro-get-cloud-sync'),
-  setCloudSync: (state: { enabled: boolean; endpoint?: string }) =>
+  setCloudSync: (state: { enabled: boolean; endpoint?: string; workspaceId?: string }) =>
     ipcRenderer.invoke('pro-set-cloud-sync', state),
   getTeam: () => ipcRenderer.invoke('pro-get-team'),
   inviteMember: (member: {

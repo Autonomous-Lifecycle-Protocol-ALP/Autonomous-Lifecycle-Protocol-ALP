@@ -1,8 +1,16 @@
 import { ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { randomBytes, createCipheriv, createDecipheriv } from 'crypto';
+import { createServer, IncomingMessage, ServerResponse } from 'http';
+import { join } from 'path';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 
 let store: any = null;
+
+const SYNC_DATA_FILE = join(process.resourcesPath || process.cwd(), 'sync-data.json');
+const SYNC_SERVER_PORT = 19732; // SHAM sync port
+let syncServer: ReturnType<typeof createServer> | null = null;
+const syncStore: Record<string, { encrypted: string; updatedAt: string }> = {};
 
 async function getStore() {
   if (!store) {
@@ -26,6 +34,8 @@ async function getStore() {
             enabled: { type: 'boolean' },
             lastSyncAt: { type: 'string' },
             endpoint: { type: 'string' },
+            workspaceId: { type: 'string' },
+            key: { type: 'string' },
           },
           default: { enabled: false },
         },
@@ -75,6 +85,87 @@ function decrypt(payload: string, keyHex: string) {
   return Buffer.concat([decipher.update(encrypted), decipher.final()]).toString('utf8');
 }
 
+function loadSyncData() {
+  try {
+    if (existsSync(SYNC_DATA_FILE)) {
+      const raw = readFileSync(SYNC_DATA_FILE, 'utf-8');
+      Object.assign(syncStore, JSON.parse(raw));
+    }
+  } catch {
+    // ignore corrupt sync data
+  }
+}
+
+function persistSyncData() {
+  try {
+    const dir = require('path').dirname(SYNC_DATA_FILE);
+    if (!existsSync(dir)) {
+      mkdirSync(dir, { recursive: true });
+    }
+    writeFileSync(SYNC_DATA_FILE, JSON.stringify(syncStore), 'utf-8');
+  } catch {
+    // ignore write errors
+  }
+}
+
+function startSyncServer() {
+  if (syncServer) return syncServer;
+
+  loadSyncData();
+
+  syncServer = createServer((req: IncomingMessage, res: ServerResponse) => {
+    res.setHeader('Content-Type', 'application/json');
+
+    if (req.method === 'GET') {
+      const workspaceId = req.url?.split('/')[1] || 'workspace';
+      const record = syncStore[workspaceId];
+      if (!record) {
+        res.statusCode = 404;
+        res.end(JSON.stringify({ error: 'Workspace not found' }));
+        return;
+      }
+      res.statusCode = 200;
+      res.end(JSON.stringify({ encrypted: record.encrypted, updatedAt: record.updatedAt }));
+      return;
+    }
+
+    if (req.method === 'POST') {
+      let body = '';
+      req.on('data', (chunk) => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const parsed = JSON.parse(body);
+          const workspaceId = req.url?.split('/')[1] || 'workspace';
+          syncStore[workspaceId] = {
+            encrypted: parsed.encrypted,
+            updatedAt: new Date().toISOString(),
+          };
+          persistSyncData();
+          res.statusCode = 200;
+          res.end(JSON.stringify({ success: true, updatedAt: syncStore[workspaceId].updatedAt }));
+        } catch {
+          res.statusCode = 400;
+          res.end(JSON.stringify({ error: 'Invalid payload' }));
+        }
+      });
+      return;
+    }
+
+    res.statusCode = 405;
+    res.end(JSON.stringify({ error: 'Method not allowed' }));
+  });
+
+  syncServer.listen(SYNC_SERVER_PORT, '127.0.0.1', () => {
+    // local sync server ready
+  });
+
+  return syncServer;
+}
+
+function getLocalSyncEndpoint() {
+  return `http://127.0.0.1:${SYNC_SERVER_PORT}`;
+}
+
 export function setupProFeatures() {
   ipcMain.handle('pro-get-license', async () => {
     const s = await getStore();
@@ -92,9 +183,14 @@ export function setupProFeatures() {
     return s.get('cloudSync');
   });
 
-  ipcMain.handle('pro-set-cloud-sync', async (_event, state: { enabled: boolean; endpoint?: string }) => {
+  ipcMain.handle('pro-set-cloud-sync', async (_event, state: { enabled: boolean; endpoint?: string; workspaceId?: string }) => {
     const s = await getStore();
-    s.set('cloudSync', { ...s.get('cloudSync'), ...state });
+    const next = { ...s.get('cloudSync'), ...state };
+    s.set('cloudSync', next);
+    if (next.enabled && !next.endpoint) {
+      startSyncServer();
+      s.set('cloudSync', { ...next, endpoint: getLocalSyncEndpoint() });
+    }
     return s.get('cloudSync');
   });
 
@@ -108,8 +204,8 @@ export function setupProFeatures() {
     try {
       const s = await getStore();
       const config = s.get('cloudSync');
-      if (!config.enabled || !config.endpoint) {
-        return { success: false, error: 'Cloud sync is not enabled or endpoint is missing' };
+      if (!config.enabled) {
+        return { success: false, error: 'Cloud sync is not enabled' };
       }
       const key = getSyncKey();
       if (!key) {
@@ -117,10 +213,17 @@ export function setupProFeatures() {
       }
       const plaintext = JSON.stringify(payload.data);
       const encrypted = encrypt(plaintext, key);
-      const response = await fetch(config.endpoint, {
+      const endpoint = config.endpoint || getLocalSyncEndpoint();
+      if (!endpoint) {
+        return { success: false, error: 'Sync endpoint is missing' };
+      }
+      if (endpoint === getLocalSyncEndpoint()) {
+        startSyncServer();
+      }
+      const response = await fetch(`${endpoint}/${config.workspaceId || 'workspace'}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ encrypted, workspaceId: config.workspaceId }),
+        body: JSON.stringify({ encrypted }),
       });
       if (!response.ok) {
         return { success: false, error: `Sync push failed: ${response.status}` };
@@ -136,14 +239,21 @@ export function setupProFeatures() {
     try {
       const s = await getStore();
       const config = s.get('cloudSync');
-      if (!config.enabled || !config.endpoint) {
-        return { success: false, error: 'Cloud sync is not enabled or endpoint is missing' };
+      if (!config.enabled) {
+        return { success: false, error: 'Cloud sync is not enabled' };
       }
       const key = getSyncKey();
       if (!key) {
         return { success: false, error: 'Missing sync encryption key' };
       }
-      const response = await fetch(`${config.endpoint}/${config.workspaceId || 'workspace'}`, {
+      const endpoint = config.endpoint || getLocalSyncEndpoint();
+      if (!endpoint) {
+        return { success: false, error: 'Sync endpoint is missing' };
+      }
+      if (endpoint === getLocalSyncEndpoint()) {
+        startSyncServer();
+      }
+      const response = await fetch(`${endpoint}/${config.workspaceId || 'workspace'}`, {
         headers: { 'Accept': 'application/json' },
       });
       if (!response.ok) {

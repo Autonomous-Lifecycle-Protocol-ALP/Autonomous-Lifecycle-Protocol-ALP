@@ -27,6 +27,7 @@ export function ProPanel() {
   const [licenseKey, setLicenseKey] = useState('');
   const [licenseEmail, setLicenseEmail] = useState('');
   const [memberEmail, setMemberEmail] = useState('');
+  const [workspaceId, setWorkspaceId] = useState('');
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<Feedback>(null);
 
@@ -38,6 +39,8 @@ export function ProPanel() {
     setLicense(await getLicense());
     setCloudSyncState(await getCloudSync());
     setTeam(await getTeam());
+    const cs = await getCloudSync();
+    setWorkspaceId(cs.workspaceId ?? '');
   }
 
   async function handleActivate() {
@@ -63,6 +66,12 @@ export function ProPanel() {
   async function handleCloudSyncToggle() {
     if (!cloudSync) return;
     const next = { ...cloudSync, enabled: !cloudSync.enabled };
+    setCloudSyncState(await setCloudSync(next));
+  }
+
+  async function handleWorkspaceIdChange() {
+    if (!cloudSync) return;
+    const next = { ...cloudSync, workspaceId: workspaceId || undefined };
     setCloudSyncState(await setCloudSync(next));
   }
 
@@ -217,10 +226,17 @@ export function ProPanel() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <input
                   style={proStyles.input}
+                  placeholder="Workspace ID"
+                  value={workspaceId}
+                  onChange={e => setWorkspaceId(e.target.value)}
+                  onBlur={handleWorkspaceIdChange}
+                />
+                <input
+                  style={proStyles.input}
                   placeholder="Sync endpoint"
                   value={cloudSync.endpoint ?? ''}
                   onChange={async e =>
-                    setCloudSyncState(await setCloudSync({ enabled: true, endpoint: e.target.value }))
+                    setCloudSyncState(await setCloudSync({ enabled: true, endpoint: e.target.value, workspaceId: workspaceId || undefined }))
                   }
                 />
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
