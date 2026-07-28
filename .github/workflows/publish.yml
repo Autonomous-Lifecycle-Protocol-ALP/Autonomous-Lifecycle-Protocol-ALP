@@ -22,11 +22,11 @@ jobs:
         with:
           node-version: "24"
           cache: "npm"
-          registry-url: "https://npm.pkg.github.com"
-          token: ${{ secrets.PAT_GITHUB_TOKEN }}
 
-      - name: Configure scoped registry for @alp packages
-        run: echo "@alp:registry=https://npm.pkg.github.com" >> .npmrc
+      - name: Write npm auth and registry config
+        run: |
+          echo "@alp:registry=https://npm.pkg.github.com" > .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.PAT_GITHUB_TOKEN }}" >> .npmrc
 
       - name: Install dependencies
         run: npm ci
