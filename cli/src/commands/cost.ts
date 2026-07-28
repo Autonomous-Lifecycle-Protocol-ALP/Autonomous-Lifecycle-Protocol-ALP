@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { MeteringStore, CostOptimizer, CostEstimator } from '@alp/parser';
+import { MeteringStore, CostOptimizer, CostEstimator } from '@younglord3302/parser';
 
 export function costCommand(taskId?: string, opts?: { workflow?: string }) {
   const cwd = process.cwd();
@@ -119,3 +119,4 @@ function parseSimpleWorkflow(raw: string, workflowId: string): Record<string, an
     steps,
   }
 }
+

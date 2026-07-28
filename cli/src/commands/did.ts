@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { DIDIdentityEngine } from '@alp/parser';
+import { DIDIdentityEngine } from '@younglord3302/parser';
 
 export function registerDIDCommand(program: Command) {
   const did = program
@@ -40,3 +40,4 @@ export function registerDIDCommand(program: Command) {
       console.log(`  Status:      ${receipt.status === 'CONFIRMED' ? '✅ CONFIRMED' : '⏳ PENDING'}\n`);
     });
 }
+

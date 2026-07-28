@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { AssetContextEngine, AssetType } from '@alp/parser';
+import { AssetContextEngine, AssetType } from '@younglord3302/parser';
 
 export function registerAssetCommand(program: Command) {
   const asset = program
@@ -52,3 +52,4 @@ export function registerAssetCommand(program: Command) {
       }
     });
 }
+

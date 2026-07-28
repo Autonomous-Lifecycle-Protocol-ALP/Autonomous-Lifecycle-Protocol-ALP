@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { AlpParser, AlpObject } from '@alp/parser';
+import { AlpParser, AlpObject } from '@younglord3302/parser';
 
 export function lintCommand() {
   const alpDir = path.resolve(process.cwd(), '.alp');
@@ -77,3 +77,4 @@ export function lintCommand() {
     process.exit(1);
   }
 }
+

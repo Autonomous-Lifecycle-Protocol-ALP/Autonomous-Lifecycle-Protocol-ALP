@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { CodeIndexEngine, ChunkStrategy } from '@alp/parser';
+import { CodeIndexEngine, ChunkStrategy } from '@younglord3302/parser';
 
 export function registerCodeIndexCommand(program: Command) {
   const codeIndex = program
@@ -81,3 +81,4 @@ export function registerCodeIndexCommand(program: Command) {
       console.log('');
     });
 }
+

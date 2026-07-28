@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { AlpParser, AlpObject, AlpGraph } from '@alp/parser';
+import { AlpParser, AlpObject, AlpGraph } from '@younglord3302/parser';
 import * as yaml from 'yaml';
 
 interface ExportOptions {
@@ -76,3 +76,4 @@ export function exportCommand(options: ExportOptions) {
     console.log(outputData);
   }
 }
+

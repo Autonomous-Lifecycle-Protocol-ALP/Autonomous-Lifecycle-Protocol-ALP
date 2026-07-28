@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { AlpParser } from '@alp/parser';
+import { AlpParser } from '@younglord3302/parser';
 
 export function doctorCommand() {
   console.log('🩺 ALP Doctor: Checking workspace health...\n');
@@ -65,8 +65,8 @@ export function doctorCommand() {
     try {
       const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
       const deps = { ...pkg.dependencies, ...pkg.devDependencies };
-      if (!deps['@alp/sdk'] && !deps['@alp/cli']) {
-        console.warn('⚠️  [WARN] `@alp/sdk` or `@alp/cli` are not listed in package.json dependencies.');
+      if (!deps['@younglord3302/sdk'] && !deps['@younglord3302/cli']) {
+        console.warn('⚠️  [WARN] `@younglord3302/sdk` or `@younglord3302/cli` are not listed in package.json dependencies.');
         warnings++;
       } else {
         console.log('✅ ALP packages found in package.json.');
@@ -86,3 +86,4 @@ export function doctorCommand() {
     console.log('Your ALP workspace is perfectly healthy! 🎉');
   }
 }
+

@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { FormalVerificationEngine } from '@alp/parser';
+import { FormalVerificationEngine } from '@younglord3302/parser';
 
 export function registerFormalVerifyCommand(program: Command) {
   const formal = program
@@ -49,3 +49,4 @@ export function registerFormalVerifyCommand(program: Command) {
       console.log('-------------------------------------\n');
     });
 }
+

@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { EdgeModelEngine } from '@alp/parser';
+import { EdgeModelEngine } from '@younglord3302/parser';
 
 export function registerEdgeCommand(program: Command) {
   const edge = program
@@ -45,3 +45,4 @@ export function registerEdgeCommand(program: Command) {
       console.log(`\n  Output:\n  ${result.completion}\n`);
     });
 }
+

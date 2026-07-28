@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { PluginResolver, PluginInfo } from '@alp/parser';
+import { PluginResolver, PluginInfo } from '@younglord3302/parser';
 
 export interface PluginCommandOptions {
   url?: string;
@@ -112,3 +112,4 @@ export async function pluginCommand(sub: string | undefined, target: string | un
       process.exit(1);
   }
 }
+

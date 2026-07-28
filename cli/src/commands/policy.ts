@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { AlpParser, AlpObject, PolicyEngine, PolicyActionKind } from '@alp/parser';
+import { AlpParser, AlpObject, PolicyEngine, PolicyActionKind } from '@younglord3302/parser';
 
 interface PolicyOptions {
   path?: string;
@@ -132,3 +132,4 @@ function loadDir(dir: string, parser: AlpParser, out: AlpObject[]) {
     }
   }
 }
+

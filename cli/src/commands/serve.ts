@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as http from 'http';
-import { AlpParser, AlpObject, StateStore, computeAnalytics } from '@alp/parser';
+import { AlpParser, AlpObject, StateStore, computeAnalytics } from '@younglord3302/parser';
 import { readEvents, runtimeLogPath } from '../runtime';
 import { RegistryStore } from '../registry-store';
 import { loadAlprc } from '../registry';
@@ -827,3 +827,4 @@ setInterval(refresh, 4000);
 </script>
 </body>
 </html>`;
+

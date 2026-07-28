@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { EventMeshEngine, MeshEventType } from '@alp/parser';
+import { EventMeshEngine, MeshEventType } from '@younglord3302/parser';
 
 export function registerEventMeshCommand(program: Command) {
   const meshCmd = program
@@ -28,3 +28,4 @@ export function registerEventMeshCommand(program: Command) {
       console.log(`  Payload:      ${event.payload}\n`);
     });
 }
+

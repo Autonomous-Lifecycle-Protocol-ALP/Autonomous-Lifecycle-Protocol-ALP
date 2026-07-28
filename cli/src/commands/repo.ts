@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { ExternalResolver } from '@alp/parser';
+import { ExternalResolver } from '@younglord3302/parser';
 
 /**
  * `alp repo` — V4 Pillar 2: Cross-Repository Orchestration.
@@ -73,3 +73,4 @@ export function repoCommand(sub: string | undefined, options?: { fetch?: boolean
       process.exit(1);
   }
 }
+

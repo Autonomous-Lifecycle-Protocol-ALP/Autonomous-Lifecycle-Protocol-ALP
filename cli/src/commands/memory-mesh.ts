@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { MemoryMeshEngine } from '@alp/parser';
+import { MemoryMeshEngine } from '@younglord3302/parser';
 
 export function registerMemoryMeshCommand(program: Command) {
   const meshCmd = program
@@ -59,3 +59,4 @@ export function registerMemoryMeshCommand(program: Command) {
       console.log('');
     });
 }
+

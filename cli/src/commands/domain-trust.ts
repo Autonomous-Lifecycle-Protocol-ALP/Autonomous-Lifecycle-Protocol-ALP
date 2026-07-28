@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { DomainTrustAnchor, DomainTrustManager, create_domain_keypair } from '@alp/parser';
+import { DomainTrustAnchor, DomainTrustManager, create_domain_keypair } from '@younglord3302/parser';
 
 export function domainTrustCommand(subcommand: string, ...args: string[]) {
   const cwd = process.cwd();
@@ -82,3 +82,4 @@ export function domainTrustCommand(subcommand: string, ...args: string[]) {
       process.exit(1);
   }
 }
+

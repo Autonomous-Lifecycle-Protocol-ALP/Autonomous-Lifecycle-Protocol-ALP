@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { ArchDecomposerEngine } from '@alp/parser';
+import { ArchDecomposerEngine } from '@younglord3302/parser';
 
 export function registerDecomposeCommand(program: Command) {
   const decompose = program
@@ -56,3 +56,4 @@ export function registerDecomposeCommand(program: Command) {
       console.log('');
     });
 }
+

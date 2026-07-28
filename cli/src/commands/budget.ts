@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { CostBudgetEngine } from '@alp/parser';
+import { CostBudgetEngine } from '@younglord3302/parser';
 
 export function registerBudgetCommand(program: Command) {
   const budget = program
@@ -43,3 +43,4 @@ export function registerBudgetCommand(program: Command) {
       console.log(`  Est. Cost/1k:   $${route.estimatedCostPer1k.toFixed(5)} USD\n`);
     });
 }
+

@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { CRDTSyncEngine } from '@alp/parser';
+import { CRDTSyncEngine } from '@younglord3302/parser';
 
 export function registerCRDTSyncCommand(program: Command) {
   const sync = program
@@ -44,3 +44,4 @@ export function registerCRDTSyncCommand(program: Command) {
       console.log(`  Converged:  ${JSON.stringify(converged)}\n`);
     });
 }
+

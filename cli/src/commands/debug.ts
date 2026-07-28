@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { EventStore } from '@alp/parser';
-import { SnapshotStore, DebugSession, EngineSnapshot } from '@alp/parser';
+import { EventStore } from '@younglord3302/parser';
+import { SnapshotStore, DebugSession, EngineSnapshot } from '@younglord3302/parser';
 
 export function debugCommand(runId: string, opts: { step?: number; toStage?: string; diff?: [string, string] }) {
   const cwd = process.cwd();
@@ -73,3 +73,4 @@ function printSnapshot(snap: EngineSnapshot) {
   }
   console.log('');
 }
+

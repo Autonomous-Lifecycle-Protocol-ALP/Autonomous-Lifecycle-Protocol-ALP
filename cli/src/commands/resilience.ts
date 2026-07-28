@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { ResilientSwarm, AgentStatus } from '@alp/parser';
+import { ResilientSwarm, AgentStatus } from '@younglord3302/parser';
 
 export function resilienceCommand(subcommand: string, ...args: string[]) {
   const cwd = process.cwd();
@@ -42,3 +42,4 @@ export function resilienceCommand(subcommand: string, ...args: string[]) {
       process.exit(1);
   }
 }
+

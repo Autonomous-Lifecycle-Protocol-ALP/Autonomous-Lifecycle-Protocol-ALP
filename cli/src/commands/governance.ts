@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { GovernanceEngine, PolicyBallot, VoteValue } from '@alp/parser';
+import { GovernanceEngine, PolicyBallot, VoteValue } from '@younglord3302/parser';
 
 export function governanceCommand(subcommand: string, ...args: string[]) {
   const cwd = process.cwd();
@@ -63,3 +63,4 @@ export function governanceCommand(subcommand: string, ...args: string[]) {
       process.exit(1);
   }
 }
+

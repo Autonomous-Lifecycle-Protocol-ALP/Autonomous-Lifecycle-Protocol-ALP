@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { AlpParser, AlpObject, TimelineEngine } from '@alp/parser';
+import { AlpParser, AlpObject, TimelineEngine } from '@younglord3302/parser';
 
 interface ScheduleOptions {
   next?: boolean;
@@ -128,3 +128,4 @@ function persistEnabled(alpDir: string, timelineId: string, enabled: boolean): v
     }
   }
 }
+

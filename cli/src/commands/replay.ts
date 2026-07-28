@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { EventStore, EventType, ReplayOptions } from '@alp/parser';
+import { EventStore, EventType, ReplayOptions } from '@younglord3302/parser';
 
 export function replayCommand(opts: {
   from?: string;
@@ -55,3 +55,4 @@ export function replayCommand(opts: {
   }
   console.log('');
 }
+
