@@ -1,0 +1,6 @@
+!alp-version: 2.0.0
+
+@task
+  id: task-auth
+  description: "Implement authentication"
+  status: [ ]

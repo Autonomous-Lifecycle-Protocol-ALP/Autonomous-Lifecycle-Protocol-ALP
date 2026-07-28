@@ -19,6 +19,14 @@ import {
   MemoryNode,
   MemoryQueryResult,
   MemoryMeshStats,
+  PolicyEngine,
+  PolicyActionKind,
+  TimeWindow,
+  ApprovalRule,
+  PolicyProposal,
+  PolicyDecision,
+  PolicyQuery,
+  FederatedTrustRoot,
 } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export class AlpWorkspace {
@@ -115,5 +123,17 @@ export {
   MemoryNode,
   MemoryQueryResult,
   MemoryMeshStats,
+};
+
+// v41.0.0 policy surface
+export {
+  PolicyEngine,
+  PolicyActionKind,
+  TimeWindow,
+  ApprovalRule,
+  PolicyProposal,
+  PolicyDecision,
+  PolicyQuery,
+  FederatedTrustRoot,
 };
 

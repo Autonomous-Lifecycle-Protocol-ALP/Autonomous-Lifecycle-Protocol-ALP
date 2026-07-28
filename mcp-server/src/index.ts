@@ -194,7 +194,7 @@ function audit(
 
 // ─── MCP Server ───────────────────────────────────────────────────────────
 const server = new Server(
-  { name: 'alp-mcp-server', version: '40.0.0' },
+  { name: 'alp-mcp-server', version: '41.0.0' },
   { capabilities: { tools: {}, resources: { subscribe: true }, prompts: {} } }
 );
 
@@ -333,14 +333,41 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     },
     {
       name: 'alp_search',
-      description: 'Fuzzy search across all object IDs and descriptions',
+      description: 'Global workspace search with regex and type filters (v41.0.0).',
       inputSchema: {
         type: 'object' as const,
         properties: {
-          query: { type: 'string', description: 'Search query' },
+          query: { type: 'string', description: 'Search query (supports regex when useRegex is true)' },
+          type: { type: 'string', description: 'Filter by object type (e.g. task, agent, policy)' },
+          useRegex: { type: 'boolean', description: 'Treat query as a regular expression' },
           cwd: { type: 'string' }
         },
         required: ['query']
+      }
+    },
+    {
+      name: 'alp_get_settings',
+      description: 'Get workspace settings (v41.0.0 IDE Productivity).',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          key: { type: 'string', description: 'Optional specific setting key to retrieve' },
+          cwd: { type: 'string' }
+        },
+        required: []
+      }
+    },
+    {
+      name: 'alp_set_settings',
+      description: 'Set a workspace setting (v41.0.0 IDE Productivity).',
+      inputSchema: {
+        type: 'object' as const,
+        properties: {
+          key: { type: 'string', description: 'Setting key' },
+          value: { type: 'string', description: 'Setting value (JSON or plain string)' },
+          cwd: { type: 'string' }
+        },
+        required: ['key', 'value']
       }
     },
     {
@@ -774,13 +801,94 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     case 'alp_search': {
       const objects = loadWorkspace(cwd);
-      const query = (args?.query as string).toLowerCase();
-      const results = objects.filter(o => 
-        (o.id && o.id.toLowerCase().includes(query)) ||
-        (o.description && o.description.toLowerCase().includes(query))
-      );
+      const query = (args?.query as string) || '';
+      const typeFilter = args?.type as string | undefined;
+      const useRegex = Boolean(args?.useRegex);
+
+      let filtered = objects;
+      if (typeFilter) {
+        filtered = filtered.filter(o => o._type === typeFilter);
+      }
+
+      let results: AlpObject[];
+      if (useRegex) {
+        try {
+          const regex = new RegExp(query, 'i');
+          results = filtered.filter(o =>
+            (o.id && regex.test(o.id)) ||
+            (o.description && regex.test(o.description)) ||
+            regex.test(JSON.stringify(o))
+          );
+        } catch (err: any) {
+          return {
+            content: [{ type: 'text', text: `Error: invalid regex: ${err.message}` }],
+            isError: true,
+          };
+        }
+      } else {
+        const lowered = query.toLowerCase();
+        results = filtered.filter(o =>
+          (o.id && o.id.toLowerCase().includes(lowered)) ||
+          (o.description && o.description.toLowerCase().includes(lowered))
+        );
+      }
+
       return {
         content: [{ type: 'text', text: JSON.stringify(results.map(r => ({ id: r.id, type: r._type, description: r.description })), null, 2) }]
+      };
+    }
+
+    case 'alp_get_settings': {
+      const alpDir = path.join(cwd, '.alp');
+      const settingsPath = path.join(alpDir, 'settings.json');
+      if (!fs.existsSync(settingsPath)) {
+        return {
+          content: [{ type: 'text', text: JSON.stringify({}, null, 2) }],
+        };
+      }
+      const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+      const key = args?.key as string | undefined;
+      if (key) {
+        if (key in settings) {
+          return {
+            content: [{ type: 'text', text: JSON.stringify({ [key]: settings[key] }, null, 2) }],
+          };
+        }
+        return {
+          content: [{ type: 'text', text: JSON.stringify({ error: `Setting "${key}" not found.` }, null, 2) }],
+          isError: true,
+        };
+      }
+      return {
+        content: [{ type: 'text', text: JSON.stringify(settings, null, 2) }],
+      };
+    }
+
+    case 'alp_set_settings': {
+      const alpDir = path.join(cwd, '.alp');
+      const settingsPath = path.join(alpDir, 'settings.json');
+      const key = args?.key as string;
+      const rawValue = args?.value as string;
+      if (!key || rawValue === undefined) {
+        return {
+          content: [{ type: 'text', text: 'Error: key and value are required.' }],
+          isError: true,
+        };
+      }
+      let parsedValue: unknown = rawValue;
+      try {
+        parsedValue = JSON.parse(rawValue);
+      } catch {
+        // keep as string
+      }
+      const existing: Record<string, unknown> = fs.existsSync(settingsPath)
+        ? JSON.parse(fs.readFileSync(settingsPath, 'utf8'))
+        : {};
+      existing[key] = parsedValue;
+      fs.mkdirSync(alpDir, { recursive: true });
+      fs.writeFileSync(settingsPath, JSON.stringify(existing, null, 2), 'utf8');
+      return {
+        content: [{ type: 'text', text: JSON.stringify({ key, value: parsedValue }, null, 2) }],
       };
     }
 

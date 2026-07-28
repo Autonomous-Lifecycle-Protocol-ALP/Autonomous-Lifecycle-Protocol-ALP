@@ -61,12 +61,15 @@ import { registerSwarmMarketplaceCommand } from './commands/swarm-marketplace';
 import { registerMacroCommand } from './commands/macro';
 import { registerCollabCommand } from './commands/collab';
 import { registerMemoryMeshCommand } from './commands/memory-mesh';
+import { settingsCommand } from './commands/settings';
+import { searchCommand } from './commands/search';
+import { gitCommand } from './commands/git';
 const program = new Command();
 
 program
   .name('alp')
   .description('Autonomous Lifecycle Protocol (ALP) CLI')
-  .version('40.0.0');
+  .version('41.0.0');
 
 program
   .command('init')
@@ -329,6 +332,30 @@ program
   .command('tui')
   .description('Launch the interactive terminal UI dashboard (v16.0.0)')
   .action(tuiCommand);
+
+program
+  .command('settings')
+  .description('Read and write workspace settings (v41.0.0 IDE Productivity)')
+  .option('--list', 'List all settings')
+  .option('--get <key>', 'Get a specific setting value')
+  .option('--set <key> <value>', 'Set a setting value')
+  .action((opts) => settingsCommand(opts));
+
+program
+  .command('search')
+  .description('Global workspace search with regex and file-type filters (v41.0.0)')
+  .option('--query <text>', 'Search query text')
+  .option('--type <type>', 'Filter by object type (e.g. task, agent)')
+  .option('--regex', 'Treat query as a regular expression')
+  .action((opts) => searchCommand(opts));
+
+program
+  .command('git')
+  .description('Built-in git status, diff, and commit panel (v41.0.0)')
+  .option('--status', 'Show git status (default)')
+  .option('--diff', 'Show git diff summary')
+  .option('--commit <message>', 'Stage all changes and commit')
+  .action((opts) => gitCommand(opts));
 
 registerTraceCommand(program);
 registerZKCommand(program);

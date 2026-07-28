@@ -1030,4 +1030,68 @@ alp collab merge my-doc branch-1
 alp memory-mesh stats
 ```
 
+## Workspace Settings (`alp settings`)
+
+*New in v41.0.0 (IDE Productivity).* Read and write workspace-level IDE and agent configuration.
+
+```bash
+# List all settings
+alp settings --list
+
+# Get a specific setting
+alp settings --get theme
+
+# Set a setting
+alp settings --set theme dark
+alp settings --set default_agent agent-coder
+```
+
+| Flag | Description |
+| :--- | :--- |
+| `--list` | List all configured settings |
+| `--get <key>` | Get a specific setting value |
+| `--set <key> <value>` | Set a setting value (JSON or plain string) |
+
+## Global Search (`alp search`)
+
+*New in v41.0.0 (IDE Productivity).* Global workspace search with regex and file-type filters.
+
+```bash
+# Simple text search
+alp search --query "auth"
+
+# Filter by object type
+alp search --query "login" --type task
+
+# Regex search
+alp search --query "^task-.*" --regex
+```
+
+| Flag | Description |
+| :--- | :--- |
+| `--query <text>` | Search query text (required) |
+| `--type <type>` | Filter by object type (e.g. `task`, `agent`, `policy`) |
+| `--regex` | Treat query as a regular expression |
+
+## Git Panel (`alp git`)
+
+*New in v41.0.0 (IDE Productivity).* Built-in git status, diff, and commit panel.
+
+```bash
+# Show git status (default)
+alp git --status
+
+# Show diff summary
+alp git --diff
+
+# Stage all and commit
+alp git --commit "feat: add auth module"
+```
+
+| Flag | Description |
+| :--- | :--- |
+| `--status` | Show git status (default) |
+| `--diff` | Show git diff summary |
+| `--commit <message>` | Stage all changes and commit with message |
+
 

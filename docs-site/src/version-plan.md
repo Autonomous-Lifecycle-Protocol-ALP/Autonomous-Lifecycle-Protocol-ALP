@@ -1,6 +1,6 @@
 # ALP Version Plan
 
-**Current Release:** v40.0.0 — Native Desktop & SHAM IDE
+**Current Release:** v41.0.0 — IDE Productivity
 **Date:** 2026-07-29
 
 ---

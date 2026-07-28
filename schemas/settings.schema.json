@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://alp-protocol.com/schemas/settings.schema.json",
+  "title": "ALP Workspace Settings",
+  "description": "Native IDE and agent configuration for the workspace. Introduced in ALP v41.0.0 (IDE Productivity).",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "common.schema.json#/definitions/commonFields"
+    }
+  ],
+  "properties": {
+    "theme": {
+      "type": "string",
+      "enum": ["light", "dark", "system"],
+      "description": "UI theme preference for the native IDE."
+    },
+    "language": {
+      "type": "string",
+      "description": "Preferred language locale (e.g. \"en\", \"fr\", \"ja\")."
+    },
+    "default_agent": {
+      "type": "string",
+      "description": "Default agent role used when none is specified."
+    },
+    "trusted_paths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Glob patterns for paths that bypass policy enforcement."
+    },
+    "excluded_paths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Glob patterns for paths excluded from workspace operations."
+    },
+    "keyboard_shortcuts": {
+      "type": "object",
+      "description": "Customizable keyboard shortcut bindings.",
+      "additionalProperties": { "type": "string" }
+    }
+  }
+}
