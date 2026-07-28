@@ -1,6 +1,6 @@
 """ALP Python SDK"""
 
-__version__ = "39.0.0"
+__version__ = "40.0.0"
 
 from .models import AlpObject
 from .error import AlpError, SyntaxError, IndentationError, ValidationError, DirectiveError
@@ -443,3 +443,4 @@ __all__ = [
     "SwarmMarketplaceEngine",
     "SkillListing",
 ]
+

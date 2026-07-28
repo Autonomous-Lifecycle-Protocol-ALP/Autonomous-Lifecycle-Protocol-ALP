@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { VectorStoreEngine } from '@younglord3302/parser';
+import { VectorStoreEngine } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerVectorCommand(program: Command) {
   const vector = program
@@ -44,3 +44,4 @@ export function registerVectorCommand(program: Command) {
       console.log('');
     });
 }
+

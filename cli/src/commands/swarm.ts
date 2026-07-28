@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { AlpParser, AlpObject, SwarmClient, SwarmConfig } from '@younglord3302/parser';
+import { AlpParser, AlpObject, SwarmClient, SwarmConfig } from '@autonomous-lifecycle-protocol-alp/parser';
 
 /**
  * `alp swarm` — V4 Pillar 1: Remote & Networked Swarms.
@@ -116,4 +116,5 @@ export function swarmCommand(sub: string | undefined, swarmId: string | undefine
       process.exit(1);
   }
 }
+
 

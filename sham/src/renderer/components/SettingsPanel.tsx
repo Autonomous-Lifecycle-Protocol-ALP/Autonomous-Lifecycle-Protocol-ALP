@@ -96,11 +96,11 @@ export function SettingsPanel(): React.JSX.Element {
           </div>
           <div>
             <label style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'block', marginBottom: 4 }}>Parser Path</label>
-            <input className="input-field" defaultValue="@younglord3302/parser@39.0.0" readOnly />
+            <input className="input-field" defaultValue="@autonomous-lifecycle-protocol-alp/parser@40.0.0" readOnly />
           </div>
           <div>
             <label style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'block', marginBottom: 4 }}>SDK Path</label>
-            <input className="input-field" defaultValue="@younglord3302/sdk@39.0.0" readOnly />
+            <input className="input-field" defaultValue="@autonomous-lifecycle-protocol-alp/sdk@40.0.0" readOnly />
           </div>
         </div>
       </div>
@@ -109,7 +109,7 @@ export function SettingsPanel(): React.JSX.Element {
         <div className="section-card-title">About</div>
         <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
           <div><strong style={{ color: 'var(--text-primary)' }}>SHAM IDE</strong> v0.1.0</div>
-          <div>ALP Runtime v39.0.0</div>
+          <div>ALP Runtime v40.0.0</div>
           <div>Electron {process.versions.electron || 'latest'}</div>
           <div style={{ marginTop: 8 }}>
             <span className="badge badge-info">Catppuccin</span>
@@ -120,3 +120,6 @@ export function SettingsPanel(): React.JSX.Element {
     </div>
   );
 }
+
+
+

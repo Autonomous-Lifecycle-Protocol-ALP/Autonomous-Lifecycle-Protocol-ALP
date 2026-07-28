@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { HealingEngine, HEALING_DIR } from '@younglord3302/parser';
+import { HealingEngine, HEALING_DIR } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function healingCommand(subcommand: string, ...args: string[]) {
   const cwd = process.cwd();
@@ -41,4 +41,5 @@ export function healingCommand(subcommand: string, ...args: string[]) {
       process.exit(1);
   }
 }
+
 

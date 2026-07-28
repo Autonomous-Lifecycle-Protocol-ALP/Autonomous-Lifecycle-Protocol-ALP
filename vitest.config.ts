@@ -17,7 +17,8 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@younglord3302/parser': resolve('./parser/src/index.ts'),
+      '@autonomous-lifecycle-protocol-alp/parser': resolve('./parser/src/index.ts'),
     },
   },
 });
+

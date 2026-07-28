@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { ConsensusVoteEngine, VotingStrategy } from '@younglord3302/parser';
+import { ConsensusVoteEngine, VotingStrategy } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerConsensusVoteCommand(program: Command) {
   const voteCmd = program
@@ -59,4 +59,5 @@ export function registerConsensusVoteCommand(program: Command) {
       console.log('');
     });
 }
+
 

@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { CodeTransformEngine, TransformType } from '@younglord3302/parser';
+import { CodeTransformEngine, TransformType } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerCodeTransformCommand(program: Command) {
   const transformCmd = program
@@ -44,4 +44,5 @@ export function registerCodeTransformCommand(program: Command) {
       console.log(`  ${res.diffPreview.replace(/\n/g, '\n  ')}\n`);
     });
 }
+
 

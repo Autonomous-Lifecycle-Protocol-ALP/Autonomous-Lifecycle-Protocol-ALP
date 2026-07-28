@@ -1,7 +1,7 @@
 {
   "name": "playground",
   "private": true,
-  "version": "39.0.0",
+  "version": "40.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -14,7 +14,7 @@
     "react-dom": "^18.3.1",
     "@monaco-editor/react": "^4.6.0",
     "reactflow": "^11.11.4",
-    "@younglord3302/parser": "*"
+    "@autonomous-lifecycle-protocol-alp/parser": "*"
   },
   "devDependencies": {
     "@types/node": "^24.13.2",
@@ -26,3 +26,5 @@
     "vite": "^8.1.1"
   }
 }
+
+

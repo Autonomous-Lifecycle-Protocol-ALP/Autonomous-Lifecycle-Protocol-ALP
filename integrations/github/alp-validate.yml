@@ -3,7 +3,7 @@ name: "ALP Validate"
 # Validate the ALP workspace on every PR. Fails the check when any .alp file
 # is schema-invalid or the dependency graph has cycles, so a broken protocol
 # state can never be merged. Mirrors the `validate` job in the repo's own
-# .github/workflows/ci.yml: the CLI is built from source (the @younglord3302/cli package
+# .github/workflows/ci.yml: the CLI is built from source (the @autonomous-lifecycle-protocol-alp/cli package
 # is not yet published to npm), then `alp validate` runs against the workspace.
 
 on:
@@ -30,7 +30,8 @@ jobs:
         run: npm ci
 
       - name: Build CLI
-        run: npm run build --workspace @younglord3302/cli
+        run: npm run build --workspace @autonomous-lifecycle-protocol-alp/cli
 
       - name: Validate workspace
         run: node cli/dist/index.js validate
+

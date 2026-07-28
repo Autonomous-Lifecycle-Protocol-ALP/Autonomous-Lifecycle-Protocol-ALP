@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { P2PSwarm, P2PNode, GossipMessage } from '@younglord3302/parser';
+import { P2PSwarm, P2PNode, GossipMessage } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function p2pCommand(subcommand: string, ...args: string[]) {
   const cwd = process.cwd();
@@ -77,4 +77,5 @@ export function p2pCommand(subcommand: string, ...args: string[]) {
       process.exit(1);
   }
 }
+
 

@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { AlpParser, AlpError } from '@younglord3302/parser';
+import { AlpParser, AlpError } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function validateCommand(filePath?: string) {
   const parser = new AlpParser();
@@ -77,3 +77,4 @@ function validateFile(parser: AlpParser, filePath: string): boolean {
     return false;
   }
 }
+

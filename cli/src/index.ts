@@ -66,7 +66,7 @@ const program = new Command();
 program
   .name('alp')
   .description('Autonomous Lifecycle Protocol (ALP) CLI')
-  .version('39.0.0');
+  .version('40.0.0');
 
 program
   .command('init')
@@ -355,4 +355,5 @@ registerCollabCommand(program);
 registerMemoryMeshCommand(program);
 
 program.parse(process.argv);
+
 

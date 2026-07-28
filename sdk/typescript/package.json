@@ -1,12 +1,12 @@
 {
-  "name": "@younglord3302/sdk",
-  "version": "39.0.0",
+  "name": "@autonomous-lifecycle-protocol-alp/sdk",
+  "version": "40.0.0",
   "description": "Official TypeScript SDK for the Autonomous Lifecycle Protocol",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/younglord3302/Autonomous-Lifecycle-Protocol-ALP.git"
+    "url": "git+https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP.git"
   },
   "scripts": {
     "build": "tsc",
@@ -17,7 +17,7 @@
     "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@younglord3302/parser": "*"
+    "@autonomous-lifecycle-protocol-alp/parser": "*"
   },
   "devDependencies": {
     "typescript": "^5.0.0"
@@ -30,3 +30,6 @@
   ],
   "license": "MIT"
 }
+
+
+

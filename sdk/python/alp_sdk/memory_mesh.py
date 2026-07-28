@@ -1,4 +1,4 @@
-"""ALP MemoryMeshEngine — Agentic Memory Mesh & Distributed Knowledge Graph (v39.0.0 — Python SDK parity).
+"""ALP MemoryMeshEngine — Agentic Memory Mesh & Distributed Knowledge Graph (v40.0.0 — Python SDK parity).
 
 Provides cross-agent memory storage, sync, recency decay scoring,
 and federated semantic retrieval across autonomous swarms.
@@ -172,3 +172,4 @@ class MemoryMeshEngine:
             tag_counts=tag_counts,
             average_age_hours=round(avg_age_hours, 2),
         )
+

@@ -94,7 +94,7 @@ export function GitPanel(): React.JSX.Element {
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span>URL</span>
             <span style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)', fontSize: 11 }}>
-              github.com/younglord3302/...
+              github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/...
             </span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -106,3 +106,4 @@ export function GitPanel(): React.JSX.Element {
     </div>
   );
 }
+

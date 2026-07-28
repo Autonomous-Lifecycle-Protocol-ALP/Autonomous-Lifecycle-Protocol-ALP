@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { MacroEngine } from '@younglord3302/parser';
+import { MacroEngine } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerMacroCommand(program: Command) {
   const macroCmd = program
@@ -62,4 +62,5 @@ export function registerMacroCommand(program: Command) {
       }
     });
 }
+
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { AlpParser } from '@younglord3302/parser';
+import { AlpParser } from '@autonomous-lifecycle-protocol-alp/parser';
 
 describe('AlpParser Integration', () => {
   it('should parse a valid ALP document', () => {

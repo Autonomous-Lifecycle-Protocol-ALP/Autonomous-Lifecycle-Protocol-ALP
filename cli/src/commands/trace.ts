@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { TelemetryEngine } from '@younglord3302/parser';
+import { TelemetryEngine } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerTraceCommand(program: Command) {
   const trace = program
@@ -42,3 +42,4 @@ export function registerTraceCommand(program: Command) {
       console.log(JSON.stringify(otlp, null, 2));
     });
 }
+

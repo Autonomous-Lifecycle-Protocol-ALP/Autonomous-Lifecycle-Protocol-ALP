@@ -32,7 +32,7 @@ import {
 } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { AlpParser, AlpObject, ValidationError } from '@younglord3302/parser';
+import { AlpParser, AlpObject, ValidationError } from '@autonomous-lifecycle-protocol-alp/parser';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -616,3 +616,4 @@ documents.onDidSave(() => {
 // ─── Start ──────────────────────────────────────────────────────────────────
 documents.listen(connection);
 connection.listen();
+

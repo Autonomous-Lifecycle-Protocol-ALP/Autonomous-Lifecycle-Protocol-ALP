@@ -6,10 +6,10 @@
   <br/>
 
    [![Status](https://img.shields.io/badge/status-stable-success.svg)](#)
-    [![Version](https://img.shields.io/badge/version-39.0.0-blue.svg)](#)
+    [![Version](https://img.shields.io/badge/version-40.0.0-blue.svg)](#)
    [![License](https://img.shields.io/badge/license-MIT-green.svg)](#)
    [![Tests](https://img.shields.io/badge/tests-1013%20passed-brightgreen.svg)](#)
-   [![Docs](https://img.shields.io/badge/docs-live-green.svg)](https://younglord3302.github.io/Autonomous-Lifecycle-Protocol-ALP/)
+   [![Docs](https://img.shields.io/badge/docs-live-green.svg)](https://autonomous-lifecycle-protocol-alp.github.io/Autonomous-Lifecycle-Protocol-ALP/)
 </div>
 
 <br/>
@@ -151,13 +151,13 @@ alp verify task-auth
 
 | Package | Purpose | Version |
 | :--- | :--- | :---: |
-| [`@alp/cli`](cli/) | Terminal interface (`run`, `serve`, `marketplace`, `policy`, `vault`, `verify`) | `39.0.0` |
-| [`@alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `39.0.0` |
-| [`@alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `39.0.0` |
-| [`@alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `39.0.0` |
-| [`@alp/sdk`](sdk/) | Official TypeScript SDK | `39.0.0` |
-| [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `39.0.0` |
-| [`docs-site`](docs-site/) | Official VitePress documentation site | `39.0.0` |
+| [`@alp/cli`](cli/) | Terminal interface (`run`, `serve`, `marketplace`, `policy`, `vault`, `verify`) | `40.0.0` |
+| [`@alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `40.0.0` |
+| [`@alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `40.0.0` |
+| [`@alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `40.0.0` |
+| [`@alp/sdk`](sdk/) | Official TypeScript SDK | `40.0.0` |
+| [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `40.0.0` |
+| [`docs-site`](docs-site/) | Official VitePress documentation site | `40.0.0` |
 
 ---
 
@@ -182,7 +182,7 @@ alp run
 
 ## 📖 Documentation & Specification
 
-- **[Documentation Site](https://younglord3302.github.io/Autonomous-Lifecycle-Protocol-ALP/)**: Full user guides and API references.
+- **[Documentation Site](https://autonomous-lifecycle-protocol-alp.github.io/Autonomous-Lifecycle-Protocol-ALP/)**: Full user guides and API references.
 - **[Formal Specification](spec/01-overview.md)**: Technical protocol specification (Specs 1–22).
 - **[Strategic Roadmap](docs/ROADMAP_V17_V36.md)**: 20-Version Architecture Roadmap (v17.0.0 – v36.0.0).
 
@@ -191,3 +191,5 @@ alp run
 ## 📄 License
 
 ALP is open-source and licensed under the [MIT License](LICENSE).
+
+

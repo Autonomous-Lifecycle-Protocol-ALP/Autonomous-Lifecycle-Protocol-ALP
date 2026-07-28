@@ -88,7 +88,7 @@ export class TelemetryEngine {
           },
           scopeSpans: [
             {
-              scope: { name: '@younglord3302/telemetry', version: '17.0.0' },
+              scope: { name: '@autonomous-lifecycle-protocol-alp/telemetry', version: '17.0.0' },
               spans: this.completedSpans.map((s) => ({
                 traceId: s.traceId,
                 spanId: s.spanId,
@@ -125,3 +125,4 @@ export class TelemetryEngine {
     return [...this.completedSpans];
   }
 }
+

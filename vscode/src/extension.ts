@@ -7,7 +7,7 @@ import {
   ServerOptions,
   TransportKind,
 } from 'vscode-languageclient/node';
-import { AlpParser } from '@younglord3302/parser';
+import { AlpParser } from '@autonomous-lifecycle-protocol-alp/parser';
 
 function escapeHtml(value: string | undefined | null): string {
   if (value == null) return '';
@@ -34,7 +34,7 @@ function getParsedObjects(document: vscode.TextDocument | undefined): any[] {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('ALP Language Support v39.0.0 is now active.');
+  console.log('ALP Language Support v40.0.0 is now active.');
 
   const serverModule = context.asAbsolutePath(path.join('server', 'dist', 'server.js'));
   if (!fs.existsSync(serverModule)) {
@@ -287,3 +287,5 @@ function getWebviewContent(graphHtml: string): string {
 </body>
 </html>`;
 }
+
+

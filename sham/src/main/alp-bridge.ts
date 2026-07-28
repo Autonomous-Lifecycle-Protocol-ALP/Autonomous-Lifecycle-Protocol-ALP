@@ -50,7 +50,7 @@ const PLUGINS_DIR = join(process.resourcesPath || process.cwd(), 'plugins');
 const profileTraces: ProfileTrace[] = [];
 
 async function loadParser() {
-  const parser = await import('@younglord3302/parser');
+  const parser = await import('@autonomous-lifecycle-protocol-alp/parser');
   return parser;
 }
 
@@ -457,3 +457,4 @@ export function setupALPBridge() {
     return { success: true, received: true };
   });
 }
+

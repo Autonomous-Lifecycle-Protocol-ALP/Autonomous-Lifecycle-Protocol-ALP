@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { SandboxEnvEngine, SandboxEngineType } from '@younglord3302/parser';
+import { SandboxEnvEngine, SandboxEngineType } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerSandboxCommand(program: Command) {
   const sandbox = program
@@ -46,4 +46,5 @@ export function registerSandboxCommand(program: Command) {
       console.log(`  Output:     ${result.stdout || result.stderr}\n`);
     });
 }
+
 

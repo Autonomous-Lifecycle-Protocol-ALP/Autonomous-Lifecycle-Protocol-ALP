@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="alp-sdk",
-    version="39.0.0",
+    version="40.0.0",
     packages=find_packages(),
     description="Official Python SDK for the Autonomous Lifecycle Protocol",
     author="ALP Contributors",
@@ -14,3 +14,4 @@ setup(
         "signing": ["cryptography>=42.0.0"],
     },
 )
+

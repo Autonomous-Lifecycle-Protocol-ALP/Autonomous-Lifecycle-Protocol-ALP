@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { execFileSync } from 'child_process';
-import { AlpParser } from '@younglord3302/parser';
+import { AlpParser } from '@autonomous-lifecycle-protocol-alp/parser';
 
 interface HarnessResult {
   file: string;
@@ -104,3 +104,4 @@ export function testHarnessCommand(opts: { executable?: string; suite?: string }
     process.exit(1);
   }
 }
+

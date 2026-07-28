@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { DIDIdentityEngine } from '@younglord3302/parser';
+import { DIDIdentityEngine } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerDIDCommand(program: Command) {
   const did = program
@@ -40,4 +40,5 @@ export function registerDIDCommand(program: Command) {
       console.log(`  Status:      ${receipt.status === 'CONFIRMED' ? '✅ CONFIRMED' : '⏳ PENDING'}\n`);
     });
 }
+
 

@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { CollaborationEngine } from '@younglord3302/parser';
+import { CollaborationEngine } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerCollabCommand(program: Command) {
   const collabCmd = program
@@ -85,4 +85,5 @@ export function registerCollabCommand(program: Command) {
       console.log('');
     });
 }
+
 

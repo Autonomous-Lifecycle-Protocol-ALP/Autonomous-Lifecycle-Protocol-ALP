@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { AlpParser, AlpError, AlpObject } from '@younglord3302/parser';
+import { AlpParser, AlpError, AlpObject } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function statusCommand() {
   const parser = new AlpParser();
@@ -65,4 +65,5 @@ export function statusCommand() {
     process.exit(1);
   }
 }
+
 

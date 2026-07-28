@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { SelfHealingEngine } from '@younglord3302/parser';
+import { SelfHealingEngine } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerHealCommand(program: Command) {
   const heal = program
@@ -43,4 +43,5 @@ export function registerHealCommand(program: Command) {
       console.log(`\n  Healed Output:\n${healed}\n`);
     });
 }
+
 

@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { EvalSuiteEngine } from '@younglord3302/parser';
+import { EvalSuiteEngine } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerEvalSuiteCommand(program: Command) {
   const evalCmd = program
@@ -40,4 +40,5 @@ export function registerEvalSuiteCommand(program: Command) {
       console.log(`    - Safety:           ${(report.metricBreakdown.safety * 100).toFixed(1)}%\n`);
     });
 }
+
 

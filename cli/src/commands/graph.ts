@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { AlpParser, AlpGraph, AlpError } from '@younglord3302/parser';
+import { AlpParser, AlpGraph, AlpError } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function graphCommand(filePath?: string) {
   const parser = new AlpParser();
@@ -56,4 +56,5 @@ export function graphCommand(filePath?: string) {
     process.exit(1);
   }
 }
+
 

@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { TenantMeshEngine, EnterpriseRole } from '@younglord3302/parser';
+import { TenantMeshEngine, EnterpriseRole } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerTenantMeshCommand(program: Command) {
   const mesh = program
@@ -45,4 +45,5 @@ export function registerTenantMeshCommand(program: Command) {
       console.log(`  Result:      ${isAllowed ? '✅ PERMITTED' : '❌ DENIED'}\n`);
     });
 }
+
 

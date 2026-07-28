@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { ZKProofEngine } from '@younglord3302/parser';
+import { ZKProofEngine } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerZKCommand(program: Command) {
   const zk = program
@@ -48,3 +48,4 @@ export function registerZKCommand(program: Command) {
       }
     });
 }
+

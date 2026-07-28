@@ -1,12 +1,12 @@
 {
-  "name": "@younglord3302/parser",
-  "version": "39.0.0",
+  "name": "@autonomous-lifecycle-protocol-alp/parser",
+  "version": "40.0.0",
   "description": "Parser for the Autonomous Lifecycle Protocol (ALP)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/younglord3302/Autonomous-Lifecycle-Protocol-ALP.git"
+    "url": "git+https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP.git"
   },
   "scripts": {
     "build": "tsc"
@@ -16,7 +16,7 @@
     "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@younglord3302/schemas": "*",
+    "@autonomous-lifecycle-protocol-alp/schemas": "*",
     "ajv": "^8.12.0",
     "ajv-formats": "^3.0.1"
   },
@@ -24,3 +24,6 @@
     "typescript": "^5.2.2"
   }
 }
+
+
+

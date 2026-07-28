@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { PromptOptimizerEngine, OptimizationStrategy } from '@younglord3302/parser';
+import { PromptOptimizerEngine, OptimizationStrategy } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerPromptOptimizerCommand(program: Command) {
   const promptCmd = program
@@ -38,4 +38,5 @@ export function registerPromptOptimizerCommand(program: Command) {
       console.log(`  ${res.optimizedPrompt.replace(/\n/g, '\n  ')}\n`);
     });
 }
+
 

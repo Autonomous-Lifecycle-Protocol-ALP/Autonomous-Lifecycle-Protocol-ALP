@@ -12,8 +12,8 @@ import ReactFlow, {
 } from 'reactflow';
 import type { Edge, Node, NodeProps } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { AlpParser, AlpGraph } from '@younglord3302/parser';
-import type { AlpObject } from '@younglord3302/parser';
+import { AlpParser, AlpGraph } from '@autonomous-lifecycle-protocol-alp/parser';
+import type { AlpObject } from '@autonomous-lifecycle-protocol-alp/parser';
 import './App.css';
 
 // ── Preset Templates ───────────────────────────────────────────────────
@@ -450,7 +450,7 @@ export default function App() {
         <div className="brand-section">
           <div className="brand-logo">ALP</div>
           <span className="brand-title">Execution Engine &amp; DAG Playground</span>
-          <span className="brand-badge">v39.0.0</span>
+          <span className="brand-badge">v40.0.0</span>
         </div>
 
         <div className="header-controls">
@@ -688,3 +688,5 @@ export default function App() {
     </div>
   );
 }
+
+

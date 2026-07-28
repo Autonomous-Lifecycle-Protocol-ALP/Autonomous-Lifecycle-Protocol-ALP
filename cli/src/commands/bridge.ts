@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { ProtocolBridge, SUPPORTED_FORMATS, BridgeError } from '@younglord3302/parser';
+import { ProtocolBridge, SUPPORTED_FORMATS, BridgeError } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function bridgeCommand(format: string, file?: string) {
   const cwd = process.cwd();
@@ -81,4 +81,5 @@ function parseFirstWorkflow(raw: string): Record<string, any> | null {
     steps,
   };
 }
+
 

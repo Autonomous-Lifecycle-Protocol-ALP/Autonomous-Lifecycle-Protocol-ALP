@@ -19,7 +19,7 @@ jobs:
           node-version: "24"
 
       - name: Build ALP CLI
-        run: npm ci && npm run build --workspace @younglord3302/cli
+        run: npm ci && npm run build --workspace @autonomous-lifecycle-protocol-alp/cli
 
       - name: Generate Report
         run: |
@@ -48,3 +48,4 @@ jobs:
             git commit -m "docs(alp): auto-generate weekly status report"
             git push
           fi
+

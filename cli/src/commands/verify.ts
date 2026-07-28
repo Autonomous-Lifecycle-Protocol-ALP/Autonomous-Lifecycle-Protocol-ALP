@@ -8,7 +8,7 @@ import {
   PolicyModelChecker,
   ContractInvariant,
   updateObjectStatus,
-} from '@younglord3302/parser';
+} from '@autonomous-lifecycle-protocol-alp/parser';
 
 export interface VerifyOptions {
   formal?: string;
@@ -147,7 +147,7 @@ function runFormalVerification(policyId: string, objects: AlpObject[]) {
 
 /**
  * Update a task's `status:` line using the shared, quote-aware status writer
- * from `@younglord3302/parser` (preserves `[?]` and `[x]` markers correctly).
+ * from `@autonomous-lifecycle-protocol-alp/parser` (preserves `[?]` and `[x]` markers correctly).
  */
 function writeTaskStatus(filePath: string, taskId: string, newStatus: string) {
   const content = fs.readFileSync(filePath, 'utf-8');
@@ -158,3 +158,4 @@ function writeTaskStatus(filePath: string, taskId: string, newStatus: string) {
     console.log(`   (Note: Could not auto-update status in file. Please update manually to ${newStatus})`);
   }
 }
+

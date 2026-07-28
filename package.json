@@ -1,6 +1,6 @@
 {
   "name": "alp-monorepo",
-  "version": "39.0.0",
+  "version": "40.0.0",
   "description": "Autonomous Lifecycle Protocol (ALP) - The universal protocol for autonomous software engineering",
   "private": true,
   "workspaces": [
@@ -16,12 +16,12 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "test": "npm run build --workspace @younglord3302/parser --workspace @younglord3302/cli && vitest run",
+    "test": "npm run build --workspace @autonomous-lifecycle-protocol-alp/parser --workspace @autonomous-lifecycle-protocol-alp/cli && vitest run",
     "test:python": "cd sdk/python && python -m unittest discover -s tests"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/younglord3302/Autonomous-Lifecycle-Protocol-ALP.git"
+    "url": "git+https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP.git"
   },
   "keywords": [
     "alp",
@@ -34,10 +34,13 @@
   "author": "ALP Contributors",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/younglord3302/Autonomous-Lifecycle-Protocol-ALP/issues"
+    "url": "https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/issues"
   },
-  "homepage": "https://github.com/younglord3302/Autonomous-Lifecycle-Protocol-ALP#readme",
+  "homepage": "https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP#readme",
   "devDependencies": {
     "vitest": "^4.1.10"
   }
 }
+
+
+

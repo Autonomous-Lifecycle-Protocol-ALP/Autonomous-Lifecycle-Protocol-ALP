@@ -7,7 +7,7 @@ import {
   AgentKeyStore,
   generateKeypair,
   createDid,
-} from '@younglord3302/parser';
+} from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function identityCommand(subcommand: string, ...args: string[]) {
   const cwd = process.cwd();
@@ -102,4 +102,5 @@ export function identityCommand(subcommand: string, ...args: string[]) {
       process.exit(1);
   }
 }
+
 

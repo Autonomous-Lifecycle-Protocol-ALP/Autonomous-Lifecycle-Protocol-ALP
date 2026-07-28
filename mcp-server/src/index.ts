@@ -41,7 +41,7 @@ import {
   UnsubscribeRequestSchema,
   ResourceUpdatedNotificationSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { AlpParser, AlpObject, AlpGraph, PolicyEngine, updateObjectStatus, MacroEngine, MacroDefinition, MemoryMeshEngine, MemoryQueryResult } from '@younglord3302/parser';
+import { AlpParser, AlpObject, AlpGraph, PolicyEngine, updateObjectStatus, MacroEngine, MacroDefinition, MemoryMeshEngine, MemoryQueryResult } from '@autonomous-lifecycle-protocol-alp/parser';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -194,7 +194,7 @@ function audit(
 
 // ─── MCP Server ───────────────────────────────────────────────────────────
 const server = new Server(
-  { name: 'alp-mcp-server', version: '39.0.0' },
+  { name: 'alp-mcp-server', version: '40.0.0' },
   { capabilities: { tools: {}, resources: { subscribe: true }, prompts: {} } }
 );
 
@@ -1544,3 +1544,5 @@ async function main() {
 }
 
 main().catch(console.error);
+
+

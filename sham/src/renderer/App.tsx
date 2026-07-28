@@ -424,7 +424,7 @@ export function App(): React.JSX.Element {
           )}
           <span className="status-bar-separator" />
           <span className="status-bar-item">SHAM v0.1.0</span>
-          <span className="status-bar-item">ALP v39.0.0</span>
+          <span className="status-bar-item">ALP v40.0.0</span>
         </div>
       </footer>
 
@@ -452,3 +452,4 @@ export function App(): React.JSX.Element {
     </div>
   );
 }
+

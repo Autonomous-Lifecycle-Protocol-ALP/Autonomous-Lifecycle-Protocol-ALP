@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { AlpParser, AlpObject, WorkflowVisualizer, DiagramFormat } from '@younglord3302/parser';
+import { AlpParser, AlpObject, WorkflowVisualizer, DiagramFormat } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function visualizeCommand(id: string | undefined, opts: { format?: string; out?: string }) {
   const format = (opts.format || 'mermaid') as DiagramFormat;
@@ -53,3 +53,4 @@ export function visualizeCommand(id: string | undefined, opts: { format?: string
     console.log(output);
   }
 }
+

@@ -246,11 +246,12 @@ are authoritative in the table in §7; this section captures intent.
 
 ### Forward-looking (post-38.x)
 
-The current release is **v39.0.0** (V9 — Native Desktop). Future versions are tracked in `docs/ROADMAP_V17_V39.md` and the versioning spec's roadmap table. Planned focus areas include:
+The current release is **v40.0.0** (V9 — Native Desktop). Future versions are tracked in `docs/ROADMAP_V17_V39.md` and the versioning spec's roadmap table. Planned focus areas include:
 
 | Version | Theme | Planned Features |
 |---|---|---|
-| `39.0.0` | Autonomous Orchestration | Fully autonomous multi-agent workflows with self-healing DAGs, auto-negotiation between agents, and zero-human lifecycle management. New `@autonomy` block type and `AutonomyController` engine. |
+| `40.0.0` | Autonomous Orchestration | Fully autonomous multi-agent workflows with self-healing DAGs, auto-negotiation between agents, and zero-human lifecycle management. New `@autonomy` block type and `AutonomyController` engine. |
 | `40.0.0` | Distributed Enforcement Mesh | Cross-realm policy federation with cryptographic attestation, distributed enforcement across sovereign nodes, and automated compliance auditing at scale. |
 
 The full 20-version strategic roadmap (v17–v38) is documented in `docs/ROADMAP_V17_V36.md`.
+

@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { SwarmMarketplaceEngine } from '@younglord3302/parser';
+import { SwarmMarketplaceEngine } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function registerSwarmMarketplaceCommand(program: Command) {
   const marketCmd = program
@@ -55,4 +55,5 @@ export function registerSwarmMarketplaceCommand(program: Command) {
       console.log(`  Output:         ${result.output}\n`);
     });
 }
+
 

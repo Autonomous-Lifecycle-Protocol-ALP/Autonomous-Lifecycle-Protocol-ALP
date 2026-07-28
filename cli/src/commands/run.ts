@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { AlpParser, AlpObject, LockManager, LoopEngine, LoopStage, SwarmClient, SwarmConfig } from '@younglord3302/parser';
+import { AlpParser, AlpObject, LockManager, LoopEngine, LoopStage, SwarmClient, SwarmConfig } from '@autonomous-lifecycle-protocol-alp/parser';
 import { createProvider } from '../llm-provider';
 import { logEvent } from '../runtime';
 
@@ -668,4 +668,5 @@ async function runSwarmMode(options: RunOptions, alpDir: string) {
   logEvent(alpDir, 'run_end', { message: 'Swarm execution complete' });
   console.log(`\n🎉 Swarm Execution Complete!`);
 }
+
 

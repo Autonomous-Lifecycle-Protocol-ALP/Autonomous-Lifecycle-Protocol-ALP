@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { AlpParser } from '@younglord3302/parser';
+import { AlpParser } from '@autonomous-lifecycle-protocol-alp/parser';
 
 const parser = new AlpParser();
 const root = join(process.cwd(), 'tests', 'compliance');
@@ -26,3 +26,4 @@ describe('ALP compliance — invalid fixtures', () => {
     });
   }
 });
+

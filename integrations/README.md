@@ -21,7 +21,7 @@ The ALP repo ships an active CI workflow at `.github/workflows/ci.yml` (TypeScri
 
 > **CLI:** the drop-in workflows build `@alp/cli` from source (`npm ci && npm run build --workspace @alp/cli`) and invoke it via `node cli/dist/index.js`. This matches the `validate` job in the repo's own `.github/workflows/ci.yml`.
 
-## Current Toolchain Surface (v39.0.0)
+## Current Toolchain Surface (v40.0.0)
 
 Integrations should be aware of the modern ALP surface so agents operate with full protocol coverage:
 
@@ -41,3 +41,4 @@ ALP provides a native MCP server (`@alp/mcp-server`) enabling any modern AI IDE 
 **Usage:** Start the server using `node mcp-server/dist/index.js` or configure your IDE's MCP settings to point to the `@alp/mcp-server` executable.
 
 Exposed tools (28 total): `alp_list_objects`, `alp_read_object`, `alp_get_graph`, `alp_get_status`, `alp_validate`, `alp_update_status`, `alp_set_status`, `alp_get_impact`, `alp_search`, `alp_delegate`, `alp_decompose`, `alp_create_task`, `alp_create_feature`, `alp_get_events`, `alp_get_analytics`, `alp_check_policy`, `alp_visualize`, `alp_search_registry`, `alp_get_timelines`, `alp_get_contracts`, `alp_get_vaults`, `alp_get_swarm_marketplace`, `alp_get_event_mesh`, `alp_get_macros`, `alp_expand_macro`, `alp_memory_store`, `alp_memory_query`, `alp_memory_stats`.
+
