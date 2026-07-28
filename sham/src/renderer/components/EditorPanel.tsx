@@ -87,11 +87,11 @@ export function EditorPanel({ state, onValidate, onCursorChange }: EditorPanelPr
   };
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      <div style={{ padding: '4px 12px', background: theme.headerBackground, borderBottom: `1px solid ${theme.border}`, display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span style={{ fontSize: 12, color: theme.textSecondary }}>{state.activeFile || 'No file open'}</span>
+    <div className="panel-container">
+      <div style={{ padding: '4px 12px', background: 'var(--header-bg)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 8, height: 32, flexShrink: 0 }}>
+        <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{state.activeFile || 'No file open'}</span>
         {state.diagnostics.length > 0 && (
-          <span style={{ fontSize: 11, color: theme.accentRed }}>{state.diagnostics.length} issue(s)</span>
+          <span style={{ fontSize: 11, color: 'var(--accent-red)' }}>{state.diagnostics.length} issue(s)</span>
         )}
       </div>
       <div style={{ flex: 1, overflow: 'hidden' }}>
@@ -118,9 +118,9 @@ export function EditorPanel({ state, onValidate, onCursorChange }: EditorPanelPr
         />
       </div>
       {state.diagnostics.length > 0 && (
-        <div style={{ maxHeight: 120, overflowY: 'auto', background: theme.bgSecondary, borderTop: `1px solid ${theme.border}` }}>
+        <div style={{ maxHeight: 120, overflowY: 'auto', background: 'var(--bg-secondary)', borderTop: '1px solid var(--border)', fontFamily: 'var(--font-mono)' }}>
           {state.diagnostics.map((diag, i) => (
-            <div key={i} style={{ padding: '2px 12px', fontSize: 11, color: diag.severity === 'error' ? theme.accentRed : theme.accentYellow, fontFamily: 'monospace' }}>
+            <div key={i} style={{ padding: '2px 12px', fontSize: 11, color: diag.severity === 'error' ? 'var(--accent-red)' : 'var(--accent-yellow)' }}>
               [{diag.severity}] Line {diag.line}:{diag.column} — {diag.message}
             </div>
           ))}

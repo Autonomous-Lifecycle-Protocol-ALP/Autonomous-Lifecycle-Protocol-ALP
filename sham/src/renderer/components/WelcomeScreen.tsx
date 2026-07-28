@@ -1,5 +1,4 @@
 import React from 'react';
-import { theme } from '../styles/theme.js';
 
 interface WelcomeScreenProps {
   onOpenFile: (filePath: string) => void;
@@ -7,16 +6,24 @@ interface WelcomeScreenProps {
 
 export function WelcomeScreen({ onOpenFile }: WelcomeScreenProps): React.JSX.Element {
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: theme.bgPrimary }}>
-      <div style={{ fontSize: 48, fontWeight: 700, color: theme.accent, marginBottom: 8 }}>SHAM</div>
-      <div style={{ fontSize: 16, color: theme.textSecondary, marginBottom: 32 }}>Smart Hosted Agent Manager</div>
-      <div style={{ fontSize: 13, color: theme.textMuted, marginBottom: 24, maxWidth: 400, textAlign: 'center', lineHeight: 1.6 }}>
+    <div className="empty-state" style={{ height: '100%' }}>
+      <div className="empty-state-icon" style={{ fontSize: 48, fontWeight: 700, color: 'var(--accent)', marginBottom: 8, fontFamily: 'var(--font-sans)' }}>
+        SHAM
+      </div>
+      <div className="empty-state-title" style={{ fontSize: 16, color: 'var(--text-secondary)', marginBottom: 8, fontWeight: 400 }}>
+        Smart Hosted Agent Manager
+      </div>
+      <div className="empty-state-desc" style={{ marginBottom: 24 }}>
         Build, test, and deploy ALP agents with a dedicated IDE. Open an ALP file to get started, or create a new one.
       </div>
-      <button onClick={() => onOpenFile('example.alp')} style={{ padding: '10px 24px', background: theme.accent, border: 'none', color: theme.bgPrimary, borderRadius: 6, cursor: 'pointer', fontSize: 14, fontWeight: 600 }}>
+      <button
+        className="btn btn-primary"
+        style={{ padding: '10px 24px', fontSize: 14, borderRadius: 6 }}
+        onClick={() => onOpenFile('example.alp')}
+      >
         New ALP File
       </button>
-      <div style={{ marginTop: 24, display: 'flex', gap: 24, fontSize: 12, color: theme.textMuted }}>
+      <div style={{ marginTop: 24, display: 'flex', gap: 24, fontSize: 12, color: 'var(--text-muted)' }}>
         <span>Editor</span>
         <span>Terminal</span>
         <span>Agents</span>

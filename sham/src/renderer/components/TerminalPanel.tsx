@@ -44,24 +44,25 @@ export function TerminalPanel({ output, onAppendOutput }: TerminalPanelProps): R
   };
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', backgroundColor: theme.terminalBackground }}>
-      <div style={{ padding: '4px 12px', background: theme.headerBackground, borderBottom: `1px solid ${theme.border}`, fontSize: 12, color: theme.textMuted }}>
-        Terminal
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', backgroundColor: 'var(--terminal-bg)' }}>
+      <div style={{ padding: '4px 12px', background: 'var(--header-bg)', borderBottom: '1px solid var(--border)', fontSize: 12, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <span>Terminal</span>
+        <span style={{ fontSize: 10, color: 'var(--text-muted)', opacity: 0.7 }}>ALP CLI</span>
       </div>
-      <div ref={containerRef} style={{ flex: 1, overflowY: 'auto', padding: 8, fontFamily: 'monospace', fontSize: 12, color: theme.textPrimary }}>
+      <div ref={containerRef} style={{ flex: 1, overflowY: 'auto', padding: 8, fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-primary)', lineHeight: 1.6 }}>
         {output.length === 0 ? (
-          <div style={{ color: theme.textMuted }}>Ready. Type an ALP CLI command, e.g. `alp validate file.alp`.</div>
+          <div style={{ color: 'var(--text-muted)' }}>Ready. Type an ALP CLI command, e.g. `alp validate file.alp`.</div>
         ) : (
           output.map((line, i) => {
             const isError = line.startsWith('Error:');
             return (
-              <div key={i} style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', color: isError ? theme.accentRed : theme.textPrimary }}>{line}</div>
+              <div key={i} style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all', color: isError ? 'var(--accent-red)' : 'var(--text-primary)', animation: 'fadeIn 0.1s ease' }}>{line}</div>
             );
           })
         )}
       </div>
-      <div style={{ padding: '4px 12px', borderTop: `1px solid ${theme.border}`, display: 'flex', gap: 8 }}>
-        <span style={{ color: theme.textMuted, fontSize: 12, padding: '4px 0' }}>$</span>
+      <div style={{ padding: '6px 12px', borderTop: '1px solid var(--border)', display: 'flex', gap: 8, alignItems: 'center', background: 'var(--bg-secondary)' }}>
+        <span style={{ color: 'var(--accent-green)', fontSize: 12, fontFamily: 'var(--font-mono)', fontWeight: 700 }}>$</span>
         <input
           ref={inputRef}
           type="text"
@@ -74,9 +75,9 @@ export function TerminalPanel({ output, onAppendOutput }: TerminalPanelProps): R
           }}
           placeholder="Type a command..."
           disabled={isRunning}
-          style={{ flex: 1, background: theme.bgSurface, border: `1px solid ${theme.border}`, color: theme.textPrimary, padding: '4px 8px', borderRadius: 4, fontSize: 12, outline: 'none', opacity: isRunning ? 0.7 : 1 }}
+          style={{ flex: 1, background: 'var(--bg-primary)', border: '1px solid var(--border)', color: 'var(--text-primary)', padding: '4px 8px', borderRadius: 4, fontSize: 12, fontFamily: 'var(--font-mono)', outline: 'none', opacity: isRunning ? 0.7 : 1 }}
         />
-        <button onClick={handleSubmit} disabled={isRunning} style={{ padding: '4px 12px', background: theme.accent, border: 'none', color: theme.bgPrimary, borderRadius: 4, cursor: isRunning ? 'not-allowed' : 'pointer', fontSize: 12, fontWeight: 600, opacity: isRunning ? 0.7 : 1 }}>
+        <button onClick={handleSubmit} disabled={isRunning} style={{ padding: '4px 12px', background: 'var(--accent)', border: 'none', color: 'var(--bg-primary)', borderRadius: 4, cursor: isRunning ? 'not-allowed' : 'pointer', fontSize: 12, fontWeight: 600, opacity: isRunning ? 0.7 : 1 }}>
           {isRunning ? 'Running...' : 'Run'}
         </button>
       </div>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { theme } from '../styles/theme.js';
 import {
   refactorFindSymbols,
   refactorRename,
@@ -79,18 +78,20 @@ export function RefactorPanel({
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 12 }}>
       <div style={{ marginBottom: 12 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 8 }}>Refactor</div>
+        <div className="panel-title" style={{ padding: 0, marginBottom: 8 }}>Refactor</div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
           <input
             value={filePath}
             onChange={(e) => setFilePath(e.target.value)}
             placeholder="Workspace file path"
-            style={{ flex: 1, minWidth: 160, background: theme.bgSurface, border: `1px solid ${theme.border}`, color: theme.textPrimary, padding: '6px 10px', borderRadius: 4, fontSize: 12, outline: 'none' }}
+            className="input-field"
+            style={{ flex: 1, minWidth: 160 }}
           />
           <select
             value={symbolKind}
             onChange={(e) => setSymbolKind(e.target.value as RefactorRename['kind'])}
-            style={{ background: theme.bgSurface, border: `1px solid ${theme.border}`, color: theme.textPrimary, padding: '6px 10px', borderRadius: 4, fontSize: 12, outline: 'none' }}
+            className="input-field"
+            style={{ width: 120 }}
           >
             <option value="agent">Agent</option>
             <option value="skill">Skill</option>
@@ -108,25 +109,29 @@ export function RefactorPanel({
             value={symbolName}
             onChange={(e) => setSymbolName(e.target.value)}
             placeholder="Symbol to rename"
-            style={{ flex: 1, minWidth: 120, background: theme.bgSurface, border: `1px solid ${theme.border}`, color: theme.textPrimary, padding: '6px 10px', borderRadius: 4, fontSize: 12, outline: 'none' }}
+            className="input-field"
+            style={{ flex: 1, minWidth: 120 }}
           />
           <input
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="New name"
-            style={{ flex: 1, minWidth: 120, background: theme.bgSurface, border: `1px solid ${theme.border}`, color: theme.textPrimary, padding: '6px 10px', borderRadius: 4, fontSize: 12, outline: 'none' }}
+            className="input-field"
+            style={{ flex: 1, minWidth: 120 }}
           />
           <button
+            className="btn btn-secondary btn-sm"
             onClick={handlePreview}
             disabled={loading || !filePath || !symbolName.trim() || !newName.trim()}
-            style={{ padding: '6px 14px', background: theme.bgHover, border: `1px solid ${theme.border}`, color: theme.textPrimary, borderRadius: 4, cursor: loading || !filePath || !symbolName.trim() || !newName.trim() ? 'not-allowed' : 'pointer', fontSize: 12, fontWeight: 600, opacity: loading || !filePath || !symbolName.trim() || !newName.trim() ? 0.6 : 1 }}
+            style={{ opacity: loading || !filePath || !symbolName.trim() || !newName.trim() ? 0.6 : 1 }}
           >
             Preview
           </button>
           <button
+            className="btn btn-primary btn-sm"
             onClick={handleRename}
             disabled={loading || !filePath || !symbolName.trim() || !newName.trim()}
-            style={{ padding: '6px 14px', background: theme.accent, border: 'none', color: theme.bgPrimary, borderRadius: 4, cursor: loading || !filePath || !symbolName.trim() || !newName.trim() ? 'not-allowed' : 'pointer', fontSize: 12, fontWeight: 600, opacity: loading || !filePath || !symbolName.trim() || !newName.trim() ? 0.6 : 1 }}
+            style={{ opacity: loading || !filePath || !symbolName.trim() || !newName.trim() ? 0.6 : 1 }}
           >
             Rename
           </button>
@@ -135,34 +140,31 @@ export function RefactorPanel({
 
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {renames.length === 0 ? (
-          <div style={{ color: theme.textMuted, fontSize: 12, textAlign: 'center', padding: 24 }}>
-            {loading ? 'Scanning workspace...' : 'Enter a workspace path to discover symbols, or run a rename preview.'}
+          <div className="empty-state" style={{ height: 'auto', padding: 24 }}>
+            <div className="empty-state-icon">&#10070;</div>
+            <div className="empty-state-title">{loading ? 'Scanning workspace...' : 'No renames yet'}</div>
+            <div className="empty-state-desc">{loading ? '' : 'Enter a workspace path to discover symbols, or run a rename preview.'}</div>
           </div>
         ) : (
           renames.map((rename) => (
             <div
               key={rename.id}
-              style={{
-                padding: 10,
-                marginBottom: 8,
-                background: theme.bgSurface,
-                borderRadius: 6,
-                border: `1px solid ${theme.border}`,
-              }}
+              className="section-card"
+              style={{ marginBottom: 8 }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
-                <div style={{ fontSize: 13, fontWeight: 500, color: theme.textPrimary }}>
+                <div style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-primary)' }}>
                   {rename.oldName} → {rename.newName}
                 </div>
-                <span style={{ fontSize: 11, padding: '2px 8px', borderRadius: 10, background: theme.bgHover, color: theme.textMuted, textTransform: 'capitalize' }}>
+                <span className="badge badge-muted" style={{ textTransform: 'capitalize' }}>
                   {rename.kind}
                 </span>
               </div>
-              <div style={{ fontSize: 11, color: theme.textMuted, marginBottom: 4 }}>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>
                 {rename.occurrences} occurrence(s) across {rename.files.length} file(s)
               </div>
               {rename.files.length > 0 && (
-                <div style={{ fontSize: 11, color: theme.textMuted }}>
+                <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>
                   Files: {rename.files.join(', ')}
                 </div>
               )}
@@ -171,14 +173,14 @@ export function RefactorPanel({
         )}
       </div>
 
-      <div style={{ marginTop: 12, borderTop: `1px solid ${theme.border}`, paddingTop: 8 }}>
-        <div style={{ fontSize: 11, color: theme.textMuted, marginBottom: 4 }}>Refactor Log</div>
-        <div style={{ maxHeight: 120, overflowY: 'auto', background: theme.bgSecondary, borderRadius: 6, border: `1px solid ${theme.border}`, padding: 8 }}>
+      <div style={{ marginTop: 12, borderTop: '1px solid var(--border)', paddingTop: 8 }}>
+        <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>Refactor Log</div>
+        <div style={{ maxHeight: 120, overflowY: 'auto', background: 'var(--bg-secondary)', borderRadius: 6, border: '1px solid var(--border)', padding: 8 }}>
           {output.length === 0 ? (
-            <div style={{ color: theme.textMuted, fontSize: 12 }}>No refactor activity yet.</div>
+            <div style={{ color: 'var(--text-muted)', fontSize: 12 }}>No refactor activity yet.</div>
           ) : (
             output.map((line, i) => (
-              <div key={i} style={{ fontSize: 12, color: theme.textPrimary, whiteSpace: 'pre-wrap', wordBreak: 'break-all', padding: '1px 0' }}>
+              <div key={i} style={{ fontSize: 12, color: 'var(--text-primary)', whiteSpace: 'pre-wrap', wordBreak: 'break-all', padding: '1px 0' }}>
                 {line}
               </div>
             ))

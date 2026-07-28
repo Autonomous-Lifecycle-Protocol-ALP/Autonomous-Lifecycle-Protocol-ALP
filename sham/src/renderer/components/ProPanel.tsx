@@ -15,7 +15,7 @@ import {
   cloudSyncPull,
 } from '../shared/alp-client.js';
 import type { LicenseInfo, CloudSyncState, TeamState, UpdateStatus } from '../shared/types.js';
-import { theme, proStyles } from '../styles/theme.js';
+import { proStyles } from '../styles/theme.js';
 
 type Feedback = { type: 'success' | 'error'; message: string } | null;
 
@@ -139,7 +139,7 @@ export function ProPanel() {
 
   return (
     <div style={proStyles.panel}>
-      <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: theme.accentPurple }}>SHAM Pro</h2>
+      <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--accent-purple)' }}>SHAM Pro</h2>
 
       {feedback && <div style={proStyles.feedback(feedback.type)}>{feedback.message}</div>}
 
@@ -148,23 +148,23 @@ export function ProPanel() {
         {license ? (
           <div>
             <div style={proStyles.licenseRow}>
-              <span style={{ color: theme.textMuted, fontSize: 13 }}>Plan</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: 13 }}>Plan</span>
               <span style={proStyles.badge(license.plan)}>{license.plan}</span>
             </div>
             <div style={proStyles.licenseRow}>
-              <span style={{ color: theme.textMuted, fontSize: 13 }}>Email</span>
-              <span style={{ color: theme.textPrimary, fontSize: 13 }}>{license.email}</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: 13 }}>Email</span>
+              <span style={{ color: 'var(--text-primary)', fontSize: 13 }}>{license.email}</span>
             </div>
             {license.expiresAt && (
               <div style={proStyles.licenseRow}>
-                <span style={{ color: theme.textMuted, fontSize: 13 }}>Expires</span>
-                <span style={{ color: theme.textPrimary, fontSize: 13 }}>{license.expiresAt}</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: 13 }}>Expires</span>
+                <span style={{ color: 'var(--text-primary)', fontSize: 13 }}>{license.expiresAt}</span>
               </div>
             )}
             {license.activatedAt && (
               <div style={proStyles.licenseRow}>
-                <span style={{ color: theme.textMuted, fontSize: 13 }}>Activated</span>
-                <span style={{ color: theme.textPrimary, fontSize: 13 }}>{license.activatedAt}</span>
+                <span style={{ color: 'var(--text-muted)', fontSize: 13 }}>Activated</span>
+                <span style={{ color: 'var(--text-primary)', fontSize: 13 }}>{license.activatedAt}</span>
               </div>
             )}
           </div>
@@ -204,7 +204,7 @@ export function ProPanel() {
             <button style={proStyles.button('primary')} onClick={handleInstallUpdate}>Install Update & Restart</button>
           )}
           {update?.available === false && (
-            <span style={{ color: theme.textMuted, fontSize: 12 }}>No updates available.</span>
+            <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>No updates available.</span>
           )}
         </div>
       </section>
@@ -218,9 +218,9 @@ export function ProPanel() {
                 type="checkbox"
                 checked={cloudSync.enabled}
                 onChange={handleCloudSyncToggle}
-                style={{ accentColor: theme.accentPurple }}
+                style={{ accentColor: 'var(--accent-purple)' }}
               />
-              <span style={{ fontSize: 13, color: theme.textPrimary }}>{cloudSync.enabled ? 'Enabled' : 'Disabled'}</span>
+              <span style={{ fontSize: 13, color: 'var(--text-primary)' }}>{cloudSync.enabled ? 'Enabled' : 'Disabled'}</span>
             </label>
             {cloudSync.enabled && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -247,7 +247,7 @@ export function ProPanel() {
                     {loading ? 'Syncing...' : 'Pull'}
                   </button>
                   {cloudSync.lastSyncAt && (
-                    <span style={{ color: theme.textMuted, fontSize: 12, alignSelf: 'center' }}>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 12, alignSelf: 'center' }}>
                       Last sync: {new Date(cloudSync.lastSyncAt).toLocaleString()}
                     </span>
                   )}
@@ -266,8 +266,8 @@ export function ProPanel() {
               <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
                 {team.members.map(member => (
                   <li key={member.id} style={proStyles.teamItem}>
-                    <span style={{ color: theme.textPrimary, fontSize: 13 }}>{member.email}</span>
-                    <span style={{ color: theme.textMuted, fontSize: 12, textTransform: 'capitalize' }}>{member.role}</span>
+                    <span style={{ color: 'var(--text-primary)', fontSize: 13 }}>{member.email}</span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: 12, textTransform: 'capitalize' }}>{member.role}</span>
                     <button
                       style={{ ...proStyles.button('danger'), padding: '4px 8px', fontSize: 12 }}
                       onClick={() => handleRemove(member.id)}
@@ -277,7 +277,7 @@ export function ProPanel() {
                   </li>
                 ))}
                 {team.members.length === 0 && (
-                  <li style={{ color: theme.textMuted, fontSize: 13, padding: '4px 0' }}>No team members yet.</li>
+                  <li style={{ color: 'var(--text-muted)', fontSize: 13, padding: '4px 0' }}>No team members yet.</li>
                 )}
               </ul>
               <div style={{ display: 'flex', gap: 8 }}>
