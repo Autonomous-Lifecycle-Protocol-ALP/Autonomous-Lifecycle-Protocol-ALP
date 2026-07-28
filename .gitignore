@@ -65,3 +65,6 @@ vscode/*.vsix
 sham/dist-installer/
 sham/release/
 sham/test-results/
+
+# Project-specific out-of-scope documents
+prd2.md
