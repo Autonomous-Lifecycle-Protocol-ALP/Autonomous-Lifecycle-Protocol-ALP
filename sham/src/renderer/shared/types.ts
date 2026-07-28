@@ -41,6 +41,7 @@ export interface SHAMState {
   mcpTools: ALPMCPTool[];
   parseResult: ParseResult | null;
   collab: CollabState;
+  plugins: PluginState;
 }
 
 export interface LicenseInfo {
@@ -92,5 +93,28 @@ export interface CollabSession {
 
 export interface CollabState {
   session: CollabSession | null;
+  output: string[];
+}
+
+export interface PluginManifest {
+  id: string;
+  name: string;
+  version: string;
+  description: string;
+  author?: string;
+  tags?: string[];
+  toolPanel?: boolean;
+  lspAdapter?: string;
+}
+
+export interface Plugin {
+  manifest: PluginManifest;
+  enabled: boolean;
+  loadedAt?: string;
+  error?: string;
+}
+
+export interface PluginState {
+  plugins: Plugin[];
   output: string[];
 }

@@ -41,4 +41,9 @@ contextBridge.exposeInMainWorld('shamAPI', {
   leaveCollab: () => ipcRenderer.invoke('collab-leave'),
   getCRDTStatus: () => ipcRenderer.invoke('crdt-status'),
   mergeCRDT: () => ipcRenderer.invoke('crdt-merge'),
+  listPlugins: () => ipcRenderer.invoke('plugin-list'),
+  togglePlugin: (pluginId: string, enabled: boolean) =>
+    ipcRenderer.invoke('plugin-toggle', { pluginId, enabled }),
+  reloadPlugin: (pluginId: string) =>
+    ipcRenderer.invoke('plugin-reload', { pluginId }),
 });

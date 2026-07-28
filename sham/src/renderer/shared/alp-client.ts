@@ -6,6 +6,8 @@ import {
   TeamMember,
   TeamState,
   UpdateStatus,
+  Plugin,
+  PluginState,
 } from './types.js';
 
 const api = (window as any).shamAPI;
@@ -160,4 +162,16 @@ export async function mergeCRDT() {
     stderr: string;
     error?: string;
   };
+}
+
+export async function listPlugins() {
+  return (api?.listPlugins?.() ?? { success: false, plugins: [] }) as { success: boolean; plugins: Plugin[]; error?: string };
+}
+
+export async function togglePlugin(pluginId: string, enabled: boolean) {
+  return (api?.togglePlugin?.({ pluginId, enabled }) ?? { success: false, plugins: [] }) as { success: boolean; plugins: Plugin[]; message?: string; error?: string };
+}
+
+export async function reloadPlugin(pluginId: string) {
+  return (api?.reloadPlugin?.({ pluginId }) ?? { success: false, plugins: [] }) as { success: boolean; plugins: Plugin[]; message?: string; error?: string };
 }
