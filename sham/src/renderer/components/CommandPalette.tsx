@@ -26,6 +26,7 @@ const commands: Command[] = [
   { id: 'debugger.stop', label: 'Debug: Stop Debugging', icon: '&#9632;', category: 'Debug' },
   { id: 'tests.run', label: 'Tests: Run All Tests', icon: '&#128230;', category: 'Testing' },
   { id: 'collab.start', label: 'Collaboration: Start Session', icon: '&#128101;', category: 'Collaboration' },
+  { id: 'collab.share', label: 'Collaboration: Copy Share Link', icon: '&#128279;', category: 'Collaboration' },
   { id: 'plugins.list', label: 'Plugins: List Installed', icon: '&#128295;', category: 'Extensions' },
   { id: 'settings.open', label: 'Preferences: Open Settings', icon: '&#9881;', shortcut: ['Ctrl', ','], category: 'Preferences' },
   { id: 'workbench.focusSidebar', label: 'View: Focus Sidebar', icon: '&#9635;', shortcut: ['Ctrl', 'B'], category: 'View' },

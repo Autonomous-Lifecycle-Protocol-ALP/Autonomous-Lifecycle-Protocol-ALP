@@ -440,6 +440,12 @@ export function App(): React.JSX.Element {
           else if (cmd === 'debugger.start') { setActivePanel('debugger'); }
           else if (cmd === 'debugger.stop') { setState((prev) => ({ ...prev, debug: { session: null, output: [] } })); }
           else if (cmd === 'tests.run') { setActivePanel('test-runner'); }
+          else if (cmd === 'collab.start') { setActivePanel('collab'); }
+          else if (cmd === 'collab.share') {
+            if (state.collab.session) {
+              navigator.clipboard.writeText(`sham://collab/join/${state.collab.session.id}`).catch(() => {});
+            }
+          }
           setShowCommandPalette(false);
         }} />
       )}

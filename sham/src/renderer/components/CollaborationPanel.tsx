@@ -30,6 +30,7 @@ export function CollaborationPanel({
   const [sessionId, setSessionId] = useState('');
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     getCollabStatus().then((result) => {
@@ -124,6 +125,19 @@ export function CollaborationPanel({
     setLoading(false);
   };
 
+  const handleCopyShareLink = async () => {
+    if (!session) return;
+    const link = `sham://collab/join/${session.id}`;
+    try {
+      await navigator.clipboard.writeText(link);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+      setFeedback({ type: 'success', message: 'Share link copied to clipboard.' });
+    } catch {
+      setFeedback({ type: 'error', message: 'Failed to copy link to clipboard.' });
+    }
+  };
+
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 12 }}>
       <div style={{ marginBottom: 12 }}>
@@ -168,6 +182,9 @@ export function CollaborationPanel({
               </div>
             )}
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <button className="btn btn-secondary btn-sm" onClick={handleCopyShareLink} disabled={loading}>
+                {copied ? 'Copied!' : 'Copy Share Link'}
+              </button>
               <button className="btn btn-danger btn-sm" onClick={handleLeave} disabled={loading}>Leave Session</button>
               <button className="btn btn-secondary btn-sm" onClick={handleCRDTStatus} disabled={loading}>CRDT Status</button>
               <button className="btn btn-primary btn-sm" onClick={handleCRDTMerge} disabled={loading}>Merge CRDT</button>
