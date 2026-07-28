@@ -19,7 +19,7 @@ jobs:
           node-version: "24"
 
       - name: Build ALP CLI
-        run: npm ci && npm run build --workspace @alp/cli
+        run: npm ci && npm run build --workspace @younglord3302/cli
 
       - name: Generate Report
         run: |
