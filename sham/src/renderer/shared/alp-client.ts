@@ -8,6 +8,8 @@ import {
   UpdateStatus,
   Plugin,
   PluginState,
+  ProfileTrace,
+  ProfilerState,
 } from './types.js';
 
 const api = (window as any).shamAPI;
@@ -174,4 +176,20 @@ export async function togglePlugin(pluginId: string, enabled: boolean) {
 
 export async function reloadPlugin(pluginId: string) {
   return (api?.reloadPlugin?.({ pluginId }) ?? { success: false, plugins: [] }) as { success: boolean; plugins: Plugin[]; message?: string; error?: string };
+}
+
+export async function profilerStart(payload: { agentId?: string; command?: string }) {
+  return (api?.profilerStart?.(payload) ?? { success: false, trace: null }) as { success: boolean; trace: ProfileTrace | null; error?: string };
+}
+
+export async function profilerStop(payload: { traceId: string; status: 'completed' | 'failed'; stdout?: string; stderr?: string; error?: string }) {
+  return (api?.profilerStop?.(payload) ?? { success: false, trace: null }) as { success: boolean; trace: ProfileTrace | null; error?: string };
+}
+
+export async function profilerList() {
+  return (api?.profilerList?.() ?? { success: false, traces: [] }) as { success: boolean; traces: ProfileTrace[] };
+}
+
+export async function profilerClear() {
+  return (api?.profilerClear?.() ?? { success: false }) as { success: boolean };
 }

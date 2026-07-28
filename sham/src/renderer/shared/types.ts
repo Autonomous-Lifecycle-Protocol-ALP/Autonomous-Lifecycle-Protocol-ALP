@@ -42,6 +42,7 @@ export interface SHAMState {
   parseResult: ParseResult | null;
   collab: CollabState;
   plugins: PluginState;
+  profiler: ProfilerState;
 }
 
 export interface LicenseInfo {
@@ -116,5 +117,23 @@ export interface Plugin {
 
 export interface PluginState {
   plugins: Plugin[];
+  output: string[];
+}
+
+export interface ProfileTrace {
+  id: string;
+  agentId?: string;
+  command?: string;
+  startedAt: string;
+  finishedAt?: string;
+  durationMs?: number;
+  status: 'running' | 'completed' | 'failed';
+  stdout?: string;
+  stderr?: string;
+  error?: string;
+}
+
+export interface ProfilerState {
+  traces: ProfileTrace[];
   output: string[];
 }

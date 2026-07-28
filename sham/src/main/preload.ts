@@ -46,4 +46,10 @@ contextBridge.exposeInMainWorld('shamAPI', {
     ipcRenderer.invoke('plugin-toggle', { pluginId, enabled }),
   reloadPlugin: (pluginId: string) =>
     ipcRenderer.invoke('plugin-reload', { pluginId }),
+  profilerStart: (payload: { agentId?: string; command?: string }) =>
+    ipcRenderer.invoke('profiler-start', payload),
+  profilerStop: (payload: { traceId: string; status: 'completed' | 'failed'; stdout?: string; stderr?: string; error?: string }) =>
+    ipcRenderer.invoke('profiler-stop', payload),
+  profilerList: () => ipcRenderer.invoke('profiler-list'),
+  profilerClear: () => ipcRenderer.invoke('profiler-clear'),
 });
