@@ -19,11 +19,12 @@
 - Snippet manager with ALP block templates
 - Customizable keyboard shortcuts
 - Workspace trust and file exclusion rules
+- Policy engine with type definitions, agent action kind, and federation support
 
 **Packages Affected:**
 - `@autonomous-lifecycle-protocol-alp/cli` — new `alp settings`, `alp search`, `alp git` commands
 - `@autonomous-lifecycle-protocol-alp/parser` — settings schema, snippet schema
-- `@autonomous-lifecycle-protocol-alp/sdk` — settings API, search API
+- `@autonomous-lifecycle-protocol-alp/sdk` — settings API, search API, policy API
 - `@autonomous-lifecycle-protocol-alp/mcp-server` — new tools for settings and search
 
 ---
