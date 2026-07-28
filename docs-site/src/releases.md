@@ -10,7 +10,7 @@ ALP versioning tracks two independent axes:
 - **Specification** (`spec/01-overview`) — the protocol grammar. Locked at **2.0.0 (Stable)**; strict semantic-versioning guarantees apply to implementations.
 - **Toolchain** (`@autonomous-lifecycle-protocol-alp/cli`, `@autonomous-lifecycle-protocol-alp/sdk`, docs-site, integrations) — the implementation and packaging, released on its own cadence.
 
-> 🔮 **Looking Ahead**: See [ROADMAP_V17_V39.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V39.md) for the strategic architecture roadmap spanning v17.0.0 (OpenTelemetry) to v40.0.0 (Native Desktop).
+> 🔮 **Looking Ahead**: See [ROADMAP_V17_V43.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V43.md) for the strategic architecture roadmap spanning v17.0.0 (OpenTelemetry) to v43.0.0 (IDE Collaboration).
 
 ## Toolchain
 

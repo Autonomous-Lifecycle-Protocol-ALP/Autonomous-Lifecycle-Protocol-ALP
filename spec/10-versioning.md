@@ -246,7 +246,7 @@ are authoritative in the table in §7; this section captures intent.
 
 ### Forward-looking (post-38.x)
 
-The current release is **v40.0.0** (V9 — Native Desktop). Future versions are tracked in `docs/ROADMAP_V17_V39.md` and the versioning spec's roadmap table. Planned focus areas include:
+The current release is **v40.0.0** (V9 — Native Desktop). Future versions are tracked in `docs/ROADMAP_V17_V43.md` and the versioning spec's roadmap table. Planned focus areas include:
 
 | Version | Theme | Planned Features |
 |---|---|---|

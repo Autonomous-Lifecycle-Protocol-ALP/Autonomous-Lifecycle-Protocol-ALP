@@ -8,7 +8,7 @@ interface GitFile {
 const mockFiles: GitFile[] = [
   { name: 'sham/src/main/index.ts', status: 'modified' },
   { name: 'sham/src/renderer/App.tsx', status: 'modified' },
-  { name: 'docs/ROADMAP_V17_V39.md', status: 'modified' },
+  { name: 'docs/ROADMAP_V17_V43.md', status: 'modified' },
   { name: 'sham/src/renderer/components/Sidebar.tsx', status: 'added' },
   { name: 'sham/src/renderer/components/CommandPalette.tsx', status: 'added' },
 ];
