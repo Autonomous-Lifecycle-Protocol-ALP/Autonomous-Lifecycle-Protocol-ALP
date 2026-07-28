@@ -72,18 +72,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.PAT_GITHUB_TOKEN }}
 
-      - name: Build and push @younglord3302/cli container
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./cli/Dockerfile
-          push: true
-          tags: ghcr.io/${{ github.repository }}/cli:${{ github.ref_name }},ghcr.io/${{ github.repository }}/cli:latest
+       - name: Build and push @younglord3302/cli container
+         uses: docker/build-push-action@v5
+         with:
+           context: .
+           file: ./cli/Dockerfile
+           push: true
+           tags: ghcr.io/${{ toLower(github.repository) }}/cli:${{ github.ref_name }},ghcr.io/${{ toLower(github.repository) }}/cli:latest
 
-      - name: Build and push @younglord3302/mcp-server container
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./mcp-server/Dockerfile
-          push: true
-          tags: ghcr.io/${{ github.repository }}/mcp-server:${{ github.ref_name }},ghcr.io/${{ github.repository }}/mcp-server:latest
+       - name: Build and push @younglord3302/mcp-server container
+         uses: docker/build-push-action@v5
+         with:
+           context: .
+           file: ./mcp-server/Dockerfile
+           push: true
+           tags: ghcr.io/${{ toLower(github.repository) }}/mcp-server:${{ github.ref_name }},ghcr.io/${{ toLower(github.repository) }}/mcp-server:latest
