@@ -98,3 +98,12 @@ export async function installUpdate() {
   api?.installUpdate?.();
   return { installing: false };
 }
+
+export async function execTerminalCommand(command: string) {
+  return (api?.execTerminalCommand?.(command) ?? { success: false, stdout: '', stderr: 'shamAPI unavailable' }) as {
+    success: boolean;
+    stdout: string;
+    stderr: string;
+    error?: string;
+  };
+}

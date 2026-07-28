@@ -73,3 +73,10 @@ export interface UpdateStatus {
   downloaded?: boolean;
   installing?: boolean;
 }
+
+export interface TerminalResult {
+  success: boolean;
+  stdout: string;
+  stderr: string;
+  error?: string;
+}

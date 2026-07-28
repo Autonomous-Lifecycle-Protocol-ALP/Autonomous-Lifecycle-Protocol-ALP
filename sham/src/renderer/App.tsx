@@ -94,7 +94,7 @@ export function App(): React.JSX.Element {
               }
             }} />
           ) : activePanel === 'terminal' ? (
-            <TerminalPanel output={state.terminalOutput} />
+            <TerminalPanel output={state.terminalOutput} onAppendOutput={(lines) => setState((prev) => ({ ...prev, terminalOutput: [...prev.terminalOutput, ...lines] }))} />
           ) : activePanel === 'agents' ? (
             <AgentPanel agents={state.agents} onRunAgent={handleRunAgent} />
           ) : activePanel === 'mcp' ? (

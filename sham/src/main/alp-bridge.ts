@@ -1,4 +1,8 @@
 import { ipcMain } from 'electron';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
 
 async function loadParser() {
   const parser = await import('@alp/parser');
@@ -46,6 +50,24 @@ export function setupALPBridge() {
       return { success: true, data: { agentId, status: 'running', config } };
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : String(error) };
+    }
+  });
+
+  ipcMain.handle('terminal-exec', async (_event, { command }: { command: string }) => {
+    try {
+      const { stdout, stderr } = await execAsync(command, {
+        maxBuffer: 10 * 1024 * 1024,
+        timeout: 120000,
+      });
+      return { success: true, stdout, stderr };
+    } catch (error) {
+      const execError = error as NodeJS.ErrnoException & { stdout?: string; stderr?: string };
+      return {
+        success: false,
+        stdout: execError.stdout ?? '',
+        stderr: execError.stderr ?? '',
+        error: execError.message ?? String(error),
+      };
     }
   });
 }

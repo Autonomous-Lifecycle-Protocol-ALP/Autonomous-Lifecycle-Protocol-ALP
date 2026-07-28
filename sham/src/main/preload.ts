@@ -33,4 +33,6 @@ contextBridge.exposeInMainWorld('shamAPI', {
   checkUpdate: () => ipcRenderer.invoke('pro-check-update'),
   downloadUpdate: () => ipcRenderer.invoke('pro-download-update'),
   installUpdate: () => ipcRenderer.invoke('pro-install-update'),
+  execTerminalCommand: (command: string) =>
+    ipcRenderer.invoke('terminal-exec', { command }),
 });
