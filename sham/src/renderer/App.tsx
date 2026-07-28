@@ -9,6 +9,7 @@ import { ProPanel } from './components/ProPanel.js';
 import { CollaborationPanel } from './components/CollaborationPanel.js';
 import { PluginPanel } from './components/PluginPanel.js';
 import { ProfilerPanel } from './components/ProfilerPanel.js';
+import { CopilotPanel } from './components/CopilotPanel.js';
 import { theme } from './styles/theme.js';
 import { fetchBlockTypes, runAgent, validateALPFile, onAppReady } from './shared/alp-client.js';
 import type { SHAMState } from './shared/types.js';
@@ -26,11 +27,12 @@ const defaultState: SHAMState = {
   collab: { session: null, output: [] },
   plugins: { plugins: [], output: [] },
   profiler: { traces: [], output: [] },
+  copilot: { suggestions: [], output: [] },
 };
 
 export function App(): React.JSX.Element {
   const [state, setState] = useState<SHAMState>(defaultState);
-  const [activePanel, setActivePanel] = useState<'editor' | 'terminal' | 'agents' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'pro'>('editor');
+  const [activePanel, setActivePanel] = useState<'editor' | 'terminal' | 'agents' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'pro' | 'copilot'>('editor');
   const [showWelcome, setShowWelcome] = useState(true);
 
   useEffect(() => {
@@ -98,13 +100,21 @@ export function App(): React.JSX.Element {
     setState((prev) => ({ ...prev, profiler: { ...prev.profiler, output: [...prev.profiler.output, ...lines] } }));
   };
 
+  const handleUpdateCopilotSuggestions = (suggestions: SHAMState['copilot']['suggestions']) => {
+    setState((prev) => ({ ...prev, copilot: { ...prev.copilot, suggestions } }));
+  };
+
+  const handleAppendCopilotOutput = (lines: string[]) => {
+    setState((prev) => ({ ...prev, copilot: { ...prev.copilot, output: [...prev.copilot.output, ...lines] } }));
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: theme.bgPrimary, color: theme.textPrimary }}>
       <header style={{ display: 'flex', alignItems: 'center', padding: '0 12px', height: 36, backgroundColor: theme.headerBackground, borderBottom: `1px solid ${theme.border}` }}>
         <span style={{ fontWeight: 700, fontSize: 14, color: theme.accent }}>SHAM</span>
         <span style={{ marginLeft: 8, fontSize: 12, color: theme.textMuted }}>Smart Hosted Agent Manager</span>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
-          {(['editor', 'terminal', 'agents', 'mcp', 'collab', 'plugins', 'profiler', 'pro'] as const).map((panel) => (
+          {(['editor', 'terminal', 'agents', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'pro'] as const).map((panel) => (
             <button key={panel} onClick={() => setActivePanel(panel)} style={{ padding: '4px 10px', background: activePanel === panel ? theme.bgSurface : 'transparent', border: 'none', color: activePanel === panel ? theme.textPrimary : theme.textMuted, borderRadius: 4, cursor: 'pointer', fontSize: 12 }}>
               {panel.charAt(0).toUpperCase() + panel.slice(1)}
             </button>
@@ -149,6 +159,14 @@ export function App(): React.JSX.Element {
               output={state.profiler.output}
               onUpdateTraces={handleUpdateProfilerTraces}
               onAppendOutput={handleAppendProfilerOutput}
+            />
+          ) : activePanel === 'copilot' ? (
+            <CopilotPanel
+              suggestions={state.copilot.suggestions}
+              output={state.copilot.output}
+              diagnostics={state.diagnostics}
+              onUpdateSuggestions={handleUpdateCopilotSuggestions}
+              onAppendOutput={handleAppendCopilotOutput}
             />
           ) : (
             <ProPanel />

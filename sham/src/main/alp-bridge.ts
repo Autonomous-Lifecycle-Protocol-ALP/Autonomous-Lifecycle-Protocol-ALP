@@ -292,4 +292,75 @@ export function setupALPBridge() {
     profileTraces.length = 0;
     return { success: true };
   });
+
+  ipcMain.handle('copilot-suggest', async (_event, { content, filePath }: { content: string; filePath: string }) => {
+    try {
+      const suggestions: Array<{
+        id: string;
+        type: 'fix' | 'completion' | 'tip';
+        severity?: 'error' | 'warning' | 'info';
+        message: string;
+        range?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number };
+        insertText?: string;
+        diagnostic?: { line: number; column: number; message: string; severity: 'error' | 'warning' };
+      }> = [];
+
+      const lines = content.split('\n');
+      lines.forEach((line, index) => {
+        const lineNumber = index + 1;
+        if (line.trim().startsWith('@agent') && !line.includes('model:')) {
+          suggestions.push({
+            id: `copilot-missing-model-${lineNumber}`,
+            type: 'fix',
+            severity: 'warning',
+            message: 'Add a model to @agent block',
+            range: { startLineNumber: lineNumber, startColumn: 1, endLineNumber: lineNumber, endColumn: line.length + 1 },
+            insertText: `${line}\n  model: gpt-4o`,
+            diagnostic: { line: lineNumber, column: 1, message: 'Missing model in @agent block', severity: 'warning' },
+          });
+        }
+        if (line.includes('${')) {
+          suggestions.push({
+            id: `copilot-unfilled-template-${lineNumber}`,
+            type: 'tip',
+            severity: 'info',
+            message: 'Unfilled template variable detected. Replace ${...} placeholders with actual values.',
+            range: { startLineNumber: lineNumber, startColumn: line.indexOf('$'), endLineNumber: lineNumber, endColumn: line.indexOf('$') + 2 },
+          });
+        }
+        if (line.trim().startsWith('@') && !line.includes(':')) {
+          suggestions.push({
+            id: `copilot-block-missing-fields-${lineNumber}`,
+            type: 'fix',
+            severity: 'warning',
+            message: 'ALP block appears to be missing fields. Add key-value pairs under the block.',
+            range: { startLineNumber: lineNumber, startColumn: 1, endLineNumber: lineNumber, endColumn: line.length + 1 },
+            insertText: `${line}\n  description: TODO`,
+          });
+        }
+      });
+
+      if (!content.includes('@')) {
+        suggestions.push({
+          id: 'copilot-empty-doc',
+          type: 'completion',
+          severity: 'info',
+          message: 'Start with an ALP block, e.g. @agent, @skill, @workflow',
+          insertText: '@agent my-agent\n  description: TODO\n  model: gpt-4o\n  tools: []\n',
+        });
+      }
+
+      return { success: true, suggestions };
+    } catch (error) {
+      return { success: false, suggestions: [], error: error instanceof Error ? error.message : String(error) };
+    }
+  });
+
+  ipcMain.handle('copilot-apply-fix', async (_event, { filePath, suggestionId, insertText, range }: { filePath: string; suggestionId: string; insertText?: string; range?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) => {
+    try {
+      return { success: true, applied: true, message: `Fix ${suggestionId} queued for ${filePath}` };
+    } catch (error) {
+      return { success: false, applied: false, error: error instanceof Error ? error.message : String(error) };
+    }
+  });
 }

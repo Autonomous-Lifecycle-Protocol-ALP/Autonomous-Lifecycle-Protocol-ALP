@@ -52,4 +52,8 @@ contextBridge.exposeInMainWorld('shamAPI', {
     ipcRenderer.invoke('profiler-stop', payload),
   profilerList: () => ipcRenderer.invoke('profiler-list'),
   profilerClear: () => ipcRenderer.invoke('profiler-clear'),
+  copilotSuggest: (payload: { content: string; filePath: string }) =>
+    ipcRenderer.invoke('copilot-suggest', payload),
+  copilotApplyFix: (payload: { filePath: string; suggestionId: string; insertText?: string; range?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) =>
+    ipcRenderer.invoke('copilot-apply-fix', payload),
 });

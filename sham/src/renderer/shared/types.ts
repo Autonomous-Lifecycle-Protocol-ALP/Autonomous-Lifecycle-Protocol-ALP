@@ -43,6 +43,7 @@ export interface SHAMState {
   collab: CollabState;
   plugins: PluginState;
   profiler: ProfilerState;
+  copilot: CopilotState;
 }
 
 export interface LicenseInfo {
@@ -135,5 +136,20 @@ export interface ProfileTrace {
 
 export interface ProfilerState {
   traces: ProfileTrace[];
+  output: string[];
+}
+
+export interface CopilotSuggestion {
+  id: string;
+  type: 'fix' | 'completion' | 'tip';
+  severity?: 'error' | 'warning' | 'info';
+  message: string;
+  range?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number };
+  insertText?: string;
+  diagnostic?: ALPDiagnostic;
+}
+
+export interface CopilotState {
+  suggestions: CopilotSuggestion[];
   output: string[];
 }

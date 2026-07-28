@@ -10,6 +10,7 @@ import {
   PluginState,
   ProfileTrace,
   ProfilerState,
+  CopilotSuggestion,
 } from './types.js';
 
 const api = (window as any).shamAPI;
@@ -192,4 +193,12 @@ export async function profilerList() {
 
 export async function profilerClear() {
   return (api?.profilerClear?.() ?? { success: false }) as { success: boolean };
+}
+
+export async function copilotSuggest(payload: { content: string; filePath: string }) {
+  return (api?.copilotSuggest?.(payload) ?? { success: false, suggestions: [] }) as { success: boolean; suggestions: CopilotSuggestion[]; error?: string };
+}
+
+export async function copilotApplyFix(payload: { filePath: string; suggestionId: string; insertText?: string; range?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) {
+  return (api?.copilotApplyFix?.(payload) ?? { success: false, applied: false }) as { success: boolean; applied: boolean; message?: string; error?: string };
 }
