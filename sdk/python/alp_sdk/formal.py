@@ -373,64 +373,6 @@ class ContractInvariant:
         return proof
 
 
-class ZKPolicyProof:
-    """V10.1.0: zero-knowledge proof that a policy held for an action.
-
-    In production this would wrap a real ZK-SNARK/STARK circuit; here we
-    provide a deterministic simulation so the SDK surface is available
-    without external dependencies.
-    """
-
-    def __init__(self, policy_id: str, action: str, proof_data: Optional[Dict[str, Any]] = None, verified: bool = False):
-        self.policy_id = policy_id
-        self.action = action
-        self.proof_data = proof_data or {}
-        self.verified = verified
-        self.verified_at: Optional[str] = None
-
-    def generate(self, witness: Dict[str, Any]) -> Dict[str, Any]:
-        witness_hash = _sha256(witness)
-        proof_payload = {
-            "policy_id": self.policy_id,
-            "action": self.action,
-            "witness_hash": witness_hash,
-        }
-        expected = _sha256(proof_payload)
-        self.proof_data = {
-            "policy_id": self.policy_id,
-            "action": self.action,
-            "witness_hash": witness_hash,
-            "expected": expected,
-            "generated_at": _now_iso(),
-        }
-        return self.proof_data
-
-    def verify(self, trust_root: Optional[Dict[str, Any]] = None) -> bool:
-        if not self.proof_data or "expected" not in self.proof_data:
-            return False
-        proof_payload = {
-            "policy_id": self.proof_data["policy_id"],
-            "action": self.proof_data["action"],
-            "witness_hash": self.proof_data["witness_hash"],
-        }
-        expected = _sha256(proof_payload)
-        ok = self.proof_data.get("expected") == expected
-        if trust_root:
-            ok = ok and trust_root.get("namespace") in (self.proof_data.get("policy_id", ""), "*")
-        self.verified = ok
-        self.verified_at = _now_iso()
-        return ok
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "policy_id": self.policy_id,
-            "action": self.action,
-            "proof_data": self.proof_data,
-            "verified": self.verified,
-            "verified_at": self.verified_at,
-        }
-
-
 def _sha256(obj: Any) -> str:
     import hashlib, json
     return hashlib.sha256(json.dumps(obj, sort_keys=True, default=str).encode()).hexdigest()

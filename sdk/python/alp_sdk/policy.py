@@ -1,7 +1,7 @@
 """ALP policy engine (v6.4.0, v2 extensions v8.1.0 - Python SDK parity).
 
 Mirrors the TypeScript ``@autonomous-lifecycle-protocol-alp/parser`` ``PolicyEngine``: evaluates
-proposed autonomous-agent actions (path / command) against declarative
+proposed autonomous-agent actions (path / command / agent) against declarative
 ``@policy`` objects. ``deny_*`` always beats ``allow_*``; an empty/
 absent ``allow_*`` permits unless denied; ``enforcement: warn`` reports
 but never blocks.
@@ -14,16 +14,62 @@ v8.1.0 extensions:
   human-in-the-loop approval gate instead of auto-blocking.
 * ``proposal`` blocks — signed, auditable action proposals verified
   against a trust root (MCP-enforcement audit trail, spec/03 §25).
+
+v10.6.0 Cross-Federation Trust:
+
+* ``FederatedTrustRoot`` for remote workspace trust anchors.
+* ``bootstrap_trust`` reads a trust root from a remote workspace path.
+* ``inherited_policies`` merges parent/child policy sets with precedence.
+* ``cross_federation_evaluate`` evaluates queries across federation boundaries.
 """
 from __future__ import annotations
 
+import os
 import re
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional, Union
 
 from .models import AlpObject
 
-PolicyActionKind = str  # 'path' | 'command'
+PolicyActionKind = str  # 'path' | 'command' | 'agent'
+
+
+@dataclass
+class TimeWindow:
+    """v8.1.0: time-scoped least-privilege window."""
+
+    days: List[str] = field(default_factory=lambda: ["*"])
+    start: str = "00:00"
+    end: str = "23:59"
+
+
+@dataclass
+class ApprovalRule:
+    """v8.1.0: pattern that escalates to human approval."""
+
+    kind: str
+    value: str
+
+
+@dataclass
+class PolicyProposal:
+    """v8.1.0: signed, auditable action proposal."""
+
+    id: str
+    action: str
+    agent: str
+    signed_by: Optional[str] = None
+    signature: Optional[str] = None
+
+
+@dataclass
+class FederatedTrustRoot:
+    """v10.6.0: trust anchor for a remote federation workspace."""
+
+    namespace: str
+    public_key_pem: str
+    fingerprint: str
 
 
 class PolicyDecision:
@@ -265,6 +311,9 @@ class PolicyEngine:
             elif query.kind == "command":
                 deny = policy.properties.get("deny_commands")
                 allow = policy.properties.get("allow_commands")
+            elif query.kind == "agent":
+                deny = policy.properties.get("deny_agents")
+                allow = policy.properties.get("allow_agents")
             else:
                 deny = None
                 allow = None
@@ -320,7 +369,62 @@ class PolicyEngine:
             p = pattern.strip().lower()
             v = value.strip().lower()
             return v == p or v.startswith(p + " ") or v.startswith(p)
+        if kind == "agent":
+            return bool(re.match(pattern.replace("*", ".*").replace("?", "."), value, re.IGNORECASE))
         return bool(glob_to_regexp(pattern).match(_normalize_path(value)))
+
+    # ── v10.6.0 Cross-Federation Trust ──────────────────────────────
+
+    @staticmethod
+    def bootstrap_trust(
+        remote_workspace_path: str, trust_root: FederatedTrustRoot
+    ) -> FederatedTrustRoot:
+        """v10.6.0: read a trust root from a remote workspace path."""
+        import json as _json
+
+        trust_file = os.path.join(
+            remote_workspace_path, ".alp", "trust", "root.json"
+        )
+        stored: Dict[str, Any] = {}
+        try:
+            with open(trust_file, "r", encoding="utf-8") as _fh:
+                stored = _json.load(_fh)
+        except Exception:
+            pass
+        return FederatedTrustRoot(
+            namespace=stored.get("namespace", trust_root.namespace),
+            public_key_pem=stored.get("publicKeyPem", trust_root.public_key_pem),
+            fingerprint=stored.get("fingerprint", trust_root.fingerprint),
+        )
+
+    @staticmethod
+    def inherited_policies(
+        parent_policies: List[AlpObject], child_policies: List[AlpObject]
+    ) -> List[AlpObject]:
+        """v10.6.0: merge parent and child policy sets; child policies take precedence."""
+        child_ids = {p.id for p in child_policies}
+        inherited = [p for p in parent_policies if p.id not in child_ids]
+        return inherited + child_policies
+
+    def cross_federation_evaluate(
+        self, query: PolicyQuery, remote_trust_roots: List[FederatedTrustRoot]
+    ) -> PolicyDecision:
+        """v10.6.0: evaluate a query across remote federation trust roots."""
+        base = self.evaluate(query)
+        namespaces = [r.namespace for r in remote_trust_roots]
+        prefix = f"[{','.join(namespaces)}] " if namespaces else ""
+        return PolicyDecision(
+            allowed=base.allowed,
+            blocked=base.blocked,
+            reasons=[f"{prefix}{r}" for r in base.reasons],
+            policies=[f"{prefix}{p}" for p in base.policies],
+            requires_approval=base.requires_approval,
+            audit={
+                "agent": query.agent,
+                "decision": "allow" if base.allowed else ("block" if base.blocked else "warn"),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            },
+        )
 
 
 def _normalize_ref(ref: str) -> str:
@@ -329,6 +433,65 @@ def _normalize_ref(ref: str) -> str:
 
 def _normalize_path(p: str) -> str:
     return p.replace("\\", "/").replace("./", "", 1)
+
+
+def normalize_objects(list_: Any) -> List[Dict[str, Any]]:
+    """Normalize a list that may contain inline-object strings or dicts."""
+    if not isinstance(list_, list):
+        return []
+    result: List[Dict[str, Any]] = []
+    for item in list_:
+        if isinstance(item, str):
+            parsed = parse_inline_object(item)
+            if isinstance(parsed, dict):
+                result.append(parsed)
+        elif isinstance(item, dict):
+            result.append(item)
+    return result
+
+
+def parse_inline_object(literal: str) -> Any:
+    """Parse a single inline object literal ``{ key: value, ... }`` into a dict.
+
+    The line-based reader stores ``proposals``, ``allow_during``,
+    and ``require_approval`` list items as raw strings; this normalizes
+    them to objects for verification. Bracket-aware: commas inside
+    ``[...]`` array values are not treated as pair separators.
+    """
+    inner = literal.strip()
+    if inner.startswith("{") and inner.endswith("}"):
+        inner = inner[1:-1]
+    out: Dict[str, Any] = {}
+    if not inner.strip():
+        return out
+    depth = 0
+    buf = ""
+    for c in inner:
+        if c == "[":
+            depth += 1
+        elif c == "]":
+            depth = max(0, depth - 1)
+        if c == "," and depth == 0:
+            _apply_pair(buf, out)
+            buf = ""
+        else:
+            buf += c
+    if buf.strip():
+        _apply_pair(buf, out)
+    return out
+
+
+def _apply_pair(pair: str, out: Dict[str, Any]) -> None:
+    idx = pair.index(":") if ":" in pair else -1
+    if idx == -1:
+        return
+    key = pair[:idx].strip()
+    value = pair[idx + 1:].strip()
+    if (value.startswith('"') and value.endswith('"')) or (
+        value.startswith("'") and value.endswith("'")
+    ):
+        value = value[1:-1]
+    out[key] = value
 
 
 def glob_to_regexp(glob: str) -> "re.Pattern[str]":

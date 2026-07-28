@@ -13,7 +13,21 @@ from .provenance import TraceSigner, ProvenanceStore, AuditLedger, VerifiableCre
 from .trace import TraceEntry, TraceStore, MerkleTree, verify_trace_integrity
 from .graph import AlpGraph, GraphNode, GraphEdge
 from .memory import MemoryStore, MemoryEntry, MemoryQuery
-from .policy import PolicyEngine, PolicyDecision, PolicyQuery, PolicySuggestion, PolicyVersion, PolicyRollback
+from .policy import (
+    PolicyEngine,
+    PolicyDecision,
+    PolicyQuery,
+    PolicySuggestion,
+    PolicyVersion,
+    PolicyRollback,
+    TimeWindow,
+    ApprovalRule,
+    PolicyProposal,
+    FederatedTrustRoot,
+    glob_to_regexp,
+    normalize_objects,
+    parse_inline_object,
+)
 from .predictive_policy import (
     PredictivePolicyEngine,
     AnomalyScore,
@@ -261,6 +275,13 @@ __all__ = [
     "PolicySuggestion",
     "PolicyVersion",
     "PolicyRollback",
+    "TimeWindow",
+    "ApprovalRule",
+    "PolicyProposal",
+    "FederatedTrustRoot",
+    "glob_to_regexp",
+    "normalize_objects",
+    "parse_inline_object",
     "PredictivePolicyEngine",
     "AnomalyScore",
     "BaselineProfile",
