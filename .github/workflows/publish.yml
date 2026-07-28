@@ -1,3 +1,4 @@
+# Updated to force GitHub Actions cache refresh
 name: "Publish to GitHub Packages"
 
 on:
@@ -88,3 +89,4 @@ jobs:
           file: ./mcp-server/Dockerfile
           push: true
           tags: ghcr.io/${{ toLower(github.repository) }}/mcp-server:${{ github.ref_name }},ghcr.io/${{ toLower(github.repository) }}/mcp-server:latest
+
