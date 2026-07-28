@@ -3,6 +3,18 @@ import Editor from '@monaco-editor/react';
 import { theme } from '../styles/theme.js';
 import type { SHAMState } from '../shared/types.js';
 
+const ALP_SNIPPETS: Record<string, string> = {
+  agent: `@agent ${'{name}'}\n  description: ${'{description}'}\n  model: gpt-4o\n  tools: []\n`,
+  skill: `@skill ${'{name}'}\n  description: ${'{description}'}\n  input: text\n  output: text\n`,
+  macro: `@macro ${'{name}'}\n  input: ${'{input}'}\n  expand: ${'{expansion}'}\n`,
+  event: `@event ${'{name}'}\n  type: pubsub\n  payload: ${'{json}'}\n`,
+  memory: `@memory ${'{name}'}\n  backend: redis\n  ttl: 3600\n`,
+  contract: `@contract ${'{name}'}\n  precondition: ${'{pre}'}\n  postcondition: ${'{post}'}\n`,
+  vault: `@vault ${'{name}'}\n  encryption: aes256\n  rotation: daily\n`,
+  swarm: `@swarm ${'{name}'}\n  maxAgents: 8\n  policy: balanced\n`,
+  workflow: `@workflow ${'{name}'}\n  steps:\n    - id: step-1\n      agent: ${'{agentId}'}\n`,
+};
+
 interface EditorPanelProps {
   state: SHAMState;
   onValidate: (content: string, filePath: string) => Promise<unknown>;
@@ -16,6 +28,40 @@ export function EditorPanel({ state, onValidate }: EditorPanelProps): React.JSX.
       editorRef.current.focus();
     }
   }, [state.activeFile]);
+
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
+    const monaco = (window as any).monaco;
+    if (!monaco) return;
+
+    const blockTypes = state.blockTypes ?? [];
+    const keywordSuggestions = blockTypes.map((type) => ({
+      label: `@${type}`,
+      kind: monaco.languages.CompletionItemKind.Snippet,
+      insertText: ALP_SNIPPETS[type] ?? `@${type}\n  ${'{name}'}: ${'{value}'}\n`,
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      documentation: `Insert @${type} block`,
+      range: { startLineNumber: 1, startColumn: 1, endLineNumber: 1, endColumn: 1 },
+    }));
+
+    const snippetSuggestions = Object.entries(ALP_SNIPPETS).map(([type, template]) => ({
+      label: `@${type} template`,
+      kind: monaco.languages.CompletionItemKind.Snippet,
+      insertText: template,
+      insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+      documentation: `Template for @${type}`,
+      range: { startLineNumber: 1, startColumn: 1, endLineNumber: 1, endColumn: 1 },
+    }));
+
+    const disposable = monaco.languages.registerCompletionItemProvider('alp', {
+      provideCompletionItems: () => {
+        return { suggestions: [...keywordSuggestions, ...snippetSuggestions] };
+      },
+    });
+
+    return () => disposable.dispose();
+  }, [state.blockTypes]);
 
   const handleEditorChange = (value: string | undefined) => {
     if (value && state.activeFile) {
@@ -50,7 +96,7 @@ export function EditorPanel({ state, onValidate }: EditorPanelProps): React.JSX.
             automaticLayout: true,
             scrollBeyondLastLine: false,
             padding: { top: 8 },
-            suggest: { showKeywords: true },
+            suggest: { showKeywords: true, showSnippets: true },
             quickSuggestions: true,
             formatOnPaste: true,
             formatOnType: true,
