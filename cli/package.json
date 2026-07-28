@@ -6,8 +6,16 @@
   "bin": {
     "alp": "./dist/index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/younglord3302/Autonomous-Lifecycle-Protocol-ALP.git"
+  },
   "scripts": {
     "build": "tsc"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
     "@alp/parser": "*",
