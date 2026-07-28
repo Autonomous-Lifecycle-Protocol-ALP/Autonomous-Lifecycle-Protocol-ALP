@@ -1139,6 +1139,138 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       };
     }
 
+    case 'alp_create_task': {
+      const title = args?.title as string;
+      const description = (args?.description as string) || '';
+      const agent = (args?.agent as string) || '';
+      const parent = args?.parent as string | undefined;
+      const status = (args?.status as string) || '[ ]';
+      if (!title) {
+        return { content: [{ type: 'text', text: 'Error: title is required.' }], isError: true };
+      }
+      const alpDir = path.join(cwd, '.alp');
+      const tasksDir = path.join(alpDir, 'tasks');
+      fs.mkdirSync(tasksDir, { recursive: true });
+      const id = toKebab(title);
+      const file = path.join(tasksDir, `${id}.alp`);
+      if (fs.existsSync(file)) {
+        return { content: [{ type: 'text', text: `Task ${id} already exists.` }], isError: true };
+      }
+      const ownerLine = agent ? `  owner: -> ${agent}\n` : '';
+      const parentLine = parent ? `  depends_on:\n    - -> ${parent}\n` : '';
+      const body =
+        `!alp-version: 2.0.0\n\n` +
+        `@task\n` +
+        `  id: ${id}\n` +
+        `  status: ${status}\n` +
+        `  description: "${description.replace(/"/g, "'")}"\n` +
+        ownerLine +
+        parentLine;
+      fs.writeFileSync(file, body, 'utf8');
+      audit(cwd, 'file_mutation', { action: 'create_task', task_id: id });
+      return {
+        content: [{ type: 'text', text: `Created task ${id}.` }],
+      };
+    }
+
+    case 'alp_create_feature': {
+      const title = args?.title as string;
+      const description = (args?.description as string) || '';
+      const status = (args?.status as string) || '[ ]';
+      if (!title) {
+        return { content: [{ type: 'text', text: 'Error: title is required.' }], isError: true };
+      }
+      const alpDir = path.join(cwd, '.alp');
+      const featuresDir = path.join(alpDir, 'features');
+      fs.mkdirSync(featuresDir, { recursive: true });
+      const id = toKebab(title);
+      const file = path.join(featuresDir, `${id}.alp`);
+      if (fs.existsSync(file)) {
+        return { content: [{ type: 'text', text: `Feature ${id} already exists.` }], isError: true };
+      }
+      const body =
+        `!alp-version: 2.0.0\n\n` +
+        `@feature\n` +
+        `  id: ${id}\n` +
+        `  status: ${status}\n` +
+        `  description: "${description.replace(/"/g, "'")}"\n`;
+      fs.writeFileSync(file, body, 'utf8');
+      audit(cwd, 'file_mutation', { action: 'create_feature', feature_id: id });
+      return {
+        content: [{ type: 'text', text: `Created feature ${id}.` }],
+      };
+    }
+
+    case 'alp_get_events': {
+      const typeFilter = args?.type as string | undefined;
+      const limit = (args?.limit as number) || 50;
+      const eventsFile = path.join(cwd, '.alp', '.events', 'events.jsonl');
+      if (!fs.existsSync(eventsFile)) {
+        return { content: [{ type: 'text', text: 'No events file found.' }] };
+      }
+      const lines = fs.readFileSync(eventsFile, 'utf8').split('\n').filter(Boolean);
+      let events = lines.map((l) => {
+        try { return JSON.parse(l); } catch { return null; }
+      }).filter((e): e is Record<string, unknown> => e !== null);
+      if (typeFilter) {
+        events = events.filter((e) => (e as any).type === typeFilter);
+      }
+      return {
+        content: [{ type: 'text', text: JSON.stringify(events.slice(-limit), null, 2) }],
+      };
+    }
+
+    case 'alp_get_analytics': {
+      const stateFile = path.join(cwd, '.alp', '.runtime', 'state.db.json');
+      if (fs.existsSync(stateFile)) {
+        const state = JSON.parse(fs.readFileSync(stateFile, 'utf8'));
+        return {
+          content: [{ type: 'text', text: JSON.stringify(state, null, 2) }],
+        };
+      }
+      const objects = loadWorkspace(cwd);
+      const analytics = {
+        total_objects: objects.length,
+        by_type: objects.reduce((acc: Record<string, number>, o: any) => {
+          acc[o._type] = (acc[o._type] || 0) + 1;
+          return acc;
+        }, {}),
+        by_status: objects.reduce((acc: Record<string, number>, o: any) => {
+          const s = o.status || '[ ]';
+          acc[s] = (acc[s] || 0) + 1;
+          return acc;
+        }, {}),
+      };
+      return {
+        content: [{ type: 'text', text: JSON.stringify(analytics, null, 2) }],
+      };
+    }
+
+    case 'alp_set_status': {
+      const targetId = args?.id as string;
+      const newStatus = args?.status as string;
+      if (!targetId || !newStatus) {
+        return { content: [{ type: 'text', text: 'Error: id and status are required.' }], isError: true };
+      }
+      const objects = loadWorkspace(cwd);
+      const obj = objects.find((o) => o.id === targetId);
+      if (!obj) {
+        return { content: [{ type: 'text', text: `Object ${targetId} not found.` }], isError: true };
+      }
+      const alpDir = path.join(cwd, '.alp');
+      const filePath = path.join(alpDir, obj._type === 'task' ? 'tasks' : obj._type === 'feature' ? 'features' : 'objects', `${targetId}.alp`);
+      if (!fs.existsSync(filePath)) {
+        return { content: [{ type: 'text', text: `File for ${targetId} not found.` }], isError: true };
+      }
+      const content = fs.readFileSync(filePath, 'utf8');
+      const updated = content.replace(/(status:\s*)\[.\]/, `$1${newStatus}`);
+      fs.writeFileSync(filePath, updated, 'utf8');
+      audit(cwd, 'task_status', { task_id: targetId, status: newStatus });
+      return {
+        content: [{ type: 'text', text: `Status of ${targetId} updated to ${newStatus}` }],
+      };
+    }
+
     default:
       return {
         content: [{ type: 'text', text: `Unknown tool: ${name}` }],

@@ -151,6 +151,10 @@ from .governance import (
     Vote,
     VoteValue,
 )
+from .consensus_vote import ConsensusVoteEngine, ConsensusVoteConfig
+from .code_transform import CodeTransformEngine, CodeTransformConfig
+from .event_mesh import EventMeshEngine, EventMeshConfig
+from .swarm_marketplace import SwarmMarketplaceEngine, SkillListing
 from .domain_trust import (
     DomainTrustAnchor,
     DomainTrustManager,
@@ -416,4 +420,26 @@ __all__ = [
     "DomainLink",
     "TrustStatus",
     "create_domain_keypair",
+    "TelemetryEngine",
+    "Span",
+    "AuthoringError",
+    "MacroEngine",
+    "MacroDefinition",
+    "CollaborationEngine",
+    "CollabSession",
+    "CollabOperation",
+    "PresenceInfo",
+    "CollabBranch",
+    "MemoryMeshEngine",
+    "MemoryNode",
+    "MemoryQueryResult",
+    "MemoryMeshStats",
+    "ConsensusVoteEngine",
+    "ConsensusVoteConfig",
+    "CodeTransformEngine",
+    "CodeTransformConfig",
+    "EventMeshEngine",
+    "EventMeshConfig",
+    "SwarmMarketplaceEngine",
+    "SkillListing",
 ]
