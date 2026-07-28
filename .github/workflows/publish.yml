@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish:
-    name: Publish @alp/* packages to GitHub Packages
+    name: Publish @younglord3302/* packages to GitHub Packages
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,28 +34,28 @@ jobs:
       - name: Build workspaces
         run: npm run build
 
-      - name: Publish @alp/schemas
-        run: npm publish --workspace @alp/schemas
+      - name: Publish @younglord3302/schemas
+        run: npm publish --workspace @younglord3302/schemas
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
 
-      - name: Publish @alp/parser
-        run: npm publish --workspace @alp/parser
+      - name: Publish @younglord3302/parser
+        run: npm publish --workspace @younglord3302/parser
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
 
-      - name: Publish @alp/cli
-        run: npm publish --workspace @alp/cli
+      - name: Publish @younglord3302/cli
+        run: npm publish --workspace @younglord3302/cli
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
 
-      - name: Publish @alp/sdk
-        run: npm publish --workspace @alp/sdk
+      - name: Publish @younglord3302/sdk
+        run: npm publish --workspace @younglord3302/sdk
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
 
-      - name: Publish @alp/mcp-server
-        run: npm publish --workspace @alp/mcp-server
+      - name: Publish @younglord3302/mcp-server
+        run: npm publish --workspace @younglord3302/mcp-server
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PAT_GITHUB_TOKEN }}
 
@@ -72,7 +72,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.PAT_GITHUB_TOKEN }}
 
-      - name: Build and push @alp/cli container
+      - name: Build and push @younglord3302/cli container
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -80,7 +80,7 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository }}/cli:${{ github.ref_name }},ghcr.io/${{ github.repository }}/cli:latest
 
-      - name: Build and push @alp/mcp-server container
+      - name: Build and push @younglord3302/mcp-server container
         uses: docker/build-push-action@v5
         with:
           context: .

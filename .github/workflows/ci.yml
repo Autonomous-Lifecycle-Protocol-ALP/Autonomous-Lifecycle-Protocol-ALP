@@ -48,7 +48,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install jsonschema referencing
           npm ci
-          npm run build --workspace @alp/parser --workspace @alp/cli
+          npm run build --workspace @younglord3302/parser --workspace @younglord3302/cli
 
       - name: Run Python SDK tests
         run: npm run test:python
@@ -70,7 +70,7 @@ jobs:
         run: npm ci
 
       - name: Build CLI
-        run: npm run build --workspace @alp/parser --workspace @alp/cli
+        run: npm run build --workspace @younglord3302/parser --workspace @younglord3302/cli
 
       - name: Validate examples/todo-app
         working-directory: examples/todo-app
@@ -101,7 +101,7 @@ jobs:
         run: npm ci
 
       - name: Build CLI
-        run: npm run build --workspace @alp/parser --workspace @alp/cli
+        run: npm run build --workspace @younglord3302/parser --workspace @younglord3302/cli
 
       - name: Run compliance harness
         run: node cli/dist/index.js test-harness --suite tests/compliance

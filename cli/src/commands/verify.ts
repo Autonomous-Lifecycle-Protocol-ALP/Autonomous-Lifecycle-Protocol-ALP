@@ -8,7 +8,7 @@ import {
   PolicyModelChecker,
   ContractInvariant,
   updateObjectStatus,
-} from '@alp/parser';
+} from '@younglord3302/parser';
 
 export interface VerifyOptions {
   formal?: string;
@@ -147,7 +147,7 @@ function runFormalVerification(policyId: string, objects: AlpObject[]) {
 
 /**
  * Update a task's `status:` line using the shared, quote-aware status writer
- * from `@alp/parser` (preserves `[?]` and `[x]` markers correctly).
+ * from `@younglord3302/parser` (preserves `[?]` and `[x]` markers correctly).
  */
 function writeTaskStatus(filePath: string, taskId: string, newStatus: string) {
   const content = fs.readFileSync(filePath, 'utf-8');

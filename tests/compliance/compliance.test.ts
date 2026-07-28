@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { AlpParser } from '@alp/parser';
+import { AlpParser } from '@younglord3302/parser';
 
 const parser = new AlpParser();
 const root = join(process.cwd(), 'tests', 'compliance');

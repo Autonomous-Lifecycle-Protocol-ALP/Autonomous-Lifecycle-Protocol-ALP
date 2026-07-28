@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { AlpParser, AlpObject } from '@alp/parser';
+import { AlpParser, AlpObject } from '@younglord3302/parser';
 import { readEvents } from '../runtime';
 
 /**

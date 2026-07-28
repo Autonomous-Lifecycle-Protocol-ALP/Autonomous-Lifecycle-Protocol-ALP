@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { VectorStoreEngine } from '@alp/parser';
+import { VectorStoreEngine } from '@younglord3302/parser';
 
 export function registerVectorCommand(program: Command) {
   const vector = program

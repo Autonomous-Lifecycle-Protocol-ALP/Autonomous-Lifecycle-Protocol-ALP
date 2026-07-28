@@ -17,7 +17,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@alp/parser': resolve('./parser/src/index.ts'),
+      '@younglord3302/parser': resolve('./parser/src/index.ts'),
     },
   },
 });

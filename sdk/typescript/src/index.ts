@@ -19,7 +19,7 @@ import {
   MemoryNode,
   MemoryQueryResult,
   MemoryMeshStats,
-} from '@alp/parser';
+} from '@younglord3302/parser';
 
 export class AlpWorkspace {
   private parser: AlpParser;

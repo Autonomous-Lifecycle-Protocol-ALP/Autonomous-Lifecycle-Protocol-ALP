@@ -7,7 +7,7 @@ import {
   ServerOptions,
   TransportKind,
 } from 'vscode-languageclient/node';
-import { AlpParser } from '@alp/parser';
+import { AlpParser } from '@younglord3302/parser';
 
 function escapeHtml(value: string | undefined | null): string {
   if (value == null) return '';

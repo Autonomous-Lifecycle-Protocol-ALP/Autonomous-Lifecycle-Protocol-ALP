@@ -1,5 +1,5 @@
 {
-  "name": "@alp/cli",
+  "name": "@younglord3302/cli",
   "version": "39.0.0",
   "description": "Command Line Interface for ALP",
   "main": "dist/index.js",
@@ -18,7 +18,7 @@
     "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@alp/parser": "*",
+    "@younglord3302/parser": "*",
     "commander": "^11.0.0",
     "yaml": "^2.9.0"
   },

@@ -12,8 +12,8 @@ import ReactFlow, {
 } from 'reactflow';
 import type { Edge, Node, NodeProps } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { AlpParser, AlpGraph } from '@alp/parser';
-import type { AlpObject } from '@alp/parser';
+import { AlpParser, AlpGraph } from '@younglord3302/parser';
+import type { AlpObject } from '@younglord3302/parser';
 import './App.css';
 
 // ── Preset Templates ───────────────────────────────────────────────────

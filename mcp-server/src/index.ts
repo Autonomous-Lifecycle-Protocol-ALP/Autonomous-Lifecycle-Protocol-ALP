@@ -41,7 +41,7 @@ import {
   UnsubscribeRequestSchema,
   ResourceUpdatedNotificationSchema,
 } from '@modelcontextprotocol/sdk/types.js';
-import { AlpParser, AlpObject, AlpGraph, PolicyEngine, updateObjectStatus, MacroEngine, MacroDefinition, MemoryMeshEngine, MemoryQueryResult } from '@alp/parser';
+import { AlpParser, AlpObject, AlpGraph, PolicyEngine, updateObjectStatus, MacroEngine, MacroDefinition, MemoryMeshEngine, MemoryQueryResult } from '@younglord3302/parser';
 import * as fs from 'fs';
 import * as path from 'path';
 

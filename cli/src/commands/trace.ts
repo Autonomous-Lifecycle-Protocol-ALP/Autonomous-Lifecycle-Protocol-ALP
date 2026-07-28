@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { TelemetryEngine } from '@alp/parser';
+import { TelemetryEngine } from '@younglord3302/parser';
 
 export function registerTraceCommand(program: Command) {
   const trace = program

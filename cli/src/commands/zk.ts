@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { ZKProofEngine } from '@alp/parser';
+import { ZKProofEngine } from '@younglord3302/parser';
 
 export function registerZKCommand(program: Command) {
   const zk = program

@@ -1,5 +1,5 @@
 {
-  "name": "@alp/schemas",
+  "name": "@younglord3302/schemas",
   "version": "39.0.0",
   "type": "module",
   "description": "JSON Schema definitions for the Autonomous Lifecycle Protocol (ALP)",
@@ -9,7 +9,7 @@
     "url": "git+https://github.com/younglord3302/Autonomous-Lifecycle-Protocol-ALP.git"
   },
   "scripts": {
-    "test": "echo \"@alp/schemas: no unit tests\""
+    "test": "echo \"@younglord3302/schemas: no unit tests\""
   },
   "publishConfig": {
     "access": "public",

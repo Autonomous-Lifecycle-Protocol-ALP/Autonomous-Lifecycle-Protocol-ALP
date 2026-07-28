@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { execFileSync } from 'child_process';
-import { AlpParser } from '@alp/parser';
+import { AlpParser } from '@younglord3302/parser';
 
 interface HarnessResult {
   file: string;

@@ -32,7 +32,7 @@ import {
 } from 'vscode-languageserver/node';
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { AlpParser, AlpObject, ValidationError } from '@alp/parser';
+import { AlpParser, AlpObject, ValidationError } from '@younglord3302/parser';
 import * as fs from 'fs';
 import * as path from 'path';
 

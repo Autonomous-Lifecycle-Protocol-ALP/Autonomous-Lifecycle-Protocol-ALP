@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { AlpParser, AlpObject, WorkflowVisualizer, DiagramFormat } from '@alp/parser';
+import { AlpParser, AlpObject, WorkflowVisualizer, DiagramFormat } from '@younglord3302/parser';
 
 export function visualizeCommand(id: string | undefined, opts: { format?: string; out?: string }) {
   const format = (opts.format || 'mermaid') as DiagramFormat;

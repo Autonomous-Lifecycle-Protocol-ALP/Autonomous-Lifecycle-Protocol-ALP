@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { AlpParser, AlpError } from '@alp/parser';
+import { AlpParser, AlpError } from '@younglord3302/parser';
 
 export function validateCommand(filePath?: string) {
   const parser = new AlpParser();
