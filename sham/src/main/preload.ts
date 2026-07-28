@@ -56,4 +56,10 @@ contextBridge.exposeInMainWorld('shamAPI', {
     ipcRenderer.invoke('copilot-suggest', payload),
   copilotApplyFix: (payload: { filePath: string; suggestionId: string; insertText?: string; range?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) =>
     ipcRenderer.invoke('copilot-apply-fix', payload),
+  refactorFindSymbols: (payload: { filePath: string }) =>
+    ipcRenderer.invoke('refactor-find-symbols', payload),
+  refactorPreview: (payload: { filePath: string; oldName: string; newName: string; kind: 'agent' | 'skill' | 'macro' | 'event' | 'memory' | 'contract' | 'vault' | 'swarm' | 'workflow' }) =>
+    ipcRenderer.invoke('refactor-preview', payload),
+  refactorRename: (payload: { filePath: string; oldName: string; newName: string; kind: 'agent' | 'skill' | 'macro' | 'event' | 'memory' | 'contract' | 'vault' | 'swarm' | 'workflow' }) =>
+    ipcRenderer.invoke('refactor-rename', payload),
 });

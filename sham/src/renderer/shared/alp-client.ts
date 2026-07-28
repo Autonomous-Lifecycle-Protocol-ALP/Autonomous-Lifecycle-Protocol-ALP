@@ -11,6 +11,7 @@ import {
   ProfileTrace,
   ProfilerState,
   CopilotSuggestion,
+  RefactorRename,
 } from './types.js';
 
 const api = (window as any).shamAPI;
@@ -201,4 +202,16 @@ export async function copilotSuggest(payload: { content: string; filePath: strin
 
 export async function copilotApplyFix(payload: { filePath: string; suggestionId: string; insertText?: string; range?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) {
   return (api?.copilotApplyFix?.(payload) ?? { success: false, applied: false }) as { success: boolean; applied: boolean; message?: string; error?: string };
+}
+
+export async function refactorFindSymbols(payload: { filePath: string }) {
+  return (api?.refactorFindSymbols?.(payload) ?? { success: false, renames: [] }) as { success: boolean; renames: RefactorRename[]; error?: string };
+}
+
+export async function refactorPreview(payload: { filePath: string; oldName: string; newName: string; kind: RefactorRename['kind'] }) {
+  return (api?.refactorPreview?.(payload) ?? { success: false, renames: [] }) as { success: boolean; renames: RefactorRename[]; error?: string };
+}
+
+export async function refactorRename(payload: { filePath: string; oldName: string; newName: string; kind: RefactorRename['kind'] }) {
+  return (api?.refactorRename?.(payload) ?? { success: false, renames: [] }) as { success: boolean; renames: RefactorRename[]; error?: string };
 }

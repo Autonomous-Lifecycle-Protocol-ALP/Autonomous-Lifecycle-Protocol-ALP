@@ -36,6 +36,15 @@ interface ProfileTrace {
   error?: string;
 }
 
+interface RefactorRename {
+  id: string;
+  oldName: string;
+  newName: string;
+  kind: 'agent' | 'skill' | 'macro' | 'event' | 'memory' | 'contract' | 'vault' | 'swarm' | 'workflow';
+  occurrences: number;
+  files: string[];
+}
+
 const execAsync = promisify(exec);
 const PLUGINS_DIR = join(process.resourcesPath || process.cwd(), 'plugins');
 const profileTraces: ProfileTrace[] = [];
@@ -361,6 +370,82 @@ export function setupALPBridge() {
       return { success: true, applied: true, message: `Fix ${suggestionId} queued for ${filePath}` };
     } catch (error) {
       return { success: false, applied: false, error: error instanceof Error ? error.message : String(error) };
+    }
+  });
+
+  ipcMain.handle('refactor-find-symbols', async (_event, { filePath }: { filePath: string }) => {
+    try {
+      const content = await readFile(filePath, 'utf-8').catch(() => '');
+      const symbols: Array<{ name: string; kind: RefactorRename['kind']; line: number }> = [];
+      const lines = content.split('\n');
+      lines.forEach((line, index) => {
+        const trimmed = line.trim();
+        for (const kind of ['agent', 'skill', 'macro', 'event', 'memory', 'contract', 'vault', 'swarm', 'workflow'] as const) {
+          const prefix = `@${kind}`;
+          if (trimmed.startsWith(prefix)) {
+            const match = trimmed.match(new RegExp(`^${prefix}\\s+(\\S+)`));
+            if (match) {
+              symbols.push({ name: match[1], kind, line: index + 1 });
+            }
+            break;
+          }
+        }
+      });
+      const renames = symbols.map((s) => ({
+        id: `rename-${s.kind}-${s.name}-${s.line}`,
+        oldName: s.name,
+        newName: s.name,
+        kind: s.kind,
+        occurrences: 1,
+        files: [filePath],
+      }));
+      return { success: true, renames };
+    } catch (error) {
+      return { success: false, renames: [], error: error instanceof Error ? error.message : String(error) };
+    }
+  });
+
+  ipcMain.handle('refactor-preview', async (_event, { filePath, oldName, newName, kind }: { filePath: string; oldName: string; newName: string; kind: RefactorRename['kind'] }) => {
+    try {
+      const content = await readFile(filePath, 'utf-8').catch(() => '');
+      const occurrences = (content.match(new RegExp(`\\b${oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g')) ?? []).length;
+      const renames = [
+        {
+          id: `rename-${kind}-${oldName}-${Date.now()}`,
+          oldName,
+          newName,
+          kind,
+          occurrences,
+          files: occurrences > 0 ? [filePath] : [],
+        },
+      ];
+      return { success: true, renames };
+    } catch (error) {
+      return { success: false, renames: [], error: error instanceof Error ? error.message : String(error) };
+    }
+  });
+
+  ipcMain.handle('refactor-rename', async (_event, { filePath, oldName, newName, kind }: { filePath: string; oldName: string; newName: string; kind: RefactorRename['kind'] }) => {
+    try {
+      let content = await readFile(filePath, 'utf-8').catch(() => '');
+      const regex = new RegExp(`\\b${oldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+      const matches = content.match(regex) ?? [];
+      content = content.replace(regex, newName);
+      const { writeFile } = await import('fs/promises');
+      await writeFile(filePath, content, 'utf-8');
+      const renames = [
+        {
+          id: `rename-${kind}-${oldName}-${Date.now()}`,
+          oldName,
+          newName,
+          kind,
+          occurrences: matches.length,
+          files: matches.length > 0 ? [filePath] : [],
+        },
+      ];
+      return { success: true, renames };
+    } catch (error) {
+      return { success: false, renames: [], error: error instanceof Error ? error.message : String(error) };
     }
   });
 }

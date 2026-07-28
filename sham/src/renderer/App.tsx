@@ -10,6 +10,7 @@ import { CollaborationPanel } from './components/CollaborationPanel.js';
 import { PluginPanel } from './components/PluginPanel.js';
 import { ProfilerPanel } from './components/ProfilerPanel.js';
 import { CopilotPanel } from './components/CopilotPanel.js';
+import { RefactorPanel } from './components/RefactorPanel.js';
 import { theme } from './styles/theme.js';
 import { fetchBlockTypes, runAgent, validateALPFile, onAppReady } from './shared/alp-client.js';
 import type { SHAMState } from './shared/types.js';
@@ -28,11 +29,12 @@ const defaultState: SHAMState = {
   plugins: { plugins: [], output: [] },
   profiler: { traces: [], output: [] },
   copilot: { suggestions: [], output: [] },
+  refactor: { renames: [], output: [] },
 };
 
 export function App(): React.JSX.Element {
   const [state, setState] = useState<SHAMState>(defaultState);
-  const [activePanel, setActivePanel] = useState<'editor' | 'terminal' | 'agents' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'pro' | 'copilot'>('editor');
+  const [activePanel, setActivePanel] = useState<'editor' | 'terminal' | 'agents' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'pro' | 'copilot' | 'refactor'>('editor');
   const [showWelcome, setShowWelcome] = useState(true);
 
   useEffect(() => {
@@ -108,13 +110,21 @@ export function App(): React.JSX.Element {
     setState((prev) => ({ ...prev, copilot: { ...prev.copilot, output: [...prev.copilot.output, ...lines] } }));
   };
 
+  const handleUpdateRefactorRenames = (renames: SHAMState['refactor']['renames']) => {
+    setState((prev) => ({ ...prev, refactor: { ...prev.refactor, renames } }));
+  };
+
+  const handleAppendRefactorOutput = (lines: string[]) => {
+    setState((prev) => ({ ...prev, refactor: { ...prev.refactor, output: [...prev.refactor.output, ...lines] } }));
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: theme.bgPrimary, color: theme.textPrimary }}>
       <header style={{ display: 'flex', alignItems: 'center', padding: '0 12px', height: 36, backgroundColor: theme.headerBackground, borderBottom: `1px solid ${theme.border}` }}>
         <span style={{ fontWeight: 700, fontSize: 14, color: theme.accent }}>SHAM</span>
         <span style={{ marginLeft: 8, fontSize: 12, color: theme.textMuted }}>Smart Hosted Agent Manager</span>
         <div style={{ marginLeft: 'auto', display: 'flex', gap: 4 }}>
-          {(['editor', 'terminal', 'agents', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'pro'] as const).map((panel) => (
+          {(['editor', 'terminal', 'agents', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'refactor', 'pro'] as const).map((panel) => (
             <button key={panel} onClick={() => setActivePanel(panel)} style={{ padding: '4px 10px', background: activePanel === panel ? theme.bgSurface : 'transparent', border: 'none', color: activePanel === panel ? theme.textPrimary : theme.textMuted, borderRadius: 4, cursor: 'pointer', fontSize: 12 }}>
               {panel.charAt(0).toUpperCase() + panel.slice(1)}
             </button>
@@ -167,6 +177,13 @@ export function App(): React.JSX.Element {
               diagnostics={state.diagnostics}
               onUpdateSuggestions={handleUpdateCopilotSuggestions}
               onAppendOutput={handleAppendCopilotOutput}
+            />
+          ) : activePanel === 'refactor' ? (
+            <RefactorPanel
+              renames={state.refactor.renames}
+              output={state.refactor.output}
+              onUpdateRenames={handleUpdateRefactorRenames}
+              onAppendOutput={handleAppendRefactorOutput}
             />
           ) : (
             <ProPanel />

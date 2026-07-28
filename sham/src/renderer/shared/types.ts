@@ -44,6 +44,7 @@ export interface SHAMState {
   plugins: PluginState;
   profiler: ProfilerState;
   copilot: CopilotState;
+  refactor: RefactorState;
 }
 
 export interface LicenseInfo {
@@ -151,5 +152,19 @@ export interface CopilotSuggestion {
 
 export interface CopilotState {
   suggestions: CopilotSuggestion[];
+  output: string[];
+}
+
+export interface RefactorRename {
+  id: string;
+  oldName: string;
+  newName: string;
+  kind: 'agent' | 'skill' | 'macro' | 'event' | 'memory' | 'contract' | 'vault' | 'swarm' | 'workflow';
+  occurrences: number;
+  files: string[];
+}
+
+export interface RefactorState {
+  renames: RefactorRename[];
   output: string[];
 }
