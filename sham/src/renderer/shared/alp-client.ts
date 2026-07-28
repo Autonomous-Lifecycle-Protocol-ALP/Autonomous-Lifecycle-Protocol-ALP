@@ -215,3 +215,11 @@ export async function refactorPreview(payload: { filePath: string; oldName: stri
 export async function refactorRename(payload: { filePath: string; oldName: string; newName: string; kind: RefactorRename['kind'] }) {
   return (api?.refactorRename?.(payload) ?? { success: false, renames: [] }) as { success: boolean; renames: RefactorRename[]; error?: string };
 }
+
+export async function collabCursorMove(payload: { peerId: string; line: number; column: number; selection?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) {
+  return (api?.collabCursorMove?.(payload) ?? { success: false, received: false }) as { success: boolean; received: boolean };
+}
+
+export async function collabBroadcastPresence(payload: { peerId: string; displayName: string; color: string; cursor?: { line: number; column: number }; selection?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) {
+  return (api?.collabBroadcastPresence?.(payload) ?? { success: false, received: false }) as { success: boolean; received: boolean };
+}

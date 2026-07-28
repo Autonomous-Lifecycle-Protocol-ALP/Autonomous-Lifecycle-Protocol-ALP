@@ -25,7 +25,7 @@ const defaultState: SHAMState = {
   agents: [],
   mcpTools: [],
   parseResult: null,
-  collab: { session: null, output: [] },
+  collab: { session: null, output: [], presence: [] },
   plugins: { plugins: [], output: [] },
   profiler: { traces: [], output: [] },
   copilot: { suggestions: [], output: [] },
@@ -57,6 +57,16 @@ export function App(): React.JSX.Element {
     setShowWelcome(false);
   };
 
+  const handleCursorChange = async (position: { line: number; column: number }) => {
+    if (state.collab.session?.status === 'running') {
+      await collabCursorMove({
+        peerId: 'local',
+        line: position.line,
+        column: position.column,
+      });
+    }
+  };
+
   const handleCloseFile = (filePath: string) => {
     setState((prev) => ({
       ...prev,
@@ -84,6 +94,10 @@ export function App(): React.JSX.Element {
 
   const handleAppendCollabOutput = (lines: string[]) => {
     setState((prev) => ({ ...prev, collab: { ...prev.collab, output: [...prev.collab.output, ...lines] } }));
+  };
+
+  const handleUpdateCollabPresence = (presence: SHAMState['collab']['presence']) => {
+    setState((prev) => ({ ...prev, collab: { ...prev.collab, presence } }));
   };
 
   const handleUpdatePlugins = (plugins: SHAMState['plugins']['plugins']) => {
@@ -142,7 +156,7 @@ export function App(): React.JSX.Element {
               if (result.success) {
                 setState((prev) => ({ ...prev, diagnostics: result.diagnostics }));
               }
-            }} />
+            }} onCursorChange={handleCursorChange} />
           ) : activePanel === 'terminal' ? (
             <TerminalPanel output={state.terminalOutput} onAppendOutput={(lines) => setState((prev) => ({ ...prev, terminalOutput: [...prev.terminalOutput, ...lines] }))} />
           ) : activePanel === 'agents' ? (
@@ -153,8 +167,10 @@ export function App(): React.JSX.Element {
             <CollaborationPanel
               session={state.collab.session}
               output={state.collab.output}
+              presence={state.collab.presence}
               onUpdateSession={handleUpdateCollabSession}
               onAppendOutput={handleAppendCollabOutput}
+              onUpdatePresence={handleUpdateCollabPresence}
             />
           ) : activePanel === 'plugins' ? (
             <PluginPanel

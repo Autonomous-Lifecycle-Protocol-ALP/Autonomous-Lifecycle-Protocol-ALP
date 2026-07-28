@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import Editor from '@monaco-editor/react';
 import { theme } from '../styles/theme.js';
 import type { SHAMState } from '../shared/types.js';
+import { collabCursorMove, collabBroadcastPresence } from '../shared/alp-client.js';
 
 const ALP_SNIPPETS: Record<string, string> = {
   agent: `@agent ${'{name}'}\n  description: ${'{description}'}\n  model: gpt-4o\n  tools: []\n`,
@@ -18,9 +19,10 @@ const ALP_SNIPPETS: Record<string, string> = {
 interface EditorPanelProps {
   state: SHAMState;
   onValidate: (content: string, filePath: string) => Promise<unknown>;
+  onCursorChange?: (position: { line: number; column: number }) => void;
 }
 
-export function EditorPanel({ state, onValidate }: EditorPanelProps): React.JSX.Element {
+export function EditorPanel({ state, onValidate, onCursorChange }: EditorPanelProps): React.JSX.Element {
   const editorRef = useRef<any>(null);
 
   useEffect(() => {
@@ -60,8 +62,20 @@ export function EditorPanel({ state, onValidate }: EditorPanelProps): React.JSX.
       },
     });
 
-    return () => disposable.dispose();
-  }, [state.blockTypes]);
+    const cursorListener = editor.onDidChangeCursorPosition((e: { position: { lineNumber: number; column: number } }) => {
+      if (onCursorChange) {
+        onCursorChange({ line: e.position.lineNumber, column: e.position.column });
+      }
+      if (state.collab.session?.status === 'running') {
+        collabCursorMove({ peerId: 'local', line: e.position.lineNumber, column: e.position.column }).catch(() => {});
+      }
+    });
+
+    return () => {
+      disposable.dispose();
+      cursorListener.dispose();
+    };
+  }, [state.blockTypes, onCursorChange]);
 
   const handleEditorChange = (value: string | undefined) => {
     if (value && state.activeFile) {

@@ -62,4 +62,8 @@ contextBridge.exposeInMainWorld('shamAPI', {
     ipcRenderer.invoke('refactor-preview', payload),
   refactorRename: (payload: { filePath: string; oldName: string; newName: string; kind: 'agent' | 'skill' | 'macro' | 'event' | 'memory' | 'contract' | 'vault' | 'swarm' | 'workflow' }) =>
     ipcRenderer.invoke('refactor-rename', payload),
+  collabCursorMove: (payload: { peerId: string; line: number; column: number; selection?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) =>
+    ipcRenderer.invoke('collab-cursor-move', payload),
+  collabBroadcastPresence: (payload: { peerId: string; displayName: string; color: string; cursor?: { line: number; column: number }; selection?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) =>
+    ipcRenderer.invoke('collab-broadcast-presence', payload),
 });

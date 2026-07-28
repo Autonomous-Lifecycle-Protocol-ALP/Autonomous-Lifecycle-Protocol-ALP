@@ -448,4 +448,12 @@ export function setupALPBridge() {
       return { success: false, renames: [], error: error instanceof Error ? error.message : String(error) };
     }
   });
+
+  ipcMain.handle('collab-cursor-move', async (_event, payload: { peerId: string; line: number; column: number; selection?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) => {
+    return { success: true, received: true };
+  });
+
+  ipcMain.handle('collab-broadcast-presence', async (_event, payload: { peerId: string; displayName: string; color: string; cursor?: { line: number; column: number }; selection?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) => {
+    return { success: true, received: true };
+  });
 }

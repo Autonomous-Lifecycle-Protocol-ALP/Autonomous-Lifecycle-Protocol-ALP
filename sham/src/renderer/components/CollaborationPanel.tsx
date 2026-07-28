@@ -8,20 +8,24 @@ import {
   getCRDTStatus,
   mergeCRDT,
 } from '../shared/alp-client.js';
-import type { CollabSession } from '../shared/types.js';
+import type { CollabSession, CollabPresence } from '../shared/types.js';
 
 interface CollaborationPanelProps {
   session: CollabSession | null;
   output: string[];
+  presence: CollabPresence[];
   onUpdateSession: (session: CollabSession | null) => void;
   onAppendOutput: (lines: string[]) => void;
+  onUpdatePresence: (presence: CollabPresence[]) => void;
 }
 
 export function CollaborationPanel({
   session,
   output,
+  presence,
   onUpdateSession,
   onAppendOutput,
+  onUpdatePresence,
 }: CollaborationPanelProps): React.JSX.Element {
   const [mode, setMode] = useState<'host' | 'peer'>('host');
   const [sessionId, setSessionId] = useState('');
@@ -35,6 +39,17 @@ export function CollaborationPanel({
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (!session) return;
+    const peers = session.peers.map((peerId, index) => ({
+      peerId,
+      displayName: `Peer ${index + 1}`,
+      color: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7'][index % 5],
+      lastSeenAt: new Date().toISOString(),
+    }));
+    onUpdatePresence(peers);
+  }, [session?.id, session?.peers.length]);
 
   const appendResult = async (result: { success: boolean; stdout: string; stderr: string; error?: string }) => {
     if (result.stdout) {
@@ -138,6 +153,20 @@ export function CollaborationPanel({
                 <div>Last sync: <span style={{ color: theme.textPrimary }}>{session.lastSyncAt}</span></div>
               )}
             </div>
+            {presence.length > 0 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <div style={{ fontSize: 12, color: theme.textMuted, fontWeight: 600 }}>Peers</div>
+                {presence.map((peer) => (
+                  <div key={peer.peerId} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 8px', background: theme.bgSurface, borderRadius: 4, border: `1px solid ${theme.border}` }}>
+                    <span style={{ width: 10, height: 10, borderRadius: '50%', background: peer.color, display: 'inline-block' }} />
+                    <span style={{ fontSize: 12, color: theme.textPrimary, flex: 1 }}>{peer.displayName}</span>
+                    <span style={{ fontSize: 11, color: theme.textMuted }}>
+                      {peer.cursor ? `Ln ${peer.cursor.line}, Col ${peer.cursor.column}` : 'Idle'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
             <div style={{ display: 'flex', gap: 8 }}>
               <button onClick={handleLeave} disabled={loading} style={{ padding: '6px 14px', background: theme.accentRed, border: 'none', color: theme.bgPrimary, borderRadius: 4, cursor: loading ? 'not-allowed' : 'pointer', fontSize: 12, fontWeight: 600, opacity: loading ? 0.7 : 1 }}>
                 Leave Session

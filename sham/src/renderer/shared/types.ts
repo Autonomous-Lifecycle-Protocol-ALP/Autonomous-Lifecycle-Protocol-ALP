@@ -94,9 +94,19 @@ export interface CollabSession {
   lastSyncAt?: string;
 }
 
+export interface CollabPresence {
+  peerId: string;
+  displayName: string;
+  color: string;
+  cursor?: { line: number; column: number };
+  selection?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number };
+  lastSeenAt: string;
+}
+
 export interface CollabState {
   session: CollabSession | null;
   output: string[];
+  presence: CollabPresence[];
 }
 
 export interface PluginManifest {
