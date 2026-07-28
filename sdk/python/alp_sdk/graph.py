@@ -1,6 +1,6 @@
 """ALP graph engine (v6.4.0 - Python SDK parity).
 
-Mirrors the TypeScript ``@alp/parser`` ``AlpGraph``: builds a DAG from parsed
+Mirrors the TypeScript ``@autonomous-lifecycle-protocol-alp/parser`` ``AlpGraph``: builds a DAG from parsed
 ALP objects, resolves ``-> ref`` edges, detects cycles, and supports
 topological sort plus impact/blocker queries.
 """

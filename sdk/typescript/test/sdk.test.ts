@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { AlpWorkspace } from '../src/index';
 
-describe('@alp/sdk — AlpWorkspace', () => {
+describe('@autonomous-lifecycle-protocol-alp/sdk — AlpWorkspace', () => {
   const workspace = new AlpWorkspace();
   workspace.load('examples/todo-app');
 

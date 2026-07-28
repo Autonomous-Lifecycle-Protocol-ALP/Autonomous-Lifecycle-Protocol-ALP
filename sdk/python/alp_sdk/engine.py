@@ -74,7 +74,7 @@ LoopEventHandler = Callable[[LoopEvent], None]
 class LoopEngine:
     """Iterative improvement cycle (spec/05 §2).
 
-    Mirrors the TypeScript ``@alp/parser`` ``LoopEngine``: drives the seven
+    Mirrors the TypeScript ``@autonomous-lifecycle-protocol-alp/parser`` ``LoopEngine``: drives the seven
     loop stages, emits events, checkpoints each iteration, and terminates on
     completion / max-iterations / failure.
     """

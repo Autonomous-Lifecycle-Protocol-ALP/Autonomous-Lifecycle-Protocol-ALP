@@ -88,5 +88,5 @@ Run the compliance harness against the new fixtures
 alp test-harness
 ```
 
-Bundle versions are `8.0.0` across `@alp/parser`, `@alp/cli`,
-`@alp/mcp-server`, `alp_sdk` (Python), and the docs site.
+Bundle versions are `8.0.0` across `@autonomous-lifecycle-protocol-alp/parser`, `@autonomous-lifecycle-protocol-alp/cli`,
+`@autonomous-lifecycle-protocol-alp/mcp-server`, `alp_sdk` (Python), and the docs site.

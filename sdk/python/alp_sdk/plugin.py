@@ -1,6 +1,6 @@
 """ALP plugin system (v10.5.0, @type rewrite v8.0.0 - Python SDK parity).
 
-Mirrors the TypeScript ``@alp/parser`` ``PluginResolver``: resolves local
+Mirrors the TypeScript ``@autonomous-lifecycle-protocol-alp/parser`` ``PluginResolver``: resolves local
 file-level ``!import`` directives (spec/11 §3.1) relative to the ``.alp/``
 workspace root, remote HTTPS imports with caching + integrity (§3.2-3.4),
 and registry aliases ``@ns/name@version`` (§3.5). Builds a registry of

@@ -144,7 +144,7 @@ invariant fails.
 ### 4.6 API Usage
 
 ```typescript
-import { PolicyModelChecker, ContractInvariant } from '@alp/parser';
+import { PolicyModelChecker, ContractInvariant } from '@autonomous-lifecycle-protocol-alp/parser';
 
 const checker = new PolicyModelChecker(objects);
 const proof = checker.verify('policy-safe');

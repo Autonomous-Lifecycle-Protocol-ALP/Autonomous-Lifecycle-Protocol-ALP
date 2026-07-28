@@ -1,6 +1,6 @@
 """ALP parser errors (v5 — SDK hardening & parity).
 
-Mirrors the TypeScript ``@alp/parser`` ``error.ts`` so the Python SDK raises
+Mirrors the TypeScript ``@autonomous-lifecycle-protocol-alp/parser`` ``error.ts`` so the Python SDK raises
 the same exception hierarchy as the TS parser for the same malformed input.
 This lets cross-SDK conformance tests assert identical failure modes.
 """

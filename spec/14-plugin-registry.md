@@ -7,7 +7,7 @@
 
 ## 1. Overview
 
-While plugins can be imported via direct URLs (e.g., `!import: "https://example.com/plugin.alp"`), the **Plugin Registry Protocol** provides a standardized way to discover, host, and import plugins using semantic aliases (e.g., `!import: "@alp/scrum@1.0.0"`).
+While plugins can be imported via direct URLs (e.g., `!import: "https://example.com/plugin.alp"`), the **Plugin Registry Protocol** provides a standardized way to discover, host, and import plugins using semantic aliases (e.g., `!import: "@autonomous-lifecycle-protocol-alp/scrum@1.0.0"`).
 
 An ALP Registry is an HTTP service (or static file host) that conforms to a specific directory structure and REST interface, allowing parsers to fetch plugin metadata, resolve versions, and download plugin files.
 
@@ -24,8 +24,8 @@ The `!import` directive supports resolving plugins via a registry alias.
 
 **Examples:**
 ```alp
-!import: "@alp/scrum@1.0.0"       // Exact version
-!import: "@alp/kanban@^2.1.0"     // Semver range
+!import: "@autonomous-lifecycle-protocol-alp/scrum@1.0.0"       // Exact version
+!import: "@autonomous-lifecycle-protocol-alp/kanban@^2.1.0"     // Semver range
 !import: "@internal/deploy@latest" // Latest tag
 ```
 
@@ -53,7 +53,7 @@ Returns metadata about the plugin, including all available versions and tags.
 **Response (200 OK):**
 ```json
 {
-  "name": "@alp/scrum",
+  "name": "@autonomous-lifecycle-protocol-alp/scrum",
   "description": "Standard Scrum object types for ALP",
   "author": "ALP Core Team",
   "tags": {
@@ -62,20 +62,20 @@ Returns metadata about the plugin, including all available versions and tags.
   },
   "versions": {
     "1.0.0": {
-      "url": "https://registry.alp-protocol.org/@alp/scrum/1.0.0/plugin.alp",
+      "url": "https://registry.alp-protocol.org/@autonomous-lifecycle-protocol-alp/scrum/1.0.0/plugin.alp",
       "integrity": "sha256:abc123def456...",
       "dependencies": {}
     },
     "1.1.0": {
-      "url": "https://registry.alp-protocol.org/@alp/scrum/1.1.0/plugin.alp",
+      "url": "https://registry.alp-protocol.org/@autonomous-lifecycle-protocol-alp/scrum/1.1.0/plugin.alp",
       "integrity": "sha256:fed789cba012...",
       "dependencies": {}
     },
     "1.2.0": {
-      "url": "https://registry.alp-protocol.org/@alp/scrum/1.2.0/plugin.alp",
+      "url": "https://registry.alp-protocol.org/@autonomous-lifecycle-protocol-alp/scrum/1.2.0/plugin.alp",
       "integrity": "sha256:111222333444...",
       "dependencies": {
-        "@alp/core-types": "^1.0.0"
+        "@autonomous-lifecycle-protocol-alp/core-types": "^1.0.0"
       }
     }
   }
@@ -84,7 +84,7 @@ Returns metadata about the plugin, including all available versions and tags.
 
 **Rules:**
 - `tags` MUST map strings to valid semver versions present in the `versions` object.
-- `url` in the version object MAY be relative (e.g., `/download/@alp/scrum/1.0.0/plugin.alp`) or absolute.
+- `url` in the version object MAY be relative (e.g., `/download/@autonomous-lifecycle-protocol-alp/scrum/1.0.0/plugin.alp`) or absolute.
 - `integrity` is OPTIONAL but RECOMMENDED. If present, the parser MUST verify the downloaded file against this hash.
 
 ### 3.2 Plugin File Endpoint

@@ -123,7 +123,7 @@ downstream tooling, LLM context, or custom renderers.
 ### 4.1 TypeScript
 
 ```ts
-import { WorkflowVisualizer } from '@alp/parser';
+import { WorkflowVisualizer } from '@autonomous-lifecycle-protocol-alp/parser';
 
 const visualizer = new WorkflowVisualizer();
 const workflows = visualizer.parseWorkflows(objects);

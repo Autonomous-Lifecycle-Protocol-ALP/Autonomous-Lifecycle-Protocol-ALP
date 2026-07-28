@@ -115,7 +115,7 @@ In acceptance criteria:
 !alp-version: 2.0.0             // File-level: ALP version
 !context-scope: minimal         // File-level: context loading
 !agent-mode: autonomous         // File-level: agent behavior
-!import: "@alp/scrum@^1.0.0"    // File-level: registry plugin
+!import: "@autonomous-lifecycle-protocol-alp/scrum@^1.0.0"    // File-level: registry plugin
 !import: "plugins/my-plug.alp"  // File-level: local plugin
 !import: "https://example.com/scrum.alp"           // File-level: remote import
 !import: "https://example.com/s.alp" !integrity: sha256:abc123  // With integrity hash

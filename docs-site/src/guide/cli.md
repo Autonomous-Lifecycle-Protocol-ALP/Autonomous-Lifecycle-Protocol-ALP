@@ -64,10 +64,10 @@ alp graph
 
 ## How AI Agents Use ALP
 
-If you are developing an AI agent (like Devin, Claude Code, or an open-source alternative), you should use the `@alp/parser` package to programmatically read and interact with the workspace:
+If you are developing an AI agent (like Devin, Claude Code, or an open-source alternative), you should use the `@autonomous-lifecycle-protocol-alp/parser` package to programmatically read and interact with the workspace:
 
 ```typescript
-import { AlpParser, LoopEngine, AlpGraph } from '@alp/parser';
+import { AlpParser, LoopEngine, AlpGraph } from '@autonomous-lifecycle-protocol-alp/parser';
 import * as fs from 'fs';
 
 const parser = new AlpParser();

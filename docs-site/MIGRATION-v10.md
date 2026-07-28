@@ -39,7 +39,7 @@ block types. This guide covers what changed and how to update existing
 
 **Parser/SDK:** `PluginResolver` already rejects `type_definition` objects
 with a hard error (since v9). The schema `type_definition.schema.json` has
-been removed from `@alp/schemas`; use `type.schema.json` instead.
+been removed from `@autonomous-lifecycle-protocol-alp/schemas`; use `type.schema.json` instead.
 
 ---
 
@@ -76,5 +76,5 @@ node cli/dist/index.js validate
 python -m unittest discover -s sdk/python/tests
 ```
 
-Bundle versions are **10.0.0** across `@alp/parser`, `@alp/cli`,
-`@alp/mcp-server`, `alp_sdk` (Python), and the docs site.
+Bundle versions are **10.0.0** across `@autonomous-lifecycle-protocol-alp/parser`, `@autonomous-lifecycle-protocol-alp/cli`,
+`@autonomous-lifecycle-protocol-alp/mcp-server`, `alp_sdk` (Python), and the docs site.

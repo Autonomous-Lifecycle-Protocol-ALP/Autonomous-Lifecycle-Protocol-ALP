@@ -1,6 +1,6 @@
 """ALP Registry Client (v4 — The Federation Era, Pillar 3).
 
-Mirrors the TypeScript ``@alp/cli`` ``RegistryClient``: talks to a hosted ALP
+Mirrors the TypeScript ``@autonomous-lifecycle-protocol-alp/cli`` ``RegistryClient``: talks to a hosted ALP
 registry (an ``alp serve --registry`` instance) over the HTTP protocol in
 spec/14-plugin-registry.md. Resolves ``meta.json``, downloads package files,
 verifies sha256 integrity, supports semver range resolution, ``.alprc``

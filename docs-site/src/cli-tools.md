@@ -823,13 +823,13 @@ object types and validation rules.
 alp plugin list
 
 # Install a plugin from the registry
-alp plugin install @alp/plugin-jira
+alp plugin install @autonomous-lifecycle-protocol-alp/plugin-jira
 
 # Remove a plugin
-alp plugin remove @alp/plugin-jira
+alp plugin remove @autonomous-lifecycle-protocol-alp/plugin-jira
 
 # Show plugin details
-alp plugin info @alp/plugin-jira
+alp plugin info @autonomous-lifecycle-protocol-alp/plugin-jira
 ```
 
 | Subcommand | Description |

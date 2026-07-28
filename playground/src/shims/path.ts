@@ -1,4 +1,4 @@
-// Browser shim for Node's `path` used by @alp/parser's Node-only modules
+// Browser shim for Node's `path` used by @autonomous-lifecycle-protocol-alp/parser's Node-only modules
 // (LockManager / Memory). The playground never instantiates those at runtime,
 // so these safe stubs only exist to keep the bundle self-contained.
 export const sep = '/';

@@ -88,10 +88,10 @@ ALP versioning tracks two independent axes:
 - `@plugin` + `@type_definition` blocks register custom object types; custom block markers (e.g. `@epic`) parse and validate against their declared `properties` (required-field + unknown-property warnings, §4.1).
 - Remote HTTPS imports (§3.2–3.4): HTTPS-only, `.alp` extension check, 1 MB size cap, 30 s timeout, on-disk cache under `.alp/.cache/remote/<sha256>/` (24 h TTL, stale-on-error), and `!integrity: sha256:…` verification.
 - Registry alias imports `@ns/name@version` (§3.5) resolve to a registry URL and reuse the same fetch/cache/integrity path.
-- `PluginResolver` + `RemoteFetcher` added to both `@alp/parser` and the Python `alp_sdk`, covered by `parser/tests/{plugin,remote}.test.ts` and `sdk/python/tests/test_plugin.py`.
+- `PluginResolver` + `RemoteFetcher` added to both `@autonomous-lifecycle-protocol-alp/parser` and the Python `alp_sdk`, covered by `parser/tests/{plugin,remote}.test.ts` and `sdk/python/tests/test_plugin.py`.
 
 ### 6.4.0 — Python Engine Parity
-- Python `alp_sdk` gains three engines mirroring `@alp/parser` for full cross-SDK parity:
+- Python `alp_sdk` gains three engines mirroring `@autonomous-lifecycle-protocol-alp/parser` for full cross-SDK parity:
   - `AlpGraph` — DAG build, `-> ref` edge resolution, cycle detection, topological sort, impact/blocker queries.
   - `MemoryStore` — persistent scoped key-value memory backed by `.alp/.memory.json`.
   - `PolicyEngine` — evaluates path/command actions against declarative `@policy` objects (deny beats allow, `enforcement: warn` reports only).

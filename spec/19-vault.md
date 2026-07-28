@@ -104,7 +104,7 @@ alp vault audit
 ```
 
 ```typescript
-import { Vault } from '@alp/parser';
+import { Vault } from '@autonomous-lifecycle-protocol-alp/parser';
 const vault = new Vault({ dir: '.alp/.vault' });
 await vault.set('db-password', 's3cr3t', [
   'age1qlp...frontend-maintainer',

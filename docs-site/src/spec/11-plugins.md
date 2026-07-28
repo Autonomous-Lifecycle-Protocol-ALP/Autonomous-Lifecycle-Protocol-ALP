@@ -215,7 +215,7 @@ Starting with v0.6.0, parsers support importing plugins via registry aliases. Th
 
 **Syntax:**
 ```alp
-!import: "@alp/scrum@^1.0.0"
+!import: "@autonomous-lifecycle-protocol-alp/scrum@^1.0.0"
 !import: "@internal/deploy@latest"
 ```
 
@@ -229,7 +229,7 @@ Once a type is defined and imported, you can use its `type_name` as a block mark
 
 ```alp
 !alp-version: 0.6.0
-!import: "@alp/scrum@^1.0.0"
+!import: "@autonomous-lifecycle-protocol-alp/scrum@^1.0.0"
 
 // We can now use @epic because it was defined in the scrum plugin!
 
@@ -305,7 +305,7 @@ Starting with v0.4.0, plugins can be hosted at any HTTPS endpoint. Common strate
 
 2. **Plugin registries:** The recommended approach (v0.6.0+) is to use the [Plugin Registry Protocol](14-plugin-registry.md) for versioned, alias-based resolution.
    ```alp
-   !import: "@alp/scrum@1.0.0"
+   !import: "@autonomous-lifecycle-protocol-alp/scrum@1.0.0"
    ```
 
 3. **Self-hosted:** Organizations can host plugins on internal servers for private use.
@@ -333,7 +333,7 @@ Dependencies are declared in the `@plugin` object:
   name: "Advanced Scrum Metrics"
   version: 1.0.0
   dependencies:
-    - { plugin: "@alp/scrum", version: "^1.0.0" }
+     - { plugin: "@autonomous-lifecycle-protocol-alp/scrum", version: "^1.0.0" }
 ```
 
 ### 7.1 Resolution Strategy

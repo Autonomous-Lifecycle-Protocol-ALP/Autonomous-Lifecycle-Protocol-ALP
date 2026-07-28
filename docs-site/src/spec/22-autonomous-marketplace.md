@@ -45,7 +45,7 @@ A `@swarm_marketplace` object declares an agent skill listing in `.alp/marketpla
 ### 3.1 TypeScript
 
 ```ts
-import { SwarmMarketplaceEngine } from '@alp/parser';
+import { SwarmMarketplaceEngine } from '@autonomous-lifecycle-protocol-alp/parser';
 
 const engine = new SwarmMarketplaceEngine();
 engine.registerSkill('s1', 'agent-coder', 'code-review', 'analysis', 0.05);

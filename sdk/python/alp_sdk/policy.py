@@ -1,6 +1,6 @@
 """ALP policy engine (v6.4.0, v2 extensions v8.1.0 - Python SDK parity).
 
-Mirrors the TypeScript ``@alp/parser`` ``PolicyEngine``: evaluates
+Mirrors the TypeScript ``@autonomous-lifecycle-protocol-alp/parser`` ``PolicyEngine``: evaluates
 proposed autonomous-agent actions (path / command) against declarative
 ``@policy`` objects. ``deny_*`` always beats ``allow_*``; an empty/
 absent ``allow_*`` permits unless denied; ``enforcement: warn`` reports

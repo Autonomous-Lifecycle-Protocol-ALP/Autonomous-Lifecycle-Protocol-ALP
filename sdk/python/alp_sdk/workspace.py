@@ -1,6 +1,6 @@
 """ALP Workspace model (v6.7.0 - Python SDK parity, spec/13).
 
-Mirrors the TypeScript ``@alp/parser`` ``ExternalResolver`` / workspace
+Mirrors the TypeScript ``@autonomous-lifecycle-protocol-alp/parser`` ``ExternalResolver`` / workspace
 loading: discovers a ``@workspace`` from ``workspace.alp``, loads member
 projects (local ``path``, Git ``url`` cached into ``.alp/.cache/projects``,
 ``glob`` discovery), resolves qualified ``-> project::object`` references

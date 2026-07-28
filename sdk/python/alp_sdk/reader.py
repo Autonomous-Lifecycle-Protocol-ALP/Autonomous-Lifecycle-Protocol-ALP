@@ -1,6 +1,6 @@
 """ALP workspace reader (v5 — SDK hardening & parity).
 
-Mirrors the TypeScript ``@alp/parser`` ``reader.ts`` exactly: the same
+Mirrors the TypeScript ``@autonomous-lifecycle-protocol-alp/parser`` ``reader.ts`` exactly: the same
 indentation rules, the same block-marker grammar, and the same error cases.
 A line-by-line parser for ``.alp`` files producing a list of ``AlpObject``.
 
@@ -241,7 +241,7 @@ class AlpReader:
 
 
 class AlpParser:
-    """High-level entry point mirroring the TypeScript ``@alp/parser``
+    """High-level entry point mirroring the TypeScript ``@autonomous-lifecycle-protocol-alp/parser``
     ``AlpParser``. Wraps ``AlpReader`` and optionally schema-validates the
     parsed objects in one call."""
 

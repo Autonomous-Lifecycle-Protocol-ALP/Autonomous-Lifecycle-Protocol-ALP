@@ -1,6 +1,6 @@
 """ALP Expression Language (ALPEL, spec/12) — v10.3.0 Python SDK parity.
 
-Mirrors the TypeScript ``@alp/parser`` ``alpel.ts``. ALPEL is a secure,
+Mirrors the TypeScript ``@autonomous-lifecycle-protocol-alp/parser`` ``alpel.ts``. ALPEL is a secure,
 sandboxed, read-only expression language for conditional logic (``!if``,
 ``!assert``, engine conditions) and string interpolation (``${ }``). No
 mutation, no I/O, deterministic (spec/12 §6).

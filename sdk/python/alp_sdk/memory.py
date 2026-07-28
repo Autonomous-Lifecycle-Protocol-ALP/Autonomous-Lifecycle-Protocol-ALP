@@ -1,6 +1,6 @@
 """ALP memory engine (v6.4.0 - Python SDK parity).
 
-Mirrors the TypeScript ``@alp/parser`` ``MemoryStore``: persistent,
+Mirrors the TypeScript ``@autonomous-lifecycle-protocol-alp/parser`` ``MemoryStore``: persistent,
 scoped key-value storage backed by ``.alp/.memory.json``.
 """
 from __future__ import annotations

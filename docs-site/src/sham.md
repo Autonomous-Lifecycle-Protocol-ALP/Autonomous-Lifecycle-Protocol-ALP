@@ -58,7 +58,7 @@ SHAM consolidates every ALP capability into one native desktop application:
 
 ### ALP Editor
 - Monaco-based code editor with ALP syntax highlighting
-- Real-time diagnostics and validation via native `@alp/parser`
+- Real-time diagnostics and validation via native `@autonomous-lifecycle-protocol-alp/parser`
 - Auto-completion for ALP directives and properties
 - Multi-file support with tabbed interface
 
@@ -154,7 +154,7 @@ The Pro features panel with license activation, cloud sync, and team management.
               ▼
 ┌─────────────────────────────────────┐
 │  ALP Native Layer                  │
-│  @alp/parser  @alp/sdk  @alp/cli  │
+│  @autonomous-lifecycle-protocol-alp/parser  @autonomous-lifecycle-protocol-alp/sdk  @autonomous-lifecycle-protocol-alp/cli  │
 └─────────────────────────────────────┘
 ```
 

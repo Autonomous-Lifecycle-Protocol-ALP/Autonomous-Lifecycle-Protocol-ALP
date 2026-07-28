@@ -93,8 +93,8 @@ describe('RemoteFetcher (v6.5.0)', () => {
 
   it('resolves registry aliases to a registry URL', () => {
     const fetcher = new RemoteFetcher(os.tmpdir());
-    const url = fetcher.resolveAlias('@alp/scrum@1.0.0', 'https://reg.test');
-    expect(url).toBe('https://reg.test/plugins/alp/scrum/1.0.0/plugin.alp');
+    const url = fetcher.resolveAlias('@autonomous-lifecycle-protocol-alp/scrum@1.0.0', 'https://reg.test');
+    expect(url).toBe('https://reg.test/plugins/autonomous-lifecycle-protocol-alp/scrum/1.0.0/plugin.alp');
   });
 
   it('falls back to stale cache on network error', async () => {
@@ -130,7 +130,7 @@ describe('PluginResolver remote imports (v6.5.0)', () => {
 
   it('loads a plugin via @ns/name@version registry alias', async () => {
     const root = makeWorkspace({
-      'project.alp': '!import: "@alp/scrum@1.0.0"\n\n@epic\n  id: epic-a\n  name: "A"\n',
+      'project.alp': '!import: "@autonomous-lifecycle-protocol-alp/scrum@1.0.0"\n\n@epic\n  id: epic-a\n  name: "A"\n',
     });
     const resolver = new PluginResolver(root);
     let hitUrl = '';

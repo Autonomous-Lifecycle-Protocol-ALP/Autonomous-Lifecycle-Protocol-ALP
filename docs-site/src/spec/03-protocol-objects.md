@@ -921,7 +921,7 @@ Declares an external plugin that extends the ALP parser with new capabilities or
   description: "Adds Agile/Scrum object types like Epics and Sprints"
   author: "ALP Community"
   dependencies:
-    - { plugin: "@alp/core-types", version: "^1.0.0" }
+     - { plugin: "@autonomous-lifecycle-protocol-alp/core-types", version: "^1.0.0" }
   types:
     - -> type-epic
     - -> type-sprint

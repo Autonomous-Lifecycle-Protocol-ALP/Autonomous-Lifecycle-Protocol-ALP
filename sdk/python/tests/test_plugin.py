@@ -131,7 +131,7 @@ class TestPluginResolver(unittest.TestCase):
             return {"status": 200, "body": PLUGIN}
 
         root = self._make({
-            "project.alp": '!import: "@alp/scrum@1.0.0"\n\n@epic\n  id: epic-a\n  name: "A"\n',
+            "project.alp": '!import: "@autonomous-lifecycle-protocol-alp/scrum@1.0.0"\n\n@epic\n  id: epic-a\n  name: "A"\n',
         })
         resolver = PluginResolver(root)
         resolver.parse_workspace(

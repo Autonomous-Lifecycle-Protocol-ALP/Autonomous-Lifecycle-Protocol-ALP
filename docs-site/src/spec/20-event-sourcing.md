@@ -60,7 +60,7 @@ and schema version. Events are never mutated or deleted.
 ### 3.1 TypeScript
 
 ```ts
-import { EventStore } from '@alp/parser';
+import { EventStore } from '@autonomous-lifecycle-protocol-alp/parser';
 
 const store = new EventStore('.alp');
 

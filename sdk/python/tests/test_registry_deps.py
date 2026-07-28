@@ -17,14 +17,14 @@ from alp_sdk import (
 
 class TestParseRegistryAlias(unittest.TestCase):
     def test_exact(self):
-        pkg, ns, rng = parse_registry_alias("@alp/scrum@1.0.0")
-        self.assertEqual(pkg, "@alp/scrum")
-        self.assertEqual(ns, "alp")
+        pkg, ns, rng = parse_registry_alias("@autonomous-lifecycle-protocol-alp/scrum@1.0.0")
+        self.assertEqual(pkg, "@autonomous-lifecycle-protocol-alp/scrum")
+        self.assertEqual(ns, "autonomous-lifecycle-protocol-alp")
         self.assertEqual(rng, "1.0.0")
 
     def test_range(self):
-        pkg, ns, rng = parse_registry_alias("@alp/kanban@^2.1.0")
-        self.assertEqual(pkg, "@alp/kanban")
+        pkg, ns, rng = parse_registry_alias("@autonomous-lifecycle-protocol-alp/kanban@^2.1.0")
+        self.assertEqual(pkg, "@autonomous-lifecycle-protocol-alp/kanban")
         self.assertEqual(rng, "^2.1.0")
 
     def test_latest(self):
@@ -36,7 +36,7 @@ class TestParseRegistryAlias(unittest.TestCase):
         with self.assertRaises(ValueError):
             parse_registry_alias("not-an-alias")
         with self.assertRaises(ValueError):
-            parse_registry_alias("@alp/scrum")
+            parse_registry_alias("@autonomous-lifecycle-protocol-alp/scrum")
 
 
 def _make_meta(versions):
@@ -55,55 +55,55 @@ class TestStrictSingleton(unittest.TestCase):
     def test_single_dependency_resolves_latest(self):
         def fetch(pkg):
             return _make_meta({"1.0.0": {}, "1.1.0": {}, "1.2.0": {}})
-        graph = resolve_dependency_graph(["@alp/a"], fetch)
-        self.assertEqual(graph["@alp/a"], "1.2.0")
+        graph = resolve_dependency_graph(["@autonomous-lifecycle-protocol-alp/a"], fetch)
+        self.assertEqual(graph["@autonomous-lifecycle-protocol-alp/a"], "1.2.0")
 
     def test_transitive_dependency_included(self):
         state = {
-            "@alp/a": _make_meta({"1.0.0": {"@alp/b": "^1.0.0"}}),
-            "@alp/b": _make_meta({"1.0.0": {}, "1.5.0": {}}),
+            "@autonomous-lifecycle-protocol-alp/a": _make_meta({"1.0.0": {"@autonomous-lifecycle-protocol-alp/b": "^1.0.0"}}),
+            "@autonomous-lifecycle-protocol-alp/b": _make_meta({"1.0.0": {}, "1.5.0": {}}),
         }
-        graph = resolve_dependency_graph(["@alp/a"], state.get)
-        self.assertEqual(graph["@alp/a"], "1.0.0")
-        self.assertEqual(graph["@alp/b"], "1.5.0")
+        graph = resolve_dependency_graph(["@autonomous-lifecycle-protocol-alp/a"], state.get)
+        self.assertEqual(graph["@autonomous-lifecycle-protocol-alp/a"], "1.0.0")
+        self.assertEqual(graph["@autonomous-lifecycle-protocol-alp/b"], "1.5.0")
 
     def test_compatible_ranges_intersect(self):
-        # Two packages both require @alp/core, ranges ^1.0.0 and ~1.2.0.
+        # Two packages both require @autonomous-lifecycle-protocol-alp/core, ranges ^1.0.0 and ~1.2.0.
         state = {
-            "@alp/x": _make_meta({"1.0.0": {"@alp/core": "^1.0.0"}}),
-            "@alp/y": _make_meta({"1.0.0": {"@alp/core": "~1.2.0"}}),
-            "@alp/core": _make_meta({"1.2.0": {}, "1.2.3": {}, "1.3.0": {}}),
+            "@autonomous-lifecycle-protocol-alp/x": _make_meta({"1.0.0": {"@autonomous-lifecycle-protocol-alp/core": "^1.0.0"}}),
+            "@autonomous-lifecycle-protocol-alp/y": _make_meta({"1.0.0": {"@autonomous-lifecycle-protocol-alp/core": "~1.2.0"}}),
+            "@autonomous-lifecycle-protocol-alp/core": _make_meta({"1.2.0": {}, "1.2.3": {}, "1.3.0": {}}),
         }
-        graph = resolve_dependency_graph(["@alp/x", "@alp/y"], state.get)
-        self.assertEqual(graph["@alp/core"], "1.2.3")
+        graph = resolve_dependency_graph(["@autonomous-lifecycle-protocol-alp/x", "@autonomous-lifecycle-protocol-alp/y"], state.get)
+        self.assertEqual(graph["@autonomous-lifecycle-protocol-alp/core"], "1.2.3")
 
     def test_incompatible_ranges_raise_conflict(self):
         state = {
-            "@alp/x": _make_meta({"1.0.0": {"@alp/core": "^1.0.0"}}),
-            "@alp/y": _make_meta({"1.0.0": {"@alp/core": "^2.0.0"}}),
-            "@alp/core": _make_meta({"1.5.0": {}, "2.1.0": {}}),
+            "@autonomous-lifecycle-protocol-alp/x": _make_meta({"1.0.0": {"@autonomous-lifecycle-protocol-alp/core": "^1.0.0"}}),
+            "@autonomous-lifecycle-protocol-alp/y": _make_meta({"1.0.0": {"@autonomous-lifecycle-protocol-alp/core": "^2.0.0"}}),
+            "@autonomous-lifecycle-protocol-alp/core": _make_meta({"1.5.0": {}, "2.1.0": {}}),
         }
         with self.assertRaises(VersionConflictError):
-            resolve_dependency_graph(["@alp/x", "@alp/y"], state.get)
+            resolve_dependency_graph(["@autonomous-lifecycle-protocol-alp/x", "@autonomous-lifecycle-protocol-alp/y"], state.get)
 
     def test_exact_mismatch_raises_conflict(self):
         state = {
-            "@alp/x": _make_meta({"1.0.0": {"@alp/core": "1.0.0"}}),
-            "@alp/y": _make_meta({"1.0.0": {"@alp/core": "2.0.0"}}),
-            "@alp/core": _make_meta({"1.0.0": {}, "2.0.0": {}}),
+            "@autonomous-lifecycle-protocol-alp/x": _make_meta({"1.0.0": {"@autonomous-lifecycle-protocol-alp/core": "1.0.0"}}),
+            "@autonomous-lifecycle-protocol-alp/y": _make_meta({"1.0.0": {"@autonomous-lifecycle-protocol-alp/core": "2.0.0"}}),
+            "@autonomous-lifecycle-protocol-alp/core": _make_meta({"1.0.0": {}, "2.0.0": {}}),
         }
         with self.assertRaises(VersionConflictError):
-            resolve_dependency_graph(["@alp/x", "@alp/y"], state.get)
+            resolve_dependency_graph(["@autonomous-lifecycle-protocol-alp/x", "@autonomous-lifecycle-protocol-alp/y"], state.get)
 
     def test_only_one_version_per_package(self):
         state = {
-            "@alp/top": _make_meta({"1.0.0": {"@alp/mid": "^1.0.0"}}),
-            "@alp/mid": _make_meta({"1.0.0": {"@alp/leaf": "^1.0.0"}, "1.4.0": {"@alp/leaf": "^1.0.0"}}),
-            "@alp/leaf": _make_meta({"1.0.0": {}, "1.9.0": {}}),
+            "@autonomous-lifecycle-protocol-alp/top": _make_meta({"1.0.0": {"@autonomous-lifecycle-protocol-alp/mid": "^1.0.0"}}),
+            "@autonomous-lifecycle-protocol-alp/mid": _make_meta({"1.0.0": {"@autonomous-lifecycle-protocol-alp/leaf": "^1.0.0"}, "1.4.0": {"@autonomous-lifecycle-protocol-alp/leaf": "^1.0.0"}}),
+            "@autonomous-lifecycle-protocol-alp/leaf": _make_meta({"1.0.0": {}, "1.9.0": {}}),
         }
-        graph = resolve_dependency_graph(["@alp/top"], state.get)
-        self.assertIn("@alp/leaf", graph)
-        self.assertEqual(len([k for k in graph if k == "@alp/leaf"]), 1)
+        graph = resolve_dependency_graph(["@autonomous-lifecycle-protocol-alp/top"], state.get)
+        self.assertIn("@autonomous-lifecycle-protocol-alp/leaf", graph)
+        self.assertEqual(len([k for k in graph if k == "@autonomous-lifecycle-protocol-alp/leaf"]), 1)
 
 
 if __name__ == "__main__":

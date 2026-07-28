@@ -1,6 +1,6 @@
 """ALP Compliance Test Suite harness (v6.9.0 - Python SDK parity, spec/16).
 
-Mirrors the TypeScript ``@alp/cli`` ``alp test-harness`` (v6.2.0): runs the
+Mirrors the TypeScript ``@autonomous-lifecycle-protocol-alp/cli`` ``alp test-harness`` (v6.2.0): runs the
 bundled ``tests/compliance/{valid,invalid}`` fixtures through the Python SDK
 reader+validator and asserts correct categorization. ``valid`` fixtures MUST
 parse without error; ``invalid`` fixtures MUST raise. Supports an optional

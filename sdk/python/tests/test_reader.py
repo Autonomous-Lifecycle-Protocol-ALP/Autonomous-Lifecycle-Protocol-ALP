@@ -49,7 +49,7 @@ class TestReaderBasics(unittest.TestCase):
 
 
 class TestReaderStrictness(unittest.TestCase):
-    """Parity with the TS @alp/parser reader (v5)."""
+    """Parity with the TS @autonomous-lifecycle-protocol-alp/parser reader (v5)."""
 
     def setUp(self):
         self.reader = AlpReader()

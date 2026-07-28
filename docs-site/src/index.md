@@ -375,7 +375,7 @@ flowchart LR
 
 ```bash
 # Install the CLI from source (not yet published to npm)
-npm ci && npm run build --workspace @alp/cli
+npm ci && npm run build --workspace @autonomous-lifecycle-protocol-alp/cli
 
 # Scaffold a new ALP workspace
 node cli/dist/index.js init

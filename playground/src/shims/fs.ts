@@ -1,4 +1,4 @@
-// Browser shim for Node's `fs` used by @alp/parser's Node-only modules
+// Browser shim for Node's `fs` used by @autonomous-lifecycle-protocol-alp/parser's Node-only modules
 // (LockManager / Memory). The playground never instantiates those at runtime,
 // so these no-op stubs only exist to keep the bundle self-contained.
 export function existsSync(_path: string): boolean {

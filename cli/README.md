@@ -1,7 +1,7 @@
 # ALP CLI
 
 The `alp` command-line interface for working with ALP projects. The CLI is
-implemented in TypeScript (`@alp/cli`) and is the primary way to drive the
+implemented in TypeScript (`@autonomous-lifecycle-protocol-alp/cli`) and is the primary way to drive the
 Autonomous Lifecycle Protocol.
 
 ## Commands
@@ -49,7 +49,7 @@ alp vault get db-password --key maintainer.key   # (v10.0.0)
 
 ## Status
 
-✅ **Stable** — Production-Grade Era (V5/V6), toolchain `10.0.0`. The `@alp/cli`
+✅ **Stable** — Production-Grade Era (V5/V6), toolchain `10.0.0`. The `@autonomous-lifecycle-protocol-alp/cli`
 package is not yet published to npm; build from source with
-`npm ci && npm run build --workspace @alp/cli` and invoke it via
+`npm ci && npm run build --workspace @autonomous-lifecycle-protocol-alp/cli` and invoke it via
 `node cli/dist/index.js`.
