@@ -14,7 +14,7 @@
     "react-dom": "^18.3.1",
     "@monaco-editor/react": "^4.6.0",
     "reactflow": "^11.11.4",
-    "@alp/parser": "*"
+    "@younglord3302/parser": "*"
   },
   "devDependencies": {
     "@types/node": "^24.13.2",
