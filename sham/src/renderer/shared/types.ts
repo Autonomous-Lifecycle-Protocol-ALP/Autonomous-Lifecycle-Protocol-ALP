@@ -45,6 +45,8 @@ export interface SHAMState {
   profiler: ProfilerState;
   copilot: CopilotState;
   refactor: RefactorState;
+  debug: DebugState;
+  testRunner: TestRunnerState;
 }
 
 export interface LicenseInfo {
@@ -177,5 +179,39 @@ export interface RefactorRename {
 
 export interface RefactorState {
   renames: RefactorRename[];
+  output: string[];
+}
+
+export interface DebugSession {
+  id: string;
+  name: string;
+  status: 'idle' | 'running' | 'paused' | 'stopped';
+  breakpoints: string[];
+  callStack: { name: string; file: string; line: number }[];
+  variables: Record<string, unknown>;
+}
+
+export interface TestCase {
+  id: string;
+  name: string;
+  status: 'pending' | 'running' | 'passed' | 'failed';
+  durationMs?: number;
+  error?: string;
+}
+
+export interface TestSuite {
+  id: string;
+  name: string;
+  tests: TestCase[];
+  status: 'pending' | 'running' | 'passed' | 'failed';
+}
+
+export interface DebugState {
+  session: DebugSession | null;
+  output: string[];
+}
+
+export interface TestRunnerState {
+  suites: TestSuite[];
   output: string[];
 }

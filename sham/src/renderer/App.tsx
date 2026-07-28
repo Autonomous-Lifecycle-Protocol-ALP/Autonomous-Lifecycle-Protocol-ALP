@@ -15,6 +15,8 @@ import { SettingsPanel } from './components/SettingsPanel.js';
 import { GitPanel } from './components/GitPanel.js';
 import { SearchPanel } from './components/SearchPanel.js';
 import { CommandPalette } from './components/CommandPalette.js';
+import { DebugPanel } from './components/DebugPanel.js';
+import { TestRunnerPanel } from './components/TestRunnerPanel.js';
 import { fetchBlockTypes, runAgent, validateALPFile, onAppReady, collabCursorMove } from './shared/alp-client.js';
 import type { SHAMState } from './shared/types.js';
 import './styles/global.css';
@@ -35,9 +37,11 @@ const defaultState: SHAMState = {
   profiler: { traces: [], output: [] },
   copilot: { suggestions: [], output: [] },
   refactor: { renames: [], output: [] },
+  debug: { session: null, output: [] },
+  testRunner: { suites: [], output: [] },
 };
 
-type PanelId = 'editor' | 'terminal' | 'agents' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'copilot' | 'refactor' | 'pro' | 'settings' | 'git' | 'search';
+type PanelId = 'editor' | 'terminal' | 'agents' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'copilot' | 'refactor' | 'pro' | 'settings' | 'git' | 'search' | 'debugger' | 'test-runner';
 
 export function App(): React.JSX.Element {
   const [state, setState] = useState<SHAMState>(defaultState);
@@ -113,6 +117,8 @@ export function App(): React.JSX.Element {
     { id: 'profiler', label: 'Profiler' },
     { id: 'copilot', label: 'Copilot' },
     { id: 'refactor', label: 'Refactor' },
+    { id: 'debugger', label: 'Debugger' },
+    { id: 'test-runner', label: 'Tests' },
     { id: 'settings', label: 'Settings' },
     { id: 'git', label: 'Git' },
     { id: 'search', label: 'Search' },
@@ -198,6 +204,47 @@ export function App(): React.JSX.Element {
             output={state.refactor.output}
             onUpdateRenames={(renames) => setState((prev) => ({ ...prev, refactor: { ...prev.refactor, renames } }))}
             onAppendOutput={(lines) => setState((prev) => ({ ...prev, refactor: { ...prev.refactor, output: [...prev.refactor.output, ...lines] } }))}
+          />
+        );
+      case 'debugger':
+        return (
+          <DebugPanel
+            session={state.debug.session}
+            output={state.debug.output}
+            onAppendOutput={(lines) => setState((prev) => ({ ...prev, debug: { ...prev.debug, output: [...prev.debug.output, ...lines] } }))}
+            onStartDebug={(filePath) => setState((prev) => ({ ...prev, debug: { session: { id: 'debug-1', name: filePath, status: 'running', breakpoints: [], callStack: [], variables: {} }, output: ['Debug session started...'] } }))}
+            onStopDebug={() => setState((prev) => ({ ...prev, debug: { session: null, output: [] } }))}
+            onToggleBreakpoint={(line) => setState((prev) => {
+              const session = prev.debug.session;
+              if (!session) return prev;
+              const breakpoints = session.breakpoints.includes(String(line))
+                ? session.breakpoints.filter((b) => b !== String(line))
+                : [...session.breakpoints, String(line)];
+              return { ...prev, debug: { ...prev.debug, session: { ...session, breakpoints } } };
+            })}
+          />
+        );
+      case 'test-runner':
+        return (
+          <TestRunnerPanel
+            suites={state.testRunner.suites}
+            output={state.testRunner.output}
+            onRunTests={async (suiteIds) => {
+              const timestamp = new Date().toLocaleTimeString();
+              setState((prev) => ({ ...prev, testRunner: { ...prev.testRunner, output: [`[${timestamp}] Running ${suiteIds.length} suite(s)...`] } }));
+              await new Promise((resolve) => setTimeout(resolve, 800));
+              const suites = state.testRunner.suites.map((suite) => {
+                if (!suiteIds.includes(suite.id)) return suite;
+                const tests = suite.tests.map((test) => ({
+                  ...test,
+                  status: 'passed' as const,
+                  durationMs: Math.floor(Math.random() * 120) + 10,
+                }));
+                return { ...suite, tests, status: 'passed' as const };
+              });
+              setState((prev) => ({ ...prev, testRunner: { suites, output: [...prev.testRunner.output, `[${timestamp}] All tests passed.`] } }));
+            }}
+            onAppendOutput={(lines) => setState((prev) => ({ ...prev, testRunner: { ...prev.testRunner, output: [...prev.testRunner.output, ...lines] } }))}
           />
         );
       case 'settings':
@@ -330,7 +377,25 @@ export function App(): React.JSX.Element {
                   <div style={{ color: 'var(--text-muted)' }}>No output yet. Run an agent or command to see output here.</div>
                 )}
                 {bottomActiveTab === 'debug' && (
-                  <div style={{ color: 'var(--text-muted)' }}>Debug console ready. Attach a debugger to start debugging.</div>
+                  state.debug.session ? (
+                    <DebugPanel
+                      session={state.debug.session}
+                      output={state.debug.output}
+                      onAppendOutput={(lines) => setState((prev) => ({ ...prev, debug: { ...prev.debug, output: [...prev.debug.output, ...lines] } }))}
+                      onStartDebug={(filePath) => setState((prev) => ({ ...prev, debug: { session: { id: 'debug-1', name: filePath, status: 'running', breakpoints: [], callStack: [], variables: {} }, output: ['Debug session started...'] } }))}
+                      onStopDebug={() => setState((prev) => ({ ...prev, debug: { session: null, output: [] } }))}
+                      onToggleBreakpoint={(line) => setState((prev) => {
+                        const session = prev.debug.session;
+                        if (!session) return prev;
+                        const breakpoints = session.breakpoints.includes(String(line))
+                          ? session.breakpoints.filter((b) => b !== String(line))
+                          : [...session.breakpoints, String(line)];
+                        return { ...prev, debug: { ...prev.debug, session: { ...session, breakpoints } } };
+                      })}
+                    />
+                  ) : (
+                    <div style={{ color: 'var(--text-muted)' }}>Debug console ready. Attach a debugger to start debugging.</div>
+                  )
                 )}
               </div>
             </div>
@@ -372,6 +437,9 @@ export function App(): React.JSX.Element {
           else if (cmd === 'editor.new') { handleOpenFile('untitled.alp'); setActivePanel('editor'); }
           else if (cmd === 'editor.save') { /* placeholder */ }
           else if (cmd === 'workbench.focusSidebar') { /* placeholder */ }
+          else if (cmd === 'debugger.start') { setActivePanel('debugger'); }
+          else if (cmd === 'debugger.stop') { setState((prev) => ({ ...prev, debug: { session: null, output: [] } })); }
+          else if (cmd === 'tests.run') { setActivePanel('test-runner'); }
           setShowCommandPalette(false);
         }} />
       )}
