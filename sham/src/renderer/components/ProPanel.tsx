@@ -10,6 +10,9 @@ import {
   checkUpdate,
   downloadUpdate,
   installUpdate,
+  cloudSyncStatus,
+  cloudSyncPush,
+  cloudSyncPull,
 } from '../shared/alp-client.js';
 import type { LicenseInfo, CloudSyncState, TeamState, UpdateStatus } from '../shared/types.js';
 import { theme, proStyles } from '../styles/theme.js';
@@ -61,6 +64,30 @@ export function ProPanel() {
     if (!cloudSync) return;
     const next = { ...cloudSync, enabled: !cloudSync.enabled };
     setCloudSyncState(await setCloudSync(next));
+  }
+
+  async function handleSyncPush() {
+    setFeedback(null);
+    setLoading(true);
+    const result = await cloudSyncPush({ data: { workspaceId: cloudSync?.workspaceId ?? '', timestamp: new Date().toISOString() } });
+    if (result.success) {
+      setFeedback({ type: 'success', message: `Workspace pushed to cloud at ${result.lastSyncAt}` });
+    } else {
+      setFeedback({ type: 'error', message: result.error ?? 'Push failed' });
+    }
+    setLoading(false);
+  }
+
+  async function handleSyncPull() {
+    setFeedback(null);
+    setLoading(true);
+    const result = await cloudSyncPull();
+    if (result.success) {
+      setFeedback({ type: 'success', message: `Workspace pulled from cloud at ${result.lastSyncAt}` });
+    } else {
+      setFeedback({ type: 'error', message: result.error ?? 'Pull failed' });
+    }
+    setLoading(false);
   }
 
   async function handleInvite() {
@@ -187,14 +214,29 @@ export function ProPanel() {
               <span style={{ fontSize: 13, color: theme.textPrimary }}>{cloudSync.enabled ? 'Enabled' : 'Disabled'}</span>
             </label>
             {cloudSync.enabled && (
-              <input
-                style={proStyles.input}
-                placeholder="Sync endpoint"
-                value={cloudSync.endpoint ?? ''}
-                onChange={async e =>
-                  setCloudSyncState(await setCloudSync({ enabled: true, endpoint: e.target.value }))
-                }
-              />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <input
+                  style={proStyles.input}
+                  placeholder="Sync endpoint"
+                  value={cloudSync.endpoint ?? ''}
+                  onChange={async e =>
+                    setCloudSyncState(await setCloudSync({ enabled: true, endpoint: e.target.value }))
+                  }
+                />
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <button style={{ ...proStyles.button('default'), opacity: loading ? 0.6 : 1 }} onClick={handleSyncPush} disabled={loading}>
+                    {loading ? 'Syncing...' : 'Push'}
+                  </button>
+                  <button style={{ ...proStyles.button('default'), opacity: loading ? 0.6 : 1 }} onClick={handleSyncPull} disabled={loading}>
+                    {loading ? 'Syncing...' : 'Pull'}
+                  </button>
+                  {cloudSync.lastSyncAt && (
+                    <span style={{ color: theme.textMuted, fontSize: 12, alignSelf: 'center' }}>
+                      Last sync: {new Date(cloudSync.lastSyncAt).toLocaleString()}
+                    </span>
+                  )}
+                </div>
+              </div>
             )}
           </div>
         )}

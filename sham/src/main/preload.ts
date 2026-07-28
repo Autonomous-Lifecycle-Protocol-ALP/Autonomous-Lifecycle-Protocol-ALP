@@ -66,4 +66,8 @@ contextBridge.exposeInMainWorld('shamAPI', {
     ipcRenderer.invoke('collab-cursor-move', payload),
   collabBroadcastPresence: (payload: { peerId: string; displayName: string; color: string; cursor?: { line: number; column: number }; selection?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) =>
     ipcRenderer.invoke('collab-broadcast-presence', payload),
+  cloudSyncStatus: () => ipcRenderer.invoke('cloud-sync-status'),
+  cloudSyncPush: (payload: { data: unknown }) =>
+    ipcRenderer.invoke('cloud-sync-push', payload),
+  cloudSyncPull: () => ipcRenderer.invoke('cloud-sync-pull'),
 });

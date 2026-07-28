@@ -223,3 +223,15 @@ export async function collabCursorMove(payload: { peerId: string; line: number; 
 export async function collabBroadcastPresence(payload: { peerId: string; displayName: string; color: string; cursor?: { line: number; column: number }; selection?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) {
   return (api?.collabBroadcastPresence?.(payload) ?? { success: false, received: false }) as { success: boolean; received: boolean };
 }
+
+export async function cloudSyncStatus() {
+  return (api?.cloudSyncStatus?.() ?? { success: false }) as { success: boolean; enabled: boolean; lastSyncAt?: string; endpoint?: string };
+}
+
+export async function cloudSyncPush(payload: { data: unknown }) {
+  return (api?.cloudSyncPush?.(payload) ?? { success: false }) as { success: boolean; lastSyncAt?: string; error?: string };
+}
+
+export async function cloudSyncPull() {
+  return (api?.cloudSyncPull?.() ?? { success: false, data: null }) as { success: boolean; data: unknown; lastSyncAt?: string; error?: string };
+}
