@@ -194,7 +194,7 @@ function audit(
 
 // ─── MCP Server ───────────────────────────────────────────────────────────
 const server = new Server(
-  { name: 'alp-mcp-server', version: '38.0.0' },
+  { name: 'alp-mcp-server', version: '39.0.0' },
   { capabilities: { tools: {}, resources: { subscribe: true }, prompts: {} } }
 );
 

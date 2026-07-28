@@ -6,7 +6,7 @@
   <br/>
 
    [![Status](https://img.shields.io/badge/status-stable-success.svg)](#)
-    [![Version](https://img.shields.io/badge/version-38.0.0-blue.svg)](#)
+    [![Version](https://img.shields.io/badge/version-39.0.0-blue.svg)](#)
    [![License](https://img.shields.io/badge/license-MIT-green.svg)](#)
    [![Tests](https://img.shields.io/badge/tests-1013%20passed-brightgreen.svg)](#)
    [![Docs](https://img.shields.io/badge/docs-live-green.svg)](https://younglord3302.github.io/Autonomous-Lifecycle-Protocol-ALP/)
@@ -151,13 +151,13 @@ alp verify task-auth
 
 | Package | Purpose | Version |
 | :--- | :--- | :---: |
-| [`@alp/cli`](cli/) | Terminal interface (`run`, `serve`, `marketplace`, `policy`, `vault`, `verify`) | `38.0.0` |
-| [`@alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `38.0.0` |
-| [`@alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `38.0.0` |
-| [`@alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `38.0.0` |
-| [`@alp/sdk`](sdk/) | Official TypeScript SDK | `38.0.0` |
-| [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `38.0.0` |
-| [`docs-site`](docs-site/) | Official VitePress documentation site | `38.0.0` |
+| [`@alp/cli`](cli/) | Terminal interface (`run`, `serve`, `marketplace`, `policy`, `vault`, `verify`) | `39.0.0` |
+| [`@alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `39.0.0` |
+| [`@alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `39.0.0` |
+| [`@alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `39.0.0` |
+| [`@alp/sdk`](sdk/) | Official TypeScript SDK | `39.0.0` |
+| [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `39.0.0` |
+| [`docs-site`](docs-site/) | Official VitePress documentation site | `39.0.0` |
 
 ---
 

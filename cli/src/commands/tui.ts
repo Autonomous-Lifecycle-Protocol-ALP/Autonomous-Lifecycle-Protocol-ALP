@@ -60,7 +60,7 @@ export function tuiCommand() {
 
     // Header
     console.log(`\x1b[1;36m┌${borderLine}┐\x1b[0m`);
-    console.log(`\x1b[1;36m│\x1b[0m \x1b[1;33m⚡ ALP TERMINAL DASHBOARD\x1b[0m \x1b[90m(v38.0.0)\x1b[0m  \x1b[90mWorkspace:\x1b[0m \x1b[1;37m${project}\x1b[0m`.padEnd(width + 25) + `\x1b[1;36m│\x1b[0m`);
+    console.log(`\x1b[1;36m│\x1b[0m \x1b[1;33m⚡ ALP TERMINAL DASHBOARD\x1b[0m \x1b[90m(v39.0.0)\x1b[0m  \x1b[90mWorkspace:\x1b[0m \x1b[1;37m${project}\x1b[0m`.padEnd(width + 25) + `\x1b[1;36m│\x1b[0m`);
     console.log(`\x1b[1;36m├${borderLine}┤\x1b[0m`);
 
     // Task Completion Bar

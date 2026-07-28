@@ -450,7 +450,7 @@ export default function App() {
         <div className="brand-section">
           <div className="brand-logo">ALP</div>
           <span className="brand-title">Execution Engine &amp; DAG Playground</span>
-          <span className="brand-badge">v38.0.0</span>
+          <span className="brand-badge">v39.0.0</span>
         </div>
 
         <div className="header-controls">

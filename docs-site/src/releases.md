@@ -10,9 +10,16 @@ ALP versioning tracks two independent axes:
 - **Specification** (`spec/01-overview`) — the protocol grammar. Locked at **2.0.0 (Stable)**; strict semantic-versioning guarantees apply to implementations.
 - **Toolchain** (`@alp/cli`, `@alp/sdk`, docs-site, integrations) — the implementation and packaging, released on its own cadence.
 
-> 🔮 **Looking Ahead**: See [ROADMAP_V17_V36.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V36.md) for the strategic architecture roadmap spanning v17.0.0 (OpenTelemetry) to v38.0.0 (The Collaboration Era).
+> 🔮 **Looking Ahead**: See [ROADMAP_V17_V39.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V39.md) for the strategic architecture roadmap spanning v17.0.0 (OpenTelemetry) to v39.0.0 (Native Desktop).
 
 ## Toolchain
+
+### 39.0.0 — Native Desktop & SHAM IDE
+- **SHAM IDE**: Cross-platform Electron desktop application for Mac, Windows, and Linux. Unified ALP experience with Monaco editor, integrated terminal, agent manager, and MCP tools browser.
+- **Version Unification**: `@alp/parser`, `@alp/sdk`, and `@alp/cli` bundled at the same version for a unified, faster, and error-free ALP experience.
+- **Cross-Platform Filesystem Access**: Electron `dialog` and Node.js `path` for native filesystem interaction.
+- **Auto-Updater**: Seamless distribution with `electron-updater`.
+- **Pro/Enterprise Licensing**: Pro tier ($19/mo) with cloud sync and team collaboration. Enterprise tier with SSO/SAML, RBAC, and audit logging.
 
 ### 38.0.0 — Memory Mesh Engine & Governance
 - **Memory Mesh Engine** (`MemoryMeshEngine` in TS & Python SDK): Cross-agent semantic memory sharing with decay scoring, memory node relationships, and distributed knowledge graph queries.

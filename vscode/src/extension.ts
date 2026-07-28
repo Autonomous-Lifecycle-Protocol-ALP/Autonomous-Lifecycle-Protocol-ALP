@@ -34,7 +34,7 @@ function getParsedObjects(document: vscode.TextDocument | undefined): any[] {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('ALP Language Support v38.0.0 is now active.');
+  console.log('ALP Language Support v39.0.0 is now active.');
 
   const serverModule = context.asAbsolutePath(path.join('server', 'dist', 'server.js'));
   if (!fs.existsSync(serverModule)) {
