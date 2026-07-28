@@ -35,4 +35,10 @@ contextBridge.exposeInMainWorld('shamAPI', {
   installUpdate: () => ipcRenderer.invoke('pro-install-update'),
   execTerminalCommand: (command: string) =>
     ipcRenderer.invoke('terminal-exec', { command }),
+  startCollab: (mode: 'host' | 'peer') => ipcRenderer.invoke('collab-start', { mode }),
+  joinCollab: (sessionId: string) => ipcRenderer.invoke('collab-join', { sessionId }),
+  getCollabStatus: () => ipcRenderer.invoke('collab-status'),
+  leaveCollab: () => ipcRenderer.invoke('collab-leave'),
+  getCRDTStatus: () => ipcRenderer.invoke('crdt-status'),
+  mergeCRDT: () => ipcRenderer.invoke('crdt-merge'),
 });

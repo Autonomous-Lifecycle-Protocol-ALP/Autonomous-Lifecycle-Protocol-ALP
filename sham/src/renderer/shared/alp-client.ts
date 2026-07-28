@@ -107,3 +107,57 @@ export async function execTerminalCommand(command: string) {
     error?: string;
   };
 }
+
+export async function startCollab(mode: 'host' | 'peer') {
+  return (api?.startCollab?.(mode) ?? { success: false, stdout: '', stderr: 'shamAPI unavailable' }) as {
+    success: boolean;
+    stdout: string;
+    stderr: string;
+    error?: string;
+  };
+}
+
+export async function joinCollab(sessionId: string) {
+  return (api?.joinCollab?.(sessionId) ?? { success: false, stdout: '', stderr: 'shamAPI unavailable' }) as {
+    success: boolean;
+    stdout: string;
+    stderr: string;
+    error?: string;
+  };
+}
+
+export async function getCollabStatus() {
+  return (api?.getCollabStatus?.() ?? { success: false, stdout: '', stderr: 'shamAPI unavailable' }) as {
+    success: boolean;
+    stdout: string;
+    stderr: string;
+    error?: string;
+  };
+}
+
+export async function leaveCollab() {
+  return (api?.leaveCollab?.() ?? { success: false, stdout: '', stderr: 'shamAPI unavailable' }) as {
+    success: boolean;
+    stdout: string;
+    stderr: string;
+    error?: string;
+  };
+}
+
+export async function getCRDTStatus() {
+  return (api?.getCRDTStatus?.() ?? { success: false, stdout: '', stderr: 'shamAPI unavailable' }) as {
+    success: boolean;
+    stdout: string;
+    stderr: string;
+    error?: string;
+  };
+}
+
+export async function mergeCRDT() {
+  return (api?.mergeCRDT?.() ?? { success: false, stdout: '', stderr: 'shamAPI unavailable' }) as {
+    success: boolean;
+    stdout: string;
+    stderr: string;
+    error?: string;
+  };
+}

@@ -70,4 +70,112 @@ export function setupALPBridge() {
       };
     }
   });
+
+  ipcMain.handle('collab-start', async (_event, { mode }: { mode: 'host' | 'peer' }) => {
+    try {
+      const { stdout, stderr } = await execAsync(`alp collab start --mode ${mode}`, {
+        maxBuffer: 10 * 1024 * 1024,
+        timeout: 120000,
+      });
+      return { success: true, stdout, stderr };
+    } catch (error) {
+      const execError = error as NodeJS.ErrnoException & { stdout?: string; stderr?: string };
+      return {
+        success: false,
+        stdout: execError.stdout ?? '',
+        stderr: execError.stderr ?? '',
+        error: execError.message ?? String(error),
+      };
+    }
+  });
+
+  ipcMain.handle('collab-join', async (_event, { sessionId }: { sessionId: string }) => {
+    try {
+      const { stdout, stderr } = await execAsync(`alp collab join ${sessionId}`, {
+        maxBuffer: 10 * 1024 * 1024,
+        timeout: 120000,
+      });
+      return { success: true, stdout, stderr };
+    } catch (error) {
+      const execError = error as NodeJS.ErrnoException & { stdout?: string; stderr?: string };
+      return {
+        success: false,
+        stdout: execError.stdout ?? '',
+        stderr: execError.stderr ?? '',
+        error: execError.message ?? String(error),
+      };
+    }
+  });
+
+  ipcMain.handle('collab-status', async () => {
+    try {
+      const { stdout, stderr } = await execAsync('alp collab status', {
+        maxBuffer: 10 * 1024 * 1024,
+        timeout: 120000,
+      });
+      return { success: true, stdout, stderr };
+    } catch (error) {
+      const execError = error as NodeJS.ErrnoException & { stdout?: string; stderr?: string };
+      return {
+        success: false,
+        stdout: execError.stdout ?? '',
+        stderr: execError.stderr ?? '',
+        error: execError.message ?? String(error),
+      };
+    }
+  });
+
+  ipcMain.handle('collab-leave', async () => {
+    try {
+      const { stdout, stderr } = await execAsync('alp collab leave', {
+        maxBuffer: 10 * 1024 * 1024,
+        timeout: 120000,
+      });
+      return { success: true, stdout, stderr };
+    } catch (error) {
+      const execError = error as NodeJS.ErrnoException & { stdout?: string; stderr?: string };
+      return {
+        success: false,
+        stdout: execError.stdout ?? '',
+        stderr: execError.stderr ?? '',
+        error: execError.message ?? String(error),
+      };
+    }
+  });
+
+  ipcMain.handle('crdt-status', async () => {
+    try {
+      const { stdout, stderr } = await execAsync('alp crdt-sync status', {
+        maxBuffer: 10 * 1024 * 1024,
+        timeout: 120000,
+      });
+      return { success: true, stdout, stderr };
+    } catch (error) {
+      const execError = error as NodeJS.ErrnoException & { stdout?: string; stderr?: string };
+      return {
+        success: false,
+        stdout: execError.stdout ?? '',
+        stderr: execError.stderr ?? '',
+        error: execError.message ?? String(error),
+      };
+    }
+  });
+
+  ipcMain.handle('crdt-merge', async () => {
+    try {
+      const { stdout, stderr } = await execAsync('alp crdt-sync merge', {
+        maxBuffer: 10 * 1024 * 1024,
+        timeout: 120000,
+      });
+      return { success: true, stdout, stderr };
+    } catch (error) {
+      const execError = error as NodeJS.ErrnoException & { stdout?: string; stderr?: string };
+      return {
+        success: false,
+        stdout: execError.stdout ?? '',
+        stderr: execError.stderr ?? '',
+        error: execError.message ?? String(error),
+      };
+    }
+  });
 }

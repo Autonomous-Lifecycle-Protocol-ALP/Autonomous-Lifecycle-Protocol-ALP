@@ -40,6 +40,7 @@ export interface SHAMState {
   agents: ALPAgent[];
   mcpTools: ALPMCPTool[];
   parseResult: ParseResult | null;
+  collab: CollabState;
 }
 
 export interface LicenseInfo {
@@ -79,4 +80,17 @@ export interface TerminalResult {
   stdout: string;
   stderr: string;
   error?: string;
+}
+
+export interface CollabSession {
+  id: string;
+  mode: 'host' | 'peer';
+  peers: string[];
+  status: 'idle' | 'running' | 'error';
+  lastSyncAt?: string;
+}
+
+export interface CollabState {
+  session: CollabSession | null;
+  output: string[];
 }
