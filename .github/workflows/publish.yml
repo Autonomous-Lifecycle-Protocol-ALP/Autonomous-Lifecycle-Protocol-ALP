@@ -71,7 +71,7 @@ jobs:
       - name: Build and push @alp/cli container
         uses: docker/build-push-action@v5
         with:
-          context: ./cli
+          context: .
           file: ./cli/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}/cli:${{ github.ref_name }},ghcr.io/${{ github.repository }}/cli:latest
@@ -79,7 +79,7 @@ jobs:
       - name: Build and push @alp/mcp-server container
         uses: docker/build-push-action@v5
         with:
-          context: ./mcp-server
+          context: .
           file: ./mcp-server/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}/mcp-server:${{ github.ref_name }},ghcr.io/${{ github.repository }}/mcp-server:latest
