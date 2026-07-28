@@ -50,7 +50,7 @@ const PLUGINS_DIR = join(process.resourcesPath || process.cwd(), 'plugins');
 const profileTraces: ProfileTrace[] = [];
 
 async function loadParser() {
-  const parser = await import('@alp/parser');
+  const parser = await import('@younglord3302/parser');
   return parser;
 }
 

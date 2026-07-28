@@ -3,7 +3,7 @@ import addFormats from 'ajv-formats';
 import { AlpObject } from './reader';
 import { ValidationError } from './error';
 // @ts-ignore
-import schemas from '@alp/schemas';
+import schemas from '@younglord3302/schemas';
 
 export class AlpValidator {
   private ajv: Ajv;
