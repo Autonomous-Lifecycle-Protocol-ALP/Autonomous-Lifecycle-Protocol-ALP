@@ -360,13 +360,13 @@ flowchart LR
 ## 📦 The ALP Ecosystem
 
 <div class="alp-eco">
-  <a class="alp-eco-card" href="/guide/cli"><h3>@alp/cli</h3><p>Terminal CLI interface: <code>run</code>, <code>marketplace</code>, <code>event-mesh</code>, <code>policy</code>, <code>vault</code>, <code>verify</code>.</p></a>
-  <a class="alp-eco-card" href="/spec/03-protocol-objects"><h3>@alp/parser</h3><p>Parses <code>.alp</code> files and computes Kahn topological sorts over the dependency graph in sub-2ms.</p></a>
-  <a class="alp-eco-card" href="/mcp-server"><h3>@alp/mcp-server</h3><p>Real-time MCP integration for Claude Desktop, Cursor, and any compliant client.</p></a>
+  <a class="alp-eco-card" href="/guide/cli"><h3>@autonomous-lifecycle-protocol-alp/cli</h3><p>Terminal CLI interface: <code>run</code>, <code>marketplace</code>, <code>event-mesh</code>, <code>policy</code>, <code>vault</code>, <code>verify</code>.</p></a>
+  <a class="alp-eco-card" href="/spec/03-protocol-objects"><h3>@autonomous-lifecycle-protocol-alp/parser</h3><p>Parses <code>.alp</code> files and computes Kahn topological sorts over the dependency graph in sub-2ms.</p></a>
+  <a class="alp-eco-card" href="/mcp-server"><h3>@autonomous-lifecycle-protocol-alp/mcp-server</h3><p>Real-time MCP integration for Claude Desktop, Cursor, and any compliant client.</p></a>
   <a class="alp-eco-card" href="/vscode-extension"><h3>alp-vscode</h3><p>Language Server with IntelliSense, go-to-definition, and rich hover metadata.</p></a>
-  <a class="alp-eco-card" href="/guide/sdk"><h3>@alp/sdk &amp; alp-sdk</h3><p>Official TypeScript and Python SDKs with complete 1:1 implementation parity.</p></a>
+  <a class="alp-eco-card" href="/guide/sdk"><h3>@autonomous-lifecycle-protocol-alp/sdk &amp; alp-sdk</h3><p>Official TypeScript and Python SDKs with complete 1:1 implementation parity.</p></a>
   <a class="alp-eco-card" href="/spec/22-autonomous-marketplace"><h3>@swarm_marketplace</h3><p>Autonomous skill registry, provider discovery, invocation, and cost tracking (v38.0.0).</p></a>
-  <a class="alp-eco-card" href="/sham"><h3>SHAM IDE</h3><p>The unified ALP desktop IDE (Mac/Windows/Linux). Faster, more secure, and error-free vs. fragmented multi-IDE setups. Native `@alp/parser`, Monaco editor, agent manager, and integrated terminal.</p></a>
+  <a class="alp-eco-card" href="/sham"><h3>SHAM IDE</h3><p>The unified ALP desktop IDE (Mac/Windows/Linux). Faster, more secure, and error-free vs. fragmented multi-IDE setups. Native `@autonomous-lifecycle-protocol-alp/parser`, Monaco editor, agent manager, and integrated terminal.</p></a>
 </div>
 
 ---

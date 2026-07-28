@@ -2,7 +2,7 @@
 
 In V2 of the Autonomous Lifecycle Protocol, ALP transitioned from a static schema validation tool into an active **Execution Engine**. In V3 it became a **multi-agent orchestrator** capable of running concurrent agent swarms.
 
-The `@alp/cli` provides the `alp run` command to natively orchestrate your autonomous workforce.
+The `@autonomous-lifecycle-protocol-alp/cli` provides the `alp run` command to natively orchestrate your autonomous workforce.
 
 ## How it works
 

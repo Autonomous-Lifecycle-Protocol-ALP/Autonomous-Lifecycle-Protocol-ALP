@@ -6,7 +6,7 @@ Official SDK packages for integrating ALP into applications.
 
 | Language | Package | Status |
 |---|---|---|
-| TypeScript | `@alp/sdk` | ✅ Shipped (parsing, validation, graph) |
+| TypeScript | `@autonomous-lifecycle-protocol-alp/sdk` | ✅ Shipped (parsing, validation, graph) |
 | Python | `alp-sdk` | ✅ Shipped (parsing, validation, analytics, registry client) |
 | Go | `alp-go` | 🔜 Community |
 | Rust | `alp-rs` | 🔜 Community |
@@ -15,14 +15,14 @@ Official SDK packages for integrating ALP into applications.
 ## TypeScript
 
 ```ts
-import { AlpWorkspace } from '@alp/sdk';
+import { AlpWorkspace } from '@autonomous-lifecycle-protocol-alp/sdk';
 
 const ws = new AlpWorkspace();
 ws.load('./my-project');
 console.log(ws.getGraph());
 ```
 
-Available since v38.0.0, `@alp/sdk` also exposes the underlying engine types directly:
+Available since v38.0.0, `@autonomous-lifecycle-protocol-alp/sdk` also exposes the underlying engine types directly:
 
 ```ts
 import {
@@ -31,7 +31,7 @@ import {
   MemoryMeshEngine,
   EventMeshEngine,
   SwarmMarketplaceEngine,
-} from '@alp/sdk';
+} from '@autonomous-lifecycle-protocol-alp/sdk';
 ```
 
 ## Python

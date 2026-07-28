@@ -4,10 +4,10 @@ ALP natively supports Anthropic's **Model Context Protocol**, allowing modern AI
 
 ## Installation
 
-The MCP server is provided via the `@alp/mcp-server` package.
+The MCP server is provided via the `@autonomous-lifecycle-protocol-alp/mcp-server` package.
 
 ```bash
-npm install -g @alp/mcp-server
+npm install -g @autonomous-lifecycle-protocol-alp/mcp-server
 ```
 
 ## Available Tools

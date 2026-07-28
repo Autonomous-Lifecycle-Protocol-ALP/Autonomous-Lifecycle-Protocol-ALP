@@ -18,7 +18,7 @@ Version 2 of the Autonomous Lifecycle Protocol transitions the project from a **
 - Allow developers to run `alp run --task "feat-auth"`. The CLI spins up the assigned `@agent`, provides context from the graph, executes the work in a sandbox, and handles verification loops until completion.
 
 ## Pillar 3: Model Context Protocol (MCP) Server ✅
-**Target:** Release an `@alp/mcp-server` package.
+**Target:** Release an `@autonomous-lifecycle-protocol-alp/mcp-server` package.
 - Allow any modern AI IDE (Cursor, Claude Desktop, Windsurf) to connect securely to the ALP workspace.
 - Provide standardized MCP tools: `alp_get_graph`, `alp_read_task`, `alp_update_status`.
 

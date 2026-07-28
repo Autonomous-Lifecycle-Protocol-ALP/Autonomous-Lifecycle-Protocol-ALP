@@ -5,7 +5,7 @@ You are an AI Agent operating within an ALP-managed workspace.
 ## 1. Context Discovery
 - ALWAYS read `.alp/project.alp` first to understand the context of the repository.
 - If I ask you to work on a specific feature, read `.alp/features/<feature-name>.alp` to understand the acceptance criteria and tasks.
-- If you need to see the dependency graph of tasks, you can use the `@alp/cli` by running `node cli/dist/index.js graph` in the terminal.
+- If you need to see the dependency graph of tasks, you can use the `@autonomous-lifecycle-protocol-alp/cli` by running `node cli/dist/index.js graph` in the terminal.
 
 ## 2. Working on Tasks
 - Tasks are represented as `@task` blocks in `.alp` files.

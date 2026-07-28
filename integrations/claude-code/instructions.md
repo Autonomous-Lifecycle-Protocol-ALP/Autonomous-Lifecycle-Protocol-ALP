@@ -2,7 +2,7 @@
 
 This repository is managed by the Autonomous Lifecycle Protocol (ALP). As an autonomous agent, you must synchronize your work with the `.alp/` directory.
 
-> **CLI invocation:** the `@alp/cli` package is not yet published to npm. Build it from source (`npm ci && npm run build --workspace @alp/cli`) and invoke commands via `node cli/dist/index.js <command>` (e.g. `node cli/dist/index.js validate`). The examples below use that form.
+> **CLI invocation:** the `@autonomous-lifecycle-protocol-alp/cli` package is not yet published to npm. Build it from source (`npm ci && npm run build --workspace @autonomous-lifecycle-protocol-alp/cli`) and invoke commands via `node cli/dist/index.js <command>` (e.g. `node cli/dist/index.js validate`). The examples below use that form.
 
 ## Core Directives
 
@@ -38,4 +38,4 @@ ALP spans networked swarms, cross-repo orchestration, registry trust, and autono
 - **Registry & packages:** Install shared knowledge with `node cli/dist/index.js registry install @community/<pack>@<range>`. Publish your own with `node cli/dist/index.js registry publish ./my-pack`, or host a registry via `node cli/dist/index.js serve --registry`.
 - **Registry trust & verification:** Pin maintainer keys in `.alprc` `trustedKeys` (or via `node cli/dist/index.js keys trust add <ns|*> <fingerprint|file>`); installs are then verified automatically. Audit any package — local or remote — with `node cli/dist/index.js registry verify <name>[@version]` and `node cli/dist/index.js registry verify <name>[@version] --url <host>` without installing.
 - **Live observability:** `node cli/dist/index.js serve` starts a dashboard (HTTP + SSE) showing task status, claims, and analytics in real time.
-- **MCP integration:** If the IDE supports MCP, connect to `node cli/dist/index.js` via the `@alp/mcp-server` for 28 workspace tools including policy checks, visualization, registry search, and timeline evaluation.
+- **MCP integration:** If the IDE supports MCP, connect to `node cli/dist/index.js` via the `@autonomous-lifecycle-protocol-alp/mcp-server` for 28 workspace tools including policy checks, visualization, registry search, and timeline evaluation.

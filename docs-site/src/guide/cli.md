@@ -7,7 +7,7 @@ Welcome to the **Autonomous Lifecycle Protocol (ALP)**! ALP is an open standard 
 The CLI and Parser are distributed via npm:
 
 ```bash
-npm install -g @alp/cli
+npm install -g @autonomous-lifecycle-protocol-alp/cli
 ```
 
 ## Quick Start

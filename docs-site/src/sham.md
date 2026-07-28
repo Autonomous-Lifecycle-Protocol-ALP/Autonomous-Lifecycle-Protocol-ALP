@@ -24,7 +24,7 @@ SHAM consolidates every ALP capability into one native desktop application:
 | Capability | In SHAM | In Other IDEs |
 | :--- | :--- | :--- |
 | ALP syntax highlighting | Native Monaco editor with ALP grammar | Requires extension, may lag behind parser |
-| Real-time validation | Native `@alp/parser` in main process | Extension-dependent, slower IPC |
+| Real-time validation | Native `@autonomous-lifecycle-protocol-alp/parser` in main process | Extension-dependent, slower IPC |
 | Agent management | Built-in agent manager with create/run/monitor | Not available |
 | Integrated terminal | ALP CLI built-in, no external terminal needed | Separate terminal window |
 | MCP tools browser | Native MCP browser panel | Requires separate MCP client |
@@ -34,7 +34,7 @@ SHAM consolidates every ALP capability into one native desktop application:
 
 ## Why SHAM is Faster
 
-- **Native ALP integration**: `@alp/parser` runs in the Electron main process, not a separate language server — eliminates IPC overhead
+- **Native ALP integration**: `@autonomous-lifecycle-protocol-alp/parser` runs in the Electron main process, not a separate language server — eliminates IPC overhead
 - **Single process architecture**: Monaco editor, agent manager, terminal, and MCP browser share memory and state
 - **No extension lag**: ALP parser updates are bundled with SHAM releases, not dependent on extension marketplace approval cycles
 - **Sub-2ms parse**: ALP documents parse and validate in the main process using the same `AlpParser` class used by CLI and SDK
@@ -49,7 +49,7 @@ SHAM consolidates every ALP capability into one native desktop application:
 
 ## Why SHAM is Error-Free
 
-- **Single ALP version**: SHAM bundles `@alp/parser`, `@alp/sdk`, and `@alp/cli` at the same version — eliminates version skew between editor extension and CLI
+- **Single ALP version**: SHAM bundles `@autonomous-lifecycle-protocol-alp/parser`, `@autonomous-lifecycle-protocol-alp/sdk`, and `@autonomous-lifecycle-protocol-alp/cli` at the same version — eliminates version skew between editor extension and CLI
 - **Unified error handling**: Validation errors, agent failures, and MCP errors all surface in the same panel with consistent formatting
 - **Schema-validated**: All 49 JSON schemas registered and enforced natively — no extension-specific schema drift
 - **Tested integration**: SHAM tests verify `AlpParser` integration directly, not through a separate language server protocol

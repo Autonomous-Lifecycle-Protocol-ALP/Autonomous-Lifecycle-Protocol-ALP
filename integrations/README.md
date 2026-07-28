@@ -10,7 +10,7 @@ Contains a `.cursorrules` file.
 
 ### 2. Claude Code & Cline (`claude-code/`)
 Contains `instructions.md`.
-**Usage:** Copy these instructions into your agent's system prompt or custom instructions file (e.g., `.claudecode.md`). It teaches CLI-based agents how to use the `@alp/cli` to validate the workspace and view the dependency graph before writing code. In the current era, agents drive execution via `alp run` (and `alp run --concurrent N` for swarm mode) and report status with `alp checkpoint` (including `--ask-human` for Human-in-the-Loop review handoffs).
+**Usage:** Copy these instructions into your agent's system prompt or custom instructions file (e.g., `.claudecode.md`). It teaches CLI-based agents how to use the `@autonomous-lifecycle-protocol-alp/cli` to validate the workspace and view the dependency graph before writing code. In the current era, agents drive execution via `alp run` (and `alp run --concurrent N` for swarm mode) and report status with `alp checkpoint` (including `--ask-human` for Human-in-the-Loop review handoffs).
 
 ### 3. GitHub Actions (`github/`)
 The ALP repo ships an active CI workflow at `.github/workflows/ci.yml` (TypeScript + Python SDK tests and example validation). For your own repositories, copy the drop-in templates from this directory into `.github/workflows/`:
@@ -19,7 +19,7 @@ The ALP repo ships an active CI workflow at `.github/workflows/ci.yml` (TypeScri
 - `alp-pr-context.yml` posts PR context (linked tasks/decisions) as a comment when a PR is opened.
 - `alp-report.yml` publishes a weekly status report of the workspace.
 
-> **CLI:** the drop-in workflows build `@alp/cli` from source (`npm ci && npm run build --workspace @alp/cli`) and invoke it via `node cli/dist/index.js`. This matches the `validate` job in the repo's own `.github/workflows/ci.yml`.
+> **CLI:** the drop-in workflows build `@autonomous-lifecycle-protocol-alp/cli` from source (`npm ci && npm run build --workspace @autonomous-lifecycle-protocol-alp/cli`) and invoke it via `node cli/dist/index.js`. This matches the `validate` job in the repo's own `.github/workflows/ci.yml`.
 
 ## Current Toolchain Surface (v40.0.0)
 
@@ -36,9 +36,9 @@ Integrations should be aware of the modern ALP surface so agents operate with fu
 
 ### 4. Model Context Protocol (`mcp-server/`)
 
-ALP provides a native MCP server (`@alp/mcp-server`) enabling any modern AI IDE (Claude Desktop, Cursor, Windsurf) to securely query and mutate the ALP workspace.
+ALP provides a native MCP server (`@autonomous-lifecycle-protocol-alp/mcp-server`) enabling any modern AI IDE (Claude Desktop, Cursor, Windsurf) to securely query and mutate the ALP workspace.
 
-**Usage:** Start the server using `node mcp-server/dist/index.js` or configure your IDE's MCP settings to point to the `@alp/mcp-server` executable.
+**Usage:** Start the server using `node mcp-server/dist/index.js` or configure your IDE's MCP settings to point to the `@autonomous-lifecycle-protocol-alp/mcp-server` executable.
 
 Exposed tools (28 total): `alp_list_objects`, `alp_read_object`, `alp_get_graph`, `alp_get_status`, `alp_validate`, `alp_update_status`, `alp_set_status`, `alp_get_impact`, `alp_search`, `alp_delegate`, `alp_decompose`, `alp_create_task`, `alp_create_feature`, `alp_get_events`, `alp_get_analytics`, `alp_check_policy`, `alp_visualize`, `alp_search_registry`, `alp_get_timelines`, `alp_get_contracts`, `alp_get_vaults`, `alp_get_swarm_marketplace`, `alp_get_event_mesh`, `alp_get_macros`, `alp_expand_macro`, `alp_memory_store`, `alp_memory_query`, `alp_memory_stats`.
 

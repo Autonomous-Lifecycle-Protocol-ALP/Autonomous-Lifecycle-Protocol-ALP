@@ -151,11 +151,11 @@ alp verify task-auth
 
 | Package | Purpose | Version |
 | :--- | :--- | :---: |
-| [`@alp/cli`](cli/) | Terminal interface (`run`, `serve`, `marketplace`, `policy`, `vault`, `verify`) | `40.0.0` |
-| [`@alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `40.0.0` |
-| [`@alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `40.0.0` |
-| [`@alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `40.0.0` |
-| [`@alp/sdk`](sdk/) | Official TypeScript SDK | `40.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/cli`](cli/) | Terminal interface (`run`, `serve`, `marketplace`, `policy`, `vault`, `verify`) | `40.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `40.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `40.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `40.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/sdk`](sdk/) | Official TypeScript SDK | `40.0.0` |
 | [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `40.0.0` |
 | [`docs-site`](docs-site/) | Official VitePress documentation site | `40.0.0` |
 
@@ -165,7 +165,7 @@ alp verify task-auth
 
 Install the CLI globally:
 ```bash
-npm install -g @alp/cli
+npm install -g @autonomous-lifecycle-protocol-alp/cli
 ```
 
 Initialize an ALP workspace in your project:

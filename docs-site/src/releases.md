@@ -8,7 +8,7 @@ description: ALP release history — specification and toolchain versions
 ALP versioning tracks two independent axes:
 
 - **Specification** (`spec/01-overview`) — the protocol grammar. Locked at **2.0.0 (Stable)**; strict semantic-versioning guarantees apply to implementations.
-- **Toolchain** (`@alp/cli`, `@alp/sdk`, docs-site, integrations) — the implementation and packaging, released on its own cadence.
+- **Toolchain** (`@autonomous-lifecycle-protocol-alp/cli`, `@autonomous-lifecycle-protocol-alp/sdk`, docs-site, integrations) — the implementation and packaging, released on its own cadence.
 
 > 🔮 **Looking Ahead**: See [ROADMAP_V17_V39.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V39.md) for the strategic architecture roadmap spanning v17.0.0 (OpenTelemetry) to v40.0.0 (Native Desktop).
 
@@ -16,7 +16,7 @@ ALP versioning tracks two independent axes:
 
 ### 40.0.0 — Native Desktop & SHAM IDE
 - **SHAM IDE**: Cross-platform Electron desktop application for Mac, Windows, and Linux. Unified ALP experience with Monaco editor, integrated terminal, agent manager, and MCP tools browser.
-- **Version Unification**: `@alp/parser`, `@alp/sdk`, and `@alp/cli` bundled at the same version for a unified, faster, and error-free ALP experience.
+- **Version Unification**: `@autonomous-lifecycle-protocol-alp/parser`, `@autonomous-lifecycle-protocol-alp/sdk`, and `@autonomous-lifecycle-protocol-alp/cli` bundled at the same version for a unified, faster, and error-free ALP experience.
 - **Cross-Platform Filesystem Access**: Electron `dialog` and Node.js `path` for native filesystem interaction.
 - **Auto-Updater**: Seamless distribution with `electron-updater`.
 - **Pro/Enterprise Licensing**: Pro tier ($19/mo) with cloud sync and team collaboration. Enterprise tier with SSO/SAML, RBAC, and audit logging.

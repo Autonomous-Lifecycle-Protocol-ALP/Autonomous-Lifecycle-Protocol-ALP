@@ -1,6 +1,6 @@
 # CLI Verification & Tools
 
-The `@alp/cli` is more than a validator; it's a complete ecosystem manager. Here is the full suite of CLI commands available.
+The `@autonomous-lifecycle-protocol-alp/cli` is more than a validator; it's a complete ecosystem manager. Here is the full suite of CLI commands available.
 
 ## Execution Engine (`alp run`)
 
