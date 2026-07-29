@@ -1,6 +1,6 @@
 # ALP Version Plan
 
-**Current Release:** v43.0.0 — IDE Collaboration
+**Current Release:** v44.0.0 — IDE Intelligence
 **Date:** 2026-07-29
 
 ---
@@ -45,6 +45,25 @@
 - `@autonomous-lifecycle-protocol-alp/parser` — collaboration objects, audit log schema
 - `@autonomous-lifecycle-protocol-alp/sdk` — collaboration API, audit log API
 - `@autonomous-lifecycle-protocol-alp/mcp-server` — new tools for collaboration and audit
+
+---
+
+### v44.0.0 — IDE Intelligence
+**Target:** Q2 2027
+**Codename:** IDE Intelligence
+
+**Key Deliverables:**
+- AI-powered suggestions for next ALP objects based on workspace gaps
+- Intelligent error diagnosis with likely causes and fix suggestions
+- Predictive outcome scoring for tasks based on dependency state
+- Automated code review findings for `.alp` specs
+- MCP tools: `alp_intelligence_suggest`, `alp_intelligence_diagnose`, `alp_intelligence_predict`, `alp_intelligence_review`
+
+**Packages Affected:**
+- `@autonomous-lifecycle-protocol-alp/cli` — new `alp intelligence` command group
+- `@autonomous-lifecycle-protocol-alp/parser` — `IntelligenceEngine`, `SmartSuggestion`, `DiagnosisResult`, `PredictionResult`, `ReviewFinding`
+- `@autonomous-lifecycle-protocol-alp/sdk` — intelligence API re-exports
+- `@autonomous-lifecycle-protocol-alp/mcp-server` — 4 new intelligence tools
 
 ---
 

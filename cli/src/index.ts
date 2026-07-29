@@ -63,6 +63,7 @@ import { registerSwarmMarketplaceCommand } from './commands/swarm-marketplace';
 import { registerMacroCommand } from './commands/macro';
 import { registerCollabCommand } from './commands/collab';
 import { registerMemoryMeshCommand } from './commands/memory-mesh';
+import { intelligenceCommand } from './commands/intelligence';
 import { settingsCommand } from './commands/settings';
 import { searchCommand } from './commands/search';
 import { gitCommand } from './commands/git';
@@ -71,7 +72,7 @@ const program = new Command();
 program
   .name('alp')
   .description('Autonomous Lifecycle Protocol (ALP) CLI')
-  .version('43.0.0');
+  .version('44.0.0');
 
 program
   .command('init')
@@ -395,6 +396,14 @@ registerSwarmMarketplaceCommand(program);
 registerMacroCommand(program);
 registerCollabCommand(program);
 registerMemoryMeshCommand(program);
+
+program
+  .command('intelligence')
+  .description('IDE Intelligence: suggestions, diagnostics, predictions, review (v44.0.0)')
+  .argument('<subcommand>', 'suggest | diagnose | predict | review')
+  .option('--error <text>', 'Error text to diagnose')
+  .option('--task-id <id>', 'Task ID for prediction')
+  .action((subcommand, opts) => intelligenceCommand(subcommand, opts));
 
 program.parse(process.argv);
 

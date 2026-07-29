@@ -1,6 +1,6 @@
 {
   "name": "@autonomous-lifecycle-protocol-alp/sdk",
-  "version": "43.0.0",
+  "version": "44.0.0",
   "description": "Official TypeScript SDK for the Autonomous Lifecycle Protocol",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

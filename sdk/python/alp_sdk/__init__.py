@@ -1,6 +1,6 @@
 """ALP Python SDK"""
 
-__version__ = "43.0.0"
+__version__ = "44.0.0"
 
 from .models import AlpObject
 from .error import AlpError, SyntaxError, IndentationError, ValidationError, DirectiveError
@@ -254,6 +254,13 @@ from .formatter import (
     FormatOptions,
     FormatResult,
 )
+from .intelligence import (
+    IntelligenceEngine,
+    SmartSuggestion,
+    DiagnosisResult,
+    PredictionResult,
+    ReviewFinding,
+)
 
 __all__ = [
     "AlpObject",
@@ -501,5 +508,10 @@ __all__ = [
     "AlpFormatter",
     "FormatOptions",
     "FormatResult",
+    "IntelligenceEngine",
+    "SmartSuggestion",
+    "DiagnosisResult",
+    "PredictionResult",
+    "ReviewFinding",
 ]
 

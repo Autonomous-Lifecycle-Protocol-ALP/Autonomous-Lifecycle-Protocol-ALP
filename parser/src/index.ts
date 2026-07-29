@@ -66,6 +66,7 @@ export * from './snippet';
 export * from './test-runner';
 export * from './linter';
 export * from './formatter';
+export * from './intelligence';
 
 export { AlpObject, AlpReader };
 
