@@ -67,6 +67,25 @@
 
 ---
 
+### v45.0.0 — Autonomous Orchestration
+**Target:** Q3 2027
+**Codename:** Autonomous Orchestration
+
+**Key Deliverables:**
+- Fully autonomous multi-agent workflows with self-healing DAGs
+- Predictive governance with anomaly detection and auto-policy tuning
+- Edge-native execution with CRDT-based state synchronization
+- AI-native lifecycle hooks and self-modifying workflows
+- MCP tools: `alp_autonomy_run`, `alp_autonomy_heal`, `alp_autonomy_predict`
+
+**Packages Affected:**
+- `@autonomous-lifecycle-protocol-alp/cli` — new `alp autonomy` command group
+- `@autonomous-lifecycle-protocol-alp/parser` — `AutonomyController`, `SelfHealingEngine`, `EdgeRuntime`
+- `@autonomous-lifecycle-protocol-alp/sdk` — autonomy API re-exports
+- `@autonomous-lifecycle-protocol-alp/mcp-server` — new autonomy tools
+
+---
+
 ## Versioning Policy
 
 All versions follow Semantic Versioning (MAJOR.MINOR.PATCH):

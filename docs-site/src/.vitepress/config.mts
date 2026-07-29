@@ -49,7 +49,7 @@ export default defineConfig({
         ]
       },
       {
-        text: 'Ecosystem & Execution (V8)',
+        text: 'Ecosystem & Execution',
         items: [
           { text: 'Execution Engine (alp run)', link: '/execution-engine' },
           { text: 'CLI Verification & Tools', link: '/cli-tools' },

@@ -394,10 +394,10 @@ Released versions are tracked in the [versioning spec](/spec/10-versioning.md). 
 |---|---|---|
 | V8 — The Collaboration Era | 38.0.0–38.x | Event mesh, swarm marketplace, macro expansion, collaboration/negotiation/reputation, memory mesh |
 | V9 — Native Desktop | 44.0.0 | SHAM IDE cross-platform release, native ALP integration, Monaco editor, agent manager, auto-updater, Pro/Enterprise licensing |
-| Post-10 forward look | 10.x–12.x | Grammar refinements, distributed enforcement optimizations, auto-negotiation, memory-mesh federation, next-era specification candidate |
+| V10 — The Intelligence Era | 45.0.0+ | Autonomous orchestration, self-healing workflows, predictive governance, edge-native execution |
 
 ### What’s Next
-- **SHAM IDE** (V9, 44.0.0) — cross-platform desktop application for Mac, Windows, and Linux with native ALP integration, Monaco editor, agent manager, auto-updater, and Pro/Enterprise licensing.
-- **Post-10 Forward Look** (10.x–12.x) — grammar refinements, distributed enforcement optimizations, auto-negotiation, memory-mesh federation, and next-era specification candidate.
+- **SHAM IDE** (V9, 44.0.0) — Already released. Cross-platform desktop application for Mac, Windows, and Linux with native ALP integration, Monaco editor, agent manager, auto-updater, and Pro/Enterprise licensing.
+- **V10 — The Intelligence Era** (45.0.0+) — Autonomous multi-agent orchestration with self-healing DAGs, predictive governance, edge-native execution, and AI-native lifecycle management.
 
 
