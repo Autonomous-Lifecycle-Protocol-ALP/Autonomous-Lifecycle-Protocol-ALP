@@ -157,6 +157,9 @@ alp verify task-auth
 | [`@autonomous-lifecycle-protocol-alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `45.0.0` |
 | [`@autonomous-lifecycle-protocol-alp/sdk`](sdk/) | Official TypeScript SDK | `45.0.0` |
 | [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `45.0.0` |
+| [`alp-go`](sdk/go/) | Official Go SDK | `0.45.0` |
+| [`alp-rs`](sdk/rust/) | Official Rust SDK | `0.45.0` |
+| [`alp-java`](sdk/java/) | Official Java SDK | `45.0.0` |
 | [`docs-site`](docs-site/) | Official VitePress documentation site | `45.0.0` |
 
 ---

@@ -30,6 +30,7 @@ Integrations should be aware of the modern ALP surface so agents operate with fu
 - **`@contract`** — least-privilege runtime boundaries enforced at handoff points (`ContractEngine.check`).
 - **`@vault`** — encrypted secrets (X25519 envelope + AES-256-GCM); CI should inject secrets via `alp vault get` rather than committing them.
 - **MCP Server** — 31 tools exposed to Claude Desktop, Cursor, Windsurf, and any MCP client (see `mcp-server/README.md`).
+- **Multi-Language SDKs** — Official TypeScript (`@autonomous-lifecycle-protocol-alp/sdk`), Python (`alp-sdk`), Go (`alp-go`), Rust (`alp-rs`), and Java (`alp-java`) SDKs with core parsing, graph, and workspace APIs. See `sdk/README.md`.
 - **Registry & signing** — publish/install with `alp registry`, per-namespace bearer tokens, and Ed25519 package signatures (`alp keys generate`, `alp keys trust add`).
 - **Autonomous Orchestration** — `alp autonomy` command group with `run`, `heal`, `predict`, `observe`, `mutate`, and `decisions` subcommands. Self-healing DAGs with auto-patching and adaptive runtime tuning.
 - **Governance** — `PolicyBallot`, `GovernanceEngine`, and quorum-based policy voting.

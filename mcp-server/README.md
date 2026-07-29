@@ -83,7 +83,20 @@ policies are scoped correctly.
 
 In addition, the server exposes the workspace `.alp` files as MCP **resources** (`file://` URIs) so a client can read raw object files directly.
 
+## SDKs
+
+The ALP toolchain includes official SDKs for multiple languages:
+
+- **TypeScript**: `@autonomous-lifecycle-protocol-alp/sdk`
+- **Python**: `alp-sdk`
+- **Go**: `alp-go`
+- **Rust**: `alp-rs`
+- **Java**: `alp-java`
+
+All SDKs expose core parsing, graph, and workspace APIs. See `sdk/README.md` for installation instructions.
+
 ## Usage with Claude Desktop
+
 
 Add the following to your `claude_desktop_config.json`:
 
