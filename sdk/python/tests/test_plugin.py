@@ -138,7 +138,7 @@ class TestPluginResolver(unittest.TestCase):
             self._read("project.alp"), root,
             {"registry_base": "https://reg.test", "transport": transport},
         )
-        self.assertEqual(hits["url"], "https://reg.test/plugins/alp/scrum/1.0.0/plugin.alp")
+        self.assertEqual(hits["url"], "https://reg.test/plugins/autonomous-lifecycle-protocol-alp/scrum/1.0.0/plugin.alp")
         self.assertTrue(resolver.is_custom_type("epic"))
 
     def test_integrity_verification(self):

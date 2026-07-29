@@ -145,7 +145,7 @@ describe('PluginResolver remote imports (v6.5.0)', () => {
         },
       } as any
     );
-    expect(hitUrl).toBe('https://reg.test/plugins/alp/scrum/1.0.0/plugin.alp');
+    expect(hitUrl).toBe('https://reg.test/plugins/autonomous-lifecycle-protocol-alp/scrum/1.0.0/plugin.alp');
     expect(objects.some((o) => o._type === 'epic')).toBe(true);
   });
 });
