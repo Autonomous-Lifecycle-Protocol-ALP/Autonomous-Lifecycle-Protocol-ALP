@@ -10,6 +10,8 @@ import { uninstallCommand } from './commands/uninstall';
 import { publishCommand } from './commands/publish';
 import { exportCommand } from './commands/export';
 import { lintCommand } from './commands/lint';
+import { testCommand } from './commands/test';
+import { formatCommand } from './commands/format';
 import { verifyCommand } from './commands/verify';
 import { doctorCommand } from './commands/doctor';
 import { upgradeCommand } from './commands/upgrade';
@@ -69,7 +71,7 @@ const program = new Command();
 program
   .name('alp')
   .description('Autonomous Lifecycle Protocol (ALP) CLI')
-  .version('41.0.0');
+  .version('42.0.0');
 
 program
   .command('init')
@@ -86,6 +88,19 @@ program
   .command('lint')
   .description('Lint the ALP workspace for style conventions and best practices')
   .action(lintCommand);
+
+program
+  .command('test')
+  .description('Run ALP tests with pass/fail reporting and optional coverage')
+  .option('--coverage', 'Show test coverage report')
+  .option('--file <path>', 'Run tests from a specific file')
+  .action(testCommand);
+
+program
+  .command('format')
+  .description('Format .alp files with consistent indentation and style')
+  .option('--check', 'Check formatting without writing changes')
+  .action(formatCommand);
 
 program
   .command('verify')

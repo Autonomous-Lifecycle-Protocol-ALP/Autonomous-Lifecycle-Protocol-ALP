@@ -1,6 +1,6 @@
 {
   "name": "@autonomous-lifecycle-protocol-alp/sdk",
-  "version": "41.0.0",
+  "version": "42.0.0",
   "description": "Official TypeScript SDK for the Autonomous Lifecycle Protocol",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -30,6 +30,3 @@
   ],
   "license": "MIT"
 }
-
-
-

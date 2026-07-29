@@ -1,6 +1,6 @@
 """ALP Python SDK"""
 
-__version__ = "40.0.0"
+__version__ = "42.0.0"
 
 from .models import AlpObject
 from .error import AlpError, SyntaxError, IndentationError, ValidationError, DirectiveError
@@ -231,6 +231,22 @@ from .memory_mesh import (
     MemoryNode,
     MemoryQueryResult,
     MemoryMeshStats,
+)
+from .test_runner import (
+    TestRunner,
+    TestCase,
+    TestSuiteResult,
+    CoverageReport,
+)
+from .linter import (
+    Linter,
+    LintRule,
+    LintDiagnostic,
+)
+from .formatter import (
+    AlpFormatter,
+    FormatOptions,
+    FormatResult,
 )
 
 __all__ = [
@@ -463,5 +479,15 @@ __all__ = [
     "EventMeshConfig",
     "SwarmMarketplaceEngine",
     "SkillListing",
+    "TestRunner",
+    "TestCase",
+    "TestSuiteResult",
+    "CoverageReport",
+    "Linter",
+    "LintRule",
+    "LintDiagnostic",
+    "AlpFormatter",
+    "FormatOptions",
+    "FormatResult",
 ]
 

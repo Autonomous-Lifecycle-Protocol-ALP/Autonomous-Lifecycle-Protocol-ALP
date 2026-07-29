@@ -1094,4 +1094,43 @@ alp git --commit "feat: add auth module"
 | `--diff` | Show git diff summary |
 | `--commit <message>` | Stage all changes and commit with message |
 
+## Test Runner (`alp test`)
+
+*New in v42.0.0 (IDE Quality).* Built-in test runner with pass/fail reporting and optional coverage.
+
+```bash
+# Run all tests in workspace
+alp test
+
+# Run with coverage report
+alp test --coverage
+
+# Run tests from a specific file
+alp test --file tests/my-test.alp
+```
+
+| Flag | Description |
+| :--- | :--- |
+| `--coverage` | Include test coverage report |
+| `--file <path>` | Run tests from a specific file |
+
+## Code Formatter (`alp format`)
+
+*New in v42.0.0 (IDE Quality).* Format `.alp` files with consistent indentation and style.
+
+```bash
+# Format all .alp files in workspace
+alp format
+
+# Check formatting without writing changes
+alp format --check
+
+# Format a specific file
+alp format --file src/project.alp
+```
+
+| Flag | Description |
+| :--- | :--- |
+| `--check` | Check formatting without writing changes |
+| `--file <path>` | Format a specific file |
 

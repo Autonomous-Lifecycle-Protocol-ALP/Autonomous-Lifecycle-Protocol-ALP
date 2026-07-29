@@ -63,6 +63,9 @@ export * from './collaboration';
 export * from './memory-mesh';
 export * from './settings';
 export * from './snippet';
+export * from './test-runner';
+export * from './linter';
+export * from './formatter';
 
 export { AlpObject, AlpReader };
 

@@ -129,6 +129,11 @@ export {
 export { SettingsManager, WorkspaceSettings } from '@autonomous-lifecycle-protocol-alp/parser';
 export { SnippetManager, Snippet } from '@autonomous-lifecycle-protocol-alp/parser';
 
+// v42.0.0 IDE Quality surface
+export { TestRunner, TestCase, TestSuiteResult, CoverageReport } from '@autonomous-lifecycle-protocol-alp/parser';
+export { Linter, LintRule, LintDiagnostic } from '@autonomous-lifecycle-protocol-alp/parser';
+export { AlpFormatter, FormatOptions } from '@autonomous-lifecycle-protocol-alp/parser';
+
 // v41.0.0 policy surface
 export {
   PolicyEngine,

@@ -1,6 +1,6 @@
 {
   "name": "@autonomous-lifecycle-protocol-alp/cli",
-  "version": "41.0.0",
+  "version": "42.0.0",
   "description": "Command Line Interface for ALP",
   "main": "dist/index.js",
   "bin": {
@@ -28,6 +28,3 @@
     "typescript": "^5.2.2"
   }
 }
-
-
-

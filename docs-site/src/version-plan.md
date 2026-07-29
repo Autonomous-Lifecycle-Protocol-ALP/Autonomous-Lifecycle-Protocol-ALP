@@ -1,51 +1,30 @@
 # ALP Version Plan
 
-**Current Release:** v41.0.0 — IDE Productivity
+**Current Release:** v42.0.0 — IDE Quality
 **Date:** 2026-07-29
 
 ---
 
 ## Next Versions
 
-### v41.0.0 — IDE Productivity
-**Target:** Q3 2026
-**Codename:** IDE Productivity
-
-**Key Deliverables:**
-- Native settings panel with theme/language/agent configuration
-- Command palette (Ctrl+Shift+P) for rapid command dispatch
-- Global workspace search with regex and file-type filters
-- Built-in git status, diff, and commit panel
-- Snippet manager with ALP block templates
-- Customizable keyboard shortcuts
-- Workspace trust and file exclusion rules
-- Policy engine with type definitions, agent action kind, and federation support
-
-**Packages Affected:**
-- `@autonomous-lifecycle-protocol-alp/cli` — new `alp settings`, `alp search`, `alp git` commands
-- `@autonomous-lifecycle-protocol-alp/parser` — settings schema, snippet schema
-- `@autonomous-lifecycle-protocol-alp/sdk` — settings API, search API, policy API
-- `@autonomous-lifecycle-protocol-alp/mcp-server` — new tools for settings and search
-
----
-
 ### v42.0.0 — IDE Quality
 **Target:** Q4 2026
 **Codename:** IDE Quality
 
 **Key Deliverables:**
-- Visual debugger with breakpoint management and step-through execution
 - Built-in test runner with pass/fail UI and coverage reporting
-- Integrated linter and formatter for `.alp` specs
-- Code actions and quick-fix lightbulb menu
-- Dependency graph viewer for `@contract` and `@macro` relationships
-- Schema validation badges in editor gutter
+- Integrated linter with extensible rule engine for `.alp` specs
+- Code formatter for consistent `.alp` file indentation and style
+- Enhanced `alp lint` with rule-based diagnostics
+- New `alp test` command with coverage reporting
+- New `alp format` command for workspace formatting
+- MCP tools: `alp_test`, `alp_lint`, `alp_format`
 
 **Packages Affected:**
-- `@autonomous-lifecycle-protocol-alp/cli` — new `alp test`, `alp lint`, `alp format` commands
-- `@autonomous-lifecycle-protocol-alp/parser` — test runner integration, lint rules engine
+- `@autonomous-lifecycle-protocol-alp/cli` — new `alp test`, `alp format`, enhanced `alp lint` commands
+- `@autonomous-lifecycle-protocol-alp/parser` — test runner, linter, formatter modules
 - `@autonomous-lifecycle-protocol-alp/sdk` — test runner API, lint API, formatter API
-- `@autonomous-lifecycle-protocol-alp/mcp-server` — new tools for test runner and linter
+- `@autonomous-lifecycle-protocol-alp/mcp-server` — new tools for test runner, linter, and formatter
 
 ---
 

@@ -1,6 +1,6 @@
 {
   "name": "@autonomous-lifecycle-protocol-alp/parser",
-  "version": "41.0.0",
+  "version": "42.0.0",
   "description": "Parser for the Autonomous Lifecycle Protocol (ALP)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -24,6 +24,3 @@
     "typescript": "^5.2.2"
   }
 }
-
-
-

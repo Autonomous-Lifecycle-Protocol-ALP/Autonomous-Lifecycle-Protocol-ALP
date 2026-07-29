@@ -1,6 +1,6 @@
 {
   "name": "alp-docs",
-  "version": "41.0.0",
+  "version": "42.0.0",
   "description": "Documentation site for ALP",
   "scripts": {
     "docs:dev": "vitepress dev src",
@@ -12,4 +12,3 @@
     "vitepress": "^1.2.2"
   }
 }
-
