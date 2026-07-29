@@ -1,4 +1,4 @@
-# 🚀 ALP Strategic Product & Architecture Roadmap (v17.0.0 – v43.0.0)
+# 🚀 ALP Strategic Product & Architecture Roadmap (v17.0.0 – v44.0.0)
 
 This strategic roadmap outlines the evolution of the **Autonomous Lifecycle Protocol (ALP)** across its major release cycles, transforming ALP from a repo-native orchestration standard into a global, sovereign, zero-trust autonomous software engineering ecosystem.
 
