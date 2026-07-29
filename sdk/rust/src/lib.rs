@@ -258,3 +258,13 @@ impl Default for AlpWorkspace {
         Self::new()
     }
 }
+
+pub mod policy;
+pub mod vault;
+pub mod event_mesh;
+pub mod autonomy;
+pub mod autonomy_controller;
+pub mod modules;
+pub mod identity;
+pub mod governance;
+pub mod telemetry;

@@ -1,8 +1,6 @@
 package alpgo
 
 import (
-	"fmt"
-	"path/filepath"
 	"sort"
 )
 
