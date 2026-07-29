@@ -61,6 +61,12 @@ Once connected via MCP, the server exposes the following tools to the LLM agent:
 - **`alp_memory_query`**: Query the memory mesh for relevant memories by keyword, agent, or tag.
 - **`alp_memory_stats`**: Return memory mesh statistics (node count, decay scores, top tags).
 
+**IDE Intelligence (v44.0.0)**
+- **`alp_intelligence_suggest`**: Get AI-powered suggestions for next ALP objects based on workspace gaps.
+- **`alp_intelligence_diagnose`**: Diagnose errors with likely causes and fix suggestions.
+- **`alp_intelligence_predict`**: Predict task outcomes based on dependency state and risk factors.
+- **`alp_intelligence_review`**: Automated code review findings for `.alp` specs.
+
 ### Policy governance
 
 Mutating tools (`alp_update_status`, `alp_delegate`, `alp_decompose`) are

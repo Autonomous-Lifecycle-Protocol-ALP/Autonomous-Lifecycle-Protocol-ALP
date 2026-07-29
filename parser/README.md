@@ -21,10 +21,10 @@ The reference parser implementation for the `.alp` file format.
 ## Status
 
 ✅ **Stable** — reference parser for the ALP `.alp` format, part of the
-current v38.0.0 toolchain. Supports the full spectrum of ALP eras from V2
-(Execution Engine) through V38 (Memory Mesh Engine), including governance
+current v44.0.0 toolchain. Supports the full spectrum of ALP eras from V2
+(Execution Engine) through V44 (IDE Intelligence), including governance
 objects (`@policy`, `@contract`, `@vault`, `@timeline`), distributed runtime
 (`@crdt_sync`, `@p2p`), formal verification (`@formal`), event sourcing
 (`@event_store`), visualization (`@visualize`), and the latest surfaces
 (`@memory_mesh`, `@collaboration`, `@macro`, `@swarm_marketplace`,
-`@event_mesh`).
+`@event_mesh`, `@intelligence`).
