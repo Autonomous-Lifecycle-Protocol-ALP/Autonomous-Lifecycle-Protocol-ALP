@@ -159,6 +159,16 @@ export {
   ReviewFinding,
 } from '@autonomous-lifecycle-protocol-alp/parser';
 
+// v45.0.0 Autonomous Orchestration surface
+export {
+  AutonomyController,
+  WorkflowMutator,
+  AdaptiveEngine,
+  EditProposal,
+  EnvironmentSignal,
+  SwarmRun,
+} from '@autonomous-lifecycle-protocol-alp/parser';
+
 // v41.0.0 policy surface
 export {
   PolicyEngine,

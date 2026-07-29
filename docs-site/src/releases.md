@@ -14,6 +14,15 @@ ALP versioning tracks two independent axes:
 
 ## Toolchain
 
+### 45.0.0 — Autonomous Orchestration
+- **Autonomy Controller**: Fully autonomous multi-agent workflows with self-healing DAGs and self-modifying workflows.
+- **Workflow Mutator**: Propose, apply, and rollback edits to running workflows with policy guardrails.
+- **Adaptive Engine**: Real-time environment signal observation with auto-tuning of retry, circuit breaker, and pool parameters.
+- **Self-Healing**: Automatic diagnosis and patching of common ALP specification errors.
+- **CLI**: `alp autonomy` command group with `run`, `heal`, `predict`, `observe`, `mutate`, and `decisions` subcommands.
+- **MCP Tools**: `alp_autonomy_run`, `alp_autonomy_heal`, `alp_autonomy_predict`.
+- **SDKs**: `AutonomyController`, `WorkflowMutator`, `AdaptiveEngine`, `EditProposal`, `SwarmRun` in both TypeScript and Python SDKs.
+
 ### 44.0.0 — IDE Intelligence
 - **Intelligence Engine**: AI-powered suggestions, diagnostics, predictions, and code review findings for `.alp` specs.
 - **CLI**: `alp intelligence` command group with `suggest`, `diagnose`, `predict`, and `review` subcommands.

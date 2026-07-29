@@ -64,6 +64,7 @@ import { registerMacroCommand } from './commands/macro';
 import { registerCollabCommand } from './commands/collab';
 import { registerMemoryMeshCommand } from './commands/memory-mesh';
 import { intelligenceCommand } from './commands/intelligence';
+import { autonomyCommand } from './commands/autonomy';
 import { settingsCommand } from './commands/settings';
 import { searchCommand } from './commands/search';
 import { gitCommand } from './commands/git';
@@ -398,12 +399,22 @@ registerCollabCommand(program);
 registerMemoryMeshCommand(program);
 
 program
-  .command('intelligence')
-  .description('IDE Intelligence: suggestions, diagnostics, predictions, review (v44.0.0)')
-  .argument('<subcommand>', 'suggest | diagnose | predict | review')
-  .option('--error <text>', 'Error text to diagnose')
-  .option('--task-id <id>', 'Task ID for prediction')
-  .action((subcommand, opts) => intelligenceCommand(subcommand, opts));
+   .command('intelligence')
+   .description('IDE Intelligence: suggestions, diagnostics, predictions, review (v44.0.0)')
+   .argument('<subcommand>', 'suggest | diagnose | predict | review')
+   .option('--error <text>', 'Error text to diagnose')
+   .option('--task-id <id>', 'Task ID for prediction')
+   .action((subcommand, opts) => intelligenceCommand(subcommand, opts));
+
+program
+   .command('autonomy')
+   .description('Autonomous Orchestration: run, heal, predict, observe, mutate (v45.0.0)')
+   .argument('<subcommand>', 'run | heal | predict | observe | mutate | decisions')
+   .option('--workflow <id>', 'Workflow ID for run/predict/mutate')
+   .option('--swarm <id>', 'Swarm ID for decisions')
+   .option('--signal <type>', 'Signal type for observe (latency, error_rate, throughput)')
+   .option('--cwd <dir>', 'Working directory')
+   .action((subcommand, opts) => autonomyCommand(subcommand, opts));
 
 program.parse(process.argv);
 

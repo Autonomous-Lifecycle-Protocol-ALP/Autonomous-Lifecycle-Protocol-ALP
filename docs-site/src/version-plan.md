@@ -68,7 +68,7 @@
 ---
 
 ### v45.0.0 — Autonomous Orchestration
-**Target:** Q3 2027
+**Released:** 2026-07-29
 **Codename:** Autonomous Orchestration
 
 **Key Deliverables:**

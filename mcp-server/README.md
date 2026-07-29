@@ -67,6 +67,11 @@ Once connected via MCP, the server exposes the following tools to the LLM agent:
 - **`alp_intelligence_predict`**: Predict task outcomes based on dependency state and risk factors.
 - **`alp_intelligence_review`**: Automated code review findings for `.alp` specs.
 
+**Autonomous Orchestration (v45.0.0)**
+- **`alp_autonomy_run`**: Start an autonomous swarm run for a workflow.
+- **`alp_autonomy_heal`**: Run self-healing diagnostics and auto-patch ALP workspace.
+- **`alp_autonomy_predict`**: Predict outcome of a workflow based on current state.
+
 ### Policy governance
 
 Mutating tools (`alp_update_status`, `alp_delegate`, `alp_decompose`) are

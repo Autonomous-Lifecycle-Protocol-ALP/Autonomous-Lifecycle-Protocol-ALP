@@ -1181,3 +1181,36 @@ alp intelligence review
 | `predict <id>` | Predict task outcome based on dependency state and risk factors |
 | `review` | Automated code review findings for `.alp` specs |
 
+## Autonomous Orchestration (`alp autonomy`)
+
+*New in v45.0.0 (Autonomous Orchestration).* Self-healing workflows, adaptive runtime tuning, and autonomous swarm execution.
+
+```bash
+# Start an autonomous swarm run for a workflow
+alp autonomy run --workflow wf-1
+
+# Run self-healing diagnostics across the workspace
+alp autonomy heal
+
+# Predict outcome for a workflow
+alp autonomy predict --workflow wf-1
+
+# Observe an environment signal and tune runtime
+alp autonomy observe --signal latency
+
+# Propose a mutation to a running workflow
+alp autonomy mutate --workflow wf-1
+
+# List all autonomy decisions
+alp autonomy decisions
+```
+
+| Subcommand | Description |
+| :--- | :--- |
+| `run --workflow <id>` | Start an autonomous swarm run for a workflow |
+| `heal` | Run self-healing diagnostics and auto-patch ALP workspace |
+| `predict --workflow <id>` | Predict workflow outcome based on current state |
+| `observe --signal <type>` | Observe an environment signal and tune runtime parameters |
+| `mutate --workflow <id>` | Propose a mutation to a running workflow |
+| `decisions` | List all autonomy decisions and their outcomes |
+
