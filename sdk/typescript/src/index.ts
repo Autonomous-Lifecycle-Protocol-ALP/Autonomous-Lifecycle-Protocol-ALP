@@ -125,6 +125,10 @@ export {
   MemoryMeshStats,
 };
 
+// v41.0.0 IDE Productivity surface
+export { SettingsManager, WorkspaceSettings } from '@autonomous-lifecycle-protocol-alp/parser';
+export { SnippetManager, Snippet } from '@autonomous-lifecycle-protocol-alp/parser';
+
 // v41.0.0 policy surface
 export {
   PolicyEngine,

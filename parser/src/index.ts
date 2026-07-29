@@ -61,6 +61,8 @@ export * from './swarm-marketplace';
 export * from './macro';
 export * from './collaboration';
 export * from './memory-mesh';
+export * from './settings';
+export * from './snippet';
 
 export { AlpObject, AlpReader };
 
