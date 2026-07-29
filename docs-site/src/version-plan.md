@@ -1,6 +1,6 @@
 # ALP Version Plan
 
-**Current Release:** v42.0.0 — IDE Quality
+**Current Release:** v43.0.0 — IDE Collaboration
 **Date:** 2026-07-29
 
 ---

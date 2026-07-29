@@ -1,6 +1,6 @@
 """ALP Python SDK"""
 
-__version__ = "42.0.0"
+__version__ = "43.0.0"
 
 from .models import AlpObject
 from .error import AlpError, SyntaxError, IndentationError, ValidationError, DirectiveError
@@ -225,6 +225,12 @@ from .collaboration import (
     CollabOperation,
     PresenceInfo,
     CollabBranch,
+    TeamPermission,
+    Comment,
+    ReviewThread,
+    ActivityEvent,
+    LiveShareSession,
+    AuditEvent,
 )
 from .memory_mesh import (
     MemoryMeshEngine,
@@ -467,6 +473,12 @@ __all__ = [
     "CollabOperation",
     "PresenceInfo",
     "CollabBranch",
+    "TeamPermission",
+    "Comment",
+    "ReviewThread",
+    "ActivityEvent",
+    "LiveShareSession",
+    "AuditEvent",
     "MemoryMeshEngine",
     "MemoryNode",
     "MemoryQueryResult",
