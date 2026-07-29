@@ -192,7 +192,7 @@ npx vitest run
 
 ## Roadmap
 
-See [ROADMAP_V17_V43.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V43.md) for the full ALP roadmap including v44.0.0 "IDE Intelligence" features.
+See [ROADMAP_V17_V43.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V43.md) for the full ALP roadmap including v45.0.0 "Autonomous Orchestration" features.
 
 ## Contributing
 

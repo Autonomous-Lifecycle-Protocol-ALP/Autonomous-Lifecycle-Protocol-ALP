@@ -211,7 +211,7 @@ function audit(
 
 // ─── MCP Server ───────────────────────────────────────────────────────────
 const server = new Server(
-  { name: 'alp-mcp-server', version: '44.0.0' },
+  { name: 'alp-mcp-server', version: '45.0.0' },
   { capabilities: { tools: {}, resources: { subscribe: true }, prompts: {} } }
 );
 
@@ -847,7 +847,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     },
     {
       name: 'alp_intelligence_suggest',
-      description: 'Get AI-powered suggestions for next ALP objects to create (v44.0.0).',
+      description: 'Get AI-powered suggestions for next ALP objects to create (v45.0.0).',
       inputSchema: {
         type: 'object' as const,
         properties: {
@@ -857,7 +857,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     },
     {
       name: 'alp_intelligence_diagnose',
-      description: 'Diagnose an error with likely cause and fix suggestions (v44.0.0).',
+      description: 'Diagnose an error with likely cause and fix suggestions (v45.0.0).',
       inputSchema: {
         type: 'object' as const,
         properties: {
@@ -869,7 +869,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     },
     {
       name: 'alp_intelligence_predict',
-      description: 'Predict the outcome of a task based on workspace state (v44.0.0).',
+      description: 'Predict the outcome of a task based on workspace state (v45.0.0).',
       inputSchema: {
         type: 'object' as const,
         properties: {
@@ -881,7 +881,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     },
     {
 name: 'alp_intelligence_review',
-       description: 'Run automated code review on the ALP workspace (v44.0.0).',
+       description: 'Run automated code review on the ALP workspace (v45.0.0).',
        inputSchema: {
          type: 'object' as const,
          properties: {

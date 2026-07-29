@@ -5,7 +5,7 @@ function engineFrom() {
   return new IntelligenceEngine();
 }
 
-describe('IntelligenceEngine (v44.0.0)', () => {
+describe('IntelligenceEngine (v45.0.0)', () => {
   describe('suggestNext', () => {
     it('returns suggestions for an empty workspace', () => {
       const engine = engineFrom();

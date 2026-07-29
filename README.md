@@ -6,7 +6,7 @@
   <br/>
 
    [![Status](https://img.shields.io/badge/status-stable-success.svg)](#)
-    [![Version](https://img.shields.io/badge/version-44.0.0-blue.svg)](#)
+    [![Version](https://img.shields.io/badge/version-45.0.0-blue.svg)](#)
    [![License](https://img.shields.io/badge/license-MIT-green.svg)](#)
    [![Tests](https://img.shields.io/badge/tests-1013%20passed-brightgreen.svg)](#)
    [![Docs](https://img.shields.io/badge/docs-live-green.svg)](https://autonomous-lifecycle-protocol-alp.github.io/Autonomous-Lifecycle-Protocol-ALP/)
@@ -151,13 +151,13 @@ alp verify task-auth
 
 | Package | Purpose | Version |
 | :--- | :--- | :---: |
-| [`@autonomous-lifecycle-protocol-alp/cli`](cli/) | Terminal interface (`run`, `serve`, `marketplace`, `policy`, `vault`, `verify`) | `44.0.0` |
-| [`@autonomous-lifecycle-protocol-alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `44.0.0` |
-| [`@autonomous-lifecycle-protocol-alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `44.0.0` |
-| [`@autonomous-lifecycle-protocol-alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `44.0.0` |
-| [`@autonomous-lifecycle-protocol-alp/sdk`](sdk/) | Official TypeScript SDK | `44.0.0` |
-| [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `44.0.0` |
-| [`docs-site`](docs-site/) | Official VitePress documentation site | `44.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/cli`](cli/) | Terminal interface (`run`, `serve`, `marketplace`, `policy`, `vault`, `verify`) | `45.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `45.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `45.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `45.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/sdk`](sdk/) | Official TypeScript SDK | `45.0.0` |
+| [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `45.0.0` |
+| [`docs-site`](docs-site/) | Official VitePress documentation site | `45.0.0` |
 
 ---
 

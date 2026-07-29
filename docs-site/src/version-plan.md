@@ -1,6 +1,6 @@
 # ALP Version Plan
 
-**Current Release:** v44.0.0 — IDE Intelligence
+**Current Release:** v45.0.0 — Autonomous Orchestration
 **Date:** 2026-07-29
 
 ---
@@ -49,7 +49,7 @@
 ---
 
 ### v44.0.0 — IDE Intelligence
-**Target:** Q2 2027
+**Released:** 2026-07-29
 **Codename:** IDE Intelligence
 
 **Key Deliverables:**

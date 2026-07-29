@@ -30,7 +30,7 @@ Autonomous Lifecycle Protocol.
 | `alp evolve` | Self-evolving protocol proposals (V3) |
 | `alp registry` | Package registry & marketplace (V4); `keys` for signing & trust roots |
 | `alp keys` | Manage package-signing Ed25519 keypairs & trust roots (V4.2.0) |
-| `alp intelligence` | IDE Intelligence: `suggest`, `diagnose`, `predict`, `review` (v44.0.0) |
+| `alp intelligence` | IDE Intelligence: `suggest`, `diagnose`, `predict`, `review` (v45.0.0) |
 | `alp collab` | IDE Collaboration: comments, threads, permissions, live share (v43.0.0) |
 | `alp memory-mesh` | Cross-agent semantic memory sharing (v38.0.0) |
 | `alp event-mesh` | Pub/sub event routing across swarm nodes (v35.0.0) |
@@ -46,8 +46,8 @@ alp policy --path "src/auth/login.ts"
 alp policy --proposal prop-1 --trust maintainer.pub
 alp schedule next                  # show timelines due now (v8.2.0)
 alp vault get db-password --key maintainer.key   # (v10.0.0)
-alp intelligence suggest           # get next-step suggestions (v44.0.0)
-alp intelligence diagnose "cycle"  # diagnose dependency cycles (v44.0.0)
+alp intelligence suggest           # get next-step suggestions (v45.0.0)
+alp intelligence diagnose "cycle"  # diagnose dependency cycles (v45.0.0)
 alp collab share start             # start a live share session (v43.0.0)
 alp memory-mesh query "context"    # query cross-agent memory (v38.0.0)
 ```
@@ -61,7 +61,7 @@ alp memory-mesh query "context"    # query cross-agent memory (v38.0.0)
 
 ## Status
 
-✅ **Stable** — IDE Intelligence Era (V11), toolchain `44.0.0`. The `@autonomous-lifecycle-protocol-alp/cli`
+✅ **Stable** — IDE Intelligence Era (V11), toolchain `45.0.0`. The `@autonomous-lifecycle-protocol-alp/cli`
 package is not yet published to npm; build from source with
 `npm ci && npm run build --workspace @autonomous-lifecycle-protocol-alp/cli` and invoke it via
 `node cli/dist/index.js`.

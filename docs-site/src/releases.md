@@ -10,7 +10,7 @@ ALP versioning tracks two independent axes:
 - **Specification** (`spec/01-overview`) — the protocol grammar. Locked at **2.0.0 (Stable)**; strict semantic-versioning guarantees apply to implementations.
 - **Toolchain** (`@autonomous-lifecycle-protocol-alp/cli`, `@autonomous-lifecycle-protocol-alp/sdk`, docs-site, integrations) — the implementation and packaging, released on its own cadence.
 
-> 🔮 **Looking Ahead**: See [ROADMAP_V17_V43.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V43.md) for the strategic architecture roadmap spanning v17.0.0 (OpenTelemetry) to v44.0.0 (IDE Intelligence).
+> 🔮 **Looking Ahead**: See [ROADMAP_V17_V43.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V43.md) for the strategic architecture roadmap spanning v17.0.0 (OpenTelemetry) to v43.0.0 (IDE Collaboration).
 
 ## Toolchain
 
@@ -23,7 +23,7 @@ ALP versioning tracks two independent axes:
 - **MCP Tools**: `alp_autonomy_run`, `alp_autonomy_heal`, `alp_autonomy_predict`.
 - **SDKs**: `AutonomyController`, `WorkflowMutator`, `AdaptiveEngine`, `EditProposal`, `SwarmRun` in both TypeScript and Python SDKs.
 
-### 44.0.0 — IDE Intelligence
+### 45.0.0 — Autonomous Orchestration
 - **Intelligence Engine**: AI-powered suggestions, diagnostics, predictions, and code review findings for `.alp` specs.
 - **CLI**: `alp intelligence` command group with `suggest`, `diagnose`, `predict`, and `review` subcommands.
 - **MCP Tools**: `alp_intelligence_suggest`, `alp_intelligence_diagnose`, `alp_intelligence_predict`, `alp_intelligence_review`.

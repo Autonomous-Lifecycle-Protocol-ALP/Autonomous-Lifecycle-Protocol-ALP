@@ -150,7 +150,7 @@ export { TestRunner, TestCase, TestSuiteResult, CoverageReport } from '@autonomo
 export { Linter, LintRule, LintDiagnostic } from '@autonomous-lifecycle-protocol-alp/parser';
 export { AlpFormatter, FormatOptions } from '@autonomous-lifecycle-protocol-alp/parser';
 
-// v44.0.0 IDE Intelligence surface
+// v45.0.0 IDE Intelligence surface
 export {
   IntelligenceEngine,
   SmartSuggestion,

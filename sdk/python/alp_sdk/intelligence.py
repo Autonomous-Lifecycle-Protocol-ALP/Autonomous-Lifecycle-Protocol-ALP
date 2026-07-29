@@ -1,4 +1,4 @@
-"""ALP IntelligenceEngine — IDE Intelligence (v44.0.0 — Python SDK parity)."""
+"""ALP IntelligenceEngine — IDE Intelligence (v45.0.0 — Python SDK parity)."""
 
 from __future__ import annotations
 

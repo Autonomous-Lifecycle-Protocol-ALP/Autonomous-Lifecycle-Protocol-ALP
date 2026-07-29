@@ -73,7 +73,7 @@ const program = new Command();
 program
   .name('alp')
   .description('Autonomous Lifecycle Protocol (ALP) CLI')
-  .version('44.0.0');
+  .version('45.0.0');
 
 program
   .command('init')
@@ -400,7 +400,7 @@ registerMemoryMeshCommand(program);
 
 program
    .command('intelligence')
-   .description('IDE Intelligence: suggestions, diagnostics, predictions, review (v44.0.0)')
+   .description('IDE Intelligence: suggestions, diagnostics, predictions, review (v45.0.0)')
    .argument('<subcommand>', 'suggest | diagnose | predict | review')
    .option('--error <text>', 'Error text to diagnose')
    .option('--task-id <id>', 'Task ID for prediction')

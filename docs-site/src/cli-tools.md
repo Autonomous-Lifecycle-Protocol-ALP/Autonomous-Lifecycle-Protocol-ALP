@@ -1158,7 +1158,7 @@ alp collab share list
 
 ## IDE Intelligence (`alp intelligence`)
 
-*New in v44.0.0 (IDE Intelligence).* AI-powered suggestions, diagnostics, predictions, and automated code review for `.alp` specs.
+*New in v45.0.0 (IDE Intelligence).* AI-powered suggestions, diagnostics, predictions, and automated code review for `.alp` specs.
 
 ```bash
 # Get suggestions for next objects to create

@@ -1,4 +1,4 @@
-/** ALP IDE Intelligence (v44.0.0 — IDE Intelligence). */
+/** ALP IDE Intelligence (v45.0.0 — IDE Intelligence). */
 
 export interface SmartSuggestion {
   id: string;
