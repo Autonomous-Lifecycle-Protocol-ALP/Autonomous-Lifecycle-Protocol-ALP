@@ -86,7 +86,7 @@ func (v *VerifiablePresentation) ToDict() map[string]any {
 
 func (v *VerifiablePresentation) Verify(publicKey string) bool {
 	payload := fmt.Sprintf(`{"did":"%s","agent_id":"%s","claims":%v}`, v.DID, v.AgentID, v.Claims)
-	expected := sha256Hex(payload + publicKey)
+	expected := SHA256Hex(payload + publicKey)
 	return v.Signature == expected
 }
 
@@ -283,16 +283,16 @@ func (k *AgentKeyStore) RemoveKey(did string) bool {
 
 func GenerateKeypair() *KeyPair {
 	privateKey := strings.ReplaceAll(time.Now().Format(time.RFC3339Nano)+"-"+randomString(32), ":", "")
-	publicKey := sha256Hex(privateKey)
+	publicKey := SHA256Hex(privateKey)
 	return &KeyPair{PublicKey: publicKey, PrivateKey: privateKey}
 }
 
 func CreateDID(agentID, publicKey string) string {
-	keyHash := sha256Hex(publicKey)[:16]
+	keyHash := SHA256Hex(publicKey)[:16]
 	return "did:alp:" + agentID + ":" + keyHash
 }
 
-func sha256Hex(input string) string {
+func SHA256Hex(input string) string {
 	h := sha256.Sum256([]byte(input))
 	return hex.EncodeToString(h[:])
 }

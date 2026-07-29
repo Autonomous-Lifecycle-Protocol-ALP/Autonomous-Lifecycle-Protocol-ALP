@@ -58,7 +58,7 @@ func (v *Vote) Sign(privateKey string) string {
 	// Simplified signing for Go without external crypto libs beyond stdlib
 	payload := fmt.Sprintf("{\"ballot_id\":\"%s\",\"rationale\":\"%s\",\"timestamp\":\"%s\",\"value\":\"%s\",\"voter_did\":\"%s\"}",
 		v.BallotID, v.Rationale, v.Timestamp, v.Value, v.VoterDid)
-	v.Signature = sha256Hex(payload + privateKey)
+	v.Signature = SHA256Hex(payload + privateKey)
 	return v.Signature
 }
 

@@ -1,24 +1,49 @@
 package com.alp.sdk;
 
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import java.util.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TelemetryEngineTest {
-    public static void main(String[] args) {
-        TelemetryEngine telemetry = new TelemetryEngine();
-        Span span = telemetry.startSpan("test-action", new java.util.HashMap<>());
-        span.getAttributes().put("key", "value");
+    private TelemetryEngine telemetry;
+
+    @BeforeEach
+    public void setUp() {
+        telemetry = new TelemetryEngine();
+    }
+
+    @Test
+    public void testStartAndEndSpan() {
+        Map<String, Object> attrs = new LinkedHashMap<>();
+        attrs.put("key", "value");
+        Span span = telemetry.startSpan("test-action", attrs);
         telemetry.endSpan(span.getSpanId(), "OK", null);
 
         Map<String, Integer> summary = telemetry.getTraceSummary();
-        System.out.println("Summary: " + summary);
+        assertEquals(1, summary.get("totalSpans").intValue());
+        assertEquals(1, summary.get("okCount").intValue());
+    }
 
+    @Test
+    public void testInjectExtractContext() {
+        Map<String, Object> attrs = new LinkedHashMap<>();
+        Span span = telemetry.startSpan("test-action", attrs);
         String traceparent = telemetry.injectContext(span);
-        System.out.println("Traceparent: " + traceparent);
 
         Map<String, String> extracted = telemetry.extractContext(traceparent);
-        System.out.println("Extracted: " + extracted);
+        assertNotNull(extracted);
+        assertEquals(span.getTraceId(), extracted.get("traceId"));
+        assertEquals(span.getSpanId(), extracted.get("parentSpanId"));
+    }
+
+    @Test
+    public void testExportOTLP() {
+        Map<String, Object> attrs = new LinkedHashMap<>();
+        Span span = telemetry.startSpan("test-action", attrs);
+        telemetry.endSpan(span.getSpanId(), "OK", null);
 
         Map<String, Object> otlp = telemetry.exportOTLP();
-        System.out.println("OTLP exported: " + otlp.containsKey("resourceSpans"));
+        assertTrue(otlp.containsKey("resourceSpans"));
     }
 }
