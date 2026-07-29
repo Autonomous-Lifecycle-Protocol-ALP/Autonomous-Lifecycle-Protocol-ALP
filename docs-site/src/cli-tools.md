@@ -1134,3 +1134,50 @@ alp format --file src/project.alp
 | `--check` | Check formatting without writing changes |
 | `--file <path>` | Format a specific file |
 
+## IDE Collaboration (`alp collab`)
+
+*New in v43.0.0 (IDE Collaboration).* Shared workspace sessions with real-time presence, inline comments, code review threads, and live share sessions.
+
+```bash
+# Start a live share session
+alp collab share start --session "design-review"
+
+# Add an inline comment
+alp collab comment add task-123 --text "Consider splitting this into sub-tasks"
+
+# List active sessions
+alp collab share list
+```
+
+| Flag | Description |
+| :--- | :--- |
+| `share start` | Start a new live share session |
+| `share list` | List active collaboration sessions |
+| `comment add` | Add an inline comment to an object |
+| `thread list` | List review threads for an object |
+
+## IDE Intelligence (`alp intelligence`)
+
+*New in v44.0.0 (IDE Intelligence).* AI-powered suggestions, diagnostics, predictions, and automated code review for `.alp` specs.
+
+```bash
+# Get suggestions for next objects to create
+alp intelligence suggest
+
+# Diagnose an error
+alp intelligence diagnose "dependency cycle detected"
+
+# Predict outcome for a task
+alp intelligence predict task-123
+
+# Run automated review
+alp intelligence review
+```
+
+| Subcommand | Description |
+| :--- | :--- |
+| `suggest` | Get AI-powered suggestions for next ALP objects based on workspace gaps |
+| `diagnose <error>` | Diagnose errors with likely causes and fix suggestions |
+| `predict <id>` | Predict task outcome based on dependency state and risk factors |
+| `review` | Automated code review findings for `.alp` specs |
+
