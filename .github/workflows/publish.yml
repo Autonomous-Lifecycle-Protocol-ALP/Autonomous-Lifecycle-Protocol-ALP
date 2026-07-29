@@ -106,3 +106,30 @@ jobs:
           push: true
           tags: ghcr.io/${{ steps.lowercase.outputs.repo }}/mcp-server:${{ github.ref_name }},ghcr.io/${{ steps.lowercase.outputs.repo }}/mcp-server:latest
 
+      - name: Set up JDK
+        if: ${{ secrets.GITHUB_TOKEN != '' }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Publish com.alp:alp-sdk-java to GitHub Packages
+        if: ${{ secrets.GITHUB_TOKEN != '' }}
+        run: mvn deploy -B -s .github/maven-settings.xml
+        working-directory: sdk/java
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Verify Go module
+        if: ${{ secrets.GITHUB_TOKEN != '' }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache: true
+
+      - name: Run Go tests
+        if: ${{ secrets.GITHUB_TOKEN != '' }}
+        run: go test -v ./...
+        working-directory: sdk/go
+
