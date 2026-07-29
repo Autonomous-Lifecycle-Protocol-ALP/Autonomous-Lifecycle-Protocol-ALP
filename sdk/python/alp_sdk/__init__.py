@@ -23,7 +23,7 @@ from .policy import (
     TimeWindow,
     ApprovalRule,
     PolicyProposal,
-    FederatedTrustRoot,
+    FederatedTrustRoot as PolicyFederatedTrustRoot,
     glob_to_regexp,
     normalize_objects,
     parse_inline_object,
@@ -165,10 +165,6 @@ from .governance import (
     Vote,
     VoteValue,
 )
-from .consensus_vote import ConsensusVoteEngine, ConsensusVoteConfig
-from .code_transform import CodeTransformEngine, CodeTransformConfig
-from .event_mesh import EventMeshEngine, EventMeshConfig
-from .swarm_marketplace import SwarmMarketplaceEngine, SkillListing
 from .domain_trust import (
     DomainTrustAnchor,
     DomainTrustManager,
@@ -307,7 +303,7 @@ __all__ = [
     "TimeWindow",
     "ApprovalRule",
     "PolicyProposal",
-    "FederatedTrustRoot",
+    "PolicyFederatedTrustRoot",
     "glob_to_regexp",
     "normalize_objects",
     "parse_inline_object",
@@ -385,7 +381,6 @@ __all__ = [
     "PolicyFederation",
     "PolicySource",
     "FederatedDecision",
-    "FederatedTrustRoot",
     "TimelineEngine",
     "TimelineResult",
     "ContractEngine",
