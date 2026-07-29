@@ -1,6 +1,6 @@
 # ALP Language Server
 
-VS Code extension for the Autonomous Lifecycle Protocol (ALP) v40.0.0.
+VS Code extension for the Autonomous Lifecycle Protocol (ALP) v44.0.0.
 
 Provides IntelliSense, Go to Definition, Hover, Diagnostics, Semantic Highlighting, and Rename Refactoring for `.alp` files.
 
@@ -9,7 +9,7 @@ Provides IntelliSense, Go to Definition, Hover, Diagnostics, Semantic Highlighti
 ```bash
 npm install
 npm run compile
-code --install-extension alp-vscode-40.0.0.vsix
+code --install-extension alp-vscode-44.0.0.vsix
 ```
 
 ## Features

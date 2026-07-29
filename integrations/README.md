@@ -21,7 +21,7 @@ The ALP repo ships an active CI workflow at `.github/workflows/ci.yml` (TypeScri
 
 > **CLI:** the drop-in workflows build `@autonomous-lifecycle-protocol-alp/cli` from source (`npm ci && npm run build --workspace @autonomous-lifecycle-protocol-alp/cli`) and invoke it via `node cli/dist/index.js`. This matches the `validate` job in the repo's own `.github/workflows/ci.yml`.
 
-## Current Toolchain Surface (v40.0.0)
+## Current Toolchain Surface (v44.0.0)
 
 Integrations should be aware of the modern ALP surface so agents operate with full protocol coverage:
 
