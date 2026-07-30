@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Span {
     pub id: String,
     pub trace_id: String,
@@ -58,11 +59,11 @@ impl TelemetryEngine {
     pub fn start_span(&mut self, action: impl Into<String>, opts: Option<HashMap<String, serde_json::Value>>) -> Span {
         let action = action.into();
         let mut opts = opts.unwrap_or_default();
-        let trace_id = opts.remove("traceId").and_then(|v| v.as_str()).map(|s| s.to_string()).unwrap_or_else(|| self.generate_trace_id());
-        let span_id = opts.remove("spanId").and_then(|v| v.as_str()).map(|s| s.to_string()).unwrap_or_else(|| self.generate_span_id());
-        let parent_span_id = opts.remove("parentSpanId").and_then(|v| v.as_str()).map(|s| s.to_string());
-        let agent = opts.remove("agent").and_then(|v| v.as_str()).map(|s| s.to_string());
-        let attributes = opts.remove("attributes").and_then(|v| v.as_object().map(|o| o.into_iter().map(|(k, v)| (k, v.clone())).collect())).unwrap_or_default();
+        let trace_id = opts.remove("traceId").and_then(|v| v.as_str().map(|s| s.to_string())).unwrap_or_else(|| self.generate_trace_id());
+        let span_id = opts.remove("spanId").and_then(|v| v.as_str().map(|s| s.to_string())).unwrap_or_else(|| self.generate_span_id());
+        let parent_span_id = opts.remove("parentSpanId").and_then(|v| v.as_str().map(|s| s.to_string()));
+        let agent = opts.remove("agent").and_then(|v| v.as_str().map(|s| s.to_string()));
+        let attributes = opts.remove("attributes").and_then(|v| v.as_object().map(|o| o.into_iter().map(|(k, v)| (k.clone(), v.clone())).collect())).unwrap_or_default();
 
         let span = Span::new(
             format!("span-{}", span_id),

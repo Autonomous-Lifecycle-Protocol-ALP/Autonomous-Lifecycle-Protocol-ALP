@@ -1,7 +1,9 @@
 use alp_sdk::identity::{generate_keypair, create_did, TrustRegistry, VerifiablePresentation};
 use alp_sdk::governance::GovernanceEngine;
-use alp_sdk::telemetry::TelemetryEngine;
-use alp_sdk::{AlpObject, AlpParser, AlpWorkspace, PolicyEngine, PolicyQuery, Vault};
+use alp_sdk::telemetry::{TelemetryEngine, Span};
+use alp_sdk::{AlpObject, AlpWorkspace};
+use alp_sdk::policy::{PolicyEngine, PolicyQuery};
+use alp_sdk::vault::Vault;
 use std::collections::HashMap;
 
 #[test]
@@ -29,16 +31,17 @@ fn test_verifiable_presentation_verify() {
     let did = create_did("agent-1", &kp.public_key);
     let mut claims = HashMap::new();
     claims.insert("role".into(), serde_json::Value::String("admin".into()));
-    let vp = VerifiablePresentation::new(did.clone(), "agent-1".into(), claims, kp.private_key.clone());
-    assert!(vp.verify(&kp.public_key));
+    let mut vp = VerifiablePresentation::new(did.clone(), "agent-1", claims, "");
+    vp.sign(&kp.private_key);
+    assert!(vp.verify(&kp.private_key));
 }
 
 #[test]
 fn test_governance_engine_propose_and_vote() {
     let dir = std::env::temp_dir().join("alp-test-gov");
     let mut engine = GovernanceEngine::new(dir.to_str().unwrap(), 2);
-    engine.qualify("did:alp:agent-1".into());
-    engine.qualify("did:alp:agent-2".into());
+    engine.qualify("did:alp:agent-1");
+    engine.qualify("did:alp:agent-2");
 
     let ballot = engine.propose("policy-1", "Test policy", Some(2));
     assert!(ballot.ballot_id().starts_with("ballot-"));
@@ -50,7 +53,7 @@ fn test_governance_engine_propose_and_vote() {
 #[test]
 fn test_governance_engine_rejects_unqualified_voter() {
     let dir = std::env::temp_dir().join("alp-test-gov-2");
-    let engine = GovernanceEngine::new(dir.to_str().unwrap(), 2);
+    let mut engine = GovernanceEngine::new(dir.to_str().unwrap(), 2);
     let result = engine.vote("ballot-123", "did:alp:unknown", "approve", "", "");
     assert!(!result.get("accepted").and_then(|v| v.as_bool()).unwrap_or(true));
 }
@@ -78,9 +81,9 @@ fn test_telemetry_engine_inject_extract_context() {
         span_id.clone(),
         None,
         None,
-        "test".into(),
+        "test",
         0,
-        "OK".into(),
+        "OK",
         HashMap::new(),
     );
     let traceparent = telemetry.inject_context(&span);
@@ -110,7 +113,7 @@ fn test_vault_set_and_get_secret() {
 
 #[test]
 fn test_vault_get_missing_returns_error() {
-    let vault = Vault::new();
+    let mut vault = Vault::new();
     assert!(vault.get_secret("missing").is_err());
 }
 
@@ -121,7 +124,7 @@ fn test_integration_identity_to_governance() {
     let _entry = registry.register("did:alp:agent-1", "agent-1", vec!["vote".into()], "qualified");
 
     let mut engine = GovernanceEngine::new(dir.to_str().unwrap(), 1);
-    engine.qualify("did:alp:agent-1".into());
+    engine.qualify("did:alp:agent-1");
     let ballot = engine.propose("policy-1", "Integration test", Some(1));
     let result = engine.vote(&ballot.ballot_id(), "did:alp:agent-1", "approve", "ok", "key1");
     assert!(result.get("accepted").and_then(|v| v.as_bool()).unwrap_or(false));

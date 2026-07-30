@@ -1,3 +1,7 @@
+use crate::AlpObject;
+use regex::Regex;
+
+#[derive(Debug, Clone)]
 pub struct PolicyEngine {
     policies: Vec<AlpObject>,
 }
@@ -71,8 +75,11 @@ fn matches(query: &PolicyQuery, policy_kind: &str, policy_value: &str) -> bool {
     }
     let query_value = query.value.as_ref().unwrap();
     if policy_value.contains('*') {
-        let regex = policy_value.replace('.', "\\.").replace('*', ".*");
-        return query_value.matches(&regex);
+        let pattern = policy_value.replace('.', "\\.").replace('*', ".*");
+        if let Ok(re) = Regex::new(&pattern) {
+            return re.is_match(query_value);
+        }
+        return false;
     }
     query_value == policy_value || query_value.starts_with(policy_value)
 }

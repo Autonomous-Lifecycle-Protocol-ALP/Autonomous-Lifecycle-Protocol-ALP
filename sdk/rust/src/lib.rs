@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use std::path::Path;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -82,16 +81,27 @@ impl AlpParser {
     fn parse_block(block: &str) -> Result<Option<AlpObject>, AlpError> {
         let mut id = None;
         let mut object_type = None;
+        let mut properties = HashMap::new();
         for line in block.lines() {
             let trimmed = line.trim();
             if trimmed.starts_with("id:") {
                 id = Some(trimmed[3..].trim().to_string());
             } else if trimmed.starts_with("type:") {
                 object_type = Some(trimmed[5..].trim().to_string());
+            } else if let Some(colon) = trimmed.find(':') {
+                let key = trimmed[..colon].trim().to_string();
+                let value = trimmed[colon + 1..].trim().to_string();
+                properties.insert(key, serde_json::Value::String(value));
             }
         }
         match (id, object_type) {
-            (Some(id), Some(object_type)) => Ok(Some(AlpObject::new(id, object_type))),
+            (Some(id), Some(object_type)) => {
+                let mut obj = AlpObject::new(id, object_type);
+                for (k, v) in properties {
+                    obj.properties.insert(k, v);
+                }
+                Ok(Some(obj))
+            }
             _ => Ok(None),
         }
     }
@@ -215,7 +225,7 @@ impl AlpWorkspace {
     }
 
     pub fn load_string(&mut self, source: &str) -> Result<(), AlpError> {
-        self.objects.extend(self.parser.parse(source)?);
+        self.objects.extend(AlpParser::parse(source)?);
         self.graph.build_graph(&self.objects);
         Ok(())
     }
@@ -245,7 +255,7 @@ impl AlpWorkspace {
             } else if let Some(ext) = path.extension() {
                 if ext == "alp" {
                     let content = std::fs::read_to_string(&path)?;
-                    self.objects.extend(self.parser.parse(&content)?);
+                    self.objects.extend(AlpParser::parse(&content)?);
                 }
             }
         }

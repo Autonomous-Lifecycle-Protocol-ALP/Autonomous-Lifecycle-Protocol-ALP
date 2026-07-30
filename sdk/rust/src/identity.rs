@@ -62,8 +62,20 @@ impl VerifiablePresentation {
         let expected = simple_hash(&(payload_str + public_key));
         self.signature == expected
     }
+
+    pub fn sign(&mut self, private_key: &str) -> String {
+        let payload = serde_json::json!({
+            "did": self.did,
+            "agent_id": self.agent_id,
+            "claims": self.claims,
+        });
+        let payload_str = payload.to_string();
+        self.signature = simple_hash(&(payload_str + private_key));
+        self.signature.clone()
+    }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TrustEntry {
     pub agent_id: String,
     pub scopes: Vec<String>,
@@ -192,6 +204,7 @@ impl IdentityResolver {
     }
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct KeyPair {
     pub public_key: String,
     pub private_key: String,

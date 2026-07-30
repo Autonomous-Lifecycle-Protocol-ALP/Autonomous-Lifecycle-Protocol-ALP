@@ -1,8 +1,8 @@
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::Path;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+#[derive(Debug, Clone)]
 pub struct Vote {
     pub voter_did: String,
     pub ballot_id: String,
@@ -48,6 +48,7 @@ impl Vote {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct BallotRecord {
     pub ballot_id: String,
     pub policy_id: String,
@@ -206,7 +207,8 @@ impl PolicyBallot {
             vote.sign(private_key);
         }
         ballot.votes.push(vote.clone());
-        self.save_ballot(ballot);
+        let saved = ballot.clone();
+        self.save_ballot(&saved);
         Some(vote)
     }
 
@@ -217,8 +219,9 @@ impl PolicyBallot {
         }
         ballot.status = "closed".into();
         ballot.closed_at = timestamp_now();
-        self.save_ballot(ballot);
-        Some(ballot.clone())
+        let saved = ballot.clone();
+        self.save_ballot(&saved);
+        Some(saved)
     }
 
     pub fn get_ballot(&self, ballot_id: &str) -> Option<&BallotRecord> {
