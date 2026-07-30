@@ -6,7 +6,7 @@
 
   <groupId>com.alp</groupId>
   <artifactId>alp-sdk-java</artifactId>
-  <version>45.0.0</version>
+  <version>46.0.0</version>
   <name>alp-sdk-java</name>
   <description>Official Java SDK for the Autonomous Lifecycle Protocol</description>
   <url>https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP</url>

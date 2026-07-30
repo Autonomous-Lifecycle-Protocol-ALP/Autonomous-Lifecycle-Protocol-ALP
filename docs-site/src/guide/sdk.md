@@ -1,108 +1,204 @@
-# ALP SDK
+# ALP SDKs
 
-Official SDK packages for integrating ALP into applications.
+Official SDK packages for integrating ALP (Autonomous Lifecycle Protocol) into multi-language applications and autonomous agent systems.
 
-## Available SDKs
+## Available SDK Matrix
 
-| Language | Package | Status |
-|---|---|---|
-| TypeScript | `@autonomous-lifecycle-protocol-alp/sdk` | ✅ Shipped (parsing, validation, graph) |
-| Python | `alp-sdk` | ✅ Shipped (parsing, validation, analytics, registry client) |
-| Go | `alp-go` | ✅ Shipped |
-| Rust | `alp-rs` | ✅ Shipped |
-| Java | `alp-java` | ✅ Shipped |
+| Language | Package | Version | Primary Capabilities |
+|---|---|:---:|---|
+| **TypeScript** | `@autonomous-lifecycle-protocol-alp/sdk` | `45.0.0` | Parsing, AST validation, DAG topological graph, Event Mesh, Collaboration |
+| **Python** | `alp-sdk` | `45.0.0` | Parsing, verification gates, analytics, DID identity, registry client, P2P swarm |
+| **Go** | `alp-go` | `0.46.0` | High-performance DAG resolution, pub/sub event mesh, governance voting, telemetry |
+| **Rust** | `alp-rs` | `0.46.0` | Async Tokio-native execution engine, W3C DID identity, cryptographic vault, policy |
+| **Java** | `alp-java` | `46.0.0` | Enterprise JVM integration, Jackson object mapping, thread-safe governance & event mesh |
 
-## TypeScript
+---
+
+## ⚡ Go (`alp-go`)
+
+### Installation
+
+```bash
+go get github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/sdk/go
+```
+
+### Usage Example
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	alp "github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/sdk/go"
+)
+
+func main() {
+	// Initialize workspace and parse .alp definitions
+	ws := alp.NewWorkspace()
+	if err := ws.Load("./my-project"); err != nil {
+		log.Fatalf("Failed to load workspace: %v", err)
+	}
+
+	// Compute DAG and resolve task ordering
+	graph := ws.GetGraph()
+	order, err := graph.TopologicalSort()
+	if err != nil {
+		log.Fatalf("Cycle detected in workspace DAG: %v", err)
+	}
+
+	fmt.Printf("Execution order: %v\n", order)
+
+	// Publish telemetry span over Event Mesh
+	mesh := alp.NewEventMeshEngine(alp.MeshConfig{Topic: "telemetry.task"})
+	mesh.Publish("task.started", map[string]interface{}{
+		"taskId": "task-auth",
+		"status": "in_progress",
+	})
+}
+```
+
+---
+
+## 🦀 Rust (`alp-rs`)
+
+### Cargo Dependency
+
+Add to your `Cargo.toml`:
+
+```toml
+[dependencies]
+alp-rs = "0.46.0"
+tokio = { version = "1.0", features = ["full"] }
+```
+
+### Usage Example
+
+```rust
+use alp_rs::{AlpWorkspace, GovernanceEngine, PolicyEngine, VoteValue};
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std.error::Error>> {
+    // Load and validate workspace
+    let mut ws = AlpWorkspace::new();
+    ws.load("./my-project").await?;
+
+    println!("Loaded workspace version: {}", ws.version());
+
+    // Evaluate governance policies
+    let policy = PolicyEngine::new();
+    let is_allowed = policy.evaluate_action("agent-coder", "write", ".alp/tasks.alp");
+    
+    if is_allowed {
+        println!("Action permitted by @policy engine");
+    }
+
+    // Cast governance vote
+    let mut gov = GovernanceEngine::new();
+    gov.cast_vote("ballot-01", "agent-beta", VoteValue::Approve)?;
+
+    Ok(())
+}
+```
+
+---
+
+## ☕ Java (`alp-java`)
+
+### Maven Dependency
+
+Add to your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>com.autonomouslifecycleprotocol</groupId>
+    <artifactId>alp-java</artifactId>
+    <version>46.0.0</version>
+</dependency>
+```
+
+### Usage Example
+
+```java
+import com.alp.sdk.AlpWorkspace;
+import com.alp.sdk.GovernanceEngine;
+import com.alp.sdk.EventMeshEngine;
+import com.alp.sdk.PolicyEngine;
+import com.alp.sdk.MeshEvent;
+
+public class Main {
+    public static void main(String[] args) {
+        // Load ALP workspace
+        AlpWorkspace ws = new AlpWorkspace();
+        ws.load("./my-project");
+
+        System.out.println("ALP Java SDK initialized, version: " + ws.getVersion());
+
+        // Initialize Event Mesh Engine
+        EventMeshEngine mesh = new EventMeshEngine();
+        mesh.subscribe("telemetry.logs", event -> {
+            System.out.println("Received telemetry event: " + event.getPayload());
+        });
+
+        // Evaluate policy decision
+        PolicyEngine policy = new PolicyEngine();
+        boolean allowed = policy.checkPermission("agent-1", "deploy", "production");
+        System.out.println("Permission check: " + allowed);
+    }
+}
+```
+
+---
+
+## 🟨 TypeScript (`@autonomous-lifecycle-protocol-alp/sdk`)
 
 ```ts
-import { AlpWorkspace } from '@autonomous-lifecycle-protocol-alp/sdk';
+import { AlpWorkspace, MacroEngine, CollaborationEngine } from '@autonomous-lifecycle-protocol-alp/sdk';
 
 const ws = new AlpWorkspace();
 ws.load('./my-project');
 console.log(ws.getGraph());
 ```
 
-Available since v38.0.0, `@autonomous-lifecycle-protocol-alp/sdk` also exposes the underlying engine types directly:
+---
 
-```ts
-import {
-  MacroEngine,
-  CollaborationEngine,
-  MemoryMeshEngine,
-  EventMeshEngine,
-  SwarmMarketplaceEngine,
-} from '@autonomous-lifecycle-protocol-alp/sdk';
-```
-
-## Python
+## 🐍 Python (`alp-sdk`)
 
 ```python
-from alp_sdk import load_workspace, validate_object, compute_analytics, RegistryClient
+from alp_sdk import load_workspace, validate_object, verify_workspace, RegistryClient
 
 # Parse + validate a workspace
 objects = load_workspace("./my-project")
 for obj in objects:
     validate_object(obj._type, obj.properties)
 
-# Install a package from a hosted registry (V4 Pillar 3)
-client = RegistryClient("http://127.0.0.1:4000")
-client.install("@community/scrum-master", ".alp", "^1.0.0")
-
-# Run every task's quality gates (mirrors `alp verify`, non-mutating)
+# Run every task's quality gates
 report = verify_workspace("./my-project")
 print(report["passed"], [(t["id"], t["verified"]) for t in report["tasks"]])
 ```
 
-### V12–V38 Additions
+### V12–V46 Module Capabilities
 
 ```python
-from alp_sdk.cost_optimizer import CostEstimator, CostOptimizer, AutoScaleRecommendation
-from alp_sdk.predictive_policy import PredictivePolicyEngine, AnomalyScore, BaselineProfile
-from alp_sdk.healing import HealingEngine, HealingReport, HealingAction, HealingStrategy, CircuitBreaker
-from alp_sdk.resilience import ResilientSwarm, ResilienceReport, AgentNode, TaskAssignment, QuorumConsensus
-from alp_sdk.trace import TraceEntry, TraceStore, MerkleTree, verify_trace_integrity
-from alp_sdk.bridge import ProtocolBridge, SUPPORTED_FORMATS, BridgeExportResult, BridgeImportResult
-from alp_sdk.identity import AgentIdentity, VerifiablePresentation, TrustRegistry, IdentityResolver, AgentKeyStore, generateKeypair, createDid
-from alp_sdk.p2p import P2PSwarm, P2PNode, GossipMessage, GossipProtocol, DHT, P2PReport, TaskAssignment
-from alp_sdk.tenant import TenantVault, TenantContext, TenantManager, TenantIsolationError, create_tenant_key
-from alp_sdk.governance import PolicyBallot, GovernanceEngine, BallotRecord, GovernanceReport, Vote, VoteValue
-from alp_sdk.domain_trust import DomainTrustAnchor, DomainTrustManager, TrustRoot, DomainLink, TrustStatus, create_domain_keypair
-from alp_sdk.formal_verification import FormalVerificationEngine, Transition
-from alp_sdk.visualize import WorkflowVisualizer, read_workflow
-from alp_sdk.event_mesh import EventMeshEngine, MeshEvent, MeshEventConfig
-from alp_sdk.swarm_marketplace import SwarmMarketplaceEngine, SkillListing, SkillInvocationResult
-from alp_sdk.macro import MacroEngine, MacroDefinition
-from alp_sdk.collaboration import CollaborationEngine, CollabSession, CollabBranch, CollabOperation, PresenceInfo
-from alp_sdk.memory_mesh import MemoryMeshEngine, MemoryNode, MemoryQueryResult, MemoryMeshStats
+from alp_sdk.cost_optimizer import CostEstimator, CostOptimizer
+from alp_sdk.predictive_policy import PredictivePolicyEngine
+from alp_sdk.healing import HealingEngine, CircuitBreaker
+from alp_sdk.resilience import ResilientSwarm, QuorumConsensus
+from alp_sdk.identity import AgentIdentity, VerifiablePresentation
+from alp_sdk.p2p import P2PSwarm, GossipProtocol
+from alp_sdk.governance import PolicyBallot, GovernanceEngine
+from alp_sdk.event_mesh import EventMeshEngine
+from alp_sdk.swarm_marketplace import SwarmMarketplaceEngine
 ```
 
-| Module | Version | Description |
-| :--- | :--- | :--- |
-| `cost_optimizer` | `16.0.0` | Predicts execution cost and emits optimization plans (parallelization, caching, agent reassignment) |
-| `predictive_policy` | `16.0.0` | Confidence scoring and anomaly detection for policy decisions |
-| `healing` | `16.0.0` | Self-healing workflows: `HealingEngine` auto-recovers from failures using strategies |
-| `resilience` | `16.0.0` | Swarm resilience with quorum consensus and circuit breakers |
-| `trace` | `16.0.0` | Immutable execution traces with Merkle-tree integrity verification |
-| `bridge` | `17.0.0` | Bidirectional ALP ↔ OpenAPI/GraphQL/gRPC/AsyncAPI adapter |
-| `identity` | `18.0.0` | W3C DID-based agent identity, trust registry, and verifiable presentations |
-| `p2p` | `18.1.0` | Decentralized P2P swarm coordination with gossip and DHT discovery |
-| `tenant` | `18.2.0` | Multi-tenant workspace isolation with cryptographic sealing |
-| `governance` | `18.3.0` | Agent voting on policy changes with quorum enforcement |
-| `domain_trust` | `18.4.0` | Cross-domain trust bootstrapping via signed trust roots |
-| `formal_verification` | `10.x` | TLA+-style safety invariant and deadlock analysis |
-| `visualize` | `10.2.0` | Mermaid/DOT/JSON workflow rendering |
-| `event_mesh` | `35.0.0` | Pub/sub event mesh for streaming state changes and broadcasts |
-| `swarm_marketplace` | `36.0.0` | Autonomous skill registry, discovery, invocation, rating, and cost tracking |
-| `macro` | `37.0.0` | Dynamic `@macro` object generation with template interpolation |
-| `collaboration` | `37.0.0` | Real-time multi-agent collaboration with OT/CRDT merge, presence, and branching |
-| `memory_mesh` | `38.0.0` | Distributed memory mesh with recency decay and cross-agent semantic retrieval |
+---
 
-## What an SDK Provides
+## SDK Features Summary
 
-- Parse `.alp` files into typed objects
-- Validate objects against JSON Schemas
-- Build and traverse the dependency graph
-- Compute swarm analytics (`compute_analytics`)
-- Talk to a hosted registry (`RegistryClient`: list/search/install, integrity, `.alprc` routing, bearer auth)
-- Verify a workspace's quality gates (`verify_workspace`) without mutating `.alp` files
-- Export to YAML/JSON
+- **AST Parsing & Validation**: Load `.alp` files into typed objects with JSON Schema enforcement.
+- **Topological DAG Resolution**: Compute execution order and detect circular dependencies.
+- **Pub/Sub Event Mesh**: Asynchronous streaming for multi-agent event distribution.
+- **Swarm Governance**: Voting ballots, quorum validation, and cryptographic identity.
+- **Encrypted Vault & Policy**: Least-privilege policy evaluation and secret sealing.
+

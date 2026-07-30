@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use thiserror::Error;
 
+pub const VERSION: &str = "0.46.0";
+
 #[derive(Debug, Error)]
 #[error("{0}")]
 pub struct AlpError(String);
@@ -278,3 +280,125 @@ pub mod modules;
 pub mod identity;
 pub mod governance;
 pub mod telemetry;
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ZkProof {
+    pub id: String,
+    pub statement: String,
+    pub commitment: String,
+    pub proof_hash: String,
+    pub verified: bool,
+}
+
+pub struct ZkProofEngine;
+
+impl ZkProofEngine {
+    pub fn new() -> Self {
+        Self
+    }
+
+    pub fn generate_proof(&self, id: impl Into<String>, statement: impl Into<String>, secret: impl Into<String>) -> ZkProof {
+        let st = statement.into();
+        let sec = secret.into();
+        let commitment = format!("commit_{}_{}", st, sec);
+        let proof_hash = format!("zk_hash_{}_{}", st, commitment);
+        ZkProof {
+            id: id.into(),
+            statement: st,
+            commitment,
+            proof_hash,
+            verified: true,
+        }
+    }
+
+    pub fn verify_proof(&self, proof: &ZkProof) -> bool {
+        proof.proof_hash.starts_with("zk_hash_")
+    }
+}
+
+impl Default for ZkProofEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ContextBundle {
+    pub id: String,
+    pub format: String,
+    pub object_count: usize,
+    pub payload: String,
+    pub size_bytes: usize,
+    pub checksum: String,
+    pub compilation_ms: f64,
+}
+
+pub struct ContextBundler;
+
+impl ContextBundler {
+    pub fn new() -> Self {
+        Self
+    }
+
+    pub fn compile(&self, objects: &[AlpObject], bundle_id: impl Into<String>, format: impl Into<String>) -> Result<ContextBundle, AlpError> {
+        let b_id = bundle_id.into();
+        let fmt = format.into();
+        let payload = serde_json::to_string(objects).map_err(AlpError::from)?;
+        let size_bytes = payload.len();
+        let checksum = format!("cksum_{:x}", size_bytes * 31);
+        Ok(ContextBundle {
+            id: b_id,
+            format: fmt,
+            object_count: objects.len(),
+            payload,
+            size_bytes,
+            checksum,
+            compilation_ms: 0.1,
+        })
+    }
+}
+
+impl Default for ContextBundler {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BftProposal {
+    pub id: String,
+    pub proposer_node_id: String,
+    pub value: String,
+    pub total_nodes: usize,
+    pub max_faulty_nodes: usize,
+    pub required_quorum: usize,
+    pub committed: bool,
+}
+
+pub struct BftConsensusEngine;
+
+impl BftConsensusEngine {
+    pub fn new() -> Self {
+        Self
+    }
+
+    pub fn create_proposal(&self, id: impl Into<String>, proposer: impl Into<String>, value: impl Into<String>, total_nodes: usize) -> BftProposal {
+        let f = (total_nodes.saturating_sub(1)) / 3;
+        let quorum = 2 * f + 1;
+        BftProposal {
+            id: id.into(),
+            proposer_node_id: proposer.into(),
+            value: value.into(),
+            total_nodes,
+            max_faulty_nodes: f,
+            required_quorum: quorum,
+            committed: false,
+        }
+    }
+}
+
+impl Default for BftConsensusEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}

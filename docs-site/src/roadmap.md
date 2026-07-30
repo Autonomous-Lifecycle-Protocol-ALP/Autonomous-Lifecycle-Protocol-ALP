@@ -104,70 +104,54 @@ ALP aims to become the **standard protocol for autonomous software engineering**
 - `@contract` runtime boundary validation
 - `@vault` encrypted secrets
 
-## Upcoming Versions
+## Upcoming Roadmap (v46.0.0 – v60.0.0)
 
-### V46.0.0+ — Enhanced Intelligence
+```mermaid
+timeline
+    title ALP Roadmap (v46.0.0 - v60.0.0)
+    v46.0.0 : Zero-Knowledge Proof Gates : Edge Model Compilation
+    v48.0.0 : Decentralized P2P Mesh : Kademlia DHT Discovery : BFT Swarm Consensus
+    v50.0.0 : Multi-Region DAG Partitioning : Global CRDT State Sync
+    v55.0.0 : TLA+ Formal Verification : Self-Evolving Protocol Schemas
+    v60.0.0 : Autonomous Software Factory : Zero-Human Pipeline : AI Cost Arbitrage
+```
 
-**Planned Features:**
-- Predictive workflow optimization
-- Autonomous code review
-- Intelligent task decomposition
-- Enhanced MCP tooling
+### V46.0.0 — Zero-Knowledge Verification & Edge Models
+**Planned Release:** Q4 2026
 
-### V50.0.0 — Distributed Execution
+- **Zero-Knowledge Proof Gates (`alp prove`)**: zk-SNARK verification of build compliance without exposing source code.
+- **Sub-Millisecond Edge Model Compilation**: Compile DAG context bundles directly into WebAssembly (Wasm) and ONNX edge models (< 0.5ms compilation).
+- **Multi-Language SDK Parity**: Synchronized v46 releases for TypeScript, Python, Go, Rust, and Java.
 
-**Planned Features:**
-- Edge-native execution
-- Distributed DAG partitioning
-- Cross-region swarm coordination
-- Offline-first capabilities
+### V48.0.0 — Decentralized Peer-to-Peer Swarm Mesh
+**Planned Release:** Q1 2027
 
-### V55.0.0 — Self-Evolving Protocol
+- **Kademlia DHT Agent Discovery**: Decoupled P2P skill registry over libp2p.
+- **Byzantine Fault Tolerant (BFT) Swarm Consensus**: Tendermint-style consensus for swarm policy voting and multi-agent approvals.
+- **Cryptographic W3C DIDs**: Verifiable Credentials for agent identity and tamper-proof audit trails.
 
-**Planned Features:**
-- Automatic schema evolution
-- Backward-compatible grammar updates
-- AI-assisted migration tools
-- Dynamic plugin loading
+### V50.0.0 — Distributed Multi-Region Execution
+**Planned Release:** Q2 2027
 
-## Long-Term Vision (2027+)
+- **Multi-Region DAG Partitioning**: Automatically split workspace execution DAGs across Cloudflare Workers, AWS Lambda, and GCP Cloud Run.
+- **Real-Time CRDT State Synchronization**: Lock-free multiplayer editing across IDEs (Cursor/VS Code/SHAM) and cloud agent workers.
 
-### Full Autonomy
+### V55.0.0 — Self-Evolving Protocol & Formal Invariants
+**Planned Release:** Q4 2027
 
-- Zero-human-in-the-loop workflows for standard tasks
-- Autonomous debugging and fixing
-- Self-improving agent strategies
-- Continuous learning from execution history
+- **TLA+ Formal Verification Engine**: Mathematically verify agent state transitions and eliminate deadlocks prior to execution.
+- **Dynamic Protocol Schema Evolution**: Auto-migrating protocol schemas with 100% backward-compatibility guarantees.
 
-### Ecosystem Maturity
+### V60.0.0 — Autonomous Software Factory (Full Automation)
+**Planned Release:** Q2 2028
 
-- 100+ language SDKs
-- 1000+ community plugins
-- Certified parser implementations
-- Industry-standard compliance frameworks
+- **Zero-Human Delivery Pipelines**: Autonomous software lifecycle management from natural language requirements to production canary deployment.
+- **AI Model Cost Arbitrage**: Real-time multi-LLM routing optimizing for budget, latency, and capability SLAs.
 
-### Enterprise Adoption
+---
 
-- SOC2/Type II compliance
-- Enterprise RBAC and audit logging
-- Multi-tenant isolation
-- SLA-backed support tiers
+## Strategic Roadmap Documents
 
-## How to Influence the Roadmap
-
-1. **Use ALP** — Real-world usage drives priorities
-2. **Contribute** — Submit PRs and issues
-3. **Discuss** — Join [GitHub Discussions](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/discussions)
-4. **Build Plugins** — Extend the protocol for your use case
-
-## Release Cadence
-
-- **Major versions** (X.0.0): Breaking changes, new eras
-- **Minor versions** (x.Y.0): New features, backward-compatible
-- **Patch versions** (x.y.Z): Bug fixes, clarifications
-
-Releases are tagged from `main` and published automatically via GitHub Actions.
-
-## Past Roadmaps
-
+- [ROADMAP_V46_V60.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V46_V60.md) — Detailed technical specification for v46.0.0 to v60.0.0
 - [ROADMAP_V17_V43.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V43.md) — Strategic roadmap from v17 to v43
+

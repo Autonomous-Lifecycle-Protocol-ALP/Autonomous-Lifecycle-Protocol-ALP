@@ -7,9 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AlpWorkspace {
+    public static final String VERSION = "46.0.0";
+
     private final AlpParser parser = new AlpParser();
     private final AlpGraph graph = new AlpGraph();
     private final List<AlpObject> objects = new ArrayList<>();
+
+    public String getVersion() {
+        return VERSION;
+    }
 
     public void load(Path workspaceDir) throws IOException {
         Path alpDir = workspaceDir.resolve(".alp");

@@ -67,6 +67,8 @@ export * from './test-runner';
 export * from './linter';
 export * from './formatter';
 export * from './intelligence';
+export * from './context-bundler';
+export * from './bft-consensus';
 
 export { AlpObject, AlpReader };
 

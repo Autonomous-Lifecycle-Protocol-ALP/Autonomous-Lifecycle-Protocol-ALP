@@ -1,6 +1,6 @@
 [package]
 name = "alp-sdk"
-version = "0.45.0"
+version = "0.46.0"
 edition = "2021"
 authors = ["ALP Contributors"]
 description = "Official Rust SDK for the Autonomous Lifecycle Protocol"

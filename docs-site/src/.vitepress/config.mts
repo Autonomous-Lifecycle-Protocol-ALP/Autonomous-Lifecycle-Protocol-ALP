@@ -33,6 +33,8 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
+      { text: 'Architecture', link: '/architecture' },
+      { text: 'Business Model', link: '/business-model' },
       { text: 'Tutorial', link: '/tutorial' },
       { text: 'Examples', link: '/examples' },
       { text: 'Guide', link: '/guide/cli' },
@@ -53,6 +55,8 @@ export default defineConfig({
         text: 'Getting Started',
         items: [
           { text: 'Home', link: '/' },
+          { text: 'Architecture', link: '/architecture' },
+          { text: 'Business Model', link: '/business-model' },
           { text: 'Tutorial', link: '/tutorial' },
           { text: 'Examples', link: '/examples' },
           { text: 'CLI Usage', link: '/guide/cli' },
