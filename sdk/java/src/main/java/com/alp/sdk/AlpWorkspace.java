@@ -33,7 +33,7 @@ public class AlpWorkspace {
         return graph;
     }
 
-    public List<AlpObject> getExecutionOrder() {
+    public List<GraphNode> getExecutionOrder() {
         return graph.topologicalSort();
     }
 

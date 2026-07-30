@@ -51,7 +51,8 @@ class AlpWorkspaceTest {
                 "id: t1\ntype: task\n\nid: t2\ntype: task\ndepends_on: t1\n"
         );
 
-        List<AlpObject> order = workspace.getExecutionOrder();
+        List<GraphNode> order = workspace.getExecutionOrder();
         assertFalse(order.isEmpty());
+        assertEquals("t1", order.get(0).getId());
     }
 }

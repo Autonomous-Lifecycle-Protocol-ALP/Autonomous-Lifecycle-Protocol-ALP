@@ -55,6 +55,17 @@ public class PolicyEngine {
         if (policyValue == null || policyValue.isEmpty()) {
             return false;
         }
+        if ("require_approval".equals(policyKind)) {
+            String queryValue = query.getValue();
+            if (queryValue == null) {
+                return false;
+            }
+            if (policyValue.contains("*")) {
+                String regex = policyValue.replace(".", "\\.").replace("*", ".*");
+                return queryValue.matches(regex);
+            }
+            return queryValue.equals(policyValue) || queryValue.startsWith(policyValue);
+        }
         if (!query.getKind().equals(policyKind.replace("deny_", "").replace("allow_", ""))) {
             return false;
         }

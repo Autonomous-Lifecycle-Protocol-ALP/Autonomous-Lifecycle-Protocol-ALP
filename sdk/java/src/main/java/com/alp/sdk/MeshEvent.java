@@ -1,5 +1,7 @@
 package com.alp.sdk;
 
+import java.util.Date;
+
 public class MeshEvent {
     private String id;
     private String topic;

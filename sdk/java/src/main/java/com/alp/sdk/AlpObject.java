@@ -58,7 +58,7 @@ public class AlpObject {
 
     public String toAlpString() {
         try {
-            return OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+            return OBJECT_MAPPER.writeValueAsString(this);
         } catch (Exception e) {
             throw new AlpError("Failed to serialize AlpObject", e);
         }

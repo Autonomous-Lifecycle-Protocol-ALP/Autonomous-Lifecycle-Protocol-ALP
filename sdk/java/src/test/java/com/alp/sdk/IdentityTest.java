@@ -43,7 +43,7 @@ public class IdentityTest {
         claims.put("role", "admin");
         VerifiablePresentation vp = new VerifiablePresentation(did, "agent-1", claims, "");
         String payload = "{\"did\":\"" + did + "\",\"agent_id\":\"agent-1\",\"claims\":" + claims + "}";
-        String signature = SigningUtils.sha256(payload + kp.getPrivateKey());
+        String signature = SigningUtils.sha256(payload + kp.getPublicKey());
         vp = new VerifiablePresentation(did, "agent-1", claims, signature);
         assertTrue(vp.verify(kp.getPublicKey()));
     }

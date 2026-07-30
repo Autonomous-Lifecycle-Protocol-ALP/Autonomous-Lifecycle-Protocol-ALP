@@ -1,7 +1,6 @@
+use crate::AlpError;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use chrono::Utc;
-use uuid::Uuid;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SealedSecret {
@@ -34,9 +33,10 @@ impl Vault {
         }
     }
 
-    pub fn set_secret(&mut self, id: impl Into<String>, value: impl Into<String>, recipients: Vec<String>) {
+    pub fn set_secret(&mut self, id: impl Into<String> + Clone, value: impl Into<String>, recipients: Vec<String>) {
+        let id_str = id.clone().into();
         let secret = SealedSecret {
-            id: id.into(),
+            id: id_str,
             recipients,
             nonce: uuid::Uuid::new_v4().to_string(),
             ciphertext: value.into(),
@@ -52,7 +52,7 @@ impl Vault {
         });
     }
 
-    pub fn get_secret(&self, id: &str) -> Result<String, AlpError> {
+    pub fn get_secret(&mut self, id: &str) -> Result<String, AlpError> {
         let secret = self.secrets.get(id).ok_or_else(|| AlpError::new(format!("Secret not found: {}", id)))?;
         self.audit.push(VaultAuditEntry {
             ts: chrono::Utc::now().to_rfc3339(),

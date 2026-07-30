@@ -1,3 +1,5 @@
+use crate::autonomy::{EditProposal, WorkflowMutator};
+use crate::AlpError;
 use std::collections::HashMap;
 
 pub struct AutonomyController {
@@ -13,7 +15,7 @@ impl AutonomyController {
         }
     }
 
-    pub fn propose_edit(&mut self, workflow_id: impl Into<String>, edits: Vec<HashMap<String, serde_json::Value>>, rationale: impl Into<String>) -> EditProposal {
+    pub fn propose_edit(&mut self, workflow_id: impl Into<String> + Clone, edits: Vec<HashMap<String, serde_json::Value>>, rationale: impl Into<String>) -> EditProposal {
         let proposal = self.mutator.propose_edit(workflow_id, edits, rationale);
         let mut decision = HashMap::new();
         decision.insert("action".into(), "propose".into());

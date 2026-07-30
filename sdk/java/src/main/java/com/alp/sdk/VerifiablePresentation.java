@@ -43,7 +43,7 @@ public class VerifiablePresentation {
         try {
             StringBuilder payload = new StringBuilder();
             payload.append("{\"did\":\"").append(did).append("\",\"agent_id\":\"").append(agentId).append("\",\"claims\":");
-            payload.append(new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(claims));
+            payload.append(claims.toString());
             payload.append("}");
             String expected = sha256(payload.toString() + publicKey);
             return signature.equals(expected);
