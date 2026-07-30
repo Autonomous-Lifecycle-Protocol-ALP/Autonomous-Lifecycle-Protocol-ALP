@@ -1,11 +1,26 @@
 # ALP Specification — Syntax
 
-**Version:** 2.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. File Format
+## 1. Syntax Overview
+
+```mermaid
+flowchart TD
+    File[ALP File] --> Directives[Directives]
+    File --> Blocks[Blocks]
+    Blocks --> Properties[Properties]
+    Blocks --> Nested[Nested Blocks]
+    Properties --> Values[Values]
+    Values --> Strings[Strings]
+    Values --> Numbers[Numbers]
+    Values --> Refs[References ->id]
+    Values --> Lists[Lists - item]
+```
+
+## 2. File Format
 
 ### 1.1 Encoding
 
@@ -166,7 +181,7 @@ String values (both single-line and multi-line) can contain ALPEL expressions en
   path: "src/api/v${ project.version.major }/routes.ts"
 ```
 
-For full details on expression syntax, see the [Expressions Specification](12-expressions.md).
+For full details on expression syntax, see the [Expressions Specification](../spec/12-expressions.md).
 
 ### 2.6 Lists — `- item`
 
@@ -208,7 +223,7 @@ Lists are ordered sequences of values within a property.
     - { key: "team", value: "backend" }
 ```
 
-### 2.6 References — `-> id`
+### 2.7 References — `-> id`
 
 References create links between protocol objects. They are the foundation of the ALP dependency graph.
 
@@ -271,7 +286,7 @@ In multi-project workspaces, references can target objects in other member proje
     - -> patient-service::feat-patient-records | uses
 ```
 
-See the [Multi-Project Specification](13-multi-project.md) for full resolution rules.
+See the [Multi-Project Specification](../spec/13-multi-project.md) for full resolution rules.
 
 ### 2.8 Status Markers
 
@@ -320,7 +335,7 @@ Directives are special instructions that control agent behavior. They appear at 
 
 **File-level directives** (appear before any block):
 ```
-!alp-version: 0.2.0
+!alp-version: 45.0.0
 !context-scope: minimal
 !agent-mode: autonomous
 !import: "plugins/scrum-plugin.alp"
@@ -478,7 +493,7 @@ Invalid enum values MUST produce a parser error.
 
 The formal grammar for ALP has been extracted into its own specification document using W3C EBNF notation.
 
-Please refer to the [Formal Grammar Specification](15-formal-grammar.md) for the complete and authoritative language rules.
+Please refer to the [Formal Grammar Specification](../spec/15-formal-grammar.md) for the complete and authoritative language rules.
 
 ---
 
@@ -550,7 +565,7 @@ Every `.alp` file follows this structure:
 
 **Example complete file:**
 ```
-!alp-version: 0.1.0
+!alp-version: 45.0.0
 
 // Authentication feature tasks
 

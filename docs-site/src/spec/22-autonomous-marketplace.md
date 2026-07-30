@@ -1,11 +1,27 @@
 # ALP Specification — Autonomous Swarm Marketplace
 
-**Version:** 36.0.0  
+**Version:** 45.0.0  
 **Status:** Stable  
 
 ---
 
-## 1. Overview
+## 1. Marketplace Overview
+
+```mermaid
+flowchart TD
+    Marketplace[@swarm_marketplace] --> Listing[Skill Listing]
+    Listing --> Skill[skill_id]
+    Listing --> Agent[agent_id]
+    Listing --> Category[category]
+    Listing --> Cost[cost_per_call]
+    Marketplace --> Registry[Registry Engine]
+    Registry --> Discover[discover]
+    Registry --> Invoke[invoke]
+    Registry --> Rate[rate]
+    Registry --> Audit[audit log]
+```
+
+## 2. Overview
 
 ALP v36.0.0 introduces **Autonomous Swarm Marketplace**: a decentralized agent skill registration, discovery, invocation, rating, and metering registry (`@swarm_marketplace`).
 

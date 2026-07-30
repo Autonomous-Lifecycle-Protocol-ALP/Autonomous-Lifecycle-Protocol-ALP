@@ -1,11 +1,30 @@
 # ALP Specification — Expressions (ALPEL)
 
-**Version:** 2.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Expression Language Overview
+
+```mermaid
+flowchart TD
+    ALPEL[ALP Expression Language] --> Interpolation[String Interpolation]
+    ALPEL --> Conditionals[Conditional Directives]
+    ALPEL --> Assertions[Runtime Assertions]
+    Interpolation --> Syntax1[\${ expression }]
+    Conditionals --> Syntax2[!if: expression]
+    Assertions --> Syntax3[!assert: expression]
+    ALPEL --> Literals[Literals]
+    Literals --> String[\"string\"]
+    Literals --> Number[42]
+    Literals --> Bool[true/false]
+    ALPEL --> Operators[Operators]
+    Operators --> Comparison[==, !=, >, <]
+    Operators --> Logical[&&, ||, !]
+```
+
+## 2. Overview
 
 Starting with v0.3.0, ALP includes the **ALP Expression Language (ALPEL)**. ALPEL is a secure, sandboxed, and lightweight expression language used for conditional logic and string interpolation. 
 

@@ -1,16 +1,29 @@
 # ALP Specification — Versioning
 
-**Version:** 3.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Format Version
+## 1. Versioning Structure
+
+```mermaid
+flowchart LR
+    MAJOR[MAJOR] -->|Breaking changes| v4[4.0.0]
+    MINOR[MINOR] -->|New features| v3x[3.x.0]
+    PATCH[PATCH] -->|Bug fixes| v3x0[3.0.x]
+
+    MAJOR -->|Example| ex1[1.0.0 → 2.0.0]
+    MINOR -->|Example| ex2[0.1.0 → 0.2.0]
+    PATCH -->|Example| ex3[0.1.0 → 0.1.1]
+```
+
+## 2. Format Version
 
 Every `.alp` file SHOULD declare the ALP specification version it conforms to:
 
 ```
-!alp-version: 0.1.0
+!alp-version: 45.0.0
 ```
 
 If omitted, parsers SHOULD assume the latest version they support.

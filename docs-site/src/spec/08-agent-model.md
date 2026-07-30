@@ -1,11 +1,32 @@
 # ALP Specification — Agent Model
 
-**Version:** 2.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Agent Model Overview
+
+```mermaid
+flowchart TD
+    agent[Agent] --> role[Role]
+    agent --> permission[Permissions]
+    agent --> tool[Tools]
+    agent --> limit[Limits]
+    agent --> goal[Goals]
+
+    role --> planner[Planner]
+    role --> frontend[Frontend]
+    role --> backend[Backend]
+    role --> qa[QA]
+
+    permission --> read[Read]
+    permission --> write[Write]
+    permission --> execute[Execute]
+    permission --> approve[Approve]
+```
+
+## 2. Agent Declaration
 
 ALP supports multiple specialized AI agents working on the same project. The Agent Model defines:
 
@@ -22,7 +43,7 @@ ALP supports multiple specialized AI agents working on the same project. The Age
 Agents are declared in `.alp/agents.alp`:
 
 ```
-!alp-version: 0.1.0
+!alp-version: 45.0.0
 
 @agent
   id: agent-planner

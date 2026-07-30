@@ -1,11 +1,27 @@
 # ALP Specification — Protocol Objects
 
-**Version:** 2.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Common Fields
+## 1. Protocol Objects Overview
+
+```mermaid
+flowchart TD
+    project[Project] --> feature[Feature]
+    feature --> task[Task]
+    task --> artifact[Artifact]
+    feature --> goal[Goal]
+    project --> agent[Agent]
+    agent --> permission[Permissions]
+    task --> verify[Verify]
+    task --> accept[Accept]
+    project --> memory[Memory]
+    project --> workspace[Workspace]
+```
+
+## 2. Common Fields
 
 Every protocol object MUST have these fields:
 
@@ -33,7 +49,42 @@ Every protocol object MUST have these fields:
 
 ---
 
-## 2. Project — `@project`
+## 2.1 Protocol Objects Quick Reference
+
+| Object | Marker | Category | Version |
+|---|---|---|---|
+| Project | `@project` | Core | v0.1.0+ |
+| Feature | `@feature` | Core | v0.1.0+ |
+| Task | `@task` | Core | v0.1.0+ |
+| Workflow | `@workflow` | Core | v0.1.0+ |
+| Agent | `@agent` | Core | v0.1.0+ |
+| Memory | `@memory` | Core | v0.1.0+ |
+| State | `@state` | Core | v0.1.0+ |
+| Artifact | `@artifact` | Core | v0.1.0+ |
+| Decision | `@decision` | Core | v0.1.0+ |
+| Constraint | `@constraint` | Core | v0.1.0+ |
+| Verification | `@verification` | Core | v0.1.0+ |
+| Dependency | `@dependency` | Core | v0.1.0+ |
+| Resource | `@resource` | Core | v0.1.0+ |
+| Event | `@event` | Core | v0.1.0+ |
+| Goal | `@goal` | Core | v0.1.0+ |
+| Context | `@context` | Core | v0.1.0+ |
+| Rule | `@rule` | Core | v0.1.0+ |
+| Plugin | `@plugin` | Extension | v0.2.0+ |
+| Type | `@type` | Extension | v0.2.0+ |
+| Macro | `@macro` | Extension | v1.4.0+ |
+| Policy | `@policy` | Governance | v4.0.0+ |
+| Contract | `@contract` | Governance | v8.3.0+ |
+| Vault | `@vault` | Governance | v8.4.0+ |
+| Timeline | `@timeline` | Governance | v8.2.0+ |
+| Swarm | `@swarm` | Execution | v4.0.0+ |
+| Repo | `@repo` | Execution | v4.0.0+ |
+| Workspace | `@workspace` | Organization | v0.5.0+ |
+| Package | `@package` | Distribution | v0.6.0+ |
+
+---
+
+## 3. Project — `@project`
 
 The root object. Every ALP project MUST have exactly one `@project` object, defined in `.alp/project.alp`.
 
@@ -56,7 +107,7 @@ The root object. Every ALP project MUST have exactly one `@project` object, defi
 
 **Example:**
 ```
-!alp-version: 0.1.0
+!alp-version: 45.0.0
 
 @project
   id: healthcare-platform
@@ -1180,7 +1231,7 @@ automatically disabled after firing; re-enable it manually to re-trigger.
 Evaluated by `TimelineEngine.evaluate(now)` and by `alp schedule`
 (spec/17).
 
-## 29. Contract — `@contract` (v8.3.0+)
+## 28. Contract — `@contract` (v8.3.0+)
 
 Declares a runtime boundary between two entities (agents, tasks, repos).
 Evaluated by `ContractEngine` at handoff points to enforce least-privilege
@@ -1204,7 +1255,7 @@ and (2) the operation is in `allows` (if non-empty) and not in `denies`.
 Evaluated by `ContractEngine.check(contractId, context)`; full semantics in
 spec/18.
 
-## 30. Repo — `@repo` (v4.0.0+)
+## 29. Repo — `@repo` (v4.0.0+)
 
 Declares an **external repository** that participates in cross-repository
 orchestration. Introduced in ALP v4 (The Federation Era, Pillar 2) so a single
@@ -1241,7 +1292,7 @@ A task in the local workspace can then depend on it:
     - -> billing::task-stripe-integration | blocks
 ```
 
-## 31. Vault — `@vault` (v8.4.0+)
+## 30. Vault — `@vault` (v8.4.0+)
 
 Declares an **encrypted secrets vault** so agents store sensitive values
 without committing plaintext to `.alp/`. Introduced in ALP v8.4.0 (Production-Grade

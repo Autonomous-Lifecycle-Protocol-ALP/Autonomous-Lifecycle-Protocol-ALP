@@ -35,191 +35,6 @@ features:
     details: 49 JSON schemas registered with 1:1 TypeScript & Python SDK parity and 1013+ passing automated tests.
 ---
 
-<style>
-.VPHome h2 {
-  font-size: 1.8rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin: 64px 0 24px;
-  background: linear-gradient(120deg, var(--vp-c-brand-1), var(--vp-c-accent-1));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.VPHome blockquote {
-  margin: 24px 0;
-  padding: 16px 22px;
-  border-left: 4px solid var(--vp-c-brand-1);
-  border-radius: 12px;
-  background: color-mix(in srgb, var(--vp-c-brand-1) 10%, var(--vp-c-bg));
-  color: var(--vp-c-text-1);
-  font-size: 1.05rem;
-  font-weight: 500;
-}
-
-/* Stats band */
-.alp-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  margin: 32px 0 16px;
-}
-.alp-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 24px 16px;
-  border: 1px solid var(--vp-c-border);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--vp-c-bg-soft) 85%, transparent);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-}
-.alp-stat:hover {
-  transform: translateY(-6px);
-  border-color: var(--vp-c-brand-1);
-  box-shadow: 0 12px 30px -10px color-mix(in srgb, var(--vp-c-brand-1) 40%, transparent);
-}
-.alp-stat-num {
-  font-size: 2.3rem;
-  font-weight: 900;
-  line-height: 1;
-  background: linear-gradient(120deg, var(--vp-c-brand-1), var(--vp-c-accent-1));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.alp-stat-label {
-  margin-top: 10px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--vp-c-text-2);
-}
-
-/* Performance Visual Graphs */
-.alp-benchmark-card {
-  margin: 32px 0;
-  padding: 28px;
-  border: 1px solid var(--vp-c-border);
-  border-radius: 18px;
-  background: color-mix(in srgb, var(--vp-c-bg-soft) 90%, transparent);
-  backdrop-filter: blur(16px);
-}
-.alp-bar-group {
-  margin-bottom: 24px;
-}
-.alp-bar-group:last-child {
-  margin-bottom: 0;
-}
-.alp-bar-label {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: var(--vp-c-text-1);
-}
-.alp-bar-track {
-  height: 14px;
-  border-radius: 7px;
-  background: var(--vp-c-bg-mute);
-  overflow: hidden;
-  position: relative;
-}
-.alp-bar-fill {
-  height: 100%;
-  border-radius: 7px;
-  background: linear-gradient(90deg, var(--vp-c-brand-1), var(--vp-c-accent-1));
-  transition: width 1s ease-in-out;
-}
-.alp-bar-fill.alt {
-  background: linear-gradient(90deg, #3b82f6, #6366f1);
-}
-.alp-bar-fill.warn {
-  background: linear-gradient(90deg, #f59e0b, #ef4444);
-}
-
-/* Comparison table */
-.alp-compare {
-  overflow-x: auto;
-  margin: 28px 0 16px;
-  border: 1px solid var(--vp-c-border);
-  border-radius: 16px;
-  background: var(--vp-c-bg-soft);
-}
-.alp-compare table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.88rem;
-  min-width: 800px;
-}
-.alp-compare th,
-.alp-compare td {
-  padding: 14px 16px;
-  text-align: left;
-  border-bottom: 1px solid var(--vp-c-divider);
-}
-.alp-compare thead th {
-  background: var(--vp-c-bg-mute);
-  font-weight: 800;
-  color: var(--vp-c-text-1);
-}
-.alp-compare tbody tr:hover {
-  background: color-mix(in srgb, var(--vp-c-brand-1) 8%, transparent);
-}
-.alp-compare .alp-col {
-  background: color-mix(in srgb, var(--vp-c-brand-1) 12%, var(--vp-c-bg));
-  font-weight: 700;
-  color: var(--vp-c-brand-1);
-}
-.alp-compare thead .alp-col {
-  background: linear-gradient(120deg, var(--vp-c-brand-1), var(--vp-c-brand-2));
-  color: #fff;
-}
-
-/* Ecosystem grid */
-.alp-eco {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-top: 24px;
-}
-.alp-eco-card {
-  display: block;
-  padding: 24px;
-  border: 1px solid var(--vp-c-border);
-  border-radius: 16px;
-  background: var(--vp-c-bg-soft);
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-}
-.alp-eco-card:hover {
-  transform: translateY(-6px);
-  border-color: var(--vp-c-brand-1);
-  box-shadow: 0 14px 35px -12px color-mix(in srgb, var(--vp-c-brand-1) 50%, transparent);
-}
-.alp-eco-card h3 {
-  margin: 0 0 10px;
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--vp-c-brand-1);
-}
-.alp-eco-card p {
-  margin: 0;
-  font-size: 0.92rem;
-  color: var(--vp-c-text-2);
-  line-height: 1.55;
-}
-
-@media (max-width: 768px) {
-  .alp-stats { grid-template-columns: repeat(2, 1fr); }
-  .alp-eco { grid-template-columns: 1fr; }
-}
-</style>
-
 ## Why ALP?
 
 > **Git** standardized version control. **Docker** standardized environments. **OpenAPI** standardized APIs.
@@ -236,6 +51,119 @@ files with **one deterministic protocol stored natively in your repository** (`.
   <div class="alp-stat"><span class="alp-stat-num">1013+</span><span class="alp-stat-label">Passed Tests</span></div>
   <div class="alp-stat"><span class="alp-stat-num">1:5</span><span class="alp-stat-label">Language SDK Parity</span></div>
 </div>
+
+---
+
+## How it works
+
+ALP turns your repository into a **deterministic, machine-readable project specification** that any AI agent can read, understand, and act on.
+
+```mermaid
+flowchart LR
+    ALP[.alp/ Files] --> Parser[ALP Parser]
+    Parser --> Graph[Dependency Graph]
+    Graph --> Engine[Execution Engine]
+    Engine --> Agent[AI Agent]
+    Agent --> Task[Task Execution]
+    Task --> Verify[Quality Gates]
+    Verify --> State[Project State]
+```
+
+1. **Write** — Define your project in `.alp/` files using the ALP protocol
+2. **Parse** — The parser builds a dependency graph and validates against 49 JSON schemas
+3. **Execute** — The engine topologically sorts tasks and compiles context bundles in < 2ms
+4. **Verify** — Quality gates ensure tasks aren't marked done until tests pass
+5. **Remember** — Cross-session memory eliminates redundant context scraping
+
+---
+
+## Quick Example
+
+Create a `.alp` file in your repository:
+
+```alp
+!alp-version: 45.0.0
+
+@project
+  id: my-project
+  name: My Project
+  version: 1.0.0
+  state: active
+
+@feature
+  id: feat-auth
+  name: Authentication
+  description: OAuth2 + JWT authentication flow
+
+@task
+  id: task-login-ui
+  name: Build login UI
+  status: [ ]
+  depends_on:
+    - task-setup-db
+  verify:
+    - npm run test:login
+    - npm run lint:login
+
+@agent
+  id: agent-frontend
+  name: Frontend Specialist
+  capabilities: [react, typescript, tailwind]
+```
+
+Then run:
+
+```bash
+# Validate your workspace
+alp validate
+
+# Execute the next available task
+alp run
+
+# Verify quality gates
+alp verify task-login-ui
+```
+
+---
+
+## 🏗️ Real-World Example: E-Commerce Platform
+
+Here's how ALP manages a complex e-commerce platform build:
+
+```mermaid
+graph TD
+    subgraph Features [Features]
+        F1[feat-auth] --> F2[feat-catalog]
+        F2 --> F3[feat-cart]
+        F3 --> F4[feat-checkout]
+        F4 --> F5[feat-orders]
+    end
+    
+    subgraph Tasks [Tasks per Feature]
+        F1 --> T1[task-oauth]
+        F1 --> T2[task-jwt]
+        F2 --> T3[task-products]
+        F2 --> T4[task-search]
+        F3 --> T5[task-cart-api]
+        F3 --> T6[task-cart-ui]
+    end
+    
+    subgraph Execution [Execution Order]
+        T1 --> T2
+        T2 --> T3
+        T3 --> T4
+        T4 --> T5
+        T5 --> T6
+    end
+```
+
+The execution engine automatically:
+1. **Topologically sorts** all tasks based on `depends_on` relationships
+2. **Compiles context bundles** with only relevant project state (< 2ms)
+3. **Assigns agents** based on capabilities and availability
+4. **Enforces quality gates** — no task is marked done until `verify` scripts pass
+5. **Tracks memory** across sessions so agents don't repeat work
+
 
 ---
 
@@ -367,23 +295,75 @@ flowchart LR
   <a class="alp-eco-card" href="/guide/sdk"><h3>@autonomous-lifecycle-protocol-alp/sdk &amp; alp-sdk</h3><p>Official TypeScript and Python SDKs with complete 1:1 implementation parity.</p></a>
   <a class="alp-eco-card" href="/guide/sdk"><h3>alp-go / alp-rs / alp-java</h3><p>Official Go, Rust, and Java SDKs with core parsing, graph, and workspace APIs.</p></a>
   <a class="alp-eco-card" href="/spec/22-autonomous-marketplace"><h3>@swarm_marketplace</h3><p>Autonomous skill registry, provider discovery, invocation, and cost tracking (v38.0.0).</p></a>
-  <a class="alp-eco-card" href="/sham"><h3>SHAM IDE</h3><p>The unified ALP desktop IDE (Mac/Windows/Linux). Faster, more secure, and error-free vs. fragmented multi-IDE setups. Native `@autonomous-lifecycle-protocol-alp/parser`, Monaco editor, agent manager, and integrated terminal.</p></a>
+  <a class="alp-eco-card" href="/sham"><h3>SHAM IDE</h3><p>The unified ALP desktop IDE (Mac/Windows/Linux). Faster, more secure, and error-free vs. fragmented multi-IDE setups. Native <code>@autonomous-lifecycle-protocol-alp/parser</code>, Monaco editor, agent manager, and integrated terminal.</p></a>
 </div>
 
 ---
 
-## 🛠️ Quick Start
+## 🚀 Getting Started in 60 Seconds
+
+### Step 1: Install the CLI
 
 ```bash
-# Install the CLI from source (not yet published to npm)
-npm ci && npm run build --workspace @autonomous-lifecycle-protocol-alp/cli
-
-# Scaffold a new ALP workspace
-node cli/dist/index.js init
-
-# Start the execution engine
-node cli/dist/index.js run
+npm install -g @autonomous-lifecycle-protocol-alp/cli
 ```
+
+### Step 2: Initialize your workspace
+
+```bash
+alp init
+```
+
+This creates a `.alp/` directory with a starter `project.alp` file.
+
+### Step 3: Define your first feature
+
+Create `.alp/features.alp`:
+
+```alp
+!alp-version: 45.0.0
+
+@feature
+  id: feat-auth
+  name: User Authentication
+  description: OAuth2 + JWT authentication flow
+
+@task
+  id: task-login-ui
+  name: Build login UI
+  status: [ ]
+  depends_on:
+    - task-setup-db
+  verify:
+    - npm run test:login
+    - npm run lint:login
+```
+
+### Step 4: Validate and execute
+
+```bash
+# Validate your workspace
+alp validate
+
+# Execute the next available task
+alp run
+
+# Verify quality gates
+alp verify task-login-ui
+```
+
+---
+
+## 📚 Learn More
+
+<div class="alp-eco">
+  <a class="alp-eco-card" href="/guide/cli"><h3>📖 CLI Guide</h3><p>Complete guide to the ALP CLI — initialization, validation, execution, and all commands.</p></a>
+  <a class="alp-eco-card" href="/spec/01-overview"><h3>📐 Specification</h3><p>Deep dive into the ALP protocol — syntax, objects, engines, memory model, and more.</p></a>
+  <a class="alp-eco-card" href="/mcp-server"><h3>🔌 MCP Server</h3><p>Connect ALP to Claude Desktop, Cursor, and other MCP-compatible tools.</p></a>
+  <a class="alp-eco-card" href="/vscode-extension"><h3>💻 VS Code Extension</h3><p>IntelliSense, go-to-definition, and DAG visualization in VS Code.</p></a>
+  <a class="alp-eco-card" href="/guide/sdk"><h3>🛠️ SDKs</h3><p>TypeScript, Python, Go, Rust, and Java SDKs with full API reference.</p></a>
+  <a class="alp-eco-card" href="/cli-tools"><h3>🛠️ CLI Tools Reference</h3><p>Complete reference for all CLI commands, flags, and workflows.</p></a>
+</div>
 
 ---
 
@@ -397,7 +377,8 @@ Released versions are tracked in the [versioning spec](/spec/10-versioning.md). 
 | V9 — Native Desktop | 45.0.0 | SHAM IDE cross-platform release, native ALP integration, Monaco editor, agent manager, auto-updater, Pro/Enterprise licensing |
 | V10 — The Intelligence Era | 45.0.0+ | Autonomous orchestration, self-healing workflows, predictive governance, edge-native execution |
 
-### What’s Next
+### What's Next
+
 - **SHAM IDE** (V9, 45.0.0) — Already released. Cross-platform desktop application for Mac, Windows, and Linux with native ALP integration, Monaco editor, agent manager, auto-updater, and Pro/Enterprise licensing.
 - **V10 — The Intelligence Era** (45.0.0+) — Autonomous multi-agent orchestration with self-healing DAGs, predictive governance, edge-native execution, and AI-native lifecycle management.
 

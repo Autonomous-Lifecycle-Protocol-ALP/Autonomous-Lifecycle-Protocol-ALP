@@ -2,6 +2,10 @@
 
 Welcome to the **Autonomous Lifecycle Protocol (ALP)**! ALP is an open standard designed to help AI agents (and human developers) coordinate, track progress, and build software autonomously.
 
+## What is ALP?
+
+ALP (Autonomous Lifecycle Protocol) is the world's first open protocol specifically designed for autonomous software engineering. It replaces unstructured project documentation with a deterministic, machine-readable specification.
+
 ## Installation
 
 The CLI and Parser are distributed via npm:
@@ -25,7 +29,7 @@ This creates an `.alp/` directory and a `project.alp` file in your repository.
 Create `.alp` files inside your `.alp/` directory. For example, `.alp/features.alp`:
 
 ```alp
-!alp-version: 3.0.0
+!alp-version: 45.0.0
 
 @feature
   id: feat-auth
@@ -87,3 +91,42 @@ console.log('Agent should work on:', nextTask.id);
 ```
 
 For more technical details, refer to the [ALP Specification](../spec/01-overview.md).
+
+## Status Markers
+
+ALP uses rich status markers to track task progress:
+
+| Marker | Meaning | Description |
+|---|---|---|
+| `[ ]` | Todo | Not started |
+| `[~]` | In Progress | Currently being worked on |
+| `[x]` | Done | Finished and verified |
+| `[!]` | Blocked | Cannot proceed due to dependency (requires reason) |
+| `[?]` | Review | Completed but awaiting human review (requires reason) |
+| `[-]` | Skipped | Intentionally not done |
+
+## Best Practices
+
+- Keep `.alp` files under 500 lines for readability
+- Use kebab-case for object IDs
+- Always declare `!alp-version` at the top of your files
+- Use `-> references` to link related objects
+- Define `@verify` rules for every task
+- Commit `.alp/` to version control
+
+## Troubleshooting
+
+**Validation fails:**
+- Check for syntax errors in your `.alp` files
+- Ensure all required fields are present
+- Verify that all `-> references` point to valid objects
+
+**Tasks not executing:**
+- Check that dependencies are marked `[x]`
+- Verify no circular dependencies exist
+- Run `alp graph` to see the execution order
+
+**Status markers not updating:**
+- Ensure `@verify` commands exit with code 0
+- Check that the agent has write permissions
+- Verify the `.alp/` directory structure is correct

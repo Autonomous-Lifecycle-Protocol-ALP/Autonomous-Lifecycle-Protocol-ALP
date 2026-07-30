@@ -1,11 +1,25 @@
 # ALP Specification — Scheduling
 
-**Version:** 8.2.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Scheduling Overview
+
+```mermaid
+flowchart TD
+    Timeline[@timeline] --> Cron[cron expression]
+    Timeline --> At[at datetime]
+    Timeline --> Task[task reference]
+    Engine[TimelineEngine] --> Evaluate[evaluate now]
+    Evaluate --> Due[Due timelines]
+    Due --> Fire[Fire task]
+    Engine --> List[alp schedule]
+    Engine --> Next[alp schedule next]
+```
+
+## 2. Overview
 
 ALP v8.2.0 introduces native scheduling: a declarative `@timeline` object and
 the `alp schedule` CLI so autonomous agents can defer, batch, and trigger work
@@ -101,7 +115,7 @@ function evaluate(now: DateTime): TimelineResult[]:
 ## 4. Examples
 
 ```alp
-!alp-version: 8.2.0
+!alp-version: 45.0.0
 
 @timeline
   id: tl-daily-standup

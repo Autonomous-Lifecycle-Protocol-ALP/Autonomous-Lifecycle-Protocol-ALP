@@ -1,11 +1,26 @@
 # ALP Specification — Compliance Test Suite
 
-**Version:** 2.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Compliance Overview
+
+```mermaid
+flowchart TD
+    Suite[Compliance Suite] --> Valid[Valid Fixtures]
+    Suite --> Invalid[Invalid Fixtures]
+    Valid --> Pass[Parser MUST Accept]
+    Invalid --> Fail[Parser MUST Reject]
+    Suite --> Categories[Test Categories]
+    Categories --> Schema[Schema Validation]
+    Categories --> Graph[Dependency Graph]
+    Categories --> Policy[Policy Enforcement]
+    Categories --> Lifecycle[Lifecycle State Machine]
+```
+
+## 2. Overview
 
 The **ALP Compliance Test Suite** provides a standardized set of test fixtures to ensure that custom parser implementations conform to the ALP v1.0.0 specification.
 

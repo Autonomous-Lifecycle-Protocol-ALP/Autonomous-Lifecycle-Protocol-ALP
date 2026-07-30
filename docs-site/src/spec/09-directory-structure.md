@@ -1,11 +1,28 @@
 # ALP Specification — Directory Structure
 
-**Version:** 2.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Directory Structure
+
+```mermaid
+flowchart TD
+    root[Project Root] --> alp[.alp/]
+    alp --> project[project.alp]
+    alp --> agents[agents.alp]
+    alp --> state[state.alp]
+    alp --> memory[memory.alp]
+    alp --> features[features/]
+    features --> feat1[auth.alp]
+    features --> feat2[dashboard.alp]
+    root --> src[src/]
+    root --> tests[tests/]
+    root --> docs[docs/]
+```
+
+## 2. Overview
 
 Every ALP project has a `.alp/` directory at the project root. This directory is the single source of truth for the project's specification — agents look here first and only here for protocol information.
 
@@ -111,7 +128,7 @@ Feature files live in `.alp/features/` and contain everything related to a singl
 
 ```
 // .alp/features/auth.alp
-!alp-version: 0.1.0
+!alp-version: 45.0.0
 
 @feature
   id: feat-auth

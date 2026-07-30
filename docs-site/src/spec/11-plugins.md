@@ -1,11 +1,28 @@
 # ALP Specification — Plugin System
 
-**Version:** 10.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Plugin System Overview
+
+```mermaid
+flowchart TD
+    Plugin[Plugin System] --> Local[Local Plugins]
+    Plugin --> Remote[Remote Plugins]
+    Local --> Import[!import directive]
+    Remote --> HTTPS[HTTPS URL]
+    Remote --> Registry[Plugin Registry]
+    Registry --> Alias[Namespace Alias]
+    Registry --> Version[Version Resolution]
+    Plugin --> CustomTypes[Custom Types]
+    CustomTypes --> TypeBlock[@type block]
+    TypeBlock --> Properties[Schema Definition]
+    TypeBlock --> Nested[Allowed Nested]
+```
+
+## 2. Overview
 
 The ALP format is designed to be extensible. While the core specification provides 17 standard protocol objects (e.g., `@task`, `@feature`, `@agent`), many teams use specific methodologies like Agile, Scrum, Kanban, or domain-specific objects that don't fit perfectly into the core protocol.
 
@@ -22,7 +39,7 @@ Starting with v0.4.0, plugins can also be **imported from remote HTTPS URLs**, e
 A plugin is simply an `.alp` file that contains a `@plugin` declaration and one or more `@type` blocks.
 
 ```alp
-!alp-version: 0.4.0
+!alp-version: 45.0.0
 
 @plugin
   id: plugin-scrum
@@ -69,7 +86,7 @@ A plugin is simply an `.alp` file that contains a `@plugin` declaration and one 
 As of **v8.0.0** the canonical way to declare a custom type is a single `@type` object. A `@type` block both **identifies** the type and **defines** its schema:
 
 ```alp
-!alp-version: 8.0.0
+!alp-version: 45.0.0
 
 @type
   id: type-epic
@@ -100,7 +117,7 @@ As of **v8.0.0** the canonical way to declare a custom type is a single `@type` 
 To use a plugin in a project, you must import the `.alp` file that defines it. This is done using the file-level `!import` directive.
 
 ```alp
-!alp-version: 0.4.0
+!alp-version: 45.0.0
 !import: "plugins/scrum-plugin.alp"
 
 @project
@@ -205,7 +222,7 @@ To prevent supply-chain attacks (where a remote plugin is silently modified afte
 
 **Example with integrity:**
 ```alp
-!alp-version: 0.6.0
+!alp-version: 45.0.0
 !import: "https://registry.alp-protocol.org/plugins/scrum/1.0.0/plugin.alp" !integrity: sha256:e3b0c44298fc1c149afb
 ```
 
@@ -219,7 +236,7 @@ Starting with v0.6.0, parsers support importing plugins via registry aliases. Th
 !import: "@internal/deploy@latest"
 ```
 
-Registry imports automatically handle fetching, version resolution, and caching based on the [Plugin Registry Protocol](14-plugin-registry.md).
+Registry imports automatically handle fetching, version resolution, and caching based on the [Plugin Registry Protocol](../spec/14-plugin-registry.md).
 
 ---
 
@@ -228,7 +245,7 @@ Registry imports automatically handle fetching, version resolution, and caching 
 Once a type is defined and imported, you can use its `type_name` as a block marker, exactly like a core object.
 
 ```alp
-!alp-version: 0.6.0
+!alp-version: 45.0.0
 !import: "@autonomous-lifecycle-protocol-alp/scrum@^1.0.0"
 
 // We can now use @epic because it was defined in the scrum plugin!
@@ -303,7 +320,7 @@ Starting with v0.4.0, plugins can be hosted at any HTTPS endpoint. Common strate
    !import: "https://github.com/my-org/alp-plugins/raw/v1.0.0/scrum.alp"
    ```
 
-2. **Plugin registries:** The recommended approach (v0.6.0+) is to use the [Plugin Registry Protocol](14-plugin-registry.md) for versioned, alias-based resolution.
+2. **Plugin registries:** The recommended approach (v0.6.0+) is to use the [Plugin Registry Protocol](../spec/14-plugin-registry.md) for versioned, alias-based resolution.
    ```alp
    !import: "@autonomous-lifecycle-protocol-alp/scrum@1.0.0"
    ```

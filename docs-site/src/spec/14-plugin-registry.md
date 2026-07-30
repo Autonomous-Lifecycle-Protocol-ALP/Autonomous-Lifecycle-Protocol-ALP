@@ -1,11 +1,27 @@
 # ALP Specification — Plugin Registry Protocol
 
-**Version:** 6.8.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Registry Protocol Overview
+
+```mermaid
+flowchart LR
+    Client[ALP Parser] -->|1. Request| Registry[Plugin Registry]
+    Registry -->|2. Metadata| Client
+    Client -->|3. Download| Registry
+    Registry -->|4. Plugin File| Client
+    Client -->|5. Cache| Cache[Local Cache]
+    Cache -->|6. Load| Plugin[Plugin Engine]
+    Plugin -->|7. Register| Types[Custom Types]
+    
+    Registry -->|Namespace| NS1[@autonomous-lifecycle-protocol-alp]
+    Registry -->|Namespace| NS2[@community]
+```
+
+## 2. Overview
 
 While plugins can be imported via direct URLs (e.g., `!import: "https://example.com/plugin.alp"`), the **Plugin Registry Protocol** provides a standardized way to discover, host, and import plugins using semantic aliases (e.g., `!import: "@autonomous-lifecycle-protocol-alp/scrum@1.0.0"`).
 
@@ -191,7 +207,7 @@ Rules:
 
 ## 6. Dependency Resolution Strategy
 
-Plugins can depend on other plugins (see [11-plugins.md](11-plugins.md)). The registry protocol relies on a **Strict Singleton** resolution strategy.
+Plugins can depend on other plugins (see [11-plugins.md](../spec/11-plugins.md)). The registry protocol relies on a **Strict Singleton** resolution strategy.
 
 1. The parser collects all direct plugin imports from the project.
 2. It fetches metadata for all imported plugins to discover their transitive dependencies.

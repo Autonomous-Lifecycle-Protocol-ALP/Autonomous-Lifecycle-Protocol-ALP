@@ -1,11 +1,26 @@
 # ALP Specification — Multi-Project Support
 
-**Version:** 2.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Multi-Project Overview
+
+```mermaid
+flowchart TD
+    Workspace[Workspace] --> Project1[Project A]
+    Workspace --> Project2[Project B]
+    Workspace --> Project3[Project C]
+    Project1 --> SharedAgents[Shared Agents]
+    Project1 --> SharedRules[Shared Rules]
+    Project2 -->|qualified ref| Project1
+    Project3 -->|qualified ref| Project2
+    SharedAgents --> Agent1[agent-planner]
+    SharedAgents --> Agent2[agent-qa]
+```
+
+## 2. Overview
 
 ALP v0.1.0 through v0.4.0 treated each `.alp/` directory as an isolated, self-contained project. While this works well for single repositories, modern software is frequently composed of multiple interconnected projects — microservice architectures, monorepos with shared libraries, frontend/backend splits, and platform ecosystems.
 
@@ -37,7 +52,7 @@ ALP v0.5.0 introduces the **Workspace** model: a way to group multiple ALP proje
 A workspace is defined by a `@workspace` object in a `workspace.alp` file at the workspace root.
 
 ```alp
-!alp-version: 0.5.0
+!alp-version: 45.0.0
 
 @workspace
   id: healthcare-platform
@@ -507,7 +522,7 @@ The parser determines the scope based on the number of `::` delimiters:
 1. Parse `workspace.alp` to discover member projects.
 2. For each member project (in order of declaration):
    a. Parse the project's `.alp/project.alp`.
-   b. Parse all other `.alp` files in standard order (see [09-directory-structure.md](09-directory-structure.md)).
+   b. Parse all other `.alp` files in standard order (see [09-directory-structure.md](../spec/09-directory-structure.md)).
 3. Parse workspace-level shared files (`agents.alp`, `rules.alp`, etc.).
 4. Resolve all qualified references.
 5. Build the workspace-level dependency graph.

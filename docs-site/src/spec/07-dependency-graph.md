@@ -1,11 +1,26 @@
 # ALP Specification — Dependency Graph
 
-**Version:** 2.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. DAG Structure
+
+```mermaid
+flowchart TD
+    A[Task A] -->|blocks| B[Task B]
+    A -->|requires| C[Task C]
+    B -->|extends| D[Task D]
+    C -->|uses| D
+
+    style A fill:#ff9999
+    style B fill:#ff9999
+    style C fill:#ffcc99
+    style D fill:#99ff99
+```
+
+## 2. Overview
 
 ALP automatically builds a dependency graph from relationships declared across all `.alp` files. The graph is the foundation for:
 
@@ -124,7 +139,7 @@ In a workspace, dependencies can span across member projects using qualified ref
     - -> auth-service::task-auth-api | blocks
 ```
 
-This ensures that execution ordering respects boundaries between distinct ALP projects. See the [Multi-Project Specification](13-multi-project.md) for full workspace graph rules.
+This ensures that execution ordering respects boundaries between distinct ALP projects. See the [Multi-Project Specification](../spec/13-multi-project.md) for full workspace graph rules.
 
 ---
 

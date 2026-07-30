@@ -1,11 +1,25 @@
 # ALP Specification — Engines
 
-**Version:** 2.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Engines Overview
+
+```mermaid
+flowchart TD
+    LoopEngine["Loop Engine<br/>Iterative improvement cycles"]
+    WorkflowEngine["Workflow Engine<br/>Sequential task orchestration"]
+    ContextEngine["Context Engine<br/>Intelligent context loading"]
+    VerificationEngine["Verification Engine<br/>Quality gate enforcement"]
+
+    LoopEngine --> WorkflowEngine
+    ContextEngine --> LoopEngine
+    VerificationEngine --> WorkflowEngine
+```
+
+## 2. Loop Engine
 
 ALP defines four engines that govern how agents interact with the protocol:
 
@@ -130,7 +144,7 @@ Start → Step 1 → Step 2 → Step 3 → ... → End
 
 1. Steps execute in the order defined in the `steps` list
 2. A step only begins when its preceding step completes successfully
-3. Steps with `condition` are evaluated before execution — if false, the step is skipped. The condition is evaluated as an ALPEL expression (see the [Expressions Spec](12-expressions.md)).
+3. Steps with `condition` are evaluated before execution — if false, the step is skipped. The condition is evaluated as an ALPEL expression (see the [Expressions Spec](../spec/12-expressions.md)).
 4. Each step is assigned to an agent via `agent` reference
 5. Each step maps to a task via `task` reference
 

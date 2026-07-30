@@ -1,11 +1,26 @@
 # ALP Specification — Encrypted Secrets Vault
 
-**Version:** 8.4.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Vault Overview
+
+```mermaid
+flowchart TD
+    Vault[@vault] --> Recipients[recipients X25519]
+    Vault --> Rotation[rotation_days]
+    Store[store.jsonl] --> Ciphertext[Ciphertext]
+    Store --> Nonce[Nonce]
+    Engine[VaultEngine] --> Set[set secret]
+    Engine --> Get[get secret]
+    Engine --> Rotate[rotate secret]
+    Engine --> Audit[audit log]
+    Recipients --> TrustRoot[Registry Trust Root]
+```
+
+## 2. Overview
 
 ALP v8.4.0 adds an encrypted secrets **vault** so agents can store and
 retrieve sensitive values (API keys, tokens, connection strings) without
@@ -93,7 +108,7 @@ alp vault audit
 ## 5. Example
 
 ```alp
-!alp-version: 8.4.0
+!alp-version: 45.0.0
 
 @vault
   id: default

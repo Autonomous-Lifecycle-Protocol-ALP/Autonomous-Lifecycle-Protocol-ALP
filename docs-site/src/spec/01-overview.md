@@ -1,6 +1,6 @@
 # ALP Specification — Overview
 
-**Version:** 2.0.0
+**Version:** 45.0.0
 **Status:** Stable
 **Date:** 2025-07-14
 
@@ -26,6 +26,17 @@ ALP files use the `.alp` extension and follow a structured syntax that allows AI
 ALP is **not** a programming language. It is a **protocol format** — a way to describe software projects so that any AI agent can read, understand, and act on them.
 
 ---
+
+```mermaid
+flowchart LR
+    ALP[ALP File] --> Parser[Parser]
+    Parser --> Graph[Dependency Graph]
+    Graph --> Engine[Execution Engine]
+    Engine --> Agent[AI Agent]
+    Agent --> Task[Task Execution]
+    Task --> Verify[Verification]
+    Verify --> State[Project State]
+```
 
 ## 2. Why ALP Exists
 
@@ -97,7 +108,7 @@ Starting with v0.3.0, ALP supports the **ALP Expression Language (ALPEL)**. This
 
 ALP describes software projects. It does not care what programming language the project uses. A Python project and a Rust project use the same ALP format.
 
-### 3.6 Framework Agnostic
+### 3.7 Framework Agnostic
 
 React, Angular, Vue, Express, Django, Rails — ALP works with any framework. The format describes *what* to build and *how* to verify it, not which tools to use.
 

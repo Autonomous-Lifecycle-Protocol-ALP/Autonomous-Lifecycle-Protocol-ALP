@@ -1,11 +1,31 @@
 # ALP Specification — Formal Grammar
 
-**Version:** 3.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Grammar Structure
+
+```mermaid
+flowchart TD
+    Grammar[ALP Grammar] --> Lexical[Lexical Grammar]
+    Grammar --> Syntactic[Syntactic Grammar]
+    Lexical --> Characters[Basic Characters]
+    Lexical --> Whitespace[Whitespace]
+    Lexical --> Comments[Comments]
+    Syntactic --> File[File Structure]
+    Syntactic --> Block[Block]
+    Syntactic --> Property[Property]
+    Syntactic --> Value[Value]
+    Value --> String[String]
+    Value --> Number[Number]
+    Value --> Boolean[Boolean]
+    Value --> Ref[Reference]
+    Value --> List[List]
+```
+
+## 2. Overview
 
 This document provides the formal grammar for the Autonomous Lifecycle Protocol (ALP) version 3.0.0. The grammar is defined using **W3C EBNF** (Extended Backus-Naur Form) notation, as defined in the XML 1.0 specification.
 

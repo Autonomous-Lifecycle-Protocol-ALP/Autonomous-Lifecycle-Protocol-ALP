@@ -1,11 +1,26 @@
 # ALP Specification — Lifecycle
 
-**Version:** 2.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Lifecycle Flow
+
+```mermaid
+flowchart LR
+    discover --> understand
+    understand --> plan
+    plan --> design
+    design --> implement
+    implement --> test
+    test --> review
+    review --> refactor
+    refactor --> verify
+    verify --> complete
+```
+
+## 2. Overview
 
 ALP defines a deterministic lifecycle that every feature progresses through. The lifecycle ensures that work follows a structured, verifiable path from discovery to completion.
 

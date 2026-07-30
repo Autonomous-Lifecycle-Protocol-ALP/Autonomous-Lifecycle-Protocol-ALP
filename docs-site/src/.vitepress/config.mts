@@ -33,7 +33,16 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
+      { text: 'Tutorial', link: '/tutorial' },
+      { text: 'Examples', link: '/examples' },
       { text: 'Guide', link: '/guide/cli' },
+      { text: 'Best Practices', link: '/best-practices' },
+      { text: 'FAQ', link: '/faq' },
+      { text: 'Contributing', link: '/contributing' },
+      { text: 'Roadmap', link: '/roadmap' },
+      { text: 'Execution', link: '/execution-engine' },
+      { text: 'CLI Tools', link: '/cli-tools' },
+      { text: 'MCP Server', link: '/mcp-server' },
       { text: 'SHAM IDE', link: '/sham' },
       { text: 'Specification', link: '/spec/01-overview' },
       { text: 'Releases', link: '/releases' }
@@ -41,20 +50,27 @@ export default defineConfig({
 
     sidebar: [
       {
-        text: 'Guide',
+        text: 'Getting Started',
         items: [
+          { text: 'Home', link: '/' },
+          { text: 'Tutorial', link: '/tutorial' },
+          { text: 'Examples', link: '/examples' },
           { text: 'CLI Usage', link: '/guide/cli' },
-          { text: 'SDKs', link: '/guide/sdk' },
-          { text: 'SHAM IDE', link: '/sham' }
+          { text: 'Best Practices', link: '/best-practices' },
+          { text: 'FAQ', link: '/faq' },
+          { text: 'Contributing', link: '/contributing' },
+          { text: 'Roadmap', link: '/roadmap' },
+          { text: 'SDKs', link: '/guide/sdk' }
         ]
       },
       {
         text: 'Ecosystem & Execution',
         items: [
-          { text: 'Execution Engine (alp run)', link: '/execution-engine' },
-          { text: 'CLI Verification & Tools', link: '/cli-tools' },
+          { text: 'Execution Engine', link: '/execution-engine' },
+          { text: 'CLI Tools Reference', link: '/cli-tools' },
           { text: 'MCP Server', link: '/mcp-server' },
-          { text: 'VS Code Extension', link: '/vscode-extension' }
+          { text: 'VS Code Extension', link: '/vscode-extension' },
+          { text: 'SHAM IDE', link: '/sham' }
         ]
       },
       {
@@ -85,6 +101,10 @@ export default defineConfig({
         ]
       }
     ],
+
+    search: {
+      provider: 'local'
+    },
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP' }

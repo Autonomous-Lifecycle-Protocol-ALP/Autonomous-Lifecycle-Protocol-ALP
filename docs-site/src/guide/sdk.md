@@ -8,9 +8,9 @@ Official SDK packages for integrating ALP into applications.
 |---|---|---|
 | TypeScript | `@autonomous-lifecycle-protocol-alp/sdk` | ✅ Shipped (parsing, validation, graph) |
 | Python | `alp-sdk` | ✅ Shipped (parsing, validation, analytics, registry client) |
-| Go | `alp-go` | 🔜 Community |
-| Rust | `alp-rs` | 🔜 Community |
-| Java | `alp-java` | 🔜 Community |
+| Go | `alp-go` | ✅ Shipped |
+| Rust | `alp-rs` | ✅ Shipped |
+| Java | `alp-java` | ✅ Shipped |
 
 ## TypeScript
 

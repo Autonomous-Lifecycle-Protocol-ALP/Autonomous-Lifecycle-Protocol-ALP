@@ -1,11 +1,28 @@
 # ALP Specification — Contracts
 
-**Version:** 8.3.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Contracts Overview
+
+```mermaid
+flowchart TD
+    Contract[@contract] --> From[from entity]
+    Contract --> To[to entity]
+    Contract --> Requires[requires preconditions]
+    Contract --> Allows[allows operations]
+    Contract --> Denies[denies operations]
+    Engine[ContractEngine] --> Check[check contractId]
+    Check --> Satisfied[Satisfied]
+    Check --> Violation[ContractViolation]
+    Violation --> Deny[deny]
+    Violation --> Warn[warn]
+    Violation --> Log[log]
+```
+
+## 2. Overview
 
 ALP v8.3.0 introduces **contracts**: declarative boundary objects that define
 which operations, fields, and data flows are permitted between two entities
@@ -75,7 +92,7 @@ function check(contract, context):
 ## 4. Examples
 
 ```alp
-!alp-version: 8.3.0
+!alp-version: 45.0.0
 
 @contract
   id: contract-repo-access

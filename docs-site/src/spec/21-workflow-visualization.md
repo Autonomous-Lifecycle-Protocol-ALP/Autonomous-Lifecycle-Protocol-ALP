@@ -1,11 +1,26 @@
 # ALP Specification — Workflow Visualization
 
-**Version:** 10.2.0  
+**Version:** 45.0.0  
 **Status:** Stable  
 
 ---
 
-## 1. Overview
+## 1. Workflow Visualization Overview
+
+```mermaid
+flowchart LR
+    Workflow[@workflow] --> Steps[Steps]
+    Steps --> Step1[Step 1]
+    Steps --> Step2[Step 2]
+    Steps --> Step3[Step 3]
+    Step1 -->|on_success| Step2
+    Step2 -->|on_failure| Step1
+    Engine[Visualizer] --> Mermaid[Mermaid]
+    Engine --> DOT[Graphviz DOT]
+    Engine --> JSON[JSON]
+```
+
+## 2. Overview
 
 ALP v10.2.0 introduces **Workflow Visualization**: the ability to render
 `@workflow` objects as diagrams. Because ALP workflows are machine-readable

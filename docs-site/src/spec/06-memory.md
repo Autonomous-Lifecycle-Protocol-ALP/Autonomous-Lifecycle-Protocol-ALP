@@ -1,11 +1,34 @@
 # ALP Specification — Memory Model
 
-**Version:** 2.0.0
+**Version:** 45.0.0
 **Status:** Stable
 
 ---
 
-## 1. Overview
+## 1. Memory Model Overview
+
+```mermaid
+flowchart TD
+    Memory[Memory System] --> Types[Memory Types]
+    Types --> Project[project]
+    Types --> Architecture[architecture]
+    Types --> Feature[feature]
+    Types --> Task[task]
+    Types --> Decision[decision]
+    Types --> Error[error]
+    Types --> Agent[agent]
+    Types --> Knowledge[knowledge]
+    Types --> Conversation[conversation]
+    Types --> Context[context]
+    
+    Memory --> Scoping[Scoping]
+    Scoping --> Global[Global]
+    Scoping --> Scoped[Scoped to Object]
+    
+    Memory --> TTL[TTL Expiry]
+```
+
+## 2. Overview
 
 ALP Memory is a persistent, scoped key-value storage system that allows agents to retain knowledge across sessions. Memory eliminates the need for agents to re-derive information they have already discovered.
 
@@ -54,7 +77,7 @@ Every `@memory` object has:
 Memory is stored in `.alp/memory.alp`:
 
 ```
-!alp-version: 0.1.0
+!alp-version: 45.0.0
 
 // Project-level memories
 @memory

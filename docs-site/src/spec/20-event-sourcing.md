@@ -1,11 +1,27 @@
 # ALP Specification — Event Sourcing & Deterministic Replay
 
-**Version:** 10.1.0  
+**Version:** 45.0.0  
 **Status:** Stable  
 
 ---
 
-## 1. Overview
+## 1. Event Sourcing Overview
+
+```mermaid
+flowchart TD
+    EventLog[events.jsonl] --> Event1[Event 1]
+    EventLog --> Event2[Event 2]
+    EventLog --> Event3[Event 3]
+    Event1 --> Type1[status_changed]
+    Event2 --> Type2[object_created]
+    Event3 --> Type3[task_claimed]
+    Engine[EventEngine] --> Replay[replay]
+    Engine --> Filter[filter by type/id/time]
+    Replay --> State[Reconstructed State]
+    Filter --> Events[Filtered Events]
+```
+
+## 2. Overview
 
 ALP v10.1.0 introduces **Event Sourcing**: an append-only, schema-versioned
 event log that records every workspace mutation. Instead of overwriting state,
