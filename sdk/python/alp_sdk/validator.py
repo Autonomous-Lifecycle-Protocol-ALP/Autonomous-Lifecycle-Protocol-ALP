@@ -6,7 +6,7 @@ import subprocess
 from jsonschema import validate, ValidationError as JsonSchemaError
 # pyrefly: ignore [missing-import]
 from referencing import Registry, Resource
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 _schemas: Dict[str, Any] = {}
 _registry: Registry = None
