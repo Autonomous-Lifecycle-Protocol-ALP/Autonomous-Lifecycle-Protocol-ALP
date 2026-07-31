@@ -398,7 +398,45 @@ export function activate(context: vscode.ExtensionContext) {
 </body></html>`;
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd);
+  const templateCmd = vscode.commands.registerCommand('alp.createFromTemplate', async () => {
+    const type = await vscode.window.showQuickPick(['task', 'agent', 'workflow', 'policy', 'test'], { placeHolder: 'Select template type' });
+    if (!type) return;
+    const id = await vscode.window.showInputBox({ prompt: 'Object id', placeHolder: 'e.g. my-task' });
+    if (!id) return;
+
+    const templates: Record<string, string> = {
+      task: `@task\n  id: ${id}\n  description: ""\n  status: todo\n  agent: ""\n  depends_on: []`,
+      agent: `@agent\n  id: ${id}\n  description: ""\n  model: ""\n  capabilities: []\n  tools: []`,
+      workflow: `@workflow\n  id: ${id}\n  description: ""\n  steps: []\n  triggers: []`,
+      policy: `@policy\n  id: ${id}\n  description: ""\n  rules: []\n  enforcement: warn`,
+      test: `@test\n  id: ${id}\n  description: ""\n  command: ""\n  expected: ""`,
+    };
+
+    const filename = `${id}.alp`;
+    const workspacePath = vscode.workspace.workspaceFoldings?.[0]?.uri.fsPath;
+    if (!workspacePath) {
+      vscode.window.showWarningMessage('Open a workspace folder first.');
+      return;
+    }
+    const alpDir = path.join(workspacePath, '.alp');
+    if (!fs.existsSync(alpDir)) {
+      vscode.window.showWarningMessage('No .alp directory found. Run `alp init` first.');
+      return;
+    }
+    const targetPath = path.join(alpDir, filename);
+    if (fs.existsSync(targetPath)) {
+      vscode.window.showWarningMessage(`${filename} already exists.`);
+      return;
+    }
+
+    fs.writeFileSync(targetPath, templates[type], 'utf-8');
+    vscode.window.showInformationMessage(`Created ${filename} from ${type} template.`);
+
+    const doc = await vscode.workspace.openTextDocument(targetPath);
+    await vscode.window.showTextDocument(doc);
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {

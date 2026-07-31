@@ -14,6 +14,7 @@ import { diffCommand } from './commands/diff';
 import { renameCommand } from './commands/rename';
 import { copyCommand } from './commands/copy';
 import { statsCommand } from './commands/stats';
+import { templateCommand } from './commands/template';
 import { lintCommand } from './commands/lint';
 import { testCommand } from './commands/test';
 import { formatCommand } from './commands/format';
@@ -342,6 +343,13 @@ program
   .command('stats')
   .description('Show workspace statistics: object counts by type and file')
   .action(() => statsCommand());
+
+program
+  .command('template')
+  .description('Create a new ALP object from a built-in template')
+  .argument('<type>', 'Template type: task, agent, workflow, policy, test')
+  .argument('<id>', 'Object id for the new template')
+  .action((type, id) => templateCommand(type, id));
 
 program
   .command('cost')

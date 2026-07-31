@@ -28,7 +28,8 @@
     "onCommand:alp.diffWorkspace",
     "onCommand:alp.renameObject",
     "onCommand:alp.copyObject",
-    "onCommand:alp.showStats"
+    "onCommand:alp.showStats",
+    "onCommand:alp.createFromTemplate"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -133,6 +134,11 @@
       {
         "command": "alp.showStats",
         "title": "ALP: Show Workspace Stats",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.createFromTemplate",
+        "title": "ALP: Create From Template",
         "category": "ALP"
       }
     ]

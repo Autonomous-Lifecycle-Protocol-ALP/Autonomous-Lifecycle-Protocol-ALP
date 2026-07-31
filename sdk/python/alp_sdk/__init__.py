@@ -112,6 +112,7 @@ from .diff_engine import DiffEngine, DiffResult, DiffEntry
 from .refactor_engine import RefactorEngine, RenameResult
 from .copy_engine import CopyEngine, CopyResult
 from .stats_engine import StatsEngine, WorkspaceStats, FileStats
+from .template_engine import TemplateEngine
 from .compliance import run_suite, HarnessResult
 from .observ import (
     RuntimeLog,
@@ -394,6 +395,7 @@ __all__ = [
     "StatsEngine",
     "WorkspaceStats",
     "FileStats",
+    "TemplateEngine",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",

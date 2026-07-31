@@ -53,6 +53,7 @@ export default defineConfig({
           { text: 'Python SDK Refactor', link: '/python-sdk-refactor' },
           { text: 'Python SDK Copy', link: '/python-sdk-copy' },
           { text: 'Python SDK Stats', link: '/python-sdk-stats' },
+          { text: 'Python SDK Templates', link: '/python-sdk-templates' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' }
