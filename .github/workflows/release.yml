@@ -5,6 +5,10 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release'
+        required: false
 
 jobs:
   build:
@@ -75,6 +79,18 @@ jobs:
         with:
           name: sham-ubuntu-latest
           path: dist-installer/linux
+
+      - name: Delete existing release if exists
+        run: |
+          TAG="${{ github.ref_name }}"
+          if [ -n "${{ inputs.tag }}" ]; then
+            TAG="${{ inputs.tag }}"
+          fi
+          if [ -n "$TAG" ] && [[ "$TAG" =~ ^v ]]; then
+            gh release delete "$TAG" --yes || true
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
