@@ -206,7 +206,308 @@ export function activate(context: vscode.ExtensionContext) {
     );
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd);
+  // ─── Register alp.diffWorkspace Command ───────────────────────────
+  const diffCmd = vscode.commands.registerCommand('alp.diffWorkspace', async () => {
+    const wsFolder = vscode.workspace.workspaceFoldings?.[0];
+    if (!wsFolder) {
+      vscode.window.showWarningMessage('Open a workspace folder first.');
+      return;
+    }
+    const snapshotsDir = path.join(wsFolder.uri.fsPath, '.alp', '.snapshots');
+    if (!fs.existsSync(snapshotsDir)) {
+      vscode.window.showWarningMessage('No .alp/.snapshots directory found. Run `alp backup create` first.');
+      return;
+    }
+    const snapshots = fs.readdirSync(snapshotsDir).filter((f) => f.endsWith('.json')).sort();
+    if (snapshots.length < 2) {
+      vscode.window.showWarningMessage('Need at least 2 snapshots to diff.');
+      return;
+    }
+    const names = snapshots.map((f) => f.replace(/\.json$/, ''));
+    const a = await vscode.window.showQuickPick(names, { placeHolder: 'Select older snapshot' });
+    if (!a) return;
+    const b = await vscode.window.showQuickPick(names, { placeHolder: 'Select newer snapshot' });
+    if (!b) return;
+
+    const payloadA = JSON.parse(fs.readFileSync(path.join(snapshotsDir, `${a}.json`), 'utf-8'));
+    const payloadB = JSON.parse(fs.readFileSync(path.join(snapshotsDir, `${b}.json`), 'utf-8'));
+
+    const objsA = new Map((payloadA.objects || []).map((o: any) => [(o.id || o._type || JSON.stringify(o)), o]));
+    const objsB = new Map((payloadB.objects || []).map((o: any) => [(o.id || o._type || JSON.stringify(o)), o]));
+
+    const idsA = new Set(objsA.keys());
+    const idsB = new Set(objsB.keys());
+    const added = [...idsB].filter((id) => !idsA.has(id)).sort();
+    const removed = [...idsA].filter((id) => !idsB.has(id)).sort();
+    const modified = [...idsA].filter((id) => idsB.has(id) && JSON.stringify(objsA.get(id)) !== JSON.stringify(objsB.get(id))).sort();
+
+    const panel = vscode.window.createWebviewPanel('alpDiff', `Diff: ${a} → ${b}`, vscode.ViewColumn.One, {});
+    panel.webview.html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><style>
+  body { font-family: var(--vscode-font-family); padding: 16px; color: var(--vscode-foreground); }
+  h2 { margin-top: 0; }
+  .section { margin-bottom: 12px; }
+  .added { color: #4ec9b0; }
+  .removed { color: #f48771; }
+  .modified { color: #dcdcaa; }
+  .count { font-weight: bold; }
+  ul { padding-left: 20px; margin: 4px 0; }
+  li { margin: 2px 0; }
+</style></head>
+<body>
+  <h2>Diff: ${escapeHtml(a)} → ${escapeHtml(b)}</h2>
+  <div class="section"><span class="count added">Added:</span> <span class="count">${added.length}</span>
+    ${added.length ? `<ul>${added.map((id) => `<li class="added">+ ${escapeHtml(id)}</li>`).join('')}</ul>` : ''}
+  </div>
+  <div class="section"><span class="count removed">Removed:</span> <span class="count">${removed.length}</span>
+    ${removed.length ? `<ul>${removed.map((id) => `<li class="removed">- ${escapeHtml(id)}</li>`).join('')}</ul>` : ''}
+  </div>
+  <div class="section"><span class="count modified">Modified:</span> <span class="count">${modified.length}</span>
+    ${modified.length ? `<ul>${modified.map((id) => `<li class="modified">~ ${escapeHtml(id)}</li>`).join('')}</ul>` : ''}
+  </div>
+  ${!added.length && !removed.length && !modified.length ? '<p>No differences found.</p>' : ''}
+</body></html>`;
+  });
+
+  const renameCmd = vscode.commands.registerCommand('alp.renameObject', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const oldId = await vscode.window.showInputBox({ prompt: 'Current object id to rename', placeHolder: 'e.g. task-1' });
+    if (!oldId) return;
+    const newId = await vscode.window.showInputBox({ prompt: 'New object id', placeHolder: 'e.g. task-1-renamed' });
+    if (!newId) return;
+
+    const document = editor.document;
+    const text = document.getText();
+    const lines = text.split('\n');
+    let replacements = 0;
+    const updated = lines.map((line) => {
+      const stripped = line.lstrip?.() ?? line.lstrip();
+      const indent = line.slice(0, line.length - (line.match(/^\s*/)?.[0].length ?? 0));
+      if (stripped.startsWith('id:')) {
+        const match = stripped.match(/^id:\s*(.+)$/);
+        if (match && match[1].trim() === oldId) {
+          replacements += 1;
+          return `${indent}id: ${newId}`;
+        }
+      }
+      return line;
+    }).join('\n');
+
+    if (replacements === 0) {
+      vscode.window.showInformationMessage(`No id '${oldId}' found in current file.`);
+      return;
+    }
+
+    await editor.edit((builder) => {
+      const firstLine = document.lineAt(0);
+      const lastLine = document.lineAt(document.lineCount - 1);
+      const range = new vscode.Range(firstLine.range.start, lastLine.range.end);
+      builder.replace(range, updated);
+    });
+
+    vscode.window.showInformationMessage(`Renamed ${replacements} occurrence${replacements === 1 ? '' : 's'} of '${oldId}' to '${newId}'.`);
+  });
+
+  const copyCmd = vscode.commands.registerCommand('alp.copyObject', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const sourceId = await vscode.window.showInputBox({ prompt: 'Source object id to copy', placeHolder: 'e.g. task-1' });
+    if (!sourceId) return;
+    const targetId = await vscode.window.showInputBox({ prompt: 'New object id', placeHolder: 'e.g. task-1-copy' });
+    if (!targetId) return;
+    const updateRefs = await vscode.window.showQuickPick(['No', 'Yes'], { placeHolder: 'Update reference fields (depends_on, references, etc.)?' });
+
+    const document = editor.document;
+    const text = document.getText();
+    const lines = text.split('\n');
+    let replacements = 0;
+    const refFields = ['depends_on', 'references', 'links', 'parent', 'child'];
+    const updated = lines.map((line) => {
+      const stripped = line.lstrip?.() ?? line.lstrip();
+      const indent = line.slice(0, line.length - (line.match(/^\s*/)?.[0].length ?? 0));
+      if (stripped.startsWith('id:')) {
+        const match = stripped.match(/^id:\s*(.+)$/);
+        if (match && match.group(1).trim() === sourceId) {
+          replacements += 1;
+          return `${indent}id: ${targetId}`;
+        }
+      }
+      if (updateRefs === 'Yes') {
+        for (const field of refFields) {
+          if (stripped.startsWith(`${field}:`)) {
+            const refMatch = stripped.match(new RegExp(`^${field}:\\s*(.+)$`));
+            if (refMatch && refMatch.group(1).trim() === sourceId) {
+              replacements += 1;
+              return `${indent}${field}: ${targetId}`;
+            }
+          }
+        }
+      }
+      return line;
+    }).join('\n');
+
+    if (replacements === 0) {
+      vscode.window.showInformationMessage(`No id '${sourceId}' found in current file.`);
+      return;
+    }
+
+    await editor.edit((builder) => {
+      const firstLine = document.lineAt(0);
+      const lastLine = document.lineAt(document.lineCount - 1);
+      const range = new vscode.Range(firstLine.range.start, lastLine.range.end);
+      builder.replace(range, updated);
+    });
+
+    vscode.window.showInformationMessage(`Copied ${replacements} occurrence${replacements === 1 ? '' : 's'} of '${sourceId}' to '${targetId}'.`);
+  });
+
+  const statsCmd = vscode.commands.registerCommand('alp.showStats', () => {
+    const editor = vscode.window.activeTextEditor;
+    const objects = editor ? getParsedObjects(editor.document) : [];
+    const typeCounts: Record<string, number> = {};
+    for (const obj of objects) {
+      const type = obj._type || obj.type || 'unknown';
+      typeCounts[type] = (typeCounts[type] || 0) + 1;
+    }
+    const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
+    const listItems = sorted.map(([type, count]) => `  ${type}: ${count}`).join('\n') || '  (no objects)';
+
+    const panel = vscode.window.createWebviewPanel('alpStats', 'ALP Workspace Stats', vscode.ViewColumn.One, {});
+    panel.webview.html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><style>
+  body { font-family: var(--vscode-font-family); padding: 16px; color: var(--vscode-foreground); }
+  h2 { margin-top: 0; }
+  .count { font-weight: bold; }
+  pre { background: var(--vscode-textBlockQuote-background); padding: 12px; border-radius: 4px; }
+</style></head>
+<body>
+  <h2>Workspace Stats</h2>
+  <p><span class="count">Files:</span> ${editor ? '1 (active)' : '0'}</p>
+  <p><span class="count">Objects:</span> ${objects.length}</p>
+  <h3>By type</h3>
+  <pre>${escapeHtml(listItems)}</pre>
+</body></html>`;
+  });
+
+  const templateCmd = vscode.commands.registerCommand('alp.createFromTemplate', async () => {
+    const type = await vscode.window.showQuickPick(['task', 'agent', 'workflow', 'policy', 'test'], { placeHolder: 'Select template type' });
+    if (!type) return;
+    const id = await vscode.window.showInputBox({ prompt: 'Object id', placeHolder: 'e.g. my-task' });
+    if (!id) return;
+
+    const templates: Record<string, string> = {
+      task: `@task\n  id: ${id}\n  description: ""\n  status: todo\n  agent: ""\n  depends_on: []`,
+      agent: `@agent\n  id: ${id}\n  description: ""\n  model: ""\n  capabilities: []\n  tools: []`,
+      workflow: `@workflow\n  id: ${id}\n  description: ""\n  steps: []\n  triggers: []`,
+      policy: `@policy\n  id: ${id}\n  description: ""\n  rules: []\n  enforcement: warn`,
+      test: `@test\n  id: ${id}\n  description: ""\n  command: ""\n  expected: ""`,
+    };
+
+    const filename = `${id}.alp`;
+    const workspacePath = vscode.workspace.workspaceFoldings?.[0]?.uri.fsPath;
+    if (!workspacePath) {
+      vscode.window.showWarningMessage('Open a workspace folder first.');
+      return;
+    }
+    const alpDir = path.join(workspacePath, '.alp');
+    if (!fs.existsSync(alpDir)) {
+      vscode.window.showWarningMessage('No .alp directory found. Run `alp init` first.');
+      return;
+    }
+    const targetPath = path.join(alpDir, filename);
+    if (fs.existsSync(targetPath)) {
+      vscode.window.showWarningMessage(`${filename} already exists.`);
+      return;
+    }
+
+    fs.writeFileSync(targetPath, templates[type], 'utf-8');
+    vscode.window.showInformationMessage(`Created ${filename} from ${type} template.`);
+
+    const doc = await vscode.workspace.openTextDocument(targetPath);
+    await vscode.window.showTextDocument(doc);
+  });
+
+  const moveCmd = vscode.commands.registerCommand('alp.moveObject', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const objectId = await vscode.window.showInputBox({ prompt: 'Object id to move', placeHolder: 'e.g. task-1' });
+    if (!objectId) return;
+    const targetFile = await vscode.window.showInputBox({ prompt: 'Target .alp file', placeHolder: 'e.g. tasks.alp' });
+    if (!targetFile) return;
+
+    if (!targetFile.endsWith('.alp')) {
+      vscode.window.showWarningMessage('Target file must have .alp extension.');
+      return;
+    }
+
+    const workspacePath = vscode.workspace.workspaceFoldings?.[0]?.uri.fsPath;
+    if (!workspacePath) {
+      vscode.window.showWarningMessage('Open a workspace folder first.');
+      return;
+    }
+    const alpDir = path.join(workspacePath, '.alp');
+    if (!fs.existsSync(alpDir)) {
+      vscode.window.showWarningMessage('No .alp directory found. Run `alp init` first.');
+      return;
+    }
+
+    const document = editor.document;
+    const text = document.getText();
+    const lines = text.split('\n');
+    let blockStart = -1;
+    let blockEnd = lines.length;
+    for (let i = 0; i < lines.length; i++) {
+      const idMatch = lines[i].match(/^id:\s*(.+)$/);
+      if (idMatch && idMatch[1].trim() === objectId) {
+        blockStart = i - 1;
+        while (blockStart >= 0 && !lines[blockStart].match(/^(@\w+)/)) blockStart -= 1;
+        blockStart = Math.max(0, blockStart);
+        blockEnd = i + 1;
+        while (blockEnd < lines.length && !lines[blockEnd].match(/^(@\w+)/)) blockEnd += 1;
+        break;
+      }
+    }
+
+    if (blockStart === -1) {
+      vscode.window.showInformationMessage(`No object '${objectId}' found in current file.`);
+      return;
+    }
+
+    const block = lines.slice(blockStart, blockEnd).join('\n');
+    const targetPath = path.join(alpDir, targetFile);
+    if (!fs.existsSync(targetPath)) {
+      fs.writeFileSync(targetPath, '', 'utf-8');
+    }
+
+    let targetContent = fs.readFileSync(targetPath, 'utf-8');
+    if (targetContent && !targetContent.endsWith('\n')) targetContent += '\n';
+    targetContent += block + '\n';
+    fs.writeFileSync(targetPath, targetContent, 'utf-8');
+
+    const updatedSource = lines.slice(0, blockStart).concat(lines.slice(blockEnd)).filter((l) => l.trim()).join('\n');
+    await editor.edit((builder) => {
+      const firstLine = document.lineAt(0);
+      const lastLine = document.lineAt(document.lineCount - 1);
+      const range = new vscode.Range(firstLine.range.start, lastLine.range.end);
+      builder.replace(range, updatedSource);
+    });
+
+    vscode.window.showInformationMessage(`Moved '${objectId}' to ${targetFile}.`);
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {
