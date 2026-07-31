@@ -26,7 +26,8 @@
     "onCommand:alp.showVaults",
     "onCommand:alp.showAgents",
     "onCommand:alp.diffWorkspace",
-    "onCommand:alp.renameObject"
+    "onCommand:alp.renameObject",
+    "onCommand:alp.copyObject"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -121,6 +122,11 @@
       {
         "command": "alp.renameObject",
         "title": "ALP: Rename Object",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.copyObject",
+        "title": "ALP: Copy Object",
         "category": "ALP"
       }
     ]

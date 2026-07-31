@@ -51,6 +51,7 @@ export default defineConfig({
           { text: 'Python SDK Snapshots', link: '/python-sdk-snapshot' },
           { text: 'Python SDK Diff', link: '/python-sdk-diff' },
           { text: 'Python SDK Refactor', link: '/python-sdk-refactor' },
+          { text: 'Python SDK Copy', link: '/python-sdk-copy' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' }

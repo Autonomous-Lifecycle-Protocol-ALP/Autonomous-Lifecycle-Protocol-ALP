@@ -313,7 +313,63 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage(`Renamed ${replacements} occurrence${replacements === 1 ? '' : 's'} of '${oldId}' to '${newId}'.`);
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd);
+  const copyCmd = vscode.commands.registerCommand('alp.copyObject', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const sourceId = await vscode.window.showInputBox({ prompt: 'Source object id to copy', placeHolder: 'e.g. task-1' });
+    if (!sourceId) return;
+    const targetId = await vscode.window.showInputBox({ prompt: 'New object id', placeHolder: 'e.g. task-1-copy' });
+    if (!targetId) return;
+    const updateRefs = await vscode.window.showQuickPick(['No', 'Yes'], { placeHolder: 'Update reference fields (depends_on, references, etc.)?' });
+
+    const document = editor.document;
+    const text = document.getText();
+    const lines = text.split('\n');
+    let replacements = 0;
+    const refFields = ['depends_on', 'references', 'links', 'parent', 'child'];
+    const updated = lines.map((line) => {
+      const stripped = line.lstrip?.() ?? line.lstrip();
+      const indent = line.slice(0, line.length - (line.match(/^\s*/)?.[0].length ?? 0));
+      if (stripped.startsWith('id:')) {
+        const match = stripped.match(/^id:\s*(.+)$/);
+        if (match && match.group(1).trim() === sourceId) {
+          replacements += 1;
+          return `${indent}id: ${targetId}`;
+        }
+      }
+      if (updateRefs === 'Yes') {
+        for (const field of refFields) {
+          if (stripped.startsWith(`${field}:`)) {
+            const refMatch = stripped.match(new RegExp(`^${field}:\\s*(.+)$`));
+            if (refMatch && refMatch.group(1).trim() === sourceId) {
+              replacements += 1;
+              return `${indent}${field}: ${targetId}`;
+            }
+          }
+        }
+      }
+      return line;
+    }).join('\n');
+
+    if (replacements === 0) {
+      vscode.window.showInformationMessage(`No id '${sourceId}' found in current file.`);
+      return;
+    }
+
+    await editor.edit((builder) => {
+      const firstLine = document.lineAt(0);
+      const lastLine = document.lineAt(document.lineCount - 1);
+      const range = new vscode.Range(firstLine.range.start, lastLine.range.end);
+      builder.replace(range, updated);
+    });
+
+    vscode.window.showInformationMessage(`Copied ${replacements} occurrence${replacements === 1 ? '' : 's'} of '${sourceId}' to '${targetId}'.`);
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {

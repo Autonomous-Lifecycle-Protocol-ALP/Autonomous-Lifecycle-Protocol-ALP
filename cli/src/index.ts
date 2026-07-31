@@ -12,6 +12,7 @@ import { exportCommand } from './commands/export';
 import { backupCommand } from './commands/backup';
 import { diffCommand } from './commands/diff';
 import { renameCommand } from './commands/rename';
+import { copyCommand } from './commands/copy';
 import { lintCommand } from './commands/lint';
 import { testCommand } from './commands/test';
 import { formatCommand } from './commands/format';
@@ -327,6 +328,14 @@ program
   .argument('<old-id>', 'Current object id')
   .argument('<new-id>', 'New object id')
   .action((oldId, newId) => renameCommand(oldId, newId));
+
+program
+  .command('copy')
+  .description('Copy an ALP object to a new id across all workspace files')
+  .argument('<source-id>', 'Source object id to copy')
+  .argument('<target-id>', 'New object id')
+  .option('--update-refs', 'Update reference fields (depends_on, references, links, parent, child) to the new id')
+  .action((sourceId, targetId, opts) => copyCommand(sourceId, targetId, opts.updateRefs));
 
 program
   .command('cost')
