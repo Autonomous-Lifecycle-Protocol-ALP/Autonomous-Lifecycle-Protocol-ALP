@@ -52,7 +52,7 @@ fn test_governance_engine_propose_and_vote() {
     assert!(ballot.ballot_id().starts_with("ballot-"));
 
     let result = engine.vote(
-        &ballot.ballot_id(),
+        ballot.ballot_id(),
         "did:alp:agent-1",
         "approve",
         "Looks good",
@@ -149,7 +149,7 @@ fn test_integration_identity_to_governance() {
     engine.qualify("did:alp:agent-1");
     let ballot = engine.propose("policy-1", "Integration test", Some(1));
     let result = engine.vote(
-        &ballot.ballot_id(),
+        ballot.ballot_id(),
         "did:alp:agent-1",
         "approve",
         "ok",

@@ -28,6 +28,12 @@ impl MeshEvent {
     }
 }
 
+impl Default for EventMeshEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub type EventHandler = Box<dyn Fn(&MeshEvent) + Send + Sync>;
 
 pub struct EventMeshEngine {

@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use crate::{AlpGraph, AlpObject, AlpParser, AlpWorkspace};
+    use crate::{AlpGraph, AlpParser};
 
     #[test]
     fn parser_parse_single_object() {

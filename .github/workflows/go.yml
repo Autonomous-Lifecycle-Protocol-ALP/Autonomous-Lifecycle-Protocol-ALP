@@ -3,14 +3,8 @@ name: Go SDK CI
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'sdk/go/**'
-      - '.github/workflows/go.yml'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'sdk/go/**'
-      - '.github/workflows/go.yml'
 
 jobs:
   build:

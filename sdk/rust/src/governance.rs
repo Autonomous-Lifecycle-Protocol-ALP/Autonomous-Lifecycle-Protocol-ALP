@@ -97,6 +97,7 @@ pub struct BallotRecord {
     pub closed_at: String,
 }
 
+#[allow(clippy::too_many_arguments)]
 impl BallotRecord {
     pub fn new(
         ballot_id: impl Into<String>,
@@ -139,11 +140,7 @@ impl BallotRecord {
             serde_json::Value::Array(
                 self.votes
                     .iter()
-                    .map(|v| {
-                        serde_json::Value::Object(
-                            v.to_dict().into_iter().map(|(k, v)| (k, v)).collect(),
-                        )
-                    })
+                    .map(|v| serde_json::Value::Object(v.to_dict().into_iter().collect()))
                     .collect(),
             ),
         );
@@ -396,7 +393,6 @@ impl PolicyBallot {
 }
 
 pub struct GovernanceEngine {
-    alp_dir: String,
     ballot: PolicyBallot,
     min_quorum: usize,
     qualified_voters: Vec<String>,
@@ -404,10 +400,8 @@ pub struct GovernanceEngine {
 
 impl GovernanceEngine {
     pub fn new(alp_dir: impl Into<String>, min_quorum: usize) -> Self {
-        let alp_dir = alp_dir.into();
         Self {
-            alp_dir: alp_dir.clone(),
-            ballot: PolicyBallot::new(&alp_dir),
+            ballot: PolicyBallot::new(alp_dir),
             min_quorum,
             qualified_voters: Vec::new(),
         }
@@ -493,13 +487,7 @@ impl GovernanceEngine {
         result.insert("accepted".into(), serde_json::Value::Bool(true));
         result.insert(
             "vote".into(),
-            serde_json::Value::Object(
-                vote.unwrap()
-                    .to_dict()
-                    .into_iter()
-                    .map(|(k, v)| (k, v))
-                    .collect(),
-            ),
+            serde_json::Value::Object(vote.unwrap().to_dict().into_iter().collect()),
         );
         result
     }

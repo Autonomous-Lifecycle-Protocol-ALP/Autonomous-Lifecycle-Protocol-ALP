@@ -90,10 +90,10 @@ impl AlpParser {
         let mut properties = HashMap::new();
         for line in block.lines() {
             let trimmed = line.trim();
-            if trimmed.starts_with("id:") {
-                id = Some(trimmed[3..].trim().to_string());
-            } else if trimmed.starts_with("type:") {
-                object_type = Some(trimmed[5..].trim().to_string());
+            if let Some(stripped) = trimmed.strip_prefix("id:") {
+                id = Some(stripped.trim().to_string());
+            } else if let Some(stripped) = trimmed.strip_prefix("type:") {
+                object_type = Some(stripped.trim().to_string());
             } else if let Some(colon) = trimmed.find(':') {
                 let key = trimmed[..colon].trim().to_string();
                 let value = trimmed[colon + 1..].trim().to_string();
@@ -205,8 +205,13 @@ impl AlpGraph {
     }
 }
 
+impl Default for AlpGraph {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub struct AlpWorkspace {
-    parser: AlpParser,
     graph: AlpGraph,
     objects: Vec<AlpObject>,
 }
@@ -214,7 +219,6 @@ pub struct AlpWorkspace {
 impl AlpWorkspace {
     pub fn new() -> Self {
         Self {
-            parser: AlpParser,
             graph: AlpGraph::new(),
             objects: Vec::new(),
         }

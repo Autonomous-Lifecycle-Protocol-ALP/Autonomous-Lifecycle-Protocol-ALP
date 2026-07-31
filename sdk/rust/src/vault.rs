@@ -20,6 +20,12 @@ pub struct VaultAuditEntry {
     pub by: String,
 }
 
+impl Default for Vault {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 pub struct Vault {
     secrets: HashMap<String, SealedSecret>,
     audit: Vec<VaultAuditEntry>,
