@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: "ALP v45.0.0"
+  name: "ALP v80.0.0"
   text: "The Autonomous Lifecycle Protocol"
   tagline: "The open standard & high-performance execution engine for AI-driven software engineering. Write a machine-readable spec — let your agents plan, build, verify, and remember."
   image:
@@ -16,16 +16,16 @@ hero:
       text: View the Spec
       link: '/spec/01-overview'
     - theme: alt
-      text: GitHub (v45.0.0)
+      text: GitHub (v80.0.0)
       link: 'https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP'
       target: _blank
 
 features:
   - title: Execution Engine (alp run)
     details: Topologically sorts your dependency graph in < 2ms, compiles precise context bundles, and orchestrates agents through the full lifecycle.
-  - title: Swarm Marketplace (v45.0.0)
+  - title: Swarm Marketplace (v80.0.0)
     details: Autonomous agent skill registration, category-based discovery, skill invocation, rating systems, and real-time cost tracking.
-  - title: Pub/Sub Event Mesh (v45.0.0)
+  - title: Pub/Sub Event Mesh (v80.0.0)
     details: Decoupled event mesh topic routing and message broadcasting across distributed autonomous swarm nodes.
   - title: Quality Gates (alp verify)
     details: "Tasks aren't 'done' until their verify scripts exit 0. Failures are marked [!] Blocked, halting the engine."
@@ -47,7 +47,7 @@ files with **one deterministic protocol stored natively in your repository** (`.
 
 <div class="alp-stats">
   <div class="alp-stat"><span class="alp-stat-num">49</span><span class="alp-stat-label">JSON Schemas</span></div>
-  <div class="alp-stat"><span class="alp-stat-num">45.0.0</span><span class="alp-stat-label">Toolchain Release</span></div>
+  <div class="alp-stat"><span class="alp-stat-num">80.0.0</span><span class="alp-stat-label">Toolchain Release</span></div>
   <div class="alp-stat"><span class="alp-stat-num">1013+</span><span class="alp-stat-label">Passed Tests</span></div>
   <div class="alp-stat"><span class="alp-stat-num">1:5</span><span class="alp-stat-label">Language SDK Parity</span></div>
 </div>
@@ -82,7 +82,7 @@ flowchart LR
 Create a `.alp` file in your repository:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @project
   id: my-project
@@ -135,7 +135,7 @@ alp verify task-login-ui
     end
 ```
 
-### 2. Autonomous Swarm Mesh & Skill Marketplace (v45.0.0)
+### 2. Autonomous Swarm Mesh & Skill Marketplace (v80.0.0)
 
 ```mermaid
 flowchart LR
@@ -189,7 +189,7 @@ This creates a `.alp/` directory with a starter `project.alp` file.
 Create `.alp/features.alp`:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @feature
   id: feat-auth
@@ -242,12 +242,12 @@ Released versions are tracked in the [versioning spec](/spec/10-versioning.md). 
 | Era | Versions | Focus |
 |---|---|---|
 | V8 — The Collaboration Era | 38.0.0–38.x | Event mesh, swarm marketplace, macro expansion, collaboration/negotiation/reputation, memory mesh |
-| V9 — Native Desktop | 45.0.0 | SHAM IDE cross-platform release, native ALP integration, Monaco editor, agent manager, auto-updater, Pro/Enterprise licensing |
-| V10 — The Intelligence Era | 45.0.0+ | Autonomous orchestration, self-healing workflows, predictive governance, edge-native execution |
+| V9 — Native Desktop | 80.0.0 | SHAM IDE cross-platform release, native ALP integration, Monaco editor, agent manager, auto-updater, Pro/Enterprise licensing |
+| V10 — The Intelligence Era | 80.0.0+ | Autonomous orchestration, self-healing workflows, predictive governance, edge-native execution |
 
 ### What's Next
 
-- **SHAM IDE** (V9, 45.0.0) — Already released. Cross-platform desktop application for Mac, Windows, and Linux with native ALP integration, Monaco editor, agent manager, auto-updater, and Pro/Enterprise licensing.
-- **V10 — The Intelligence Era** (45.0.0+) — Autonomous multi-agent orchestration with self-healing DAGs, predictive governance, edge-native execution, and AI-native lifecycle management.
+- **SHAM IDE** (V9, 80.0.0) — Already released. Cross-platform desktop application for Mac, Windows, and Linux with native ALP integration, Monaco editor, agent manager, auto-updater, and Pro/Enterprise licensing.
+- **V10 — The Intelligence Era** (80.0.0+) — Autonomous multi-agent orchestration with self-healing DAGs, predictive governance, edge-native execution, and AI-native lifecycle management.
 
 

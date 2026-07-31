@@ -4,20 +4,20 @@ title: Releases
 description: ALP release history — specification and toolchain versions
 ---
 
-# Releases
+## Overview
 
 ALP versioning tracks two independent axes:
 
 - **Specification** (`spec/01-overview`) — the protocol grammar. Locked at **2.0.0 (Stable)**; strict semantic-versioning guarantees apply to implementations.
 - **Toolchain** (`@autonomous-lifecycle-protocol-alp/cli`, `@autonomous-lifecycle-protocol-alp/sdk`, docs-site, integrations) — the implementation and packaging, released on its own cadence.
 
-> 🔮 **Looking Ahead**: See [ROADMAP_V17_V43.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V43.md) for the strategic architecture roadmap spanning v17.0.0 (OpenTelemetry) to v43.0.0 (IDE Collaboration).
+> 🔮 **Looking Ahead**: See [ROADMAP_V17_V43.md](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/raw/main/docs/ROADMAP_V17_V43.md) for the strategic architecture roadmap spanning v17.0.0 (OpenTelemetry) to v43.0.0 (IDE Collaboration).
 
 ---
 
 ## Toolchain
 
-### 45.0.0 — Autonomous Orchestration
+### 80.0.0 — Autonomous Orchestration
 
 - **Autonomy Controller**: Fully autonomous multi-agent workflows with self-healing DAGs and self-modifying workflows.
 - **Workflow Mutator**: Propose, apply, and rollback edits to running workflows with policy guardrails.
@@ -27,7 +27,7 @@ ALP versioning tracks two independent axes:
 - **MCP Tools**: `alp_autonomy_run`, `alp_autonomy_heal`, `alp_autonomy_predict`.
 - **SDKs**: `AutonomyController`, `WorkflowMutator`, `AdaptiveEngine`, `EditProposal`, `SwarmRun` in both TypeScript and Python SDKs.
 
-### 45.0.0 — Intelligence Engine
+### 80.0.0 — Intelligence Engine
 
 - **Intelligence Engine**: AI-powered suggestions, diagnostics, predictions, and code review findings for `.alp` specs.
 - **CLI**: `alp intelligence` command group with `suggest`, `diagnose`, `predict`, and `review` subcommands.
@@ -105,6 +105,7 @@ ALP versioning tracks two independent axes:
 1. **`@type` is canonical** — the plugin model collapsed to a single `@type` declaration (spec/11 §2.5); `@type_definition` retained as a *deprecated alias* for one major, removed in v9.
 2. **`!assert` is fail-closed** (spec/16 §4) — a false *or* unparseable `!assert` raises `DirectiveError`, and **unknown directives** raise a hard `SyntaxError` instead of being silently ignored.
 3. **`[!]` / `[?]` must carry a reason** (spec/03 §4) — unannotated markers emit a deprecation warning in v8 and become a hard error in v9.
+
 - Migration guide: `docs-site/MIGRATION-v8.md`. All sub-packages bumped to `8.0.0`.
 
 ### 7.2.0 — Policy Federation & Engine Parity
@@ -182,9 +183,8 @@ ALP versioning tracks two independent axes:
 ## Specification
 
 | Version | Status | Date |
-|---|---|---|
+| --- | --- | --- |
 | 2.0.0 | Stable (Final Release Candidate) | 2025-07-14 |
 | 1.x | Superseded | — |
 
 The formal grammar is locked at 2.0.0; production implementations MUST honor its strict semantic-versioning guarantees.
-

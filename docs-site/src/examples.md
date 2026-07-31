@@ -15,7 +15,7 @@ my-project/
 `.alp/project.alp`:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @project
   id: my-project
@@ -29,7 +29,7 @@ my-project/
 A feature with multiple tasks and dependencies:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @feature
   id: feat-user-auth
@@ -76,7 +76,7 @@ A feature with multiple tasks and dependencies:
 A workflow with conditional execution:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @workflow
   id: wf-deployment
@@ -106,7 +106,7 @@ A workflow with conditional execution:
 A policy restricting agent actions:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @policy
   id: policy-security
@@ -136,7 +136,7 @@ A policy restricting agent actions:
 A contract defining boundaries between agents:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @contract
   id: contract-api-boundary
@@ -192,7 +192,7 @@ Reference in `.alp` files:
 Pub/sub event mesh for decoupled communication:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @event_mesh
   id: mesh-team-alpha
@@ -234,7 +234,7 @@ alp event-mesh publish topic-code-events '{
 Storing and retrieving cross-session memory:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @memory
   id: mem-architecture-decision
@@ -268,7 +268,7 @@ console.log(dbDecision);
 A workspace spanning multiple repositories:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @workspace
   id: ws-monorepo
@@ -293,7 +293,7 @@ A workspace spanning multiple repositories:
 Registering and invoking skills:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @swarm_marketplace
   id: listing-code-review
@@ -325,7 +325,7 @@ alp marketplace invoke listing-1 agent-coder "Review PR #42 for security issues"
 Creating a custom plugin:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @plugin
   id: plugin-scrum

@@ -1,6 +1,6 @@
 """ALP Python SDK"""
 
-__version__ = "45.0.0"
+__version__ = "80.0.0"
 
 from .models import AlpObject
 from .error import AlpError, SyntaxError, IndentationError, ValidationError, DirectiveError

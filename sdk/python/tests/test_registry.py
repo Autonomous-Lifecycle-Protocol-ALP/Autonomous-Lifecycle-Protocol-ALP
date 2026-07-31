@@ -99,6 +99,8 @@ class TestRegistryServer(unittest.TestCase):
 
     def tearDown(self):
         self._kill(self.proc)
+        import gc
+        gc.collect()
 
     def _run(self, cmd, cwd=None, timeout=30):
         import subprocess
@@ -110,7 +112,11 @@ class TestRegistryServer(unittest.TestCase):
 
     def _kill(self, proc):
         if proc and proc.poll() is None:
-            proc.kill()
+            try:
+                proc.kill()
+                proc.wait(timeout=5)
+            except Exception:
+                pass
 
     def _wait_for(self, port, tries=60):
         import time
@@ -118,7 +124,8 @@ class TestRegistryServer(unittest.TestCase):
             try:
                 req = urllib.request.Request(f"http://127.0.0.1:{port}/api/state")
                 req.timeout = 3500
-                urllib.request.urlopen(req, timeout=3.5).read()
+                with urllib.request.urlopen(req, timeout=3.5) as resp:
+                    resp.read()
                 return
             except Exception:
                 time.sleep(0.15)
@@ -164,6 +171,8 @@ class TestRegistryHardening(unittest.TestCase):
 
     def tearDown(self):
         self._kill(self.proc)
+        import gc
+        gc.collect()
 
     def _spawn(self, cmd, cwd=None):
         import subprocess
@@ -171,7 +180,11 @@ class TestRegistryHardening(unittest.TestCase):
 
     def _kill(self, proc):
         if proc and proc.poll() is None:
-            proc.kill()
+            try:
+                proc.kill()
+                proc.wait(timeout=5)
+            except Exception:
+                pass
 
     def _wait_for(self, port, tries=60):
         import time
@@ -179,7 +192,8 @@ class TestRegistryHardening(unittest.TestCase):
             try:
                 req = urllib.request.Request(f"http://127.0.0.1:{port}/api/state")
                 req.timeout = 3500
-                urllib.request.urlopen(req, timeout=3.5).read()
+                with urllib.request.urlopen(req, timeout=3.5) as resp:
+                    resp.read()
                 return
             except Exception:
                 time.sleep(0.15)
@@ -192,7 +206,23 @@ class TestRegistryHardening(unittest.TestCase):
             with urllib.request.urlopen(req, timeout=3.5) as resp:
                 return resp.status
         except urllib.error.HTTPError as e:
-            return e.code
+            try:
+                e.read()
+            except Exception:
+                pass
+            try:
+                e.close()
+            except Exception:
+                pass
+            try:
+                fp = getattr(e, "fp", None)
+                if fp:
+                    fp.close()
+            except Exception:
+                pass
+            code = e.code
+            del e
+            return code
 
     def test_private_namespace_read_requires_token(self):
         # @demo is private (token configured) -> read without token is 401.

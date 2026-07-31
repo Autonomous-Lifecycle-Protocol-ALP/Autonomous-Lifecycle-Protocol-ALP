@@ -12,7 +12,11 @@ pub struct AgentIdentity {
 }
 
 impl AgentIdentity {
-    pub fn new(did: impl Into<String>, agent_id: impl Into<String>, public_key: impl Into<String>) -> Self {
+    pub fn new(
+        did: impl Into<String>,
+        agent_id: impl Into<String>,
+        public_key: impl Into<String>,
+    ) -> Self {
         Self {
             did: did.into(),
             agent_id: agent_id.into(),
@@ -25,10 +29,28 @@ impl AgentIdentity {
     pub fn to_dict(&self) -> HashMap<String, serde_json::Value> {
         let mut dict = HashMap::new();
         dict.insert("did".into(), serde_json::Value::String(self.did.clone()));
-        dict.insert("agent_id".into(), serde_json::Value::String(self.agent_id.clone()));
-        dict.insert("public_key".into(), serde_json::Value::String(self.public_key.clone()));
-        dict.insert("created_at".into(), serde_json::Value::String(self.created_at.clone()));
-        dict.insert("metadata".into(), serde_json::Value::Object(self.metadata.clone().into_iter().map(|(k, v)| (k, v)).collect()));
+        dict.insert(
+            "agent_id".into(),
+            serde_json::Value::String(self.agent_id.clone()),
+        );
+        dict.insert(
+            "public_key".into(),
+            serde_json::Value::String(self.public_key.clone()),
+        );
+        dict.insert(
+            "created_at".into(),
+            serde_json::Value::String(self.created_at.clone()),
+        );
+        dict.insert(
+            "metadata".into(),
+            serde_json::Value::Object(
+                self.metadata
+                    .clone()
+                    .into_iter()
+                    .map(|(k, v)| (k, v))
+                    .collect(),
+            ),
+        );
         dict
     }
 }
@@ -42,7 +64,12 @@ pub struct VerifiablePresentation {
 }
 
 impl VerifiablePresentation {
-    pub fn new(did: impl Into<String>, agent_id: impl Into<String>, claims: HashMap<String, serde_json::Value>, signature: impl Into<String>) -> Self {
+    pub fn new(
+        did: impl Into<String>,
+        agent_id: impl Into<String>,
+        claims: HashMap<String, serde_json::Value>,
+        signature: impl Into<String>,
+    ) -> Self {
         Self {
             did: did.into(),
             agent_id: agent_id.into(),
@@ -84,7 +111,11 @@ pub struct TrustEntry {
 }
 
 impl TrustEntry {
-    pub fn new(agent_id: impl Into<String>, scopes: Vec<String>, trust_level: impl Into<String>) -> Self {
+    pub fn new(
+        agent_id: impl Into<String>,
+        scopes: Vec<String>,
+        trust_level: impl Into<String>,
+    ) -> Self {
         Self {
             agent_id: agent_id.into(),
             scopes,
@@ -111,11 +142,17 @@ impl TrustRegistry {
     }
 
     fn identity_dir(&self) -> String {
-        Path::new(&self.alp_dir).join(".identity").to_string_lossy().into_owned()
+        Path::new(&self.alp_dir)
+            .join(".identity")
+            .to_string_lossy()
+            .into_owned()
     }
 
     fn trust_path(&self) -> String {
-        Path::new(&self.identity_dir()).join("trust_registry.json").to_string_lossy().into_owned()
+        Path::new(&self.identity_dir())
+            .join("trust_registry.json")
+            .to_string_lossy()
+            .into_owned()
     }
 
     pub fn load(&mut self) {
@@ -139,7 +176,13 @@ impl TrustRegistry {
         }
     }
 
-    pub fn register(&mut self, did: impl Into<String>, agent_id: impl Into<String>, scopes: Vec<String>, trust_level: impl Into<String>) -> TrustEntry {
+    pub fn register(
+        &mut self,
+        did: impl Into<String>,
+        agent_id: impl Into<String>,
+        scopes: Vec<String>,
+        trust_level: impl Into<String>,
+    ) -> TrustEntry {
         let entry = TrustEntry::new(agent_id, scopes, trust_level);
         let did = did.into();
         self.entries.insert(did.clone(), entry.clone());
@@ -182,23 +225,51 @@ impl IdentityResolver {
         Self { trust_registry }
     }
 
-    pub fn verify_presentation(&self, presentation: &VerifiablePresentation, public_key: &str) -> HashMap<String, serde_json::Value> {
+    pub fn verify_presentation(
+        &self,
+        presentation: &VerifiablePresentation,
+        public_key: &str,
+    ) -> HashMap<String, serde_json::Value> {
         let mut result = HashMap::new();
         if !presentation.verify(public_key) {
             result.insert("valid".into(), serde_json::Value::Bool(false));
-            result.insert("reason".into(), serde_json::Value::String("invalid_signature".into()));
+            result.insert(
+                "reason".into(),
+                serde_json::Value::String("invalid_signature".into()),
+            );
             return result;
         }
         let registry = self.trust_registry.borrow();
         if let Some(entry) = registry.resolve(&presentation.did) {
             result.insert("valid".into(), serde_json::Value::Bool(true));
-            result.insert("did".into(), serde_json::Value::String(presentation.did.clone()));
-            result.insert("agent_id".into(), serde_json::Value::String(presentation.agent_id.clone()));
-            result.insert("scopes".into(), serde_json::Value::Array(entry.scopes.iter().map(|s| serde_json::Value::String(s.clone())).collect()));
-            result.insert("trust_level".into(), serde_json::Value::String(entry.trust_level.clone()));
+            result.insert(
+                "did".into(),
+                serde_json::Value::String(presentation.did.clone()),
+            );
+            result.insert(
+                "agent_id".into(),
+                serde_json::Value::String(presentation.agent_id.clone()),
+            );
+            result.insert(
+                "scopes".into(),
+                serde_json::Value::Array(
+                    entry
+                        .scopes
+                        .iter()
+                        .map(|s| serde_json::Value::String(s.clone()))
+                        .collect(),
+                ),
+            );
+            result.insert(
+                "trust_level".into(),
+                serde_json::Value::String(entry.trust_level.clone()),
+            );
         } else {
             result.insert("valid".into(), serde_json::Value::Bool(false));
-            result.insert("reason".into(), serde_json::Value::String("unknown_did".into()));
+            result.insert(
+                "reason".into(),
+                serde_json::Value::String("unknown_did".into()),
+            );
         }
         result
     }
@@ -236,11 +307,17 @@ impl AgentKeyStore {
     }
 
     fn identity_dir(&self) -> String {
-        Path::new(&self.alp_dir).join(".identity").to_string_lossy().into_owned()
+        Path::new(&self.alp_dir)
+            .join(".identity")
+            .to_string_lossy()
+            .into_owned()
     }
 
     fn keys_path(&self) -> String {
-        Path::new(&self.identity_dir()).join("agent_keys.json").to_string_lossy().into_owned()
+        Path::new(&self.identity_dir())
+            .join("agent_keys.json")
+            .to_string_lossy()
+            .into_owned()
     }
 
     pub fn load(&mut self) {
@@ -264,7 +341,12 @@ impl AgentKeyStore {
         }
     }
 
-    pub fn store_key(&mut self, did: impl Into<String>, public_key: impl Into<String>, private_key: impl Into<String>) {
+    pub fn store_key(
+        &mut self,
+        did: impl Into<String>,
+        public_key: impl Into<String>,
+        private_key: impl Into<String>,
+    ) {
         let did = did.into();
         let pair = KeyPair::new(public_key, private_key);
         self.keys.insert(did.clone(), pair);
@@ -295,7 +377,11 @@ pub fn generate_keypair() -> KeyPair {
 pub fn create_did(agent_id: impl Into<String>, public_key: impl Into<String>) -> String {
     let public_key = public_key.into();
     let key_hash = simple_hash(&public_key);
-    format!("did:alp:{}:{}", agent_id.into(), &key_hash[..16.min(key_hash.len())])
+    format!(
+        "did:alp:{}:{}",
+        agent_id.into(),
+        &key_hash[..16.min(key_hash.len())]
+    )
 }
 
 fn timestamp_now() -> String {

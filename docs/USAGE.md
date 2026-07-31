@@ -13,6 +13,7 @@ npm install -g @autonomous-lifecycle-protocol-alp/cli
 ## Quick Start
 
 ### 1. Initialization
+
 To start using ALP in your project, run:
 
 ```bash
@@ -22,6 +23,7 @@ alp init
 This creates an `.alp/` directory and a `project.alp` file in your repository.
 
 ### 2. Defining Features and Tasks
+
 Create `.alp` files inside your `.alp/` directory. For example, `.alp/features.alp`:
 
 ```alp
@@ -42,6 +44,7 @@ Create `.alp` files inside your `.alp/` directory. For example, `.alp/features.a
 ```
 
 ### 3. Validation
+
 Ensure your `.alp` files conform to the strict JSON Schemas of the protocol:
 
 ```bash
@@ -49,6 +52,7 @@ alp validate
 ```
 
 ### 4. Progress Tracking
+
 Check the current progress of your project based on the `[ ]`, `[~]`, and `[x]` status markers:
 
 ```bash
@@ -56,6 +60,7 @@ alp status
 ```
 
 ### 5. Dependency Graphs
+
 Visualize the execution order of your tasks and features (resolved via Kahn's topological sort algorithm):
 
 ```bash

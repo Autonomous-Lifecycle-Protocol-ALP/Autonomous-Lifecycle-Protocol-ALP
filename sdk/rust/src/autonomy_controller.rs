@@ -15,7 +15,12 @@ impl AutonomyController {
         }
     }
 
-    pub fn propose_edit(&mut self, workflow_id: impl Into<String> + Clone, edits: Vec<HashMap<String, serde_json::Value>>, rationale: impl Into<String>) -> EditProposal {
+    pub fn propose_edit(
+        &mut self,
+        workflow_id: impl Into<String> + Clone,
+        edits: Vec<HashMap<String, serde_json::Value>>,
+        rationale: impl Into<String>,
+    ) -> EditProposal {
         let proposal = self.mutator.propose_edit(workflow_id, edits, rationale);
         let mut decision = HashMap::new();
         decision.insert("action".into(), "propose".into());
@@ -25,7 +30,11 @@ impl AutonomyController {
         proposal
     }
 
-    pub fn approve_edit(&mut self, proposal_id: &str, workflow: &HashMap<String, serde_json::Value>) -> Result<HashMap<String, serde_json::Value>, AlpError> {
+    pub fn approve_edit(
+        &mut self,
+        proposal_id: &str,
+        workflow: &HashMap<String, serde_json::Value>,
+    ) -> Result<HashMap<String, serde_json::Value>, AlpError> {
         let updated = self.mutator.approve(proposal_id, workflow)?;
         let mut decision = HashMap::new();
         decision.insert("action".into(), "approve".into());

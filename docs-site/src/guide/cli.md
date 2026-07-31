@@ -29,7 +29,7 @@ This creates an `.alp/` directory and a `project.alp` file in your repository.
 Create `.alp` files inside your `.alp/` directory. For example, `.alp/features.alp`:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @feature
   id: feat-auth

@@ -1,6 +1,6 @@
 # ALP Specification — Contracts
 
-**Version:** 45.0.0
+**Version:** 80.0.0
 **Status:** Stable
 
 ---
@@ -92,7 +92,7 @@ function check(contract, context):
 ## 4. Examples
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @contract
   id: contract-repo-access

@@ -1,6 +1,6 @@
 # ALP Specification — Directory Structure
 
-**Version:** 45.0.0
+**Version:** 80.0.0
 **Status:** Stable
 
 ---
@@ -128,7 +128,7 @@ Feature files live in `.alp/features/` and contain everything related to a singl
 
 ```
 // .alp/features/auth.alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @feature
   id: feat-auth

@@ -7,7 +7,7 @@ Autonomous Lifecycle Protocol.
 ## Commands
 
 | Command | Description |
-|---|---|
+| --- | --- |
 | `alp init` | Initialize a new ALP project in the current directory |
 | `alp validate` | Validate all `.alp` files against schemas |
 | `alp lint` | Check for style and convention issues |

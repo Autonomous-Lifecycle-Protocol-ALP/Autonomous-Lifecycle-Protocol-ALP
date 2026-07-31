@@ -1,6 +1,6 @@
 # ALP Specification — Autonomous Swarm Marketplace
 
-**Version:** 45.0.0  
+**Version:** 80.0.0  
 **Status:** Stable  
 
 ---
@@ -46,7 +46,7 @@ A `@swarm_marketplace` object declares an agent skill listing in `.alp/marketpla
 ### 2.1 Schema Fields
 
 | Field | Type | Required | Description |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `id` | String | Yes | Unique skill listing identifier |
 | `provider_agent` | Ref | Yes | Qualified reference to the provider agent |
 | `skill_name` | String | Yes | Name of the offered skill |

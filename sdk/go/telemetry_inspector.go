@@ -1,4 +1,4 @@
-package alp
+package alpgo
 
 import (
 	"fmt"

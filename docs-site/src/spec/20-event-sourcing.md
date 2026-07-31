@@ -1,6 +1,6 @@
 # ALP Specification — Event Sourcing & Deterministic Replay
 
-**Version:** 45.0.0  
+**Version:** 80.0.0  
 **Status:** Stable  
 
 ---
@@ -39,7 +39,7 @@ and schema version. Events are never mutated or deleted.
 
 ### 2.1 Location
 
-```
+```text
 .alp/.events/events.jsonl
 ```
 
@@ -61,7 +61,7 @@ and schema version. Events are never mutated or deleted.
 ```
 
 | Field | Type | Description |
-|---|---|---|
+| --- | --- | --- |
 | `id` | String | Unique event identifier |
 | `timestamp` | ISO 8601 | When the event occurred |
 | `type` | EventType | The kind of mutation |

@@ -28,6 +28,7 @@ import { ChaosEnginePanel } from './components/ChaosEnginePanel.js';
 import { FeatureFlagPanel } from './components/FeatureFlagPanel.js';
 import { WorkflowReplayPanel } from './components/WorkflowReplayPanel.js';
 import { LocalStoragePanel } from './components/LocalStoragePanel.js';
+import { SelfHealingMeshPanel } from './components/SelfHealingMeshPanel.js';
 import { fetchBlockTypes, runAgent, validateALPFile, onAppReady, collabCursorMove } from './shared/alp-client.js';
 import type { SHAMState } from './shared/types.js';
 import './styles/global.css';
@@ -52,7 +53,7 @@ const defaultState: SHAMState = {
   testRunner: { suites: [], output: [] },
 };
 
-type PanelId = 'editor' | 'terminal' | 'agents' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'copilot' | 'refactor' | 'pro' | 'settings' | 'git' | 'search' | 'debugger' | 'test-runner' | 'marketplace' | 'zk' | 'partition';
+type PanelId = 'editor' | 'terminal' | 'agents' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'copilot' | 'refactor' | 'pro' | 'settings' | 'git' | 'search' | 'debugger' | 'test-runner' | 'marketplace' | 'zk' | 'partition' | 'crdtCanvas' | 'wasmAst' | 'edgeDebug' | 'telemetryInspector' | 'chaosEngine' | 'featureFlags' | 'workflowReplay' | 'localStorage' | 'selfHealingMesh';
 
 export function App(): React.JSX.Element {
   const [state, setState] = useState<SHAMState>(defaultState);
@@ -286,6 +287,8 @@ export function App(): React.JSX.Element {
         return <WorkflowReplayPanel />;
       case 'localStorage':
         return <LocalStoragePanel />;
+      case 'selfHealingMesh':
+        return <SelfHealingMeshPanel />;
       default:
         return <ProPanel />;
     }
@@ -330,7 +333,7 @@ export function App(): React.JSX.Element {
           onCloseFile={handleCloseFile}
           onSelectAgent={(id) => setState((prev) => ({ ...prev, selectedAgent: id }))}
           activePanel={activePanel}
-          setActivePanel={setActivePanel}
+          setActivePanel={(panel: string) => setActivePanel(panel as PanelId)}
         />
         <div className="main-area">
           {!showWelcome && state.openFiles.length > 0 && (
@@ -392,17 +395,22 @@ export function App(): React.JSX.Element {
                         <div className="empty-state-desc">Your workspace is clean. Keep up the good work!</div>
                       </div>
                     ) : (
-                      state.diagnostics.map((d, i) => (
-                        <div key={i} className="list-item">
-                          <span className="list-item-icon" style={{ color: d.severity === 'error' ? 'var(--accent-red)' : d.severity === 'warn' ? 'var(--accent-yellow)' : 'var(--accent)' }}>
-                            {d.severity === 'error' ? '●' : d.severity === 'warn' ? '▲' : 'ℹ'}
-                          </span>
-                          <div className="list-item-content">
-                            <div className="list-item-title">{d.message}</div>
-                            {d.file && <div className="list-item-subtitle">{d.file}:{d.line}</div>}
+                      state.diagnostics.map((d, i) => {
+                        const isWarn = d.severity === 'warning' || (d.severity as string) === 'warn';
+                        const isErr = d.severity === 'error';
+                        const filePath = (d as unknown as { file?: string; filePath?: string }).file ?? (d as unknown as { file?: string; filePath?: string }).filePath;
+                        return (
+                          <div key={i} className="list-item">
+                            <span className="list-item-icon" style={{ color: isErr ? 'var(--accent-red)' : isWarn ? 'var(--accent-yellow)' : 'var(--accent)' }}>
+                              {isErr ? '●' : isWarn ? '▲' : 'ℹ'}
+                            </span>
+                            <div className="list-item-content">
+                              <div className="list-item-title">{d.message}</div>
+                              {filePath && <div className="list-item-subtitle">{filePath}:{d.line}</div>}
+                            </div>
                           </div>
-                        </div>
-                      ))
+                        );
+                      })
                     )}
                   </div>
                 )}

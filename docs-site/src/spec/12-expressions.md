@@ -1,6 +1,6 @@
 # ALP Specification — Expressions (ALPEL)
 
-**Version:** 45.0.0
+**Version:** 80.0.0
 **Status:** Stable
 
 ---

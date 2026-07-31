@@ -1,6 +1,6 @@
 # ALP Specification — Plugin System
 
-**Version:** 45.0.0
+**Version:** 80.0.0
 **Status:** Stable
 
 ---
@@ -39,7 +39,7 @@ Starting with v0.4.0, plugins can also be **imported from remote HTTPS URLs**, e
 A plugin is simply an `.alp` file that contains a `@plugin` declaration and one or more `@type` blocks.
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @plugin
   id: plugin-scrum
@@ -86,7 +86,7 @@ A plugin is simply an `.alp` file that contains a `@plugin` declaration and one 
 As of **v8.0.0** the canonical way to declare a custom type is a single `@type` object. A `@type` block both **identifies** the type and **defines** its schema:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @type
   id: type-epic
@@ -117,7 +117,7 @@ As of **v8.0.0** the canonical way to declare a custom type is a single `@type` 
 To use a plugin in a project, you must import the `.alp` file that defines it. This is done using the file-level `!import` directive.
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 !import: "plugins/scrum-plugin.alp"
 
 @project
@@ -222,7 +222,7 @@ To prevent supply-chain attacks (where a remote plugin is silently modified afte
 
 **Example with integrity:**
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 !import: "https://registry.alp-protocol.org/plugins/scrum/1.0.0/plugin.alp" !integrity: sha256:e3b0c44298fc1c149afb
 ```
 
@@ -245,7 +245,7 @@ Registry imports automatically handle fetching, version resolution, and caching 
 Once a type is defined and imported, you can use its `type_name` as a block marker, exactly like a core object.
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 !import: "@autonomous-lifecycle-protocol-alp/scrum@^1.0.0"
 
 // We can now use @epic because it was defined in the scrum plugin!

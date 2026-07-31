@@ -1,6 +1,6 @@
 # ALP Specification — Compliance Test Suite
 
-**Version:** 45.0.0
+**Version:** 80.0.0
 **Status:** Stable
 
 ---

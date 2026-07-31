@@ -14,6 +14,7 @@
 Today, every AI coding agent starts from scratch. It reads scattered Markdown files, infers the project architecture, guesses the dependencies, and builds a mental model that vanishes the moment the session ends.
 
 There is no standard way for a developer to tell an AI agent:
+
 - What the project's goals are
 - What has already been built
 - What needs to be built next

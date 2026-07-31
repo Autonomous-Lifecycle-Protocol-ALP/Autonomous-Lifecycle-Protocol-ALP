@@ -100,9 +100,9 @@ export async function downloadUpdate() {
   return (api?.downloadUpdate?.() ?? { downloaded: false }) as UpdateStatus;
 }
 
-export async function installUpdate() {
+export async function installUpdate(): Promise<UpdateStatus> {
   api?.installUpdate?.();
-  return { installing: false };
+  return { available: false, installing: false };
 }
 
 export async function execTerminalCommand(command: string) {

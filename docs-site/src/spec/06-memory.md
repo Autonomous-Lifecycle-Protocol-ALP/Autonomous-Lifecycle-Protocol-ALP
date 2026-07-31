@@ -1,6 +1,6 @@
 # ALP Specification — Memory Model
 
-**Version:** 45.0.0
+**Version:** 80.0.0
 **Status:** Stable
 
 ---
@@ -77,7 +77,7 @@ Every `@memory` object has:
 Memory is stored in `.alp/memory.alp`:
 
 ```
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 // Project-level memories
 @memory

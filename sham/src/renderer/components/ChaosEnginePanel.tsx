@@ -188,7 +188,7 @@ export function ChaosEnginePanel(): React.JSX.Element {
                 )}
               </div>
 
-              {selectedExp.status === 'COMPLETED' && selectedExp.result !== undefined && (
+              {selectedExp.status === 'COMPLETED' && (selectedExp as unknown as { result?: unknown }).result !== undefined && (
                 <>
                   <div style={s.card}>
                     <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 600, marginBottom: 10 }}>FAULT INJECTION RESULTS</div>

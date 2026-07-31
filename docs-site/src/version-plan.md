@@ -1,6 +1,6 @@
 # ALP Version Plan
 
-**Current Release:** v45.0.0 — Autonomous Orchestration
+**Current Release:** v80.0.0 — Autonomous Orchestration
 **Date:** 2026-07-29
 
 ---
@@ -67,7 +67,7 @@
 
 ---
 
-### v45.0.0 — Autonomous Orchestration
+### v80.0.0 — Autonomous Orchestration
 **Released:** 2026-07-29
 **Codename:** Autonomous Orchestration
 

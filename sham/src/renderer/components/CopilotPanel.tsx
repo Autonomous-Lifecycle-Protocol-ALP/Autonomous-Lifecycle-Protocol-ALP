@@ -235,16 +235,16 @@ export function CopilotPanel({
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
                   <span style={{ fontSize: 11, color: '#a78bfa', fontWeight: 600 }}>{s.type.toUpperCase()}</span>
                   <button
-                    onClick={() => copilotApplyFix({ suggestion: s }).then(r => { if (r.success) onAppendOutput([`[Copilot] Applied fix: ${s.message}`]); })}
+                    onClick={() => copilotApplyFix({ filePath: 'untitled.alp', suggestionId: (s as unknown as { id: string }).id ?? 's-1' }).then(r => { if (r.success) onAppendOutput([`[Copilot] Applied fix: ${s.message}`]); })}
                     style={{ ...styles.btn('#4fc3f7'), padding: '2px 10px', fontSize: 11 }}
                   >
                     Apply
                   </button>
                 </div>
                 <div style={{ fontSize: 13, color: '#e0e0e0' }}>{s.message}</div>
-                {s.replacement && (
+                {(s as unknown as { replacement?: string }).replacement && (
                   <pre style={{ fontSize: 11, color: '#aed581', background: '#0a0a16', borderRadius: 6, padding: 8, marginTop: 6, overflowX: 'auto' }}>
-                    {s.replacement}
+                    {(s as unknown as { replacement?: string }).replacement}
                   </pre>
                 )}
               </div>

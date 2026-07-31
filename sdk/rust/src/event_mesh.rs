@@ -11,7 +11,12 @@ pub struct MeshEvent {
 }
 
 impl MeshEvent {
-    pub fn new(id: impl Into<String>, topic: impl Into<String>, sender_agent: impl Into<String>, payload: impl Into<String>) -> Self {
+    pub fn new(
+        id: impl Into<String>,
+        topic: impl Into<String>,
+        sender_agent: impl Into<String>,
+        payload: impl Into<String>,
+    ) -> Self {
         Self {
             id: id.into(),
             topic: topic.into(),
@@ -42,10 +47,19 @@ impl EventMeshEngine {
     where
         F: Fn(&MeshEvent) + Send + Sync + 'static,
     {
-        self.subscriptions.entry(topic.into()).or_default().push(Box::new(handler));
+        self.subscriptions
+            .entry(topic.into())
+            .or_default()
+            .push(Box::new(handler));
     }
 
-    pub fn publish(&mut self, event_id: impl Into<String>, topic: impl Into<String>, sender_agent: impl Into<String>, payload: impl Into<String>) -> MeshEvent {
+    pub fn publish(
+        &mut self,
+        event_id: impl Into<String>,
+        topic: impl Into<String>,
+        sender_agent: impl Into<String>,
+        payload: impl Into<String>,
+    ) -> MeshEvent {
         let event = MeshEvent::new(event_id, topic, sender_agent, payload);
         self.event_buffer.push(event.clone());
         if let Some(handlers) = self.subscriptions.get(&event.topic) {

@@ -3,6 +3,7 @@
 ## Problem 1: No Standard Format for AI Agents
 
 Every AI coding tool reads unstructured Markdown (`.cursorrules`, `CLAUDE.md`, `AGENTS.md`, `.clinerules`). These are natural language instructions that are:
+
 - Ambiguous (different models interpret them differently)
 - Non-portable (each tool has its own format)
 - Unvalidatable (no schema means no error checking)

@@ -6,7 +6,7 @@ Quick reference for the `.alp` file format (v3.0.0).
 
 ## Blocks
 
-```
+```alp
 @project                         // Block marker (top-level)
 @feature my-feature              // Block with inline ID
 @task                            // Start a new protocol object
@@ -22,7 +22,7 @@ Quick reference for the `.alp` file format (v3.0.0).
 
 ## Properties
 
-```
+```alp
   name: "My Project"             // String value (quoted)
   name: My Project               // String value (unquoted)
   priority: high                 // Enum value
@@ -39,7 +39,7 @@ Quick reference for the `.alp` file format (v3.0.0).
 
 ## Multi-Line Values
 
-```
+```alp
   description: |
     First line of the description.
     Second line continues here.
@@ -50,7 +50,7 @@ Quick reference for the `.alp` file format (v3.0.0).
 
 ## Lists
 
-```
+```alp
   goals:
     - Secure authentication
     - OAuth2 support
@@ -59,7 +59,7 @@ Quick reference for the `.alp` file format (v3.0.0).
 
 ## Core Objects (Macro)
 
-```
+```alp
 @macro
   id: generate-tasks
   iterate_over: "['auth', 'billing']"
@@ -74,7 +74,7 @@ Quick reference for the `.alp` file format (v3.0.0).
 
 ## References
 
-```
+```alp
   owner: -> agent-frontend                   // Local project reference
   feature: -> auth-service::feat-login       // Qualified (Cross-Project)
   depends_on:
@@ -90,7 +90,7 @@ Quick reference for the `.alp` file format (v3.0.0).
 
 ## Status Markers
 
-```
+```alp
   status: [ ]      // Pending
   status: [~]      // In Progress
   status: [x]      // Completed
@@ -100,7 +100,8 @@ Quick reference for the `.alp` file format (v3.0.0).
 ```
 
 In acceptance criteria:
-```
+
+```alp
   @accept
     - [x] Login form renders correctly
     - [ ] Validation works
@@ -111,7 +112,7 @@ In acceptance criteria:
 
 ## Directives
 
-```
+```alp
 !alp-version: 2.0.0             // File-level: ALP version
 !context-scope: minimal         // File-level: context loading
 !agent-mode: autonomous         // File-level: agent behavior
@@ -133,7 +134,7 @@ In acceptance criteria:
 
 ## Comments
 
-```
+```alp
 // This is a comment
 @task
   id: my-task  // Inline comment
@@ -143,7 +144,7 @@ In acceptance criteria:
 
 ## Separators
 
-```
+```alp
 @task
   id: task-001
 
@@ -157,7 +158,7 @@ In acceptance criteria:
 
 ## Inline Objects
 
-```
+```alp
   metadata: { author: "agent-planner", created: "2025-07-14" }
   tags:
     - { key: "team", value: "backend" }
@@ -167,7 +168,7 @@ In acceptance criteria:
 
 ## Nested Blocks
 
-```
+```alp
 @task
   id: task-login-ui
   name: "Build Login Form"
@@ -214,7 +215,7 @@ In acceptance criteria:
 ## Naming Conventions
 
 | Element | Convention | Example |
-|---|---|---|
+| --- | --- | --- |
 | IDs | kebab-case | `task-login-ui` |
 | Property keys | snake_case | `estimated_time` |
 | File names | kebab-case.alp | `user-auth.alp` |
@@ -223,7 +224,7 @@ In acceptance criteria:
 
 ## Minimum Valid File
 
-```
+```alp
 !alp-version: 2.0.0
 
 @project

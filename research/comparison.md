@@ -8,7 +8,7 @@ This document synthesizes the research from individual analyses into a single co
 
 ## The Protocol Stack for Autonomous Development
 
-```
+```text
 ┌─────────────────────────────────────────┐
 │         Developer / Product Owner       │
 ├─────────────────────────────────────────┤
@@ -33,7 +33,7 @@ This document synthesizes the research from individual analyses into a single co
 ## Feature Comparison Matrix
 
 | Capability | OpenAPI | MCP | Cursor Rules | CLAUDE.md | Cline | Roo Code | Codex | Aider | **ALP** |
-|---|---|---|---|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Machine-readable format | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ⚠️ | ✅ |
 | Formal schema/grammar | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
 | Project lifecycle tracking | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
@@ -50,7 +50,7 @@ This document synthesizes the research from individual analyses into a single co
 ## The Analogy
 
 | Domain | Before Standard | Standard | After Standard |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Version Control | Manual file copies, custom scripts | **Git** | Universal version control |
 | Containers | Custom VM images, snowflake servers | **Docker** | Portable containerization |
 | APIs | Custom docs, Markdown, Word docs | **OpenAPI** | Universal API description |
@@ -62,18 +62,23 @@ This document synthesizes the research from individual analyses into a single co
 ## Key Insights
 
 ### 1. The market is fragmented by design
+
 Every AI coding tool has an incentive to create proprietary context formats. This keeps users locked in. ALP breaks this cycle by providing a neutral, open standard.
 
 ### 2. Markdown is the wrong format
+
 Every current solution uses free-form Markdown because it's easy. But Markdown is inherently ambiguous — the same text can be interpreted differently by different models. ALP provides deterministic, schema-validated structure.
 
 ### 3. Lifecycle is the killer feature
+
 No existing tool tracks the lifecycle of software features from ideation through verification. ALP's 7-stage lifecycle with dependency resolution and verification gates is genuinely novel.
 
 ### 4. Memory persistence is undervalued
+
 Current agents lose all context between sessions. ALP's memory model ensures that architectural decisions, discovered bugs, and learned patterns persist indefinitely.
 
 ### 5. Multi-agent is the future
+
 As AI systems grow more capable, single-agent architectures will give way to specialized multi-agent teams. ALP is designed from the ground up for this future.
 
 ---

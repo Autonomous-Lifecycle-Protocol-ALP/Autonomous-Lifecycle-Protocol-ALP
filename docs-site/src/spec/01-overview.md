@@ -1,6 +1,6 @@
 # ALP Specification — Overview
 
-**Version:** 45.0.0
+**Version:** 80.0.0
 **Status:** Stable
 **Date:** 2025-07-14
 

@@ -17,14 +17,16 @@ npm start
 
 Once connected via MCP, the server exposes the following tools to the LLM agent:
 
-**Workspace & Graph**
+### Workspace & Graph
+
 - **`alp_list_objects`**: List all ALP objects, optionally filtered by type.
 - **`alp_read_object`**: Read a specific ALP object by ID.
 - **`alp_get_graph`**: Full dependency graph as sorted execution order.
 - **`alp_get_status`**: Project status summary with task counts by state.
 - **`alp_get_impact`**: Downstream nodes affected by a change.
 
-**Search & Mutation**
+### Search & Mutation
+
 - **`alp_search`**: Fuzzy search across IDs and descriptions.
 - **`alp_validate`**: Validate workspace syntax/schemas.
 - **`alp_update_status`**: Update task/feature status.
@@ -34,40 +36,48 @@ Once connected via MCP, the server exposes the following tools to the LLM agent:
 - **`alp_create_task`**: Scaffold a new task `.alp` file.
 - **`alp_create_feature`**: Scaffold a new feature `.alp` file.
 
-**Events & Analytics**
+### Events & Analytics
+
 - **`alp_get_events`**: Read recent runtime events with filtering.
 - **`alp_get_analytics`**: Analytics summary from state store or event log.
 
-**Governance & Registry**
+### Governance & Registry
+
 - **`alp_check_policy`**: Check path/command against `@policy` guardrails.
 - **`alp_visualize`**: Render `@workflow` objects as Mermaid/JSON diagrams.
 - **`alp_search_registry`**: Search/list installed registry packages.
 - **`alp_get_timelines`**: List/evaluate `@timeline` schedules.
 
-**Contracts & Vaults**
+### Contracts & Vaults
+
 - **`alp_get_contracts`**: List all `@contract` objects and their allow/deny rules.
 - **`alp_get_vaults`**: List all `@vault` objects and their recipient/algorithm metadata.
 
-**Swarm Marketplace & Event Mesh (v38.0.0)**
+### Swarm Marketplace & Event Mesh (v38.0.0)
+
 - **`alp_get_swarm_marketplace`**: List registered skills from `@swarm_marketplace` objects, optionally filtered by category.
 - **`alp_get_event_mesh`**: List event mesh topics and recent events from `@event_mesh` objects.
 
-**Macro Expansion (v37.0.0)**
+### Macro Expansion (v37.0.0)
+
 - **`alp_get_macros`**: List all `@macro` definitions in the workspace.
 - **`alp_expand_macro`**: Expand a `@macro` definition by ID and return the generated objects.
 
-**Memory Mesh (v38.0.0)**
+### Memory Mesh (v38.0.0)
+
 - **`alp_memory_store`**: Store a memory node in the workspace memory mesh.
 - **`alp_memory_query`**: Query the memory mesh for relevant memories by keyword, agent, or tag.
 - **`alp_memory_stats`**: Return memory mesh statistics (node count, decay scores, top tags).
 
-**IDE Intelligence (v45.0.0)**
+### IDE Intelligence (v45.0.0)
+
 - **`alp_intelligence_suggest`**: Get AI-powered suggestions for next ALP objects based on workspace gaps.
 - **`alp_intelligence_diagnose`**: Diagnose errors with likely causes and fix suggestions.
 - **`alp_intelligence_predict`**: Predict task outcomes based on dependency state and risk factors.
 - **`alp_intelligence_review`**: Automated code review findings for `.alp` specs.
 
-**Autonomous Orchestration (v45.0.0)**
+### Autonomous Orchestration (v45.0.0)
+
 - **`alp_autonomy_run`**: Start an autonomous swarm run for a workflow.
 - **`alp_autonomy_heal`**: Run self-healing diagnostics and auto-patch ALP workspace.
 - **`alp_autonomy_predict`**: Predict outcome of a workflow based on current state.
@@ -96,7 +106,6 @@ The ALP toolchain includes official SDKs for multiple languages:
 All SDKs expose core parsing, graph, and workspace APIs. See `sdk/README.md` for installation instructions.
 
 ## Usage with Claude Desktop
-
 
 Add the following to your `claude_desktop_config.json`:
 

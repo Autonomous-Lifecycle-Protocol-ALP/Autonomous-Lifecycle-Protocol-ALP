@@ -1,6 +1,6 @@
 # ALP Specification — Syntax
 
-**Version:** 45.0.0
+**Version:** 80.0.0
 **Status:** Stable
 
 ---
@@ -335,7 +335,7 @@ Directives are special instructions that control agent behavior. They appear at 
 
 **File-level directives** (appear before any block):
 ```
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 !context-scope: minimal
 !agent-mode: autonomous
 !import: "plugins/scrum-plugin.alp"
@@ -565,7 +565,7 @@ Every `.alp` file follows this structure:
 
 **Example complete file:**
 ```
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 // Authentication feature tasks
 

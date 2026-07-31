@@ -1,6 +1,6 @@
 # ALP Specification — Encrypted Secrets Vault
 
-**Version:** 45.0.0
+**Version:** 80.0.0
 **Status:** Stable
 
 ---
@@ -108,7 +108,7 @@ alp vault audit
 ## 5. Example
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @vault
   id: default

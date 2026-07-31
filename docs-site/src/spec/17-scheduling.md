@@ -1,6 +1,6 @@
 # ALP Specification — Scheduling
 
-**Version:** 45.0.0
+**Version:** 80.0.0
 **Status:** Stable
 
 ---
@@ -115,7 +115,7 @@ function evaluate(now: DateTime): TimelineResult[]:
 ## 4. Examples
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @timeline
   id: tl-daily-standup

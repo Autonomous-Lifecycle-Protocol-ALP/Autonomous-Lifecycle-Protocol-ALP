@@ -1,6 +1,6 @@
 # ALP Specification — Multi-Project Support
 
-**Version:** 45.0.0
+**Version:** 80.0.0
 **Status:** Stable
 
 ---
@@ -52,7 +52,7 @@ ALP v0.5.0 introduces the **Workspace** model: a way to group multiple ALP proje
 A workspace is defined by a `@workspace` object in a `workspace.alp` file at the workspace root.
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @workspace
   id: healthcare-platform

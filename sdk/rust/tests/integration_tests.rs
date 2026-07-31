@@ -1,9 +1,9 @@
-use alp_sdk::identity::{generate_keypair, create_did, TrustRegistry, VerifiablePresentation};
 use alp_sdk::governance::GovernanceEngine;
-use alp_sdk::telemetry::{TelemetryEngine, Span};
-use alp_sdk::{AlpObject, AlpWorkspace};
+use alp_sdk::identity::{create_did, generate_keypair, TrustRegistry, VerifiablePresentation};
 use alp_sdk::policy::{PolicyEngine, PolicyQuery};
+use alp_sdk::telemetry::{Span, TelemetryEngine};
 use alp_sdk::vault::Vault;
+use alp_sdk::{AlpObject, AlpWorkspace};
 use std::collections::HashMap;
 
 #[test]
@@ -20,7 +20,12 @@ fn test_identity_generate_keypair_and_did() {
 fn test_trust_registry_register_and_resolve() {
     let dir = std::env::temp_dir().join("alp-test-trust");
     let mut registry = TrustRegistry::new(dir.to_str().unwrap());
-    let entry = registry.register("did:alp:agent-1", "agent-1", vec!["read".into(), "write".into()], "standard");
+    let entry = registry.register(
+        "did:alp:agent-1",
+        "agent-1",
+        vec!["read".into(), "write".into()],
+        "standard",
+    );
     assert_eq!(entry.agent_id, "agent-1");
     assert!(registry.has_scope("did:alp:agent-1", "read"));
 }
@@ -46,8 +51,17 @@ fn test_governance_engine_propose_and_vote() {
     let ballot = engine.propose("policy-1", "Test policy", Some(2));
     assert!(ballot.ballot_id().starts_with("ballot-"));
 
-    let result = engine.vote(&ballot.ballot_id(), "did:alp:agent-1", "approve", "Looks good", "key1");
-    assert!(result.get("accepted").and_then(|v| v.as_bool()).unwrap_or(false));
+    let result = engine.vote(
+        &ballot.ballot_id(),
+        "did:alp:agent-1",
+        "approve",
+        "Looks good",
+        "key1",
+    );
+    assert!(result
+        .get("accepted")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(false));
 }
 
 #[test]
@@ -55,7 +69,10 @@ fn test_governance_engine_rejects_unqualified_voter() {
     let dir = std::env::temp_dir().join("alp-test-gov-2");
     let mut engine = GovernanceEngine::new(dir.to_str().unwrap(), 2);
     let result = engine.vote("ballot-123", "did:alp:unknown", "approve", "", "");
-    assert!(!result.get("accepted").and_then(|v| v.as_bool()).unwrap_or(true));
+    assert!(!result
+        .get("accepted")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(true));
 }
 
 #[test]
@@ -95,9 +112,9 @@ fn test_telemetry_engine_inject_extract_context() {
 
 #[test]
 fn test_policy_engine_evaluate_blocks_deny() {
-    let objects = vec![
-        AlpObject::new("p1", "policy").with_property("kind", "deny_path").with_property("value", "/etc/passwd"),
-    ];
+    let objects = vec![AlpObject::new("p1", "policy")
+        .with_property("kind", "deny_path")
+        .with_property("value", "/etc/passwd")];
     let engine = PolicyEngine::new(&objects);
     let decision = engine.evaluate(&PolicyQuery::new("path", "/etc/passwd"));
     assert!(decision.blocked);
@@ -121,13 +138,27 @@ fn test_vault_get_missing_returns_error() {
 fn test_integration_identity_to_governance() {
     let dir = std::env::temp_dir().join("alp-test-integration");
     let mut registry = TrustRegistry::new(dir.to_str().unwrap());
-    let _entry = registry.register("did:alp:agent-1", "agent-1", vec!["vote".into()], "qualified");
+    let _entry = registry.register(
+        "did:alp:agent-1",
+        "agent-1",
+        vec!["vote".into()],
+        "qualified",
+    );
 
     let mut engine = GovernanceEngine::new(dir.to_str().unwrap(), 1);
     engine.qualify("did:alp:agent-1");
     let ballot = engine.propose("policy-1", "Integration test", Some(1));
-    let result = engine.vote(&ballot.ballot_id(), "did:alp:agent-1", "approve", "ok", "key1");
-    assert!(result.get("accepted").and_then(|v| v.as_bool()).unwrap_or(false));
+    let result = engine.vote(
+        &ballot.ballot_id(),
+        "did:alp:agent-1",
+        "approve",
+        "ok",
+        "key1",
+    );
+    assert!(result
+        .get("accepted")
+        .and_then(|v| v.as_bool())
+        .unwrap_or(false));
 }
 
 #[test]

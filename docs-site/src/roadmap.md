@@ -6,7 +6,7 @@ Strategic direction and planned features for the Autonomous Lifecycle Protocol.
 
 ALP aims to become the **standard protocol for autonomous software engineering** — the way Git standardized version control, Docker standardized environments, and OpenAPI standardized APIs.
 
-## Current Version: v45.0.0
+## Current Version: v80.0.0
 
 **Release Date:** 2026-07-30
 
@@ -24,7 +24,7 @@ ALP aims to become the **standard protocol for autonomous software engineering**
 
 ## Version History
 
-### V45.0.0 — Autonomous Orchestration (Current)
+### V80.0.0 — Autonomous Orchestration (Current)
 
 **Theme:** Self-governing, self-healing AI workflows
 
@@ -152,6 +152,6 @@ timeline
 
 ## Strategic Roadmap Documents
 
-- [ROADMAP_V46_V60.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V46_V60.md) — Detailed technical specification for v46.0.0 to v60.0.0
-- [ROADMAP_V17_V43.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V43.md) — Strategic roadmap from v17 to v43
+- [ROADMAP_V46_V60.md](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/raw/main/docs/ROADMAP_V46_V60.md) — Detailed technical specification for v46.0.0 to v60.0.0
+- [ROADMAP_V17_V43.md](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/raw/main/docs/ROADMAP_V17_V43.md) — Strategic roadmap from v17 to v43
 

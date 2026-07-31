@@ -36,7 +36,7 @@ my-alp-project/
 Edit `.alp/project.alp`:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @project
   id: my-alp-project
@@ -51,7 +51,7 @@ Edit `.alp/project.alp`:
 Create `.alp/agents.alp`:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @agent
   id: agent-coder
@@ -73,7 +73,7 @@ Create `.alp/agents.alp`:
 Create `.alp/features/auth.alp`:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @feature
   id: feat-auth

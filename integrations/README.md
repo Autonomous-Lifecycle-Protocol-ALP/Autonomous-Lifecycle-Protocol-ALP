@@ -5,15 +5,19 @@ This directory contains drop-in configuration files to integrate the Autonomous 
 ## Available Integrations
 
 ### 1. Cursor (`cursor/`)
-Contains a `.cursorrules` file. 
+
+Contains a `.cursorrules` file.
 **Usage:** Copy `.cursorrules` to the root of your repository. This will instruct the Cursor AI agent on how to read your `.alp` files to gain context, and how to update task statuses as it completes work.
 
 ### 2. Claude Code & Cline (`claude-code/`)
+
 Contains `instructions.md`.
 **Usage:** Copy these instructions into your agent's system prompt or custom instructions file (e.g., `.claudecode.md`). It teaches CLI-based agents how to use the `@autonomous-lifecycle-protocol-alp/cli` to validate the workspace and view the dependency graph before writing code. In the current era, agents drive execution via `alp run` (and `alp run --concurrent N` for swarm mode) and report status with `alp checkpoint` (including `--ask-human` for Human-in-the-Loop review handoffs).
 
 ### 3. GitHub Actions (`github/`)
+
 The ALP repo ships an active CI workflow at `.github/workflows/ci.yml` (TypeScript + Python SDK tests and example validation). For your own repositories, copy the drop-in templates from this directory into `.github/workflows/`:
+
 - `alp-validate.yml` runs `alp validate` on every PR/push and fails the check when any `.alp` file is schema-invalid or the dependency graph has cycles — so a broken protocol state can never be merged.
 - `alp-sync.yml` tracks PR events and transitions your ALP `.alp` tasks from `[ ]` to `[~]` to `[x]` as PRs are opened and merged.
 - `alp-pr-context.yml` posts PR context (linked tasks/decisions) as a comment when a PR is opened.
@@ -43,4 +47,3 @@ ALP provides a native MCP server (`@autonomous-lifecycle-protocol-alp/mcp-server
 **Usage:** Start the server using `node mcp-server/dist/index.js` or configure your IDE's MCP settings to point to the `@autonomous-lifecycle-protocol-alp/mcp-server` executable.
 
 Exposed tools (28 total): `alp_list_objects`, `alp_read_object`, `alp_get_graph`, `alp_get_status`, `alp_validate`, `alp_update_status`, `alp_set_status`, `alp_get_impact`, `alp_search`, `alp_delegate`, `alp_decompose`, `alp_create_task`, `alp_create_feature`, `alp_get_events`, `alp_get_analytics`, `alp_check_policy`, `alp_visualize`, `alp_search_registry`, `alp_get_timelines`, `alp_get_contracts`, `alp_get_vaults`, `alp_get_swarm_marketplace`, `alp_get_event_mesh`, `alp_get_macros`, `alp_expand_macro`, `alp_memory_store`, `alp_memory_query`, `alp_memory_stats`.
-

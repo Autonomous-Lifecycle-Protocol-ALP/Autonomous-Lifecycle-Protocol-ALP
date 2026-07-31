@@ -27,8 +27,16 @@ impl PolicyEngine {
         let mut requires_approval = false;
 
         for policy in &self.policies {
-            let kind = policy.properties.get("kind").and_then(|v| v.as_str()).unwrap_or("");
-            let value = policy.properties.get("value").and_then(|v| v.as_str()).unwrap_or("");
+            let kind = policy
+                .properties
+                .get("kind")
+                .and_then(|v| v.as_str())
+                .unwrap_or("");
+            let value = policy
+                .properties
+                .get("value")
+                .and_then(|v| v.as_str())
+                .unwrap_or("");
 
             if !matches(query, kind, value) {
                 continue;
@@ -36,15 +44,21 @@ impl PolicyEngine {
 
             matched_policies.push(policy.id.clone());
 
-            if kind.starts_with("deny") || (kind == "deny_path" && query.kind == "path")
-                || (kind == "deny_command" && query.kind == "command") {
+            if kind.starts_with("deny")
+                || (kind == "deny_path" && query.kind == "path")
+                || (kind == "deny_command" && query.kind == "command")
+            {
                 blocked = true;
                 reasons.push(format!("Denied by policy: {}", policy.id));
             } else if kind == "require_approval" {
                 requires_approval = true;
                 reasons.push(format!("Requires approval: {}", policy.id));
             } else {
-                let enforcement = policy.properties.get("enforcement").and_then(|v| v.as_str()).unwrap_or("strict");
+                let enforcement = policy
+                    .properties
+                    .get("enforcement")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("strict");
                 if enforcement == "warn" {
                     reasons.push(format!("Warning: {}", policy.id));
                 }
@@ -92,7 +106,11 @@ pub struct PolicyQuery {
 
 impl PolicyQuery {
     pub fn new(kind: impl Into<String>, value: impl Into<String>) -> Self {
-        Self { kind: kind.into(), value: Some(value.into()), agent: None }
+        Self {
+            kind: kind.into(),
+            value: Some(value.into()),
+            agent: None,
+        }
     }
 
     pub fn with_agent(mut self, agent: impl Into<String>) -> Self {

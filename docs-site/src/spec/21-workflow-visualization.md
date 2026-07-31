@@ -1,6 +1,6 @@
 # ALP Specification — Workflow Visualization
 
-**Version:** 45.0.0  
+**Version:** 80.0.0  
 **Status:** Stable  
 
 ---
@@ -28,6 +28,7 @@ directed graphs of steps, agents, and conditions, they can be transformed into
 standard diagram formats without any external model.
 
 This enables:
+
 - **Human review** of complex multi-agent workflows
 - **Documentation** generated directly from `.alp` files
 - **CI artifacts** (PNG/SVG) published as part of a build

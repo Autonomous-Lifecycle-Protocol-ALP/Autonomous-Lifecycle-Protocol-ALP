@@ -1,6 +1,6 @@
 # ALP Specification — Agent Model
 
-**Version:** 45.0.0
+**Version:** 80.0.0
 **Status:** Stable
 
 ---
@@ -43,7 +43,7 @@ ALP supports multiple specialized AI agents working on the same project. The Age
 Agents are declared in `.alp/agents.alp`:
 
 ```
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @agent
   id: agent-planner

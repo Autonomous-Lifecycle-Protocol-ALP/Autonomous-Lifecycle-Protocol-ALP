@@ -1,5 +1,5 @@
-use crate::AlpError;
 use crate::policy::{PolicyEngine, PolicyQuery};
+use crate::AlpError;
 use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
@@ -35,7 +35,12 @@ impl WorkflowMutator {
         self
     }
 
-    pub fn propose_edit(&mut self, workflow_id: impl Into<String> + Clone, edits: Vec<HashMap<String, serde_json::Value>>, rationale: impl Into<String>) -> EditProposal {
+    pub fn propose_edit(
+        &mut self,
+        workflow_id: impl Into<String> + Clone,
+        edits: Vec<HashMap<String, serde_json::Value>>,
+        rationale: impl Into<String>,
+    ) -> EditProposal {
         let workflow_id_str = workflow_id.clone().into();
         let proposal_id = format!("prop-{}-{}", workflow_id_str, self.proposals.len() + 1);
         let proposal = EditProposal {
@@ -52,12 +57,20 @@ impl WorkflowMutator {
         proposal
     }
 
-    pub fn approve(&mut self, proposal_id: &str, workflow: &HashMap<String, serde_json::Value>) -> Result<HashMap<String, serde_json::Value>, AlpError> {
-        let proposal = self.proposals.get(proposal_id).ok_or_else(|| AlpError::new(format!("Proposal {} not found.", proposal_id)))?;
+    pub fn approve(
+        &mut self,
+        proposal_id: &str,
+        workflow: &HashMap<String, serde_json::Value>,
+    ) -> Result<HashMap<String, serde_json::Value>, AlpError> {
+        let proposal = self
+            .proposals
+            .get(proposal_id)
+            .ok_or_else(|| AlpError::new(format!("Proposal {} not found.", proposal_id)))?;
         if let Some(ref engine) = self.policy_engine {
             let _ = engine.evaluate(&PolicyQuery::new("edits", proposal_id));
         }
-        self.rollback_snapshots.insert(proposal_id.into(), workflow.clone());
+        self.rollback_snapshots
+            .insert(proposal_id.into(), workflow.clone());
         let mut updated = workflow.clone();
         for edit in &proposal.edits {
             for (key, value) in edit {

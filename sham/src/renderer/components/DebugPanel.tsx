@@ -10,7 +10,7 @@ interface DebugSession {
 }
 
 interface DebugPanelProps {
-  session?: DebugSession;
+  session?: DebugSession | null;
   output: string[];
   onAppendOutput: (lines: string[]) => void;
   onStartDebug: (filePath: string) => void;

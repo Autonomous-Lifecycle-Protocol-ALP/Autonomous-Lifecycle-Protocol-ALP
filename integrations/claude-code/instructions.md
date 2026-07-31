@@ -12,15 +12,18 @@ This repository is managed by the Autonomous Lifecycle Protocol (ALP). As an aut
 4. **Validation:** After making ANY changes to `.alp` files, you MUST run `node cli/dist/index.js validate` to ensure the schema and dependency graph remain valid. Do not leave the workspace in a broken protocol state.
 
 ## Syntax Rules for Modifying .alp Files
+
 - Use 2 spaces for property indentation.
 - Use 4 spaces for list item indentation.
 - Use standard references (`-> id`) for dependencies.
 - Use `| requires` or `| blocks` for edge directives.
 
 ## Sub-Agents & Handoff
+
 If a task specifies `owner: -> agent-reviewer`, and you are `agent-developer`, you must NOT mark the task as `[x]`. You may mark it `[~]` and leave a comment for the reviewer.
 
 ## Execution
+
 - Use `node cli/dist/index.js run` to compile the context bundle for the next available task and pipe it into your loop. In swarm mode, `node cli/dist/index.js run --concurrent N` spins up N parallel agents.
 - When reporting progress, use `node cli/dist/index.js checkpoint <taskId> <status>` (e.g. `node cli/dist/index.js checkpoint task-login-ui in-progress`). To hand off for human review, use `node cli/dist/index.js checkpoint <taskId> --ask-human "<message>"`, which marks the task `[?]`.
 - Never claim a task whose blocking dependencies (`depends_on`, `blocked_by`, `requires`) are not `[x]`. Reference links such as `feature:` or `owner:` do NOT block a task.

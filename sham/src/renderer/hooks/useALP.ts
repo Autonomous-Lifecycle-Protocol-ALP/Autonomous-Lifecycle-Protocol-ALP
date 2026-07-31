@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { parseALPFile, validateALPFile, fetchBlockTypes } from '../shared/alp-client.js';
-import type { ALPDocument, ALPDiagnostic, ALPAgent, ALPMCPTool } from '../shared/types.js';
+import type { ParseResult, ALPDiagnostic, ALPAgent, ALPMCPTool } from '../shared/types.js';
 
 export function useALP() {
-  const [document, setDocument] = useState<ALPDocument | null>(null);
+  const [document, setDocument] = useState<ParseResult | null>(null);
   const [diagnostics, setDiagnostics] = useState<ALPDiagnostic[]>([]);
   const [blockTypes, setBlockTypes] = useState<string[]>([]);
   const [agents, setAgents] = useState<ALPAgent[]>([]);

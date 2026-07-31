@@ -6,9 +6,9 @@
   <br/>
 
    [![Status](https://img.shields.io/badge/status-stable-success.svg)](#)
-    [![Version](https://img.shields.io/badge/version-76.0.0-blue.svg)](#)
-    [![License](https://img.shields.io/badge/license-MIT-green.svg)](#)
-    [![Tests](https://img.shields.io/badge/tests-594%20passed-brightgreen.svg)](#)
+     [![Version](https://img.shields.io/badge/version-80.0.0-blue.svg)](#)
+     [![License](https://img.shields.io/badge/license-MIT-green.svg)](#)
+     [![Tests](https://img.shields.io/badge/tests-598%20passed-brightgreen.svg)](#)
     [![Docs](https://img.shields.io/badge/docs-live-green.svg)](https://autonomous-lifecycle-protocol-alp.github.io/Autonomous-Lifecycle-Protocol-ALP/)
 </div>
 

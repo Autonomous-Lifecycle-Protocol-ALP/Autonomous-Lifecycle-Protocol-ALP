@@ -5,11 +5,13 @@ Thank you for your interest in contributing to the Autonomous Lifecycle Protocol
 ## How to Contribute
 
 ### Reporting Issues
+
 - Use GitHub Issues to report bugs or suggest features
 - Include a minimal reproducible example when reporting parser bugs
 - Tag issues with appropriate labels (`spec`, `cli`, `parser`, `sdk`, `docs`)
 
 ### Proposing Specification Changes
+
 ALP uses an RFC (Request for Comments) process for specification changes:
 
 1. Open a GitHub Issue describing the proposed change
@@ -19,6 +21,7 @@ ALP uses an RFC (Request for Comments) process for specification changes:
 5. All spec changes must include updated compliance tests
 
 ### Code Contributions
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feat/my-feature`)
 3. Make your changes following the existing code style
@@ -27,7 +30,9 @@ ALP uses an RFC (Request for Comments) process for specification changes:
 6. Submit a Pull Request
 
 ### Documentation
+
 Documentation improvements are always welcome. This includes:
+
 - Fixing typos or unclear wording in the specification
 - Adding examples
 - Improving tutorials

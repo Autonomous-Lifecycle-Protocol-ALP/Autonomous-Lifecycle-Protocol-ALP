@@ -6,8 +6,8 @@ Official SDK packages for integrating ALP (Autonomous Lifecycle Protocol) into m
 
 | Language | Package | Version | Primary Capabilities |
 |---|---|:---:|---|
-| **TypeScript** | `@autonomous-lifecycle-protocol-alp/sdk` | `45.0.0` | Parsing, AST validation, DAG topological graph, Event Mesh, Collaboration |
-| **Python** | `alp-sdk` | `45.0.0` | Parsing, verification gates, analytics, DID identity, registry client, P2P swarm |
+| **TypeScript** | `@autonomous-lifecycle-protocol-alp/sdk` | `80.0.0` | Parsing, AST validation, DAG topological graph, Event Mesh, Collaboration |
+| **Python** | `alp-sdk` | `80.0.0` | Parsing, verification gates, analytics, DID identity, registry client, P2P swarm |
 | **Go** | `alp-go` | `0.46.0` | High-performance DAG resolution, pub/sub event mesh, governance voting, telemetry |
 | **Rust** | `alp-rs` | `0.46.0` | Async Tokio-native execution engine, W3C DID identity, cryptographic vault, policy |
 | **Java** | `alp-java` | `46.0.0` | Enterprise JVM integration, Jackson object mapping, thread-safe governance & event mesh |

@@ -1,6 +1,6 @@
 # ALP Specification — Protocol Objects
 
-**Version:** 45.0.0
+**Version:** 80.0.0
 **Status:** Stable
 
 ---
@@ -107,7 +107,7 @@ The root object. Every ALP project MUST have exactly one `@project` object, defi
 
 **Example:**
 ```
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @project
   id: healthcare-platform

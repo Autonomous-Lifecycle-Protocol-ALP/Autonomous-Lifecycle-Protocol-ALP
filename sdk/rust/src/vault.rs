@@ -33,7 +33,12 @@ impl Vault {
         }
     }
 
-    pub fn set_secret(&mut self, id: impl Into<String> + Clone, value: impl Into<String>, recipients: Vec<String>) {
+    pub fn set_secret(
+        &mut self,
+        id: impl Into<String> + Clone,
+        value: impl Into<String>,
+        recipients: Vec<String>,
+    ) {
         let id_str = id.clone().into();
         let secret = SealedSecret {
             id: id_str,
@@ -53,7 +58,10 @@ impl Vault {
     }
 
     pub fn get_secret(&mut self, id: &str) -> Result<String, AlpError> {
-        let secret = self.secrets.get(id).ok_or_else(|| AlpError::new(format!("Secret not found: {}", id)))?;
+        let secret = self
+            .secrets
+            .get(id)
+            .ok_or_else(|| AlpError::new(format!("Secret not found: {}", id)))?;
         self.audit.push(VaultAuditEntry {
             ts: chrono::Utc::now().to_rfc3339(),
             action: "get".into(),

@@ -357,6 +357,7 @@ local `alp serve --registry`); the client refuses plain HTTP for any other host.
 ## Style Enforcement (`alp lint`)
 
 While `alp validate` checks raw JSON schema compliance, `alp lint` enforces community best practices:
+
 - Enforces `kebab-case` for all object IDs.
 - Warns on missing or insufficient `description` fields.
 - Warns if a `@task` lacks `verify` gates.
@@ -364,6 +365,7 @@ While `alp validate` checks raw JSON schema compliance, `alp lint` enforces comm
 ## Environment Diagnostics (`alp doctor`)
 
 Having issues? Run `alp doctor` to instantly diagnose your workspace health. It checks for:
+
 - Proper `.alp/` directory structure.
 - Orphaned `.alp` files outside the target directory.
 - Parseability of all files.
@@ -397,7 +399,8 @@ alp replay --from 2026-07-20T00:00:00Z --to 2026-07-20T23:59:59Z
 ```
 
 Output:
-```
+
+```text
 📼 ALP Event Replay
 ===================
 Total events:    42
@@ -447,7 +450,8 @@ alp cost --workflow wf-standard
 ```
 
 Output:
-```
+
+```text
 🔍 Cost Optimization for Workflow: wf-standard
 ==========================================
   Current cost:      $0.036000
@@ -1158,7 +1162,7 @@ alp collab share list
 
 ## IDE Intelligence (`alp intelligence`)
 
-*New in v45.0.0 (IDE Intelligence).* AI-powered suggestions, diagnostics, predictions, and automated code review for `.alp` specs.
+*New in v80.0.0 (IDE Intelligence).* AI-powered suggestions, diagnostics, predictions, and automated code review for `.alp` specs.
 
 ```bash
 # Get suggestions for next objects to create
@@ -1183,7 +1187,7 @@ alp intelligence review
 
 ## Autonomous Orchestration (`alp autonomy`)
 
-*New in v45.0.0 (Autonomous Orchestration).* Self-healing workflows, adaptive runtime tuning, and autonomous swarm execution.
+*New in v80.0.0 (Autonomous Orchestration).* Self-healing workflows, adaptive runtime tuning, and autonomous swarm execution.
 
 ```bash
 # Start an autonomous swarm run for a workflow
@@ -1213,4 +1217,3 @@ alp autonomy decisions
 | `observe --signal <type>` | Observe an environment signal and tune runtime parameters |
 | `mutate --workflow <id>` | Propose a mutation to a running workflow |
 | `decisions` | List all autonomy decisions and their outcomes |
-

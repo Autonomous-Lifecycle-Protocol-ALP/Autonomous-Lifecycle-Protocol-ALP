@@ -43,7 +43,7 @@ Split large projects into multiple files by domain:
 ### Always Declare `!alp-version`
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 
 @project
   ...

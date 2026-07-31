@@ -7,7 +7,7 @@ in parity through the IDE Intelligence Era (V11, toolchain `45.0.0`).
 ## SDKs
 
 | Language | Package | Status |
-|---|---|---|
+| --- | --- | --- |
 | TypeScript | `@autonomous-lifecycle-protocol-alp/sdk` | ✅ Stable (parser ships `@autonomous-lifecycle-protocol-alp/parser`; the `@autonomous-lifecycle-protocol-alp/sdk` umbrella re-exports the engine) |
 | Python | `alp-sdk` | ✅ Stable (`pip install alp-sdk`) |
 | Go | `alp-go` | ✅ Stable (`go get github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/sdk/go@v0.45.0`) |

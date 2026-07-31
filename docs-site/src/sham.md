@@ -92,7 +92,7 @@ SHAM consolidates every ALP capability into one native desktop application:
 
 ```bash
 # Clone the repository
-git clone https://github.com/alp-protocol/alp.git
+git clone https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP.git
 cd alp
 
 # Install dependencies
@@ -204,13 +204,13 @@ Generate and verify zk-SNARK cryptographic compliance proofs directly from the I
 Partition workspace execution graphs across distributed cloud edge regions (`us-east`, `eu-west`, `ap-southeast`) with interactive node assignment and latency estimation.
 
 ### Next Version Roadmap
-See [SHAM_IDE_ROADMAP.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/SHAM_IDE_ROADMAP.md) for the full SHAM IDE roadmap including v52.0.0 through v60.0.0 planned features.
+See [SHAM_IDE_ROADMAP.md](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/raw/main/docs/SHAM_IDE_ROADMAP.md) for the full SHAM IDE roadmap including v52.0.0 through v60.0.0 planned features.
 
-See [ROADMAP_V17_V43.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V43.md) for the full ALP protocol roadmap.
+See [ROADMAP_V17_V43.md](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/raw/main/docs/ROADMAP_V17_V43.md) for the full ALP protocol roadmap.
 
 ## Contributing
 
-See [CONTRIBUTING.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/CONTRIBUTING.md) for contribution guidelines.
+See [CONTRIBUTING.md](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/raw/main/CONTRIBUTING.md) for contribution guidelines.
 
 ## License
 

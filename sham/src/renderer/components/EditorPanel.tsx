@@ -145,7 +145,7 @@ export function EditorPanel({ state, onValidate, onCursorChange }: EditorPanelPr
       </div>
       <div style={{ flex: 1, overflow: 'hidden' }}>
         <Editor
-          ref={editorRef}
+          onMount={(editor) => { (editorRef as unknown as { current: unknown }).current = editor; }}
           height="100%"
           language="alp"
           theme="vs-dark"

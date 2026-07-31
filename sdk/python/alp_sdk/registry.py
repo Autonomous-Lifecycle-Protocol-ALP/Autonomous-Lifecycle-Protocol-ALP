@@ -288,7 +288,12 @@ class RegistryClient:
             with urllib.request.urlopen(req) as resp:  # nosec - loopback/https only
                 return resp.status, resp.read()
         except urllib.error.HTTPError as e:
-            return e.code, e.read()
+            try:
+                code = e.code
+                body = e.read()
+            finally:
+                e.close()
+            return code, body
 
     # ── API ─────────────────────────────────────────────────────────────
     def get_meta(self, pkg_name: str) -> Dict[str, Any]:

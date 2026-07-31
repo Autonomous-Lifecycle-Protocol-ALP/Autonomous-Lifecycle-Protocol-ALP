@@ -132,6 +132,7 @@ export function ProPanel() {
 
   async function handleInstallUpdate() {
     setFeedback(null);
+    setUpdate({ available: true, installing: true });
     setUpdate(await installUpdate());
   }
 

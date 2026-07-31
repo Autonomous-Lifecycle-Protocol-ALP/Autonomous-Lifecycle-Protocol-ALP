@@ -70,7 +70,7 @@ Yes. ALP is designed to complement existing projects:
 The `!alp-version` directive declares which version of the ALP specification your file conforms to:
 
 ```alp
-!alp-version: 45.0.0
+!alp-version: 80.0.0
 ```
 
 Always include this at the top of your `.alp` files. Without it, parsers assume the latest supported version.

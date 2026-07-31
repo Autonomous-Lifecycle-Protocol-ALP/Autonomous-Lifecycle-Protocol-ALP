@@ -13,7 +13,14 @@ pub struct Vote {
 }
 
 impl Vote {
-    pub fn new(voter_did: impl Into<String>, ballot_id: impl Into<String>, value: impl Into<String>, rationale: impl Into<String>, timestamp: impl Into<String>, signature: impl Into<String>) -> Self {
+    pub fn new(
+        voter_did: impl Into<String>,
+        ballot_id: impl Into<String>,
+        value: impl Into<String>,
+        rationale: impl Into<String>,
+        timestamp: impl Into<String>,
+        signature: impl Into<String>,
+    ) -> Self {
         Self {
             voter_did: voter_did.into(),
             ballot_id: ballot_id.into(),
@@ -26,22 +33,52 @@ impl Vote {
 
     pub fn to_dict(&self) -> HashMap<String, serde_json::Value> {
         let mut dict = HashMap::new();
-        dict.insert("voter_did".into(), serde_json::Value::String(self.voter_did.clone()));
-        dict.insert("ballot_id".into(), serde_json::Value::String(self.ballot_id.clone()));
-        dict.insert("value".into(), serde_json::Value::String(self.value.clone()));
-        dict.insert("rationale".into(), serde_json::Value::String(self.rationale.clone()));
-        dict.insert("timestamp".into(), serde_json::Value::String(self.timestamp.clone()));
-        dict.insert("signature".into(), serde_json::Value::String(self.signature.clone()));
+        dict.insert(
+            "voter_did".into(),
+            serde_json::Value::String(self.voter_did.clone()),
+        );
+        dict.insert(
+            "ballot_id".into(),
+            serde_json::Value::String(self.ballot_id.clone()),
+        );
+        dict.insert(
+            "value".into(),
+            serde_json::Value::String(self.value.clone()),
+        );
+        dict.insert(
+            "rationale".into(),
+            serde_json::Value::String(self.rationale.clone()),
+        );
+        dict.insert(
+            "timestamp".into(),
+            serde_json::Value::String(self.timestamp.clone()),
+        );
+        dict.insert(
+            "signature".into(),
+            serde_json::Value::String(self.signature.clone()),
+        );
         dict
     }
 
     pub fn sign(&mut self, private_key: &str) -> String {
         let mut payload = HashMap::new();
-        payload.insert("ballot_id", serde_json::Value::String(self.ballot_id.clone()));
-        payload.insert("rationale", serde_json::Value::String(self.rationale.clone()));
-        payload.insert("timestamp", serde_json::Value::String(self.timestamp.clone()));
+        payload.insert(
+            "ballot_id",
+            serde_json::Value::String(self.ballot_id.clone()),
+        );
+        payload.insert(
+            "rationale",
+            serde_json::Value::String(self.rationale.clone()),
+        );
+        payload.insert(
+            "timestamp",
+            serde_json::Value::String(self.timestamp.clone()),
+        );
         payload.insert("value", serde_json::Value::String(self.value.clone()));
-        payload.insert("voter_did", serde_json::Value::String(self.voter_did.clone()));
+        payload.insert(
+            "voter_did",
+            serde_json::Value::String(self.voter_did.clone()),
+        );
         let payload_str = serde_json::to_string(&payload).unwrap_or_default();
         self.signature = simple_hash(&(payload_str + private_key));
         self.signature.clone()
@@ -61,7 +98,16 @@ pub struct BallotRecord {
 }
 
 impl BallotRecord {
-    pub fn new(ballot_id: impl Into<String>, policy_id: impl Into<String>, description: impl Into<String>, votes: Vec<Vote>, status: impl Into<String>, quorum: usize, created_at: impl Into<String>, closed_at: impl Into<String>) -> Self {
+    pub fn new(
+        ballot_id: impl Into<String>,
+        policy_id: impl Into<String>,
+        description: impl Into<String>,
+        votes: Vec<Vote>,
+        status: impl Into<String>,
+        quorum: usize,
+        created_at: impl Into<String>,
+        closed_at: impl Into<String>,
+    ) -> Self {
         Self {
             ballot_id: ballot_id.into(),
             policy_id: policy_id.into(),
@@ -76,14 +122,47 @@ impl BallotRecord {
 
     pub fn to_dict(&self) -> HashMap<String, serde_json::Value> {
         let mut dict = HashMap::new();
-        dict.insert("ballot_id".into(), serde_json::Value::String(self.ballot_id.clone()));
-        dict.insert("policy_id".into(), serde_json::Value::String(self.policy_id.clone()));
-        dict.insert("description".into(), serde_json::Value::String(self.description.clone()));
-        dict.insert("votes".into(), serde_json::Value::Array(self.votes.iter().map(|v| serde_json::Value::Object(v.to_dict().into_iter().map(|(k, v)| (k, v)).collect())).collect()));
-        dict.insert("status".into(), serde_json::Value::String(self.status.clone()));
-        dict.insert("quorum".into(), serde_json::Value::Number(self.quorum.into()));
-        dict.insert("created_at".into(), serde_json::Value::String(self.created_at.clone()));
-        dict.insert("closed_at".into(), serde_json::Value::String(self.closed_at.clone()));
+        dict.insert(
+            "ballot_id".into(),
+            serde_json::Value::String(self.ballot_id.clone()),
+        );
+        dict.insert(
+            "policy_id".into(),
+            serde_json::Value::String(self.policy_id.clone()),
+        );
+        dict.insert(
+            "description".into(),
+            serde_json::Value::String(self.description.clone()),
+        );
+        dict.insert(
+            "votes".into(),
+            serde_json::Value::Array(
+                self.votes
+                    .iter()
+                    .map(|v| {
+                        serde_json::Value::Object(
+                            v.to_dict().into_iter().map(|(k, v)| (k, v)).collect(),
+                        )
+                    })
+                    .collect(),
+            ),
+        );
+        dict.insert(
+            "status".into(),
+            serde_json::Value::String(self.status.clone()),
+        );
+        dict.insert(
+            "quorum".into(),
+            serde_json::Value::Number(self.quorum.into()),
+        );
+        dict.insert(
+            "created_at".into(),
+            serde_json::Value::String(self.created_at.clone()),
+        );
+        dict.insert(
+            "closed_at".into(),
+            serde_json::Value::String(self.closed_at.clone()),
+        );
         dict
     }
 
@@ -110,7 +189,13 @@ pub struct GovernanceReport {
 }
 
 impl GovernanceReport {
-    pub fn new(ballot_id: impl Into<String>, result: impl Into<String>, tally: HashMap<String, usize>, started_at: impl Into<String>, finished_at: impl Into<String>) -> Self {
+    pub fn new(
+        ballot_id: impl Into<String>,
+        result: impl Into<String>,
+        tally: HashMap<String, usize>,
+        started_at: impl Into<String>,
+        finished_at: impl Into<String>,
+    ) -> Self {
         Self {
             ballot_id: ballot_id.into(),
             result: result.into(),
@@ -122,11 +207,31 @@ impl GovernanceReport {
 
     pub fn to_dict(&self) -> HashMap<String, serde_json::Value> {
         let mut dict = HashMap::new();
-        dict.insert("ballot_id".into(), serde_json::Value::String(self.ballot_id.clone()));
-        dict.insert("result".into(), serde_json::Value::String(self.result.clone()));
-        dict.insert("tally".into(), serde_json::Value::Object(self.tally.iter().map(|(k, v)| (k.clone(), serde_json::Value::Number((*v).into()))).collect()));
-        dict.insert("started_at".into(), serde_json::Value::String(self.started_at.clone()));
-        dict.insert("finished_at".into(), serde_json::Value::String(self.finished_at.clone()));
+        dict.insert(
+            "ballot_id".into(),
+            serde_json::Value::String(self.ballot_id.clone()),
+        );
+        dict.insert(
+            "result".into(),
+            serde_json::Value::String(self.result.clone()),
+        );
+        dict.insert(
+            "tally".into(),
+            serde_json::Value::Object(
+                self.tally
+                    .iter()
+                    .map(|(k, v)| (k.clone(), serde_json::Value::Number((*v).into())))
+                    .collect(),
+            ),
+        );
+        dict.insert(
+            "started_at".into(),
+            serde_json::Value::String(self.started_at.clone()),
+        );
+        dict.insert(
+            "finished_at".into(),
+            serde_json::Value::String(self.finished_at.clone()),
+        );
         dict
     }
 }
@@ -148,7 +253,11 @@ impl PolicyBallot {
     }
 
     fn ballots_path(&self) -> String {
-        Path::new(&self.alp_dir).join(".governance").join("ballots.jsonl").to_string_lossy().into_owned()
+        Path::new(&self.alp_dir)
+            .join(".governance")
+            .join("ballots.jsonl")
+            .to_string_lossy()
+            .into_owned()
     }
 
     pub fn load(&mut self) {
@@ -161,16 +270,44 @@ impl PolicyBallot {
                 if line.trim().is_empty() {
                     continue;
                 }
-                if let Ok(entry) = serde_json::from_str::<HashMap<String, serde_json::Value>>(line) {
-                    let ballot_id = entry.get("ballot_id").and_then(|v| v.as_str()).unwrap_or("");
-                    let policy_id = entry.get("policy_id").and_then(|v| v.as_str()).unwrap_or("");
-                    let description = entry.get("description").and_then(|v| v.as_str()).unwrap_or("");
-                    let status = entry.get("status").and_then(|v| v.as_str()).unwrap_or("open");
+                if let Ok(entry) = serde_json::from_str::<HashMap<String, serde_json::Value>>(line)
+                {
+                    let ballot_id = entry
+                        .get("ballot_id")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("");
+                    let policy_id = entry
+                        .get("policy_id")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("");
+                    let description = entry
+                        .get("description")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("");
+                    let status = entry
+                        .get("status")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("open");
                     let quorum = entry.get("quorum").and_then(|v| v.as_u64()).unwrap_or(3) as usize;
-                    let created_at = entry.get("created_at").and_then(|v| v.as_str()).unwrap_or("");
-                    let closed_at = entry.get("closed_at").and_then(|v| v.as_str()).unwrap_or("");
+                    let created_at = entry
+                        .get("created_at")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("");
+                    let closed_at = entry
+                        .get("closed_at")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("");
                     let votes = Vec::new();
-                    let ballot = BallotRecord::new(ballot_id, policy_id, description, votes, status, quorum, created_at, closed_at);
+                    let ballot = BallotRecord::new(
+                        ballot_id,
+                        policy_id,
+                        description,
+                        votes,
+                        status,
+                        quorum,
+                        created_at,
+                        closed_at,
+                    );
                     self.ballots.insert(ballot_id.into(), ballot);
                 }
             }
@@ -182,22 +319,47 @@ impl PolicyBallot {
         let _ = std::fs::create_dir_all(&dir);
         let path = self.ballots_path();
         if let Ok(json) = serde_json::to_string(&ballot.to_dict()) {
-            let _ = std::fs::OpenOptions::new().create(true).append(true).open(path).and_then(|mut f| {
-                use std::io::Write;
-                writeln!(f, "{}", json)
-            });
+            let _ = std::fs::OpenOptions::new()
+                .create(true)
+                .append(true)
+                .open(path)
+                .and_then(|mut f| {
+                    use std::io::Write;
+                    writeln!(f, "{}", json)
+                });
         }
     }
 
-    pub fn open_ballot(&mut self, policy_id: impl Into<String>, description: impl Into<String>, quorum: usize) -> BallotRecord {
+    pub fn open_ballot(
+        &mut self,
+        policy_id: impl Into<String>,
+        description: impl Into<String>,
+        quorum: usize,
+    ) -> BallotRecord {
         let ballot_id = format!("ballot-{}", timestamp_now());
-        let ballot = BallotRecord::new(&ballot_id, policy_id, description, Vec::new(), "open", quorum, timestamp_now(), "");
+        let ballot = BallotRecord::new(
+            &ballot_id,
+            policy_id,
+            description,
+            Vec::new(),
+            "open",
+            quorum,
+            timestamp_now(),
+            "",
+        );
         self.ballots.insert(ballot_id.clone(), ballot.clone());
         self.save_ballot(&ballot);
         ballot
     }
 
-    pub fn cast_vote(&mut self, ballot_id: &str, voter_did: impl Into<String>, value: impl Into<String>, rationale: impl Into<String>, private_key: &str) -> Option<Vote> {
+    pub fn cast_vote(
+        &mut self,
+        ballot_id: &str,
+        voter_did: impl Into<String>,
+        value: impl Into<String>,
+        rationale: impl Into<String>,
+        private_key: &str,
+    ) -> Option<Vote> {
         let ballot = self.ballots.get_mut(ballot_id)?;
         if ballot.status != "open" {
             return None;
@@ -259,43 +421,86 @@ impl GovernanceEngine {
         self.qualified_voters.retain(|v| v != voter_did);
     }
 
-    pub fn propose(&mut self, policy_id: impl Into<String>, description: impl Into<String>, quorum: Option<usize>) -> BallotRecord {
-        let effective_quorum = quorum.unwrap_or_else(|| self.min_quorum.max(self.qualified_voters.len() / 2 + 1));
-        self.ballot.open_ballot(policy_id, description, effective_quorum)
+    pub fn propose(
+        &mut self,
+        policy_id: impl Into<String>,
+        description: impl Into<String>,
+        quorum: Option<usize>,
+    ) -> BallotRecord {
+        let effective_quorum =
+            quorum.unwrap_or_else(|| self.min_quorum.max(self.qualified_voters.len() / 2 + 1));
+        self.ballot
+            .open_ballot(policy_id, description, effective_quorum)
     }
 
-    pub fn vote(&mut self, ballot_id: &str, voter_did: impl Into<String>, value: impl Into<String>, rationale: impl Into<String>, private_key: &str) -> HashMap<String, serde_json::Value> {
+    pub fn vote(
+        &mut self,
+        ballot_id: &str,
+        voter_did: impl Into<String>,
+        value: impl Into<String>,
+        rationale: impl Into<String>,
+        private_key: &str,
+    ) -> HashMap<String, serde_json::Value> {
         let voter_did = voter_did.into();
         if !self.qualified_voters.contains(&voter_did) {
             let mut result = HashMap::new();
             result.insert("accepted".into(), serde_json::Value::Bool(false));
-            result.insert("reason".into(), serde_json::Value::String("voter_not_qualified".into()));
+            result.insert(
+                "reason".into(),
+                serde_json::Value::String("voter_not_qualified".into()),
+            );
             return result;
         }
         let ballot = self.ballot.get_ballot(ballot_id);
         if ballot.is_none() || ballot.unwrap().status != "open" {
             let mut result = HashMap::new();
             result.insert("accepted".into(), serde_json::Value::Bool(false));
-            result.insert("reason".into(), serde_json::Value::String("ballot_not_open".into()));
+            result.insert(
+                "reason".into(),
+                serde_json::Value::String("ballot_not_open".into()),
+            );
             return result;
         }
-        let existing = self.ballot.get_ballot(ballot_id).unwrap().votes.iter().any(|v| v.voter_did == voter_did);
+        let existing = self
+            .ballot
+            .get_ballot(ballot_id)
+            .unwrap()
+            .votes
+            .iter()
+            .any(|v| v.voter_did == voter_did);
         if existing {
             let mut result = HashMap::new();
             result.insert("accepted".into(), serde_json::Value::Bool(false));
-            result.insert("reason".into(), serde_json::Value::String("already_voted".into()));
+            result.insert(
+                "reason".into(),
+                serde_json::Value::String("already_voted".into()),
+            );
             return result;
         }
-        let vote = self.ballot.cast_vote(ballot_id, voter_did, value, rationale, private_key);
+        let vote = self
+            .ballot
+            .cast_vote(ballot_id, voter_did, value, rationale, private_key);
         if vote.is_none() {
             let mut result = HashMap::new();
             result.insert("accepted".into(), serde_json::Value::Bool(false));
-            result.insert("reason".into(), serde_json::Value::String("cast_failed".into()));
+            result.insert(
+                "reason".into(),
+                serde_json::Value::String("cast_failed".into()),
+            );
             return result;
         }
         let mut result = HashMap::new();
         result.insert("accepted".into(), serde_json::Value::Bool(true));
-        result.insert("vote".into(), serde_json::Value::Object(vote.unwrap().to_dict().into_iter().map(|(k, v)| (k, v)).collect()));
+        result.insert(
+            "vote".into(),
+            serde_json::Value::Object(
+                vote.unwrap()
+                    .to_dict()
+                    .into_iter()
+                    .map(|(k, v)| (k, v))
+                    .collect(),
+            ),
+        );
         result
     }
 
@@ -324,14 +529,24 @@ impl GovernanceEngine {
         let total = tally.get("total").copied().unwrap_or(0);
         let result = if total < ballot.quorum {
             "quorum_not_met"
-        } else if tally.get("approve").copied().unwrap_or(0) > tally.get("reject").copied().unwrap_or(0) {
+        } else if tally.get("approve").copied().unwrap_or(0)
+            > tally.get("reject").copied().unwrap_or(0)
+        {
             "approved"
-        } else if tally.get("reject").copied().unwrap_or(0) > tally.get("approve").copied().unwrap_or(0) {
+        } else if tally.get("reject").copied().unwrap_or(0)
+            > tally.get("approve").copied().unwrap_or(0)
+        {
             "rejected"
         } else {
             "tied"
         };
-        GovernanceReport::new(ballot.ballot_id.clone(), result, tally, ballot.created_at.clone(), ballot.closed_at.clone())
+        GovernanceReport::new(
+            ballot.ballot_id.clone(),
+            result,
+            tally,
+            ballot.created_at.clone(),
+            ballot.closed_at.clone(),
+        )
     }
 }
 

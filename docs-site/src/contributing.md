@@ -161,7 +161,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 feat(parser): add support for @timeline objects
 fix(cli): resolve race condition in LockManager
-docs(spec): update versioning section for v45.0.0
+docs(spec): update versioning section for v80.0.0
 test(sdk): add integration tests for Go SDK
 ```
 

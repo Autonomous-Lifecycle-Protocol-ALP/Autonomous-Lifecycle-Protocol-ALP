@@ -44,7 +44,11 @@ impl AlpObject {
         }
     }
 
-    pub fn with_property(mut self, key: impl Into<String>, value: impl Into<serde_json::Value>) -> Self {
+    pub fn with_property(
+        mut self,
+        key: impl Into<String>,
+        value: impl Into<serde_json::Value>,
+    ) -> Self {
         self.properties.insert(key.into(), value.into());
         self
     }
@@ -271,15 +275,15 @@ impl Default for AlpWorkspace {
     }
 }
 
-pub mod policy;
-pub mod vault;
-pub mod event_mesh;
 pub mod autonomy;
 pub mod autonomy_controller;
-pub mod modules;
-pub mod identity;
+pub mod event_mesh;
 pub mod governance;
+pub mod identity;
+pub mod modules;
+pub mod policy;
 pub mod telemetry;
+pub mod vault;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ZkProof {
@@ -297,7 +301,12 @@ impl ZkProofEngine {
         Self
     }
 
-    pub fn generate_proof(&self, id: impl Into<String>, statement: impl Into<String>, secret: impl Into<String>) -> ZkProof {
+    pub fn generate_proof(
+        &self,
+        id: impl Into<String>,
+        statement: impl Into<String>,
+        secret: impl Into<String>,
+    ) -> ZkProof {
         let st = statement.into();
         let sec = secret.into();
         let commitment = format!("commit_{}_{}", st, sec);
@@ -340,7 +349,12 @@ impl ContextBundler {
         Self
     }
 
-    pub fn compile(&self, objects: &[AlpObject], bundle_id: impl Into<String>, format: impl Into<String>) -> Result<ContextBundle, AlpError> {
+    pub fn compile(
+        &self,
+        objects: &[AlpObject],
+        bundle_id: impl Into<String>,
+        format: impl Into<String>,
+    ) -> Result<ContextBundle, AlpError> {
         let b_id = bundle_id.into();
         let fmt = format.into();
         let payload = serde_json::to_string(objects).map_err(AlpError::from)?;
@@ -382,7 +396,13 @@ impl BftConsensusEngine {
         Self
     }
 
-    pub fn create_proposal(&self, id: impl Into<String>, proposer: impl Into<String>, value: impl Into<String>, total_nodes: usize) -> BftProposal {
+    pub fn create_proposal(
+        &self,
+        id: impl Into<String>,
+        proposer: impl Into<String>,
+        value: impl Into<String>,
+        total_nodes: usize,
+    ) -> BftProposal {
         let f = (total_nodes.saturating_sub(1)) / 3;
         let quorum = 2 * f + 1;
         BftProposal {
@@ -419,7 +439,11 @@ impl DagPartitioner {
 
     pub fn partition(&self, objects: &[AlpObject], regions: &[String]) -> Vec<RegionPartition> {
         let target_regions = if regions.is_empty() {
-            vec!["us-east".to_string(), "eu-west".to_string(), "ap-southeast".to_string()]
+            vec![
+                "us-east".to_string(),
+                "eu-west".to_string(),
+                "ap-southeast".to_string(),
+            ]
         } else {
             regions.to_vec()
         };
@@ -464,7 +488,12 @@ impl PolicyOptimizer {
         Self
     }
 
-    pub fn evolve(&self, allow_paths: &[String], deny_paths: &[String], generations: usize) -> EvolvedPolicy {
+    pub fn evolve(
+        &self,
+        allow_paths: &[String],
+        deny_paths: &[String],
+        generations: usize,
+    ) -> EvolvedPolicy {
         let gens = if generations == 0 { 5 } else { generations };
         let allows = if allow_paths.is_empty() {
             vec!["src/*".to_string(), "docs/*".to_string()]
@@ -546,7 +575,13 @@ impl SwarmSettlementEngine {
         Self
     }
 
-    pub fn create_invoice(&self, caller: &str, provider: &str, skill: &str, amount: f64) -> SettlementInvoice {
+    pub fn create_invoice(
+        &self,
+        caller: &str,
+        provider: &str,
+        skill: &str,
+        amount: f64,
+    ) -> SettlementInvoice {
         SettlementInvoice {
             invoice_id: format!("inv-{}", (amount * 100.0) as i64),
             caller_agent: caller.to_string(),
@@ -691,7 +726,12 @@ impl CrdtCanvasEngine {
         }
     }
 
-    pub fn register_peer(&self, peer_id: &str, username: &str, color: Option<&str>) -> PeerPresence {
+    pub fn register_peer(
+        &self,
+        peer_id: &str,
+        username: &str,
+        color: Option<&str>,
+    ) -> PeerPresence {
         PeerPresence {
             peer_id: peer_id.to_string(),
             username: username.to_string(),
@@ -720,11 +760,26 @@ impl WasmAstEvaluator {
         for (i, line) in content.lines().enumerate() {
             let trimmed = line.trim();
             if trimmed.starts_with("@policy") {
-                nodes.push(AstNode { id: format!("ast-{}", i + 1), kind: "POLICY".to_string(), name: "policy".to_string(), line: i + 1 });
+                nodes.push(AstNode {
+                    id: format!("ast-{}", i + 1),
+                    kind: "POLICY".to_string(),
+                    name: "policy".to_string(),
+                    line: i + 1,
+                });
             } else if trimmed.starts_with("@task") {
-                nodes.push(AstNode { id: format!("ast-{}", i + 1), kind: "TASK".to_string(), name: "task".to_string(), line: i + 1 });
+                nodes.push(AstNode {
+                    id: format!("ast-{}", i + 1),
+                    kind: "TASK".to_string(),
+                    name: "task".to_string(),
+                    line: i + 1,
+                });
             } else if trimmed.starts_with("@agent") {
-                nodes.push(AstNode { id: format!("ast-{}", i + 1), kind: "AGENT".to_string(), name: "agent".to_string(), line: i + 1 });
+                nodes.push(AstNode {
+                    id: format!("ast-{}", i + 1),
+                    kind: "AGENT".to_string(),
+                    name: "agent".to_string(),
+                    line: i + 1,
+                });
             }
         }
         nodes
@@ -767,8 +822,3 @@ impl Default for EdgeAgentDebugger {
         Self::new()
     }
 }
-
-
-
-
-

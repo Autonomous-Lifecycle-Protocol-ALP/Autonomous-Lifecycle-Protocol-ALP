@@ -6,7 +6,7 @@ ALP provides a dedicated **Language Server Protocol (LSP)** implementation for V
 
 ## Features
 
-- **IntelliSense Autocompletion**: Type `@` to instantly see all available ALP object markers (e.g., `@task`, `@agent`, `@policy`, `@contract`, `@vault`, `@goal`, `@rule`, `@constraint`, `@decision`). Type `-> ` in any reference field to get an autocomplete dropdown of every ID in your workspace.
+- **IntelliSense Autocompletion**: Type `@` to instantly see all available ALP object markers (e.g., `@task`, `@agent`, `@policy`, `@contract`, `@vault`, `@goal`, `@rule`, `@constraint`, `@decision`). Type `->` in any reference field to get an autocomplete dropdown of every ID in your workspace.
 - **Interactive Webview DAG Visualizer**: Click the `$(graph) ALP DAG` status bar item or run `ALP: Show Interactive DAG Visualizer` (`alp.showVisualizer`) to open an in-editor Webview visualizer displaying status-colored cards (`[x]`, `[~]`, `[!]`, `[?]`, `[ ]`), object type badges, and workspace metrics side-by-side with your `.alp` files.
 - **Go to Definition**: Command-click (or Ctrl-click) on any dependency reference (e.g., `-> dec-database`) to instantly jump your editor to the exact file and line where that object is defined.
 - **Hover Metadata**: Hover over any `-> id` reference to pop up a rich tooltip containing the object's description, status, and type without leaving your current file. Hover over block markers and directives for inline documentation.
@@ -20,7 +20,7 @@ ALP provides a dedicated **Language Server Protocol (LSP)** implementation for V
 
 The extension is bundled as a standard `.vsix` file.
 
-1. Download the latest `alp-vscode-45.0.0.vsix` release from the repository.
+1. Download the latest `alp-vscode-80.0.0.vsix` release from the repository.
 2. Open VS Code.
 3. Open the Extensions View (`Ctrl+Shift+X` or `Cmd+Shift+X`).
 4. Click the `...` menu in the top right of the extensions view.
@@ -28,16 +28,17 @@ The extension is bundled as a standard `.vsix` file.
 6. Select the downloaded `.vsix` file.
 
 Alternatively, you can install it via the CLI:
+
 ```bash
-code --install-extension alp-vscode-45.0.0.vsix
+code --install-extension alp-vscode-80.0.0.vsix
 ```
 
-## Supported Block Types (V45.0.0)
+## Supported Block Types (V80.0.0)
 
 The extension provides hover documentation and autocomplete for all ALP object types registered in the parser schema index:
 
 | Category | Block Types |
-|---|---|
+| --- | --- |
 | **Core** | `@project`, `@task`, `@feature`, `@workflow`, `@agent`, `@memory`, `@state`, `@artifact`, `@context`, `@repo`, `@swarm`, `@package`, `@plugin`, `@type` |
 | **Planning** | `@goal`, `@rule`, `@constraint`, `@decision` |
 | **Execution** | `@event`, `@resource`, `@verification`, `@dependency` |
@@ -50,7 +51,7 @@ The extension provides hover documentation and autocomplete for all ALP object t
 ## Supported Directives
 
 | Directive | Description |
-|---|---|
+| --- | --- |
 | `!alp-version` | Declares the ALP specification version |
 | `!import` | Imports another `.alp` file or remote URL |
 | `!deprecated` | Marks an object as deprecated with migration note |
@@ -78,7 +79,7 @@ flowchart LR
 ## Supported Features
 
 | Feature | Description |
-|---|---|
+| --- | --- |
 | **IntelliSense** | Autocomplete for all block types, properties, and references |
 | **Hover** | Rich tooltips with object metadata |
 | **Go to Definition** | Jump to object definitions across the workspace |
@@ -89,14 +90,14 @@ flowchart LR
 ## Supported File Types
 
 | Extension | Language | Support |
-|---|---|---|
+| --- | --- | --- |
 | `.alp` | ALP Protocol | Full |
 | `.alpc` | ALP Config | Partial |
 
 ## Keyboard Shortcuts
 
 | Shortcut | Action |
-|---|---|
+| --- | --- |
 | `Ctrl+Space` | Trigger autocomplete |
 | `F12` | Go to definition |
 | `Ctrl+.` | Quick fix |
@@ -118,14 +119,17 @@ flowchart LR
 ## Troubleshooting
 
 **Extension not activating:**
+
 - Ensure you have at least one `.alp` file in your workspace
 - Check the VS Code Output panel for "ALP Language Server" logs
 
 **Slow performance:**
+
 - Exclude large directories from the workspace
 - Use `.alpignore` to skip unnecessary files
 
 **Missing diagnostics:**
+
 - Verify `!alp-version` is declared at the top of your file
 - Ensure all `@` blocks are properly formatted
 
@@ -135,17 +139,19 @@ The VS Code extension is open source. Contributions are welcome at the [ALP repo
 
 ## Changelog
 
-### v45.0.0
-- Updated block type support for V45.0.0
+### v80.0.0
+
+- Updated block type support for V80.0.0
 - Improved DAG visualizer performance
 - Fixed hover metadata for nested blocks
 
 ### v38.0.0
+
 - Added `@macro`, `@collaboration`, `@memory_mesh` support
 - Enhanced semantic highlighting
 - Added rename refactoring
 
 ### v18.0.0
+
 - Added DID identity block support
 - Enhanced hover tooltips with trust registry info
-

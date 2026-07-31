@@ -1,6 +1,6 @@
 {
   "name": "alp-monorepo",
-  "version": "78.0.0",
+  "version": "80.0.0",
   "description": "Autonomous Lifecycle Protocol (ALP) - The universal protocol for autonomous software engineering",
   "private": true,
   "workspaces": [
