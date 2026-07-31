@@ -3,14 +3,8 @@ name: Java SDK CI
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'sdk/java/**'
-      - '.github/workflows/java.yml'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'sdk/java/**'
-      - '.github/workflows/java.yml'
 
 jobs:
   build:
