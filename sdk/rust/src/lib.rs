@@ -219,7 +219,6 @@ pub struct AlpWorkspace {
 impl AlpWorkspace {
     pub fn new() -> Self {
         Self {
-            parser: AlpParser,
             graph: AlpGraph::new(),
             objects: Vec::new(),
         }
