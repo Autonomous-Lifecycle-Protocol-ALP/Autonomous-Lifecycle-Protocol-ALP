@@ -34,7 +34,7 @@ function getParsedObjects(document: vscode.TextDocument | undefined): any[] {
 }
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log('ALP Language Support v40.0.0 is now active.');
+  console.log('ALP Language Support v80.0.0 is now active.');
 
   const serverModule = context.asAbsolutePath(path.join('server', 'dist', 'server.js'));
   if (!fs.existsSync(serverModule)) {
@@ -187,7 +187,26 @@ export function activate(context: vscode.ExtensionContext) {
     );
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd);
+  // ─── Register alp.showAgents Command ──────────────────────────────
+  const agentsCmd = vscode.commands.registerCommand('alp.showAgents', () => {
+    openTypeWebview(
+      'alpAgents',
+      'ALP Agents',
+      'agent',
+      (a) => `
+        <div class="node-card progress">
+          <span class="badge">@agent</span>
+          <div class="title">${escapeHtml(a.id)}</div>
+          <div><strong>Capabilities:</strong> <code>${(a.capabilities || []).length} configured</code></div>
+          <div><strong>Model:</strong> <code>${escapeHtml(a.model || 'N/A')}</code></div>
+          <div>${escapeHtml(a.description || '')}</div>
+        </div>
+      `,
+      'No @agent objects declared in this file.',
+    );
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {
