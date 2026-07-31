@@ -206,7 +206,71 @@ export function activate(context: vscode.ExtensionContext) {
     );
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd);
+  // ─── Register alp.diffWorkspace Command ───────────────────────────
+  const diffCmd = vscode.commands.registerCommand('alp.diffWorkspace', async () => {
+    const wsFolder = vscode.workspace.workspaceFoldings?.[0];
+    if (!wsFolder) {
+      vscode.window.showWarningMessage('Open a workspace folder first.');
+      return;
+    }
+    const snapshotsDir = path.join(wsFolder.uri.fsPath, '.alp', '.snapshots');
+    if (!fs.existsSync(snapshotsDir)) {
+      vscode.window.showWarningMessage('No .alp/.snapshots directory found. Run `alp backup create` first.');
+      return;
+    }
+    const snapshots = fs.readdirSync(snapshotsDir).filter((f) => f.endsWith('.json')).sort();
+    if (snapshots.length < 2) {
+      vscode.window.showWarningMessage('Need at least 2 snapshots to diff.');
+      return;
+    }
+    const names = snapshots.map((f) => f.replace(/\.json$/, ''));
+    const a = await vscode.window.showQuickPick(names, { placeHolder: 'Select older snapshot' });
+    if (!a) return;
+    const b = await vscode.window.showQuickPick(names, { placeHolder: 'Select newer snapshot' });
+    if (!b) return;
+
+    const payloadA = JSON.parse(fs.readFileSync(path.join(snapshotsDir, `${a}.json`), 'utf-8'));
+    const payloadB = JSON.parse(fs.readFileSync(path.join(snapshotsDir, `${b}.json`), 'utf-8'));
+
+    const objsA = new Map((payloadA.objects || []).map((o: any) => [(o.id || o._type || JSON.stringify(o)), o]));
+    const objsB = new Map((payloadB.objects || []).map((o: any) => [(o.id || o._type || JSON.stringify(o)), o]));
+
+    const idsA = new Set(objsA.keys());
+    const idsB = new Set(objsB.keys());
+    const added = [...idsB].filter((id) => !idsA.has(id)).sort();
+    const removed = [...idsA].filter((id) => !idsB.has(id)).sort();
+    const modified = [...idsA].filter((id) => idsB.has(id) && JSON.stringify(objsA.get(id)) !== JSON.stringify(objsB.get(id))).sort();
+
+    const panel = vscode.window.createWebviewPanel('alpDiff', `Diff: ${a} → ${b}`, vscode.ViewColumn.One, {});
+    panel.webview.html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><style>
+  body { font-family: var(--vscode-font-family); padding: 16px; color: var(--vscode-foreground); }
+  h2 { margin-top: 0; }
+  .section { margin-bottom: 12px; }
+  .added { color: #4ec9b0; }
+  .removed { color: #f48771; }
+  .modified { color: #dcdcaa; }
+  .count { font-weight: bold; }
+  ul { padding-left: 20px; margin: 4px 0; }
+  li { margin: 2px 0; }
+</style></head>
+<body>
+  <h2>Diff: ${escapeHtml(a)} → ${escapeHtml(b)}</h2>
+  <div class="section"><span class="count added">Added:</span> <span class="count">${added.length}</span>
+    ${added.length ? `<ul>${added.map((id) => `<li class="added">+ ${escapeHtml(id)}</li>`).join('')}</ul>` : ''}
+  </div>
+  <div class="section"><span class="count removed">Removed:</span> <span class="count">${removed.length}</span>
+    ${removed.length ? `<ul>${removed.map((id) => `<li class="removed">- ${escapeHtml(id)}</li>`).join('')}</ul>` : ''}
+  </div>
+  <div class="section"><span class="count modified">Modified:</span> <span class="count">${modified.length}</span>
+    ${modified.length ? `<ul>${modified.map((id) => `<li class="modified">~ ${escapeHtml(id)}</li>`).join('')}</ul>` : ''}
+  </div>
+  ${!added.length && !removed.length && !modified.length ? '<p>No differences found.</p>' : ''}
+</body></html>`;
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {

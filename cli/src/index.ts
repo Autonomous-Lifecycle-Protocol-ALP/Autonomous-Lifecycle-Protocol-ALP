@@ -10,6 +10,7 @@ import { uninstallCommand } from './commands/uninstall';
 import { publishCommand } from './commands/publish';
 import { exportCommand } from './commands/export';
 import { backupCommand } from './commands/backup';
+import { diffCommand } from './commands/diff';
 import { lintCommand } from './commands/lint';
 import { testCommand } from './commands/test';
 import { formatCommand } from './commands/format';
@@ -311,6 +312,13 @@ program
   .argument('<action>', 'Action: create, restore, or list')
   .argument('[name]', 'Backup name for create/restore')
   .action((action, name) => backupCommand(action, name));
+
+program
+  .command('diff')
+  .description('Diff two workspace snapshots by object id')
+  .argument('<snapshot-a>', 'Older snapshot name')
+  .argument('<snapshot-b>', 'Newer snapshot name')
+  .action((a, b) => diffCommand(a, b));
 
 program
   .command('cost')

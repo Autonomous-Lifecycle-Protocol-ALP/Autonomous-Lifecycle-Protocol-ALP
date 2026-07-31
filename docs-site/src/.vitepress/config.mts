@@ -49,6 +49,7 @@ export default defineConfig({
           { text: 'Examples', link: '/examples' },
           { text: 'CLI Guide', link: '/guide/cli' },
           { text: 'Python SDK Snapshots', link: '/python-sdk-snapshot' },
+          { text: 'Python SDK Diff', link: '/python-sdk-diff' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' }
@@ -78,6 +79,7 @@ export default defineConfig({
           { text: 'Examples', link: '/examples' },
           { text: 'CLI Usage', link: '/guide/cli' },
           { text: 'Python SDK Snapshots', link: '/python-sdk-snapshot' },
+          { text: 'Python SDK Diff', link: '/python-sdk-diff' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' },
