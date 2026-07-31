@@ -27,7 +27,8 @@
     "onCommand:alp.showAgents",
     "onCommand:alp.diffWorkspace",
     "onCommand:alp.renameObject",
-    "onCommand:alp.copyObject"
+    "onCommand:alp.copyObject",
+    "onCommand:alp.showStats"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -127,6 +128,11 @@
       {
         "command": "alp.copyObject",
         "title": "ALP: Copy Object",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.showStats",
+        "title": "ALP: Show Workspace Stats",
         "category": "ALP"
       }
     ]

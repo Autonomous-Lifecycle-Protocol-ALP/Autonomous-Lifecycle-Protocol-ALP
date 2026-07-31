@@ -13,6 +13,7 @@ import { backupCommand } from './commands/backup';
 import { diffCommand } from './commands/diff';
 import { renameCommand } from './commands/rename';
 import { copyCommand } from './commands/copy';
+import { statsCommand } from './commands/stats';
 import { lintCommand } from './commands/lint';
 import { testCommand } from './commands/test';
 import { formatCommand } from './commands/format';
@@ -336,6 +337,11 @@ program
   .argument('<target-id>', 'New object id')
   .option('--update-refs', 'Update reference fields (depends_on, references, links, parent, child) to the new id')
   .action((sourceId, targetId, opts) => copyCommand(sourceId, targetId, opts.updateRefs));
+
+program
+  .command('stats')
+  .description('Show workspace statistics: object counts by type and file')
+  .action(() => statsCommand());
 
 program
   .command('cost')

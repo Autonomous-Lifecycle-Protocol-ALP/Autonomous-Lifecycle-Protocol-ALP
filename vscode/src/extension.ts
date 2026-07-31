@@ -369,7 +369,36 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage(`Copied ${replacements} occurrence${replacements === 1 ? '' : 's'} of '${sourceId}' to '${targetId}'.`);
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd);
+  const statsCmd = vscode.commands.registerCommand('alp.showStats', () => {
+    const editor = vscode.window.activeTextEditor;
+    const objects = editor ? getParsedObjects(editor.document) : [];
+    const typeCounts: Record<string, number> = {};
+    for (const obj of objects) {
+      const type = obj._type || obj.type || 'unknown';
+      typeCounts[type] = (typeCounts[type] || 0) + 1;
+    }
+    const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
+    const listItems = sorted.map(([type, count]) => `  ${type}: ${count}`).join('\n') || '  (no objects)';
+
+    const panel = vscode.window.createWebviewPanel('alpStats', 'ALP Workspace Stats', vscode.ViewColumn.One, {});
+    panel.webview.html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><style>
+  body { font-family: var(--vscode-font-family); padding: 16px; color: var(--vscode-foreground); }
+  h2 { margin-top: 0; }
+  .count { font-weight: bold; }
+  pre { background: var(--vscode-textBlockQuote-background); padding: 12px; border-radius: 4px; }
+</style></head>
+<body>
+  <h2>Workspace Stats</h2>
+  <p><span class="count">Files:</span> ${editor ? '1 (active)' : '0'}</p>
+  <p><span class="count">Objects:</span> ${objects.length}</p>
+  <h3>By type</h3>
+  <pre>${escapeHtml(listItems)}</pre>
+</body></html>`;
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {
