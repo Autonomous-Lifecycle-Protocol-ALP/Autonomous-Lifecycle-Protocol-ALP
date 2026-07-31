@@ -2,7 +2,7 @@
   "name": "alp-vscode",
   "displayName": "ALP Language Support",
   "description": "Full language support for the Autonomous Lifecycle Protocol (.alp) — IntelliSense, Go to Definition, Hover, and Diagnostics",
-  "version": "45.0.0",
+  "version": "80.0.0",
   "publisher": "Autonomous-Lifecycle-Protocol-ALP",
   "engines": {
     "vscode": "^1.80.0"
@@ -23,7 +23,8 @@
     "onCommand:alp.showTimelines",
     "onCommand:alp.showPolicies",
     "onCommand:alp.showContracts",
-    "onCommand:alp.showVaults"
+    "onCommand:alp.showVaults",
+    "onCommand:alp.showAgents"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -103,6 +104,11 @@
       {
         "command": "alp.showVaults",
         "title": "ALP: Show Vaults",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.showAgents",
+        "title": "ALP: Show Agents",
         "category": "ALP"
       }
     ]
