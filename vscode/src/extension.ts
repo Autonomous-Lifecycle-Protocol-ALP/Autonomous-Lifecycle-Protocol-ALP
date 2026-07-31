@@ -436,7 +436,78 @@ export function activate(context: vscode.ExtensionContext) {
     await vscode.window.showTextDocument(doc);
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd);
+  const moveCmd = vscode.commands.registerCommand('alp.moveObject', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const objectId = await vscode.window.showInputBox({ prompt: 'Object id to move', placeHolder: 'e.g. task-1' });
+    if (!objectId) return;
+    const targetFile = await vscode.window.showInputBox({ prompt: 'Target .alp file', placeHolder: 'e.g. tasks.alp' });
+    if (!targetFile) return;
+
+    if (!targetFile.endsWith('.alp')) {
+      vscode.window.showWarningMessage('Target file must have .alp extension.');
+      return;
+    }
+
+    const workspacePath = vscode.workspace.workspaceFoldings?.[0]?.uri.fsPath;
+    if (!workspacePath) {
+      vscode.window.showWarningMessage('Open a workspace folder first.');
+      return;
+    }
+    const alpDir = path.join(workspacePath, '.alp');
+    if (!fs.existsSync(alpDir)) {
+      vscode.window.showWarningMessage('No .alp directory found. Run `alp init` first.');
+      return;
+    }
+
+    const document = editor.document;
+    const text = document.getText();
+    const lines = text.split('\n');
+    let blockStart = -1;
+    let blockEnd = lines.length;
+    for (let i = 0; i < lines.length; i++) {
+      const idMatch = lines[i].match(/^id:\s*(.+)$/);
+      if (idMatch && idMatch[1].trim() === objectId) {
+        blockStart = i - 1;
+        while (blockStart >= 0 && !lines[blockStart].match(/^(@\w+)/)) blockStart -= 1;
+        blockStart = Math.max(0, blockStart);
+        blockEnd = i + 1;
+        while (blockEnd < lines.length && !lines[blockEnd].match(/^(@\w+)/)) blockEnd += 1;
+        break;
+      }
+    }
+
+    if (blockStart === -1) {
+      vscode.window.showInformationMessage(`No object '${objectId}' found in current file.`);
+      return;
+    }
+
+    const block = lines.slice(blockStart, blockEnd).join('\n');
+    const targetPath = path.join(alpDir, targetFile);
+    if (!fs.existsSync(targetPath)) {
+      fs.writeFileSync(targetPath, '', 'utf-8');
+    }
+
+    let targetContent = fs.readFileSync(targetPath, 'utf-8');
+    if (targetContent && !targetContent.endsWith('\n')) targetContent += '\n';
+    targetContent += block + '\n';
+    fs.writeFileSync(targetPath, targetContent, 'utf-8');
+
+    const updatedSource = lines.slice(0, blockStart).concat(lines.slice(blockEnd)).filter((l) => l.trim()).join('\n');
+    await editor.edit((builder) => {
+      const firstLine = document.lineAt(0);
+      const lastLine = document.lineAt(document.lineCount - 1);
+      const range = new vscode.Range(firstLine.range.start, lastLine.range.end);
+      builder.replace(range, updatedSource);
+    });
+
+    vscode.window.showInformationMessage(`Moved '${objectId}' to ${targetFile}.`);
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {

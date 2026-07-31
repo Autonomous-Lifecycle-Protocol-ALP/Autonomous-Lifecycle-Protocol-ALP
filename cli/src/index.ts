@@ -15,6 +15,7 @@ import { renameCommand } from './commands/rename';
 import { copyCommand } from './commands/copy';
 import { statsCommand } from './commands/stats';
 import { templateCommand } from './commands/template';
+import { moveCommand } from './commands/move';
 import { lintCommand } from './commands/lint';
 import { testCommand } from './commands/test';
 import { formatCommand } from './commands/format';
@@ -350,6 +351,13 @@ program
   .argument('<type>', 'Template type: task, agent, workflow, policy, test')
   .argument('<id>', 'Object id for the new template')
   .action((type, id) => templateCommand(type, id));
+
+program
+  .command('move')
+  .description('Move an ALP object from one file to another')
+  .argument('<id>', 'Object id to move')
+  .argument('<target-file>', 'Target .alp file (e.g. tasks.alp)')
+  .action((id, targetFile) => moveCommand(id, targetFile));
 
 program
   .command('cost')
