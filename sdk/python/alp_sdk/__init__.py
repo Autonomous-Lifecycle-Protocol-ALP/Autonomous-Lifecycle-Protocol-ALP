@@ -109,6 +109,7 @@ from .signing import (
 from .author import WorkflowAuthor, AuthoringError
 from .snapshot import SnapshotEngine, WorkspaceSnapshot, SnapshotDiff
 from .diff_engine import DiffEngine, DiffResult, DiffEntry
+from .refactor_engine import RefactorEngine, RenameResult
 from .compliance import run_suite, HarnessResult
 from .observ import (
     RuntimeLog,
@@ -384,6 +385,8 @@ __all__ = [
     "DiffEngine",
     "DiffResult",
     "DiffEntry",
+    "RefactorEngine",
+    "RenameResult",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",

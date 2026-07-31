@@ -11,6 +11,7 @@ import { publishCommand } from './commands/publish';
 import { exportCommand } from './commands/export';
 import { backupCommand } from './commands/backup';
 import { diffCommand } from './commands/diff';
+import { renameCommand } from './commands/rename';
 import { lintCommand } from './commands/lint';
 import { testCommand } from './commands/test';
 import { formatCommand } from './commands/format';
@@ -319,6 +320,13 @@ program
   .argument('<snapshot-a>', 'Older snapshot name')
   .argument('<snapshot-b>', 'Newer snapshot name')
   .action((a, b) => diffCommand(a, b));
+
+program
+  .command('rename')
+  .description('Rename an ALP object id across all workspace files')
+  .argument('<old-id>', 'Current object id')
+  .argument('<new-id>', 'New object id')
+  .action((oldId, newId) => renameCommand(oldId, newId));
 
 program
   .command('cost')

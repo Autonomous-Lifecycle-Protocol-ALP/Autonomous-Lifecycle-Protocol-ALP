@@ -25,7 +25,8 @@
     "onCommand:alp.showContracts",
     "onCommand:alp.showVaults",
     "onCommand:alp.showAgents",
-    "onCommand:alp.diffWorkspace"
+    "onCommand:alp.diffWorkspace",
+    "onCommand:alp.renameObject"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -115,6 +116,11 @@
       {
         "command": "alp.diffWorkspace",
         "title": "ALP: Diff Workspace Snapshots",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.renameObject",
+        "title": "ALP: Rename Object",
         "category": "ALP"
       }
     ]

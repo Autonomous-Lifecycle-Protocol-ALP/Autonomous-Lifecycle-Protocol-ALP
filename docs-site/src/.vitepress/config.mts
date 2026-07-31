@@ -50,6 +50,7 @@ export default defineConfig({
           { text: 'CLI Guide', link: '/guide/cli' },
           { text: 'Python SDK Snapshots', link: '/python-sdk-snapshot' },
           { text: 'Python SDK Diff', link: '/python-sdk-diff' },
+          { text: 'Python SDK Refactor', link: '/python-sdk-refactor' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' }
@@ -80,6 +81,7 @@ export default defineConfig({
           { text: 'CLI Usage', link: '/guide/cli' },
           { text: 'Python SDK Snapshots', link: '/python-sdk-snapshot' },
           { text: 'Python SDK Diff', link: '/python-sdk-diff' },
+          { text: 'Python SDK Refactor', link: '/python-sdk-refactor' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' },

@@ -270,7 +270,50 @@ export function activate(context: vscode.ExtensionContext) {
 </body></html>`;
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd);
+  const renameCmd = vscode.commands.registerCommand('alp.renameObject', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const oldId = await vscode.window.showInputBox({ prompt: 'Current object id to rename', placeHolder: 'e.g. task-1' });
+    if (!oldId) return;
+    const newId = await vscode.window.showInputBox({ prompt: 'New object id', placeHolder: 'e.g. task-1-renamed' });
+    if (!newId) return;
+
+    const document = editor.document;
+    const text = document.getText();
+    const lines = text.split('\n');
+    let replacements = 0;
+    const updated = lines.map((line) => {
+      const stripped = line.lstrip?.() ?? line.lstrip();
+      const indent = line.slice(0, line.length - (line.match(/^\s*/)?.[0].length ?? 0));
+      if (stripped.startsWith('id:')) {
+        const match = stripped.match(/^id:\s*(.+)$/);
+        if (match && match[1].trim() === oldId) {
+          replacements += 1;
+          return `${indent}id: ${newId}`;
+        }
+      }
+      return line;
+    }).join('\n');
+
+    if (replacements === 0) {
+      vscode.window.showInformationMessage(`No id '${oldId}' found in current file.`);
+      return;
+    }
+
+    await editor.edit((builder) => {
+      const firstLine = document.lineAt(0);
+      const lastLine = document.lineAt(document.lineCount - 1);
+      const range = new vscode.Range(firstLine.range.start, lastLine.range.end);
+      builder.replace(range, updated);
+    });
+
+    vscode.window.showInformationMessage(`Renamed ${replacements} occurrence${replacements === 1 ? '' : 's'} of '${oldId}' to '${newId}'.`);
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {
