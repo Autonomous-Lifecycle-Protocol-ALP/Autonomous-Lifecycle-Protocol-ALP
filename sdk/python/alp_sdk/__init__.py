@@ -107,7 +107,7 @@ from .signing import (
     resolve_public_key,
 )
 from .author import WorkflowAuthor, AuthoringError
-from .anomaly import AnomalyDetector
+from .snapshot import SnapshotEngine, WorkspaceSnapshot, SnapshotDiff
 from .compliance import run_suite, HarnessResult
 from .observ import (
     RuntimeLog,
@@ -377,6 +377,9 @@ __all__ = [
     "EngineSnapshot",
     "SnapshotStore",
     "DiffResult",
+    "SnapshotEngine",
+    "WorkspaceSnapshot",
+    "SnapshotDiff",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",
