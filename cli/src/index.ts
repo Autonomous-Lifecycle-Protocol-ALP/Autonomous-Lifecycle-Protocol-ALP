@@ -9,6 +9,7 @@ import { installCommand } from './commands/install';
 import { uninstallCommand } from './commands/uninstall';
 import { publishCommand } from './commands/publish';
 import { exportCommand } from './commands/export';
+import { backupCommand } from './commands/backup';
 import { lintCommand } from './commands/lint';
 import { testCommand } from './commands/test';
 import { formatCommand } from './commands/format';
@@ -303,6 +304,13 @@ program
   .option('--out <file>', 'Output file path (prints to stdout if omitted)')
   .option('--minified', 'Minify JSON output (only applies to json format)')
   .action(exportCommand);
+
+program
+  .command('backup')
+  .description('Backup, restore, and list workspace snapshots')
+  .argument('<action>', 'Action: create, restore, or list')
+  .argument('[name]', 'Backup name for create/restore')
+  .action((action, name) => backupCommand(action, name));
 
 program
   .command('cost')
