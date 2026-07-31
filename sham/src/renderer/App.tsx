@@ -27,6 +27,7 @@ import { TelemetryInspectorPanel } from './components/TelemetryInspectorPanel.js
 import { ChaosEnginePanel } from './components/ChaosEnginePanel.js';
 import { FeatureFlagPanel } from './components/FeatureFlagPanel.js';
 import { WorkflowReplayPanel } from './components/WorkflowReplayPanel.js';
+import { LocalStoragePanel } from './components/LocalStoragePanel.js';
 import { fetchBlockTypes, runAgent, validateALPFile, onAppReady, collabCursorMove } from './shared/alp-client.js';
 import type { SHAMState } from './shared/types.js';
 import './styles/global.css';
@@ -283,6 +284,8 @@ export function App(): React.JSX.Element {
         return <FeatureFlagPanel />;
       case 'workflowReplay':
         return <WorkflowReplayPanel />;
+      case 'localStorage':
+        return <LocalStoragePanel />;
       default:
         return <ProPanel />;
     }

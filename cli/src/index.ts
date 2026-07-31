@@ -58,6 +58,7 @@ import { registerEdgeDebugCommand } from './commands/edge-debug';
 import { registerTelemetryInspectCommand } from './commands/telemetry-inspect';
 import { registerChaosCommand } from './commands/chaos';
 import { registerFeatureFlagCommand } from './commands/feature-flag';
+import { registerStorageCommand } from './commands/storage';
 import { registerVectorCommand } from './commands/vector';
 import { registerDIDCommand } from './commands/did';
 import { registerCRDTSyncCommand } from './commands/crdt-sync';
@@ -623,6 +624,7 @@ registerEdgeDebugCommand(program);
 registerTelemetryInspectCommand(program);
 registerChaosCommand(program);
 registerFeatureFlagCommand(program);
+registerStorageCommand(program);
 
 program
    .command('intelligence')

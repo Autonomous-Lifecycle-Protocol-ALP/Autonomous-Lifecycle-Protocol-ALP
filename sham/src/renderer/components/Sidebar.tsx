@@ -42,6 +42,7 @@ const panelIcons: Record<string, string> = {
   chaosEngine: '&#128165;',
   featureFlags: '&#127937;',
   workflowReplay: '&#9201;',
+  localStorage: '&#128230;',
 };
 
 const FILE_ICONS: Record<string, string> = {
@@ -182,7 +183,7 @@ export function Sidebar({ state, onOpenFile, onCloseFile, onSelectAgent, activeP
       </div>
 
       <div className="sidebar-footer">
-        {['editor', 'terminal', 'agents', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'refactor', 'marketplace', 'zk', 'partition', 'crdtCanvas', 'wasmAst', 'edgeDebug', 'telemetryInspector', 'chaosEngine', 'featureFlags', 'workflowReplay', 'settings', 'git', 'search'].map((panel) => (
+        {['editor', 'terminal', 'agents', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'refactor', 'marketplace', 'zk', 'partition', 'crdtCanvas', 'wasmAst', 'edgeDebug', 'telemetryInspector', 'chaosEngine', 'featureFlags', 'workflowReplay', 'localStorage', 'settings', 'git', 'search'].map((panel) => (
           <button
             key={panel}
             className={`sidebar-footer-item ${activePanel === panel ? 'active' : ''}`}

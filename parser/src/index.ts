@@ -82,6 +82,7 @@ export * from './edge-debug';
 export * from './telemetry-inspector';
 export * from './chaos-engine';
 export * from './feature-flags';
+export * from './local-storage-container';
 
 
 export { AlpObject, AlpReader };
