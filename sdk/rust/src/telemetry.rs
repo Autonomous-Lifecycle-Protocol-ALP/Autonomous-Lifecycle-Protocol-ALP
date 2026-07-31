@@ -17,6 +17,7 @@ pub struct Span {
     pub attributes: HashMap<String, serde_json::Value>,
 }
 
+#[allow(clippy::too_many_arguments)]
 impl Span {
     pub fn new(
         id: impl Into<String>,
@@ -42,6 +43,12 @@ impl Span {
             status: status.into(),
             attributes,
         }
+    }
+}
+
+impl Default for TelemetryEngine {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -200,15 +207,11 @@ impl TelemetryEngine {
                 serde_json::Value::Array(
                     attrs
                         .into_iter()
-                        .map(|a| {
-                            serde_json::Value::Object(a.into_iter().map(|(k, v)| (k, v)).collect())
-                        })
+                        .map(|a| serde_json::Value::Object(a.into_iter().collect()))
                         .collect(),
                 ),
             );
-            spans.push(serde_json::Value::Object(
-                span_map.into_iter().map(|(k, v)| (k, v)).collect(),
-            ));
+            spans.push(serde_json::Value::Object(span_map.into_iter().collect()));
         }
         let scope = HashMap::from([
             (
@@ -220,13 +223,11 @@ impl TelemetryEngine {
         let scope_span = HashMap::from([
             (
                 "scope".into(),
-                serde_json::Value::Object(scope.into_iter().map(|(k, v)| (k, v)).collect()),
+                serde_json::Value::Object(scope.into_iter().collect()),
             ),
             ("spans".into(), serde_json::Value::Array(spans)),
         ]);
-        scope_spans.push(serde_json::Value::Object(
-            scope_span.into_iter().map(|(k, v)| (k, v)).collect(),
-        ));
+        scope_spans.push(serde_json::Value::Object(scope_span.into_iter().collect()));
 
         let resource_attrs = vec![
             HashMap::from([
@@ -255,16 +256,14 @@ impl TelemetryEngine {
             serde_json::Value::Array(
                 resource_attrs
                     .into_iter()
-                    .map(|a| {
-                        serde_json::Value::Object(a.into_iter().map(|(k, v)| (k, v)).collect())
-                    })
+                    .map(|a| serde_json::Value::Object(a.into_iter().collect()))
                     .collect(),
             ),
         )]);
         let resource_span = HashMap::from([
             (
                 "resource".into(),
-                serde_json::Value::Object(resource.into_iter().map(|(k, v)| (k, v)).collect()),
+                serde_json::Value::Object(resource.into_iter().collect()),
             ),
             ("scopeSpans".into(), serde_json::Value::Array(scope_spans)),
         ]);
@@ -273,7 +272,7 @@ impl TelemetryEngine {
         otlp.insert(
             "resourceSpans".into(),
             serde_json::Value::Array(vec![serde_json::Value::Object(
-                resource_span.into_iter().map(|(k, v)| (k, v)).collect(),
+                resource_span.into_iter().collect(),
             )]),
         );
         otlp

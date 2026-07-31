@@ -29,7 +29,15 @@ impl WorkflowMutator {
             rollback_snapshots: HashMap::new(),
         }
     }
+}
 
+impl Default for WorkflowMutator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl WorkflowMutator {
     pub fn with_policy_engine(mut self, engine: PolicyEngine) -> Self {
         self.policy_engine = Some(engine);
         self

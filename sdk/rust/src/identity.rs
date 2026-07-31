@@ -43,13 +43,7 @@ impl AgentIdentity {
         );
         dict.insert(
             "metadata".into(),
-            serde_json::Value::Object(
-                self.metadata
-                    .clone()
-                    .into_iter()
-                    .map(|(k, v)| (k, v))
-                    .collect(),
-            ),
+            serde_json::Value::Object(self.metadata.clone().collect()),
         );
         dict
     }
