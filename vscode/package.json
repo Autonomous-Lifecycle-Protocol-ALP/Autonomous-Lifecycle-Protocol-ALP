@@ -30,7 +30,8 @@
     "onCommand:alp.copyObject",
     "onCommand:alp.showStats",
     "onCommand:alp.createFromTemplate",
-    "onCommand:alp.moveObject"
+    "onCommand:alp.moveObject",
+    "onCommand:alp.searchWorkspace"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -145,6 +146,11 @@
       {
         "command": "alp.moveObject",
         "title": "ALP: Move Object",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.searchWorkspace",
+        "title": "ALP: Search Workspace",
         "category": "ALP"
       }
     ]

@@ -507,7 +507,48 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage(`Moved '${objectId}' to ${targetFile}.`);
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd);
+  const searchCmd = vscode.commands.registerCommand('alp.searchWorkspace', async () => {
+    const query = await vscode.window.showInputBox({ prompt: 'Search query', placeHolder: 'e.g. task-1 or auth' });
+    if (!query) return;
+    const typeFilter = await vscode.window.showQuickPick(['', 'task', 'agent', 'workflow', 'policy', 'contract', 'vault'], { placeHolder: 'Filter by type (optional)' });
+    const useRegex = await vscode.window.showQuickPick(['No', 'Yes'], { placeHolder: 'Use regex?' });
+
+    const editor = vscode.window.activeTextEditor;
+    const objects = editor ? getParsedObjects(editor.document) : [];
+    const q = query.toLowerCase();
+    const type = typeFilter || undefined;
+    let results = objects.filter((o: any) => {
+      if (type && o._type !== type) return false;
+      if (useRegex === 'Yes') {
+        try {
+          const regex = new RegExp(query, 'i');
+          return regex.test(o.id || '') || regex.test(o.description || '') || regex.test(JSON.stringify(o));
+        } catch {
+          return false;
+        }
+      }
+      return (o.id && o.id.toLowerCase().includes(q)) || (o.description && o.description.toLowerCase().includes(q));
+    });
+
+    const panel = vscode.window.createWebviewPanel('alpSearch', `Search: ${query}`, vscode.ViewColumn.One, {});
+    panel.webview.html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><style>
+  body { font-family: var(--vscode-font-family); padding: 16px; color: var(--vscode-foreground); }
+  h2 { margin-top: 0; }
+  .count { font-weight: bold; }
+  ul { padding-left: 20px; margin: 4px 0; }
+  li { margin: 2px 0; }
+</style></head>
+<body>
+  <h2>Search: ${escapeHtml(query)}</h2>
+  <p><span class="count">${results.length}</span> result${results.length === 1 ? '' : 's'}</p>
+  <ul>${results.map((o: any) => `<li><strong>${escapeHtml(o._type)}:</strong> ${escapeHtml(o.id || '')} ${escapeHtml(o.description || '')}</li>`).join('')}</ul>
+  ${!results.length ? '<p>No matches found.</p>' : ''}
+</body></html>`;
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {
