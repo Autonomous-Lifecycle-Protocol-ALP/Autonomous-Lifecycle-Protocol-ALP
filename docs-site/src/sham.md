@@ -192,7 +192,21 @@ npx vitest run
 
 ## Roadmap
 
-See [ROADMAP_V17_V43.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V43.md) for the full ALP roadmap including v45.0.0 "Autonomous Orchestration" features.
+### v46.0.0 – v50.0.0 New IDE Panels
+
+#### 🛒 Swarm Skill Marketplace Panel
+Browse, filter, invoke, and monitor autonomous agent skills with real-time cost metering and invocation telemetry.
+
+#### 🔒 Zero-Knowledge Proof Panel
+Generate and verify zk-SNARK cryptographic compliance proofs directly from the IDE — without ever exposing secret values.
+
+#### 🌐 Multi-Region DAG Partition Panel
+Partition workspace execution graphs across distributed cloud edge regions (`us-east`, `eu-west`, `ap-southeast`) with interactive node assignment and latency estimation.
+
+### Next Version Roadmap
+See [SHAM_IDE_ROADMAP.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/SHAM_IDE_ROADMAP.md) for the full SHAM IDE roadmap including v52.0.0 through v60.0.0 planned features.
+
+See [ROADMAP_V17_V43.md](file:///c:/Users/KGN/Desktop/new%20file%20sys/docs/ROADMAP_V17_V43.md) for the full ALP protocol roadmap.
 
 ## Contributing
 

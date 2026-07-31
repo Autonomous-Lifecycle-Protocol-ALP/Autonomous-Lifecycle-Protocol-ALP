@@ -69,6 +69,20 @@ export * from './formatter';
 export * from './intelligence';
 export * from './context-bundler';
 export * from './bft-consensus';
+export * from './dag-partitioner';
+export * from './policy-optimizer';
+export * from './pq-crypto';
+export * from './swarm-settlement';
+export * from './workflow-replay';
+export * from './swarm-self-healing-mesh';
+export * from './agent-copilot';
+export * from './crdt-canvas';
+export * from './wasm-ast';
+export * from './edge-debug';
+export * from './telemetry-inspector';
+export * from './chaos-engine';
+export * from './feature-flags';
+
 
 export { AlpObject, AlpReader };
 

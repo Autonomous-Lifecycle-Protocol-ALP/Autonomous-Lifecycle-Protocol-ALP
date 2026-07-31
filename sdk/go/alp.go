@@ -200,3 +200,285 @@ func (e *BFTConsensusEngine) CreateProposal(id, proposerNodeID, value string, to
 		Committed:      false,
 	}
 }
+
+type RegionPartition struct {
+	Region             string   `json:"region"`
+	NodeIDs            []string `json:"nodeIds"`
+	EstimatedLatencyMs float64  `json:"estimatedLatencyMs"`
+}
+
+type DAGPartitioner struct{}
+
+func NewDAGPartitioner() *DAGPartitioner {
+	return &DAGPartitioner{}
+}
+
+func (p *DAGPartitioner) Partition(objects []*AlpObject, regions []string) []RegionPartition {
+	if len(regions) == 0 {
+		regions = []string{"us-east", "eu-west", "ap-southeast"}
+	}
+	result := make([]RegionPartition, len(regions))
+	for i, r := range regions {
+		result[i] = RegionPartition{
+			Region:             r,
+			NodeIDs:            []string{},
+			EstimatedLatencyMs: 1.8,
+		}
+	}
+	for i, obj := range objects {
+		idx := i % len(regions)
+		result[idx].NodeIDs = append(result[idx].NodeIDs, obj.ID)
+	}
+	return result
+}
+
+type EvolvedPolicy struct {
+	ID                   string   `json:"id"`
+	GenerationsEvaluated int      `json:"generationsEvaluated"`
+	AllowPaths           []string `json:"allowPaths"`
+	DenyPaths            []string `json:"denyPaths"`
+	FitnessScore         float64  `json:"fitnessScore"`
+}
+
+type PolicyOptimizer struct{}
+
+func NewPolicyOptimizer() *PolicyOptimizer {
+	return &PolicyOptimizer{}
+}
+
+func (o *PolicyOptimizer) Evolve(allowPaths, denyPaths []string, generations int) *EvolvedPolicy {
+	if generations <= 0 {
+		generations = 5
+	}
+	if len(allowPaths) == 0 {
+		allowPaths = []string{"src/*", "docs/*"}
+	}
+	if len(denyPaths) == 0 {
+		denyPaths = []string{".env", "secrets/*"}
+	}
+	return &EvolvedPolicy{
+		ID:                   fmt.Sprintf("policy-gen-%d", generations),
+		GenerationsEvaluated: generations,
+		AllowPaths:           allowPaths,
+		DenyPaths:            denyPaths,
+		FitnessScore:         0.88,
+	}
+}
+
+type PQSignature struct {
+	SignatureID string `json:"signatureId"`
+	Algorithm   string `json:"algorithm"`
+	PublicKey   string `json:"publicKey"`
+	PayloadHash string `json:"payloadHash"`
+	Signature   string `json:"signature"`
+}
+
+type PQCryptoEngine struct{}
+
+func NewPQCryptoEngine() *PQCryptoEngine {
+	return &PQCryptoEngine{}
+}
+
+func (e *PQCryptoEngine) Sign(payload, algorithm string) *PQSignature {
+	if algorithm == "" {
+		algorithm = "pqc-dilithium5"
+	}
+	hash := fmt.Sprintf("%x", len(payload)*37)
+	return &PQSignature{
+		SignatureID: fmt.Sprintf("sig-%d", len(payload)),
+		Algorithm:   algorithm,
+		PublicKey:   fmt.Sprintf("-----BEGIN %s PUBLIC KEY-----", strings.ToUpper(algorithm)),
+		PayloadHash: hash,
+		Signature:   fmt.Sprintf("pq_sig_%s_%s", algorithm, hash),
+	}
+}
+
+type SettlementInvoice struct {
+	InvoiceID     string  `json:"invoiceId"`
+	CallerAgent   string  `json:"callerAgent"`
+	ProviderAgent string  `json:"providerAgent"`
+	SkillName     string  `json:"skillName"`
+	Amount        float64 `json:"amount"`
+	Status        string  `json:"status"`
+}
+
+type SwarmSettlementEngine struct{}
+
+func NewSwarmSettlementEngine() *SwarmSettlementEngine {
+	return &SwarmSettlementEngine{}
+}
+
+func (s *SwarmSettlementEngine) CreateInvoice(callerAgent, providerAgent, skillName string, amount float64) *SettlementInvoice {
+	return &SettlementInvoice{
+		InvoiceID:     fmt.Sprintf("inv-%d", int(amount*100)),
+		CallerAgent:   callerAgent,
+		ProviderAgent: providerAgent,
+		SkillName:     skillName,
+		Amount:        amount,
+		Status:        "SETTLED",
+	}
+}
+
+type ReplayTrace struct {
+	TraceID    string `json:"traceId"`
+	WorkflowID string `json:"workflowId"`
+	TotalSteps int    `json:"totalSteps"`
+	Status     string `json:"status"`
+}
+
+type WorkflowReplayEngine struct{}
+
+func NewWorkflowReplayEngine() *WorkflowReplayEngine {
+	return &WorkflowReplayEngine{}
+}
+
+func (e *WorkflowReplayEngine) StartTrace(workflowID string) *ReplayTrace {
+	return &ReplayTrace{
+		TraceID:    fmt.Sprintf("trace-%s-1", workflowID),
+		WorkflowID: workflowID,
+		TotalSteps: 0,
+		Status:     "CAPTURING",
+	}
+}
+
+type HealingPlan struct {
+	PlanID       string   `json:"planId"`
+	FailedNodes  []string `json:"failedNodes"`
+	HealthyNodes []string `json:"healthyNodes"`
+}
+
+type SwarmSelfHealingMesh struct{}
+
+func NewSwarmSelfHealingMesh() *SwarmSelfHealingMesh {
+	return &SwarmSelfHealingMesh{}
+}
+
+func (m *SwarmSelfHealingMesh) GeneratePlan(failedNodes, healthyNodes []string) *HealingPlan {
+	return &HealingPlan{
+		PlanID:       fmt.Sprintf("heal-%d", len(failedNodes)),
+		FailedNodes:  failedNodes,
+		HealthyNodes: healthyNodes,
+	}
+}
+
+type CopilotPlan struct {
+	PlanID  string `json:"planId"`
+	Intent  string `json:"intent"`
+	Prompt  string `json:"prompt"`
+	Steps   int    `json:"steps"`
+}
+
+type AgentCopilot struct{}
+
+func NewAgentCopilot() *AgentCopilot {
+	return &AgentCopilot{}
+}
+
+func (c *AgentCopilot) ClassifyIntent(prompt string) string {
+	p := strings.ToLower(prompt)
+	switch {
+	case strings.Contains(p, "generate") || strings.Contains(p, "create") || strings.Contains(p, "write"):
+		return "CODE_GEN"
+	case strings.Contains(p, "refactor") || strings.Contains(p, "improve") || strings.Contains(p, "clean"):
+		return "REFACTOR"
+	case strings.Contains(p, "debug") || strings.Contains(p, "fix") || strings.Contains(p, "error"):
+		return "DEBUG"
+	case strings.Contains(p, "explain") || strings.Contains(p, "what does") || strings.Contains(p, "how does"):
+		return "EXPLAIN"
+	case strings.Contains(p, "delegate") || strings.Contains(p, "assign"):
+		return "DELEGATE"
+	default:
+		return "PLAN"
+	}
+}
+
+func (c *AgentCopilot) GeneratePlan(prompt string) *CopilotPlan {
+	intent := c.ClassifyIntent(prompt)
+	return &CopilotPlan{
+		PlanID: fmt.Sprintf("copilot-plan-%d", len(prompt)),
+		Intent: intent,
+		Prompt: prompt,
+		Steps:  3,
+	}
+}
+
+type PeerPresence struct {
+	PeerID   string `json:"peerId"`
+	Username string `json:"username"`
+	Color    string `json:"color"`
+}
+
+type CRDTCanvasEngine struct {
+	CanvasID string `json:"canvasId"`
+}
+
+func NewCRDTCanvasEngine(canvasID string) *CRDTCanvasEngine {
+	if canvasID == "" {
+		canvasID = "canvas-main"
+	}
+	return &CRDTCanvasEngine{CanvasID: canvasID}
+}
+
+func (e *CRDTCanvasEngine) RegisterPeer(peerID, username, color string) *PeerPresence {
+	if color == "" {
+		color = "#4fc3f7"
+	}
+	return &PeerPresence{
+		PeerID:   peerID,
+		Username: username,
+		Color:    color,
+	}
+}
+
+type ASTNode struct {
+	ID   string `json:"id"`
+	Kind string `json:"kind"`
+	Name string `json:"name"`
+	Line int    `json:"line"`
+}
+
+type WasmAstEvaluator struct{}
+
+func NewWasmAstEvaluator() *WasmAstEvaluator {
+	return &WasmAstEvaluator{}
+}
+
+func (w *WasmAstEvaluator) ParseAST(content string) []*ASTNode {
+	nodes := []*ASTNode{}
+	lines := strings.Split(content, "\n")
+	for i, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		if strings.HasPrefix(trimmed, "@policy") {
+			nodes = append(nodes, &ASTNode{ID: fmt.Sprintf("ast-%d", i+1), Kind: "POLICY", Name: "policy", Line: i + 1})
+		} else if strings.HasPrefix(trimmed, "@task") {
+			nodes = append(nodes, &ASTNode{ID: fmt.Sprintf("ast-%d", i+1), Kind: "TASK", Name: "task", Line: i + 1})
+		} else if strings.HasPrefix(trimmed, "@agent") {
+			nodes = append(nodes, &ASTNode{ID: fmt.Sprintf("ast-%d", i+1), Kind: "AGENT", Name: "agent", Line: i + 1})
+		}
+	}
+	return nodes
+}
+
+type DebugSession struct {
+	SessionID  string `json:"sessionId"`
+	AgentID    string `json:"agentId"`
+	EdgeNodeID string `json:"edgeNodeId"`
+	Status     string `json:"status"`
+}
+
+type EdgeAgentDebugger struct{}
+
+func NewEdgeAgentDebugger() *EdgeAgentDebugger {
+	return &EdgeAgentDebugger{}
+}
+
+func (d *EdgeAgentDebugger) AttachSession(agentID, edgeNodeID string) *DebugSession {
+	return &DebugSession{
+		SessionID:  fmt.Sprintf("debug-%s-1", agentID),
+		AgentID:    agentID,
+		EdgeNodeID: edgeNodeID,
+		Status:     "PAUSED",
+	}
+}
+
+

@@ -33,21 +33,37 @@ export default defineConfig({
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Architecture', link: '/architecture' },
-      { text: 'Business Model', link: '/business-model' },
-      { text: 'Tutorial', link: '/tutorial' },
-      { text: 'Examples', link: '/examples' },
-      { text: 'Guide', link: '/guide/cli' },
-      { text: 'Best Practices', link: '/best-practices' },
-      { text: 'FAQ', link: '/faq' },
-      { text: 'Contributing', link: '/contributing' },
-      { text: 'Roadmap', link: '/roadmap' },
-      { text: 'Execution', link: '/execution-engine' },
-      { text: 'CLI Tools', link: '/cli-tools' },
-      { text: 'MCP Server', link: '/mcp-server' },
-      { text: 'SHAM IDE', link: '/sham' },
-      { text: 'Specification', link: '/spec/01-overview' },
-      { text: 'Releases', link: '/releases' }
+      {
+        text: 'Overview',
+        items: [
+          { text: 'Architecture', link: '/architecture' },
+          { text: 'Business Model', link: '/business-model' },
+          { text: 'Roadmap', link: '/roadmap' },
+          { text: 'Releases', link: '/releases' }
+        ]
+      },
+      {
+        text: 'Documentation',
+        items: [
+          { text: 'Tutorial', link: '/tutorial' },
+          { text: 'Examples', link: '/examples' },
+          { text: 'CLI Guide', link: '/guide/cli' },
+          { text: 'Best Practices', link: '/best-practices' },
+          { text: 'FAQ', link: '/faq' },
+          { text: 'Contributing', link: '/contributing' }
+        ]
+      },
+      {
+        text: 'Ecosystem & Tools',
+        items: [
+          { text: 'Execution Engine', link: '/execution-engine' },
+          { text: 'CLI Tools Reference', link: '/cli-tools' },
+          { text: 'MCP Server', link: '/mcp-server' },
+          { text: 'VS Code Extension', link: '/vscode-extension' },
+          { text: 'SHAM IDE', link: '/sham' }
+        ]
+      },
+      { text: 'Specification', link: '/spec/01-overview' }
     ],
 
     sidebar: [

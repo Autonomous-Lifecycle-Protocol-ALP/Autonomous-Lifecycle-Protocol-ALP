@@ -17,6 +17,16 @@ import { SearchPanel } from './components/SearchPanel.js';
 import { CommandPalette } from './components/CommandPalette.js';
 import { DebugPanel } from './components/DebugPanel.js';
 import { TestRunnerPanel } from './components/TestRunnerPanel.js';
+import { SwarmMarketplacePanel } from './components/SwarmMarketplacePanel.js';
+import { ZKProofPanel } from './components/ZKProofPanel.js';
+import { DAGPartitionPanel } from './components/DAGPartitionPanel.js';
+import { CRDTCanvasPanel } from './components/CRDTCanvasPanel.js';
+import { WasmAstPanel } from './components/WasmAstPanel.js';
+import { EdgeDebugPanel } from './components/EdgeDebugPanel.js';
+import { TelemetryInspectorPanel } from './components/TelemetryInspectorPanel.js';
+import { ChaosEnginePanel } from './components/ChaosEnginePanel.js';
+import { FeatureFlagPanel } from './components/FeatureFlagPanel.js';
+import { WorkflowReplayPanel } from './components/WorkflowReplayPanel.js';
 import { fetchBlockTypes, runAgent, validateALPFile, onAppReady, collabCursorMove } from './shared/alp-client.js';
 import type { SHAMState } from './shared/types.js';
 import './styles/global.css';
@@ -41,7 +51,7 @@ const defaultState: SHAMState = {
   testRunner: { suites: [], output: [] },
 };
 
-type PanelId = 'editor' | 'terminal' | 'agents' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'copilot' | 'refactor' | 'pro' | 'settings' | 'git' | 'search' | 'debugger' | 'test-runner';
+type PanelId = 'editor' | 'terminal' | 'agents' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'copilot' | 'refactor' | 'pro' | 'settings' | 'git' | 'search' | 'debugger' | 'test-runner' | 'marketplace' | 'zk' | 'partition';
 
 export function App(): React.JSX.Element {
   const [state, setState] = useState<SHAMState>(defaultState);
@@ -253,6 +263,26 @@ export function App(): React.JSX.Element {
         return <GitPanel />;
       case 'search':
         return <SearchPanel onOpenFile={handleOpenFile} />;
+      case 'marketplace':
+        return <SwarmMarketplacePanel />;
+      case 'zk':
+        return <ZKProofPanel />;
+      case 'partition':
+        return <DAGPartitionPanel />;
+      case 'crdtCanvas':
+        return <CRDTCanvasPanel />;
+      case 'wasmAst':
+        return <WasmAstPanel />;
+      case 'edgeDebug':
+        return <EdgeDebugPanel />;
+      case 'telemetryInspector':
+        return <TelemetryInspectorPanel />;
+      case 'chaosEngine':
+        return <ChaosEnginePanel />;
+      case 'featureFlags':
+        return <FeatureFlagPanel />;
+      case 'workflowReplay':
+        return <WorkflowReplayPanel />;
       default:
         return <ProPanel />;
     }

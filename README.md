@@ -6,10 +6,10 @@
   <br/>
 
    [![Status](https://img.shields.io/badge/status-stable-success.svg)](#)
-    [![Version](https://img.shields.io/badge/version-45.0.0-blue.svg)](#)
-   [![License](https://img.shields.io/badge/license-MIT-green.svg)](#)
-   [![Tests](https://img.shields.io/badge/tests-1013%20passed-brightgreen.svg)](#)
-   [![Docs](https://img.shields.io/badge/docs-live-green.svg)](https://autonomous-lifecycle-protocol-alp.github.io/Autonomous-Lifecycle-Protocol-ALP/)
+    [![Version](https://img.shields.io/badge/version-76.0.0-blue.svg)](#)
+    [![License](https://img.shields.io/badge/license-MIT-green.svg)](#)
+    [![Tests](https://img.shields.io/badge/tests-594%20passed-brightgreen.svg)](#)
+    [![Docs](https://img.shields.io/badge/docs-live-green.svg)](https://autonomous-lifecycle-protocol-alp.github.io/Autonomous-Lifecycle-Protocol-ALP/)
 </div>
 
 <br/>
@@ -82,7 +82,7 @@ graph TD
     end
 ```
 
-### 2. Autonomous Swarm & Event Mesh Topology (v38.0.0)
+### 2. Autonomous Swarm & Event Mesh Topology
 
 Distributed agents coordinate through a pub/sub Event Mesh, discover skills via the Swarm Marketplace, and sync state in real time.
 
@@ -120,30 +120,31 @@ alp run --provider openai --model gpt-4o
 alp run | claude-code
 ```
 
-### 2. Autonomous Swarm Marketplace (`alp marketplace`) — *v38.0.0*
+### 2. Autonomous Swarm Marketplace (`alp marketplace`)
 Register, discover, invoke, and rate agent skills dynamically with real-time metering and cost tracking:
 ```bash
 alp marketplace register s1 agent-coder code-review --category analysis --cost 0.05
 alp marketplace invoke s1 agent-reader "Review pull request #42"
 ```
 
-### 3. Decoupled Event Mesh (`alp event-mesh`) — *v38.0.0*
-Pub/sub topic routing and asynchronous event dispatch across distributed swarm nodes:
+### 3. Feature Flag Engine (`alp feature-flag`) — *v74.0.0*
+Percentage-based rollouts, agent cohort targeting, and instant kill switches:
 ```bash
-alp event-mesh subscribe agent-1 telemetry.logs
-alp event-mesh publish telemetry.logs '{"status":"ok"}'
+alp feature-flag create ff-auth "OAuth2 Rollout" --rollout 50
+alp feature-flag eval ff-auth --agent agent-coder --env prod
 ```
 
-### 4. Verification & Quality Gates (`alp verify`)
+### 4. Temporal Workflow Replay (`alp replay`) — *v76.0.0*
+Deterministic step capture, time-travel debugging, and trace divergence analysis:
+```bash
+alp replay --workflow wf-deploy --seek 2
+```
+
+### 5. Verification & Quality Gates (`alp verify`)
 Enforce hard quality gates before any task is marked complete:
 ```bash
 alp verify task-auth
 ```
-
-### 5. Multi-Tenant Vault & Governance (`@vault` / `@policy` / `@contract`)
-- **`@vault`**: Encrypted secrets at rest via age-style X25519 envelopes.
-- **`@policy`**: UTC time-window restrictions, signed proposals, and approval gates.
-- **`@contract`**: Least-privilege API boundary enforcement between swarms and repositories.
 
 ---
 
@@ -151,10 +152,16 @@ alp verify task-auth
 
 | Package | Purpose | Version |
 | :--- | :--- | :---: |
-| [`@autonomous-lifecycle-protocol-alp/cli`](cli/) | Terminal interface (`run`, `serve`, `marketplace`, `policy`, `vault`, `verify`) | `45.0.0` |
-| [`@autonomous-lifecycle-protocol-alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `45.0.0` |
-| [`@autonomous-lifecycle-protocol-alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `45.0.0` |
-| [`@autonomous-lifecycle-protocol-alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `45.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/cli`](cli/) | Terminal interface (`run`, `serve`, `feature-flag`, `replay`, `vault`, `verify`) | `76.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `76.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `76.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `76.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/sdk`](sdk/) | Official TypeScript SDK | `76.0.0` |
+| [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `76.0.0` |
+| [`alp-go`](sdk/go/) | Official Go SDK | `76.0.0` |
+| [`alp-rs`](sdk/rust/) | Official Rust SDK | `76.0.0` |
+| [`alp-java`](sdk/java/) | Official Java SDK | `76.0.0` |
+| [`docs-site`](docs-site/) | Official VitePress documentation site | `76.0.0` |onomous-lifecycle-protocol-alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `45.0.0` |
 | [`@autonomous-lifecycle-protocol-alp/sdk`](sdk/) | Official TypeScript SDK | `45.0.0` |
 | [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `45.0.0` |
 | [`alp-go`](sdk/go/) | Official Go SDK | `0.46.0` |

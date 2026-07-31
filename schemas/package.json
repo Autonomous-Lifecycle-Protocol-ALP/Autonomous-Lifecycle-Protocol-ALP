@@ -9,6 +9,7 @@
     "url": "git+https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP.git"
   },
   "scripts": {
+    "build": "echo \"@autonomous-lifecycle-protocol-alp/schemas: static JSON — no build step\"",
     "test": "echo \"@autonomous-lifecycle-protocol-alp/schemas: no unit tests\""
   },
   "publishConfig": {

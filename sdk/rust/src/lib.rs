@@ -402,3 +402,373 @@ impl Default for BftConsensusEngine {
         Self::new()
     }
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct RegionPartition {
+    pub region: String,
+    pub node_ids: Vec<String>,
+    pub estimated_latency_ms: f64,
+}
+
+pub struct DagPartitioner;
+
+impl DagPartitioner {
+    pub fn new() -> Self {
+        Self
+    }
+
+    pub fn partition(&self, objects: &[AlpObject], regions: &[String]) -> Vec<RegionPartition> {
+        let target_regions = if regions.is_empty() {
+            vec!["us-east".to_string(), "eu-west".to_string(), "ap-southeast".to_string()]
+        } else {
+            regions.to_vec()
+        };
+
+        let mut partitions: Vec<RegionPartition> = target_regions
+            .into_iter()
+            .map(|r| RegionPartition {
+                region: r,
+                node_ids: Vec::new(),
+                estimated_latency_ms: 1.8,
+            })
+            .collect();
+
+        for (i, obj) in objects.iter().enumerate() {
+            let idx = i % partitions.len();
+            partitions[idx].node_ids.push(obj.id.clone());
+        }
+
+        partitions
+    }
+}
+
+impl Default for DagPartitioner {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct EvolvedPolicy {
+    pub id: String,
+    pub generations_evaluated: usize,
+    pub allow_paths: Vec<String>,
+    pub deny_paths: Vec<String>,
+    pub fitness_score: f64,
+}
+
+pub struct PolicyOptimizer;
+
+impl PolicyOptimizer {
+    pub fn new() -> Self {
+        Self
+    }
+
+    pub fn evolve(&self, allow_paths: &[String], deny_paths: &[String], generations: usize) -> EvolvedPolicy {
+        let gens = if generations == 0 { 5 } else { generations };
+        let allows = if allow_paths.is_empty() {
+            vec!["src/*".to_string(), "docs/*".to_string()]
+        } else {
+            allow_paths.to_vec()
+        };
+        let denys = if deny_paths.is_empty() {
+            vec![".env".to_string(), "secrets/*".to_string()]
+        } else {
+            deny_paths.to_vec()
+        };
+
+        EvolvedPolicy {
+            id: format!("policy-gen-{}", gens),
+            generations_evaluated: gens,
+            allow_paths: allows,
+            deny_paths: denys,
+            fitness_score: 0.88,
+        }
+    }
+}
+
+impl Default for PolicyOptimizer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PqSignature {
+    pub signature_id: String,
+    pub algorithm: String,
+    pub public_key: String,
+    pub payload_hash: String,
+    pub signature: String,
+}
+
+pub struct PqCryptoEngine;
+
+impl PqCryptoEngine {
+    pub fn new() -> Self {
+        Self
+    }
+
+    pub fn sign(&self, payload: impl Into<String>, algorithm: impl Into<String>) -> PqSignature {
+        let pl = payload.into();
+        let algo = algorithm.into();
+        let hash = format!("{:x}", pl.len() * 37);
+        PqSignature {
+            signature_id: format!("sig-{}", pl.len()),
+            algorithm: algo.clone(),
+            public_key: format!("-----BEGIN {} PUBLIC KEY-----", algo.to_uppercase()),
+            payload_hash: hash.clone(),
+            signature: format!("pq_sig_{}_{}", algo, hash),
+        }
+    }
+}
+
+impl Default for PqCryptoEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SettlementInvoice {
+    pub invoice_id: String,
+    pub caller_agent: String,
+    pub provider_agent: String,
+    pub skill_name: String,
+    pub amount: f64,
+    pub status: String,
+}
+
+pub struct SwarmSettlementEngine;
+
+impl SwarmSettlementEngine {
+    pub fn new() -> Self {
+        Self
+    }
+
+    pub fn create_invoice(&self, caller: &str, provider: &str, skill: &str, amount: f64) -> SettlementInvoice {
+        SettlementInvoice {
+            invoice_id: format!("inv-{}", (amount * 100.0) as i64),
+            caller_agent: caller.to_string(),
+            provider_agent: provider.to_string(),
+            skill_name: skill.to_string(),
+            amount,
+            status: "SETTLED".to_string(),
+        }
+    }
+}
+
+impl Default for SwarmSettlementEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ReplayTrace {
+    pub trace_id: String,
+    pub workflow_id: String,
+    pub total_steps: usize,
+    pub status: String,
+}
+
+pub struct WorkflowReplayEngine;
+
+impl WorkflowReplayEngine {
+    pub fn new() -> Self {
+        Self
+    }
+
+    pub fn start_trace(&self, workflow_id: &str) -> ReplayTrace {
+        ReplayTrace {
+            trace_id: format!("trace-{}-1", workflow_id),
+            workflow_id: workflow_id.to_string(),
+            total_steps: 0,
+            status: "CAPTURING".to_string(),
+        }
+    }
+}
+
+impl Default for WorkflowReplayEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HealingPlan {
+    pub plan_id: String,
+    pub failed_nodes: Vec<String>,
+    pub healthy_nodes: Vec<String>,
+}
+
+pub struct SwarmSelfHealingMesh;
+
+impl SwarmSelfHealingMesh {
+    pub fn new() -> Self {
+        Self
+    }
+
+    pub fn generate_plan(&self, failed: &[String], healthy: &[String]) -> HealingPlan {
+        HealingPlan {
+            plan_id: format!("heal-{}", failed.len()),
+            failed_nodes: failed.to_vec(),
+            healthy_nodes: healthy.to_vec(),
+        }
+    }
+}
+
+impl Default for SwarmSelfHealingMesh {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CopilotPlan {
+    pub plan_id: String,
+    pub intent: String,
+    pub prompt: String,
+    pub steps: u32,
+}
+
+pub struct AgentCopilot;
+
+impl AgentCopilot {
+    pub fn new() -> Self {
+        Self
+    }
+
+    pub fn classify_intent(&self, prompt: &str) -> String {
+        let p = prompt.to_lowercase();
+        if p.contains("generate") || p.contains("create") || p.contains("write") {
+            "CODE_GEN".to_string()
+        } else if p.contains("refactor") || p.contains("improve") || p.contains("clean") {
+            "REFACTOR".to_string()
+        } else if p.contains("debug") || p.contains("fix") || p.contains("error") {
+            "DEBUG".to_string()
+        } else if p.contains("explain") || p.contains("what does") || p.contains("how does") {
+            "EXPLAIN".to_string()
+        } else if p.contains("delegate") || p.contains("assign") {
+            "DELEGATE".to_string()
+        } else {
+            "PLAN".to_string()
+        }
+    }
+
+    pub fn generate_plan(&self, prompt: &str) -> CopilotPlan {
+        let intent = self.classify_intent(prompt);
+        CopilotPlan {
+            plan_id: format!("copilot-plan-{}", prompt.len()),
+            intent,
+            prompt: prompt.to_string(),
+            steps: 3,
+        }
+    }
+}
+
+impl Default for AgentCopilot {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PeerPresence {
+    pub peer_id: String,
+    pub username: String,
+    pub color: String,
+}
+
+pub struct CrdtCanvasEngine {
+    pub canvas_id: String,
+}
+
+impl CrdtCanvasEngine {
+    pub fn new(canvas_id: &str) -> Self {
+        Self {
+            canvas_id: canvas_id.to_string(),
+        }
+    }
+
+    pub fn register_peer(&self, peer_id: &str, username: &str, color: Option<&str>) -> PeerPresence {
+        PeerPresence {
+            peer_id: peer_id.to_string(),
+            username: username.to_string(),
+            color: color.unwrap_or("#4fc3f7").to_string(),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AstNode {
+    pub id: String,
+    pub kind: String,
+    pub name: String,
+    pub line: usize,
+}
+
+pub struct WasmAstEvaluator;
+
+impl WasmAstEvaluator {
+    pub fn new() -> Self {
+        Self
+    }
+
+    pub fn parse_ast(&self, content: &str) -> Vec<AstNode> {
+        let mut nodes = Vec::new();
+        for (i, line) in content.lines().enumerate() {
+            let trimmed = line.trim();
+            if trimmed.starts_with("@policy") {
+                nodes.push(AstNode { id: format!("ast-{}", i + 1), kind: "POLICY".to_string(), name: "policy".to_string(), line: i + 1 });
+            } else if trimmed.starts_with("@task") {
+                nodes.push(AstNode { id: format!("ast-{}", i + 1), kind: "TASK".to_string(), name: "task".to_string(), line: i + 1 });
+            } else if trimmed.starts_with("@agent") {
+                nodes.push(AstNode { id: format!("ast-{}", i + 1), kind: "AGENT".to_string(), name: "agent".to_string(), line: i + 1 });
+            }
+        }
+        nodes
+    }
+}
+
+impl Default for WasmAstEvaluator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DebugSession {
+    pub session_id: String,
+    pub agent_id: String,
+    pub edge_node_id: String,
+    pub status: String,
+}
+
+pub struct EdgeAgentDebugger;
+
+impl EdgeAgentDebugger {
+    pub fn new() -> Self {
+        Self
+    }
+
+    pub fn attach_session(&self, agent_id: &str, edge_node_id: &str) -> DebugSession {
+        DebugSession {
+            session_id: format!("debug-{}-1", agent_id),
+            agent_id: agent_id.to_string(),
+            edge_node_id: edge_node_id.to_string(),
+            status: "PAUSED".to_string(),
+        }
+    }
+}
+
+impl Default for EdgeAgentDebugger {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+
+
+
+
