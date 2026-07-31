@@ -548,7 +548,34 @@ export function activate(context: vscode.ExtensionContext) {
 </body></html>`;
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd);
+  const inspectCmd = vscode.commands.registerCommand('alp.inspectObject', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const objectId = await vscode.window.showInputBox({ prompt: 'Object id to inspect', placeHolder: 'e.g. task-1' });
+    if (!objectId) return;
+
+    const objects = getParsedObjects(editor.document);
+    const obj = objects.find((o: any) => o.id === objectId);
+
+    if (!obj) {
+      vscode.window.showInformationMessage(`Object '${objectId}' not found in current file.`);
+      return;
+    }
+
+    const lines = [
+      `**${obj._type}:** ${obj.id}`,
+      '',
+      ...Object.entries(obj).filter(([k]) => !['_type', 'id'].includes(k)).map(([k, v]) => `- **${k}:** ${Array.isArray(v) ? v.join(', ') : v}`),
+    ];
+
+    const panel = vscode.window.createWebviewPanel('alpInspect', `Inspect: ${obj.id}`, vscode.ViewColumn.One, {});
+    panel.webview.html = getWebviewContent(`<pre>${escapeHtml(lines.join('\n'))}</pre>`);
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, inspectCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {
