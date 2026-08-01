@@ -26,7 +26,7 @@ class DeduplicateEngine:
         if not os.path.isdir(alp_dir):
             raise FileNotFoundError(f".alp directory not found in {workspace_path}")
 
-        files = [f for f in os.listdir(alp_dir) if f.endswith('.alp')]
+        files = sorted([f for f in os.listdir(alp_dir) if f.endswith('.alp')])
         seen = {}
         removed_ids: List[str] = []
         total_removed = 0

@@ -68,6 +68,9 @@ import { registerTelemetryInspectCommand } from './commands/telemetry-inspect';
 import { registerChaosCommand } from './commands/chaos';
 import { registerFeatureFlagCommand } from './commands/feature-flag';
 import { registerStorageCommand } from './commands/storage';
+import { archiveCommand } from './commands/archive';
+import { deduplicateCommand } from './commands/deduplicate';
+import { promoteCommand } from './commands/promote';
 import { registerVectorCommand } from './commands/vector';
 import { registerDIDCommand } from './commands/did';
 import { registerCRDTSyncCommand } from './commands/crdt-sync';
@@ -381,6 +384,24 @@ program
   .argument('<id>', 'Object id to delete')
   .option('--file <path>', 'Optional specific file to delete from')
   .action((id, opts) => deleteCommand(id, opts));
+
+program
+  .command('archive')
+  .description('Archive objects with a given status')
+  .argument('<status>', 'Status to archive (e.g. done)')
+  .action((status) => archiveCommand(status));
+
+program
+  .command('deduplicate')
+  .description('Remove duplicate objects across workspace files')
+  .action(() => deduplicateCommand());
+
+program
+  .command('promote')
+  .description('Promote an object to a new type')
+  .argument('<id>', 'Object id to promote')
+  .argument('<type>', 'New type for the object')
+  .action((id, type) => promoteCommand(id, type));
 
 program
   .command('cost')
