@@ -548,7 +548,76 @@ export function activate(context: vscode.ExtensionContext) {
 </body></html>`;
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd);
+  const inspectCmd = vscode.commands.registerCommand('alp.inspectObject', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const objectId = await vscode.window.showInputBox({ prompt: 'Object id to inspect', placeHolder: 'e.g. task-1' });
+    if (!objectId) return;
+
+    const objects = getParsedObjects(editor.document);
+    const obj = objects.find((o: any) => o.id === objectId);
+
+    if (!obj) {
+      vscode.window.showInformationMessage(`Object '${objectId}' not found in current file.`);
+      return;
+    }
+
+    const lines = [
+      `**${obj._type}:** ${obj.id}`,
+      '',
+      ...Object.entries(obj).filter(([k]) => !['_type', 'id'].includes(k)).map(([k, v]) => `- **${k}:** ${Array.isArray(v) ? v.join(', ') : v}`),
+    ];
+
+    const panel = vscode.window.createWebviewPanel('alpInspect', `Inspect: ${obj.id}`, vscode.ViewColumn.One, {});
+    panel.webview.html = getWebviewContent(`<pre>${escapeHtml(lines.join('\n'))}</pre>`);
+  });
+
+  const deleteCmd = vscode.commands.registerCommand('alp.deleteObject', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const objectId = await vscode.window.showInputBox({ prompt: 'Object id to delete', placeHolder: 'e.g. task-1' });
+    if (!objectId) return;
+
+    const document = editor.document;
+    const text = document.getText();
+    const lines = text.split('\n');
+    let blockStart = -1;
+    let blockEnd = lines.length;
+    for (let i = 0; i < lines.length; i++) {
+      const idMatch = lines[i].match(/^\s*id:\s*(.+)$/);
+      if (idMatch && idMatch[1].trim() === objectId) {
+        blockStart = i - 1;
+        while (blockStart >= 0 && !lines[blockStart].match(/^(@\w+)/)) blockStart -= 1;
+        blockStart = Math.max(0, blockStart);
+        blockEnd = i + 1;
+        while (blockEnd < lines.length && !lines[blockEnd].match(/^(@\w+)/)) blockEnd += 1;
+        break;
+      }
+    }
+
+    if (blockStart === -1) {
+      vscode.window.showInformationMessage(`Object '${objectId}' not found in current file.`);
+      return;
+    }
+
+    const updated = lines.slice(0, blockStart).concat(lines.slice(blockEnd)).filter((l) => l.trim()).join('\n');
+    await editor.edit((builder) => {
+      const firstLine = document.lineAt(0);
+      const lastLine = document.lineAt(document.lineCount - 1);
+      const range = new vscode.Range(firstLine.range.start, lastLine.range.end);
+      builder.replace(range, updated);
+    });
+
+    vscode.window.showInformationMessage(`Deleted '${objectId}' from current file.`);
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, inspectCmd, deleteCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {
