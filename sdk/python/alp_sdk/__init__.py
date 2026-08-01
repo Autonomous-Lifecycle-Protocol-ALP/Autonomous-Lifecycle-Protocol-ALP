@@ -120,6 +120,7 @@ from .status_engine import StatusEngine, StatusResult, StatusCounts
 from .graph_engine import GraphEngine, GraphNode, GraphResult
 from .visualize_engine import VisualizeEngine, WorkflowDiagram
 from .linter_engine import LintEngine, LintResult, LintDiagnostic
+from .format_engine import FormatEngine, FormatResult
 from .compliance import run_suite, HarnessResult
 from .observ import (
     RuntimeLog,
@@ -399,7 +400,6 @@ __all__ = [
     "WorkspaceSnapshot",
     "SnapshotDiff",
     "DiffEngine",
-    "DiffResult",
     "DiffEntry",
     "RefactorEngine",
     "RenameResult",
@@ -430,6 +430,8 @@ __all__ = [
     "LintEngine",
     "LintResult",
     "LintDiagnostic",
+    "FormatEngine",
+    "FormatResult",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",
@@ -550,9 +552,6 @@ __all__ = [
     "TestCase",
     "TestSuiteResult",
     "CoverageReport",
-    "TestEngine",
-    "TestCaseResult",
-    "TestSummary",
     "Linter",
     "LintRule",
     "LintDiagnostic",

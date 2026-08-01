@@ -722,6 +722,7 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, formatCmd, lintCmd, testCmd, visualizeCmd, graphCmd, statusCmd);
+}
 
 export function deactivate(): Thenable<void> | undefined {
   for (const panel of panels.values()) {
