@@ -87,22 +87,27 @@ describe('CollaborationEngine (v37.0.0)', () => {
   });
 
   it('detects conflicts and applies LWW resolution on merge', () => {
-    const engine = engineFrom();
-    engine.createSession('doc-1', { title: 'v1' });
+    const fixedTime = 1700000000000;
+    const originalDateNow = Date.now;
+    Date.now = () => fixedTime;
 
-    engine.fork('doc-1', 'branch-1');
-    engine.applyOperation('doc-1', 'update', 'title', 'agent-1', 'v1-main');
+    try {
+      const engine = engineFrom();
+      engine.createSession('doc-1', { title: 'v1' });
+      engine.fork('doc-1', 'branch-1');
+      engine.applyOperation('doc-1', 'update', 'title', 'agent-1', 'v1-main');
 
-    // Mutate branch snapshot to simulate a diverging edit.
-    const branch = (engine as any).sessions.get('doc-1').branches.get('branch-1');
-    branch.state.title = 'v1-branch';
+      const branch = (engine as any).sessions.get('doc-1').branches.get('branch-1');
+      branch.state.title = 'v1-branch';
 
-    const result = engine.mergeBranch('doc-1', 'branch-1');
-    expect(result).not.toBeNull();
-    expect(result!.conflicts).toHaveLength(1);
-    expect(result!.conflicts[0].path).toBe('title');
-    // LWW: branch wins when timestamps are equal.
-    expect(result!.merged.title).toBe('v1-branch');
+      const result = engine.mergeBranch('doc-1', 'branch-1');
+      expect(result).not.toBeNull();
+      expect(result!.conflicts).toHaveLength(1);
+      expect(result!.conflicts[0].path).toBe('title');
+      expect(result!.merged.title).toBe('v1-branch');
+    } finally {
+      Date.now = originalDateNow;
+    }
   });
 
   it('returns null when merging a missing branch', () => {

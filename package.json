@@ -17,7 +17,7 @@
   "scripts": {
     "build": "npm run build --workspaces --if-present",
     "test": "npm run build --workspace @autonomous-lifecycle-protocol-alp/parser --workspace @autonomous-lifecycle-protocol-alp/cli && vitest run",
-    "test:python": "cd sdk/python && python -m unittest discover -s tests"
+    "test:python": "cd sdk/python && pytest"
   },
   "repository": {
     "type": "git",

@@ -116,6 +116,8 @@ from .template_engine import TemplateEngine
 from .move_engine import MoveEngine, MoveResult
 from .dependency_engine import DependencyEngine, DependencyResult
 from .search_engine import SearchEngine, SearchResult
+from .inspect_engine import InspectEngine, InspectResult
+from .delete_engine import DeleteEngine, DeleteResult
 from .compliance import run_suite, HarnessResult
 from .observ import (
     RuntimeLog,
@@ -258,6 +260,15 @@ from .formatter import (
     FormatOptions,
     FormatResult,
 )
+from .archive_engine import ArchiveEngine
+from .deduplicate_engine import DeduplicateEngine
+from .format_engine import FormatEngine
+from .graph_engine import GraphEngine
+from .linter_engine import LintEngine
+from .promote_engine import PromoteEngine
+from .status_engine import StatusEngine
+from .test_engine import TestEngine, TestSuiteResult
+from .visualize_engine import VisualizeEngine
 from .intelligence import (
     IntelligenceEngine,
     SmartSuggestion,
@@ -405,6 +416,10 @@ __all__ = [
     "DependencyResult",
     "SearchEngine",
     "SearchResult",
+    "InspectEngine",
+    "InspectResult",
+    "DeleteEngine",
+    "DeleteResult",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",
@@ -531,6 +546,16 @@ __all__ = [
     "AlpFormatter",
     "FormatOptions",
     "FormatResult",
+    "ArchiveEngine",
+    "DeduplicateEngine",
+    "FormatEngine",
+    "GraphEngine",
+    "LintEngine",
+    "PromoteEngine",
+    "StatusEngine",
+    "TestEngine",
+    "TestSuiteResult",
+    "VisualizeEngine",
     "IntelligenceEngine",
     "SmartSuggestion",
     "DiagnosisResult",

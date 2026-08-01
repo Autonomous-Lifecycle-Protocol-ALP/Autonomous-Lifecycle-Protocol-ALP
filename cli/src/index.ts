@@ -17,6 +17,7 @@ import { statsCommand } from './commands/stats';
 import { templateCommand } from './commands/template';
 import { moveCommand } from './commands/move';
 import { dependsCommand } from './commands/depends';
+import { deleteCommand } from './commands/delete';
 import { lintCommand } from './commands/lint';
 import { testCommand } from './commands/test';
 import { formatCommand } from './commands/format';
@@ -67,6 +68,9 @@ import { registerTelemetryInspectCommand } from './commands/telemetry-inspect';
 import { registerChaosCommand } from './commands/chaos';
 import { registerFeatureFlagCommand } from './commands/feature-flag';
 import { registerStorageCommand } from './commands/storage';
+import { archiveCommand } from './commands/archive';
+import { deduplicateCommand } from './commands/deduplicate';
+import { promoteCommand } from './commands/promote';
 import { registerVectorCommand } from './commands/vector';
 import { registerDIDCommand } from './commands/did';
 import { registerCRDTSyncCommand } from './commands/crdt-sync';
@@ -92,6 +96,7 @@ import { intelligenceCommand } from './commands/intelligence';
 import { autonomyCommand } from './commands/autonomy';
 import { settingsCommand } from './commands/settings';
 import { searchCommand } from './commands/search';
+import { inspectCommand } from './commands/inspect';
 import { gitCommand } from './commands/git';
 const program = new Command();
 
@@ -365,6 +370,38 @@ program
   .description('Show dependencies for an ALP object')
   .argument('<id>', 'Object id to inspect')
   .action((id) => dependsCommand(id));
+
+program
+  .command('inspect')
+  .description('Inspect an ALP object and show its properties')
+  .argument('<id>', 'Object id to inspect')
+  .option('--file <path>', 'Optional specific file to inspect')
+  .action((id, opts) => inspectCommand(id, opts));
+
+program
+  .command('delete')
+  .description('Delete an ALP object from a workspace file')
+  .argument('<id>', 'Object id to delete')
+  .option('--file <path>', 'Optional specific file to delete from')
+  .action((id, opts) => deleteCommand(id, opts));
+
+program
+  .command('archive')
+  .description('Archive objects with a given status')
+  .argument('<status>', 'Status to archive (e.g. done)')
+  .action((status) => archiveCommand(status));
+
+program
+  .command('deduplicate')
+  .description('Remove duplicate objects across workspace files')
+  .action(() => deduplicateCommand());
+
+program
+  .command('promote')
+  .description('Promote an object to a new type')
+  .argument('<id>', 'Object id to promote')
+  .argument('<type>', 'New type for the object')
+  .action((id, type) => promoteCommand(id, type));
 
 program
   .command('cost')

@@ -24,14 +24,7 @@
     "onCommand:alp.showPolicies",
     "onCommand:alp.showContracts",
     "onCommand:alp.showVaults",
-    "onCommand:alp.showAgents",
-    "onCommand:alp.diffWorkspace",
-    "onCommand:alp.renameObject",
-    "onCommand:alp.copyObject",
-    "onCommand:alp.showStats",
-    "onCommand:alp.createFromTemplate",
-    "onCommand:alp.moveObject",
-    "onCommand:alp.searchWorkspace"
+    "onCommand:alp.showAgents"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -116,41 +109,6 @@
       {
         "command": "alp.showAgents",
         "title": "ALP: Show Agents",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.diffWorkspace",
-        "title": "ALP: Diff Workspace Snapshots",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.renameObject",
-        "title": "ALP: Rename Object",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.copyObject",
-        "title": "ALP: Copy Object",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.showStats",
-        "title": "ALP: Show Workspace Stats",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.createFromTemplate",
-        "title": "ALP: Create From Template",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.moveObject",
-        "title": "ALP: Move Object",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.searchWorkspace",
-        "title": "ALP: Search Workspace",
         "category": "ALP"
       }
     ]
