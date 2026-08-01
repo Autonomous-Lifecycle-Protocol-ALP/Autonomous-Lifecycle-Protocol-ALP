@@ -92,6 +92,7 @@ import { intelligenceCommand } from './commands/intelligence';
 import { autonomyCommand } from './commands/autonomy';
 import { settingsCommand } from './commands/settings';
 import { searchCommand } from './commands/search';
+import { deduplicateCommand } from './commands/deduplicate';
 import { gitCommand } from './commands/git';
 const program = new Command();
 
@@ -365,6 +366,11 @@ program
   .description('Show dependencies for an ALP object')
   .argument('<id>', 'Object id to inspect')
   .action((id) => dependsCommand(id));
+
+program
+  .command('deduplicate')
+  .description('Remove duplicate objects from workspace files')
+  .action(() => deduplicateCommand());
 
 program
   .command('cost')

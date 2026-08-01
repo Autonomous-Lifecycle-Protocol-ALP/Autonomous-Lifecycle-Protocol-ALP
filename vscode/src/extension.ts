@@ -548,7 +548,70 @@ export function activate(context: vscode.ExtensionContext) {
 </body></html>`;
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd);
+  const deduplicateCmd = vscode.commands.registerCommand('alp.deduplicateWorkspace', async () => {
+    const wsFolder = vscode.workspace.workspaceFoldings?.[0];
+    if (!wsFolder) {
+      vscode.window.showWarningMessage('Open a workspace folder first.');
+      return;
+    }
+    const alpDir = path.join(wsFolder.uri.fsPath, '.alp');
+    if (!fs.existsSync(alpDir)) {
+      vscode.window.showWarningMessage('No .alp directory found. Run `alp init` first.');
+      return;
+    }
+
+    const parser = new AlpParser();
+    const files = fs.readdirSync(alpDir).filter((f) => f.endsWith('.alp'));
+    const seen = new Map<string, string>();
+    let removed = 0;
+    const removedIds: string[] = [];
+
+    for (const file of files) {
+      const fullPath = path.join(alpDir, file);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      const objects = parser.parse(content);
+      const keep: any[] = [];
+      for (const obj of objects) {
+        const id = obj.id;
+        if (!id) {
+          keep.push(obj);
+          continue;
+        }
+        if (seen.has(id)) {
+          removed += 1;
+          removedIds.push(id);
+        } else {
+          seen.set(id, fullPath);
+          keep.push(obj);
+        }
+      }
+
+      const lines: string[] = [];
+      for (const obj of keep) {
+        lines.push(`@${obj._type}`);
+        for (const [key, value] of Object.entries(obj)) {
+          if (key === '_type') continue;
+          if (value == null || value === '') continue;
+          if (Array.isArray(value)) {
+            const items = value.map((v: any) => (typeof v === 'string' ? `"${v}"` : v)).join(', ');
+            lines.push(`  ${key}: [${items}]`);
+          } else {
+            lines.push(`  ${key}: ${value}`);
+          }
+        }
+        lines.push('');
+      }
+      fs.writeFileSync(fullPath, lines.join('\n'), 'utf-8');
+    }
+
+    if (removed === 0) {
+      vscode.window.showInformationMessage('No duplicate objects found.');
+    } else {
+      vscode.window.showInformationMessage(`Deduplicated ${removed} object(s): ${removedIds.join(', ')}`);
+    }
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, deduplicateCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {
