@@ -548,7 +548,78 @@ export function activate(context: vscode.ExtensionContext) {
 </body></html>`;
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd);
+  const promoteCmd = vscode.commands.registerCommand('alp.promoteObject', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const objectId = await vscode.window.showInputBox({ prompt: 'Object id to promote', placeHolder: 'e.g. task-1' });
+    if (!objectId) return;
+    const newType = await vscode.window.showInputBox({ prompt: 'New object type', placeHolder: 'e.g. feature' });
+    if (!newType) return;
+
+    const document = editor.document;
+    const text = document.getText();
+    const lines = text.split('\n');
+    let objectStart = -1;
+    let currentId: string | null = null;
+    let currentType: string | null = null;
+
+    for (let i = 0; i < lines.length; i++) {
+      const stripped = lines[i].trim();
+      const typeMatch = stripped.match(/^@(\w+)/);
+      if (typeMatch) {
+        if (currentId === objectId) {
+          break;
+        }
+        currentId = null;
+        objectStart = i;
+        currentType = typeMatch.group(1);
+      }
+      const idMatch = stripped.match(/^id:\s*(\S+)/);
+      if (idMatch) {
+        currentId = idMatch.group(1);
+      }
+    }
+
+    if (currentId !== objectId) {
+      vscode.window.showInformationMessage(`Object '${objectId}' not found in current file.`);
+      return;
+    }
+
+    lines[objectStart] = `@${newType}`;
+    const updated = lines.join('\n');
+    await editor.edit((builder) => {
+      const firstLine = document.lineAt(0);
+      const lastLine = document.lineAt(document.lineCount - 1);
+      const range = new vscode.Range(firstLine.range.start, lastLine.range.end);
+      builder.replace(range, updated);
+    });
+
+    vscode.window.showInformationMessage(`Promoted '${objectId}' from @${currentType} to @${newType}.`);
+  });
+
+  const listCmd = vscode.commands.registerCommand('alp.listObjects', () => {
+    const editor = vscode.window.activeTextEditor;
+    const objects = editor ? getParsedObjects(editor.document) : [];
+    const items = objects.map((o: any) => `  ${o._type}:${o.id || '(no id)'}`).join('\n') || '  (no objects)';
+
+    const panel = vscode.window.createWebviewPanel('alpList', 'ALP Workspace Objects', vscode.ViewColumn.One, {});
+    panel.webview.html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><style>
+  body { font-family: var(--vscode-font-family); padding: 16px; color: var(--vscode-foreground); }
+  h2 { margin-top: 0; }
+  pre { background: var(--vscode-textBlockQuote-background); padding: 12px; border-radius: 4px; }
+</style></head>
+<body>
+  <h2>Workspace Objects (${objects.length})</h2>
+  <pre>${escapeHtml(items)}</pre>
+</body></html>`;
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, promoteCmd, listCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {

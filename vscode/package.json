@@ -31,7 +31,9 @@
     "onCommand:alp.showStats",
     "onCommand:alp.createFromTemplate",
     "onCommand:alp.moveObject",
-    "onCommand:alp.searchWorkspace"
+    "onCommand:alp.searchWorkspace",
+    "onCommand:alp.promoteObject",
+    "onCommand:alp.listObjects"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -151,6 +153,16 @@
       {
         "command": "alp.searchWorkspace",
         "title": "ALP: Search Workspace",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.promoteObject",
+        "title": "ALP: Promote Object",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.listObjects",
+        "title": "ALP: List Objects",
         "category": "ALP"
       }
     ]

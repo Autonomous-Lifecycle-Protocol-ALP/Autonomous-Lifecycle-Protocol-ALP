@@ -92,6 +92,7 @@ import { intelligenceCommand } from './commands/intelligence';
 import { autonomyCommand } from './commands/autonomy';
 import { settingsCommand } from './commands/settings';
 import { searchCommand } from './commands/search';
+import { listCommand } from './commands/list';
 import { gitCommand } from './commands/git';
 const program = new Command();
 
@@ -365,6 +366,12 @@ program
   .description('Show dependencies for an ALP object')
   .argument('<id>', 'Object id to inspect')
   .action((id) => dependsCommand(id));
+
+program
+  .command('list')
+  .description('List all objects in the workspace')
+  .option('--type <type>', 'Filter by object type')
+  .action((opts) => listCommand(opts));
 
 program
   .command('cost')
