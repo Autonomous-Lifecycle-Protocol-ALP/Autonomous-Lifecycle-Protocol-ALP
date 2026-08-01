@@ -37,7 +37,9 @@
     "onCommand:alp.runTests",
     "onCommand:alp.visualizeWorkflow",
     "onCommand:alp.showGraph",
-    "onCommand:alp.showStatus"
+    "onCommand:alp.showStatus",
+    "onCommand:alp.archiveObjects",
+    "onCommand:alp.promoteObject"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -187,6 +189,16 @@
       {
         "command": "alp.showStatus",
         "title": "ALP: Show Project Status",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.archiveObjects",
+        "title": "ALP: Archive Objects",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.promoteObject",
+        "title": "ALP: Promote Object",
         "category": "ALP"
       }
     ]

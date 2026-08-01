@@ -116,6 +116,7 @@ from .template_engine import TemplateEngine
 from .move_engine import MoveEngine, MoveResult
 from .dependency_engine import DependencyEngine, DependencyResult
 from .search_engine import SearchEngine, SearchResult
+from .promote_engine import PromoteEngine, PromoteResult
 from .status_engine import StatusEngine, StatusResult, StatusCounts
 from .graph_engine import GraphEngine, GraphNode, GraphResult
 from .visualize_engine import VisualizeEngine, WorkflowDiagram
@@ -415,6 +416,8 @@ __all__ = [
     "DependencyResult",
     "SearchEngine",
     "SearchResult",
+    "PromoteEngine",
+    "PromoteResult",
     "StatusEngine",
     "StatusResult",
     "StatusCounts",
