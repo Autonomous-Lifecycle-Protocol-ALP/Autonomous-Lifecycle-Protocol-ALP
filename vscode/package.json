@@ -33,7 +33,8 @@
     "onCommand:alp.moveObject",
     "onCommand:alp.searchWorkspace",
     "onCommand:alp.inspectObject",
-    "onCommand:alp.deleteObject"
+    "onCommand:alp.deleteObject",
+    "onCommand:alp.mergeObjects"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -163,6 +164,11 @@
       {
         "command": "alp.deleteObject",
         "title": "ALP: Delete Object",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.mergeObjects",
+        "title": "ALP: Merge Objects",
         "category": "ALP"
       }
     ]

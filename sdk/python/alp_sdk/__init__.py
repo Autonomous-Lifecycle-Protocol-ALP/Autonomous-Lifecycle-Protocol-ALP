@@ -118,6 +118,7 @@ from .dependency_engine import DependencyEngine, DependencyResult
 from .search_engine import SearchEngine, SearchResult
 from .inspect_engine import InspectEngine, InspectResult
 from .delete_engine import DeleteEngine, DeleteResult
+from .merge_engine import MergeEngine, MergeResult
 from .compliance import run_suite, HarnessResult
 from .observ import (
     RuntimeLog,
@@ -411,6 +412,8 @@ __all__ = [
     "InspectResult",
     "DeleteEngine",
     "DeleteResult",
+    "MergeEngine",
+    "MergeResult",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",

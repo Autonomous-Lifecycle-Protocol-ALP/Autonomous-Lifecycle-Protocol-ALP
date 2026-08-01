@@ -94,6 +94,7 @@ import { autonomyCommand } from './commands/autonomy';
 import { settingsCommand } from './commands/settings';
 import { searchCommand } from './commands/search';
 import { inspectCommand } from './commands/inspect';
+import { mergeCommand } from './commands/merge';
 import { gitCommand } from './commands/git';
 const program = new Command();
 
@@ -381,6 +382,13 @@ program
   .argument('<id>', 'Object id to delete')
   .option('--file <path>', 'Optional specific file to delete from')
   .action((id, opts) => deleteCommand(id, opts));
+
+program
+  .command('merge')
+  .description('Merge objects from a source ALP file into a target ALP file')
+  .argument('<source>', 'Source .alp file')
+  .argument('<target>', 'Target .alp file')
+  .action((source, target) => mergeCommand(source, target));
 
 program
   .command('cost')

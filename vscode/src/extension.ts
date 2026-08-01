@@ -617,7 +617,65 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage(`Deleted '${objectId}' from current file.`);
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, inspectCmd, deleteCmd);
+  const mergeCmd = vscode.commands.registerCommand('alp.mergeObjects', async () => {
+    const sourceFile = await vscode.window.showInputBox({ prompt: 'Source .alp file', placeHolder: 'e.g. source.alp' });
+    if (!sourceFile) return;
+    const targetFile = await vscode.window.showInputBox({ prompt: 'Target .alp file', placeHolder: 'e.g. target.alp' });
+    if (!targetFile) return;
+
+    const workspacePath = vscode.workspace.workspaceFoldings?.[0]?.uri.fsPath;
+    if (!workspacePath) {
+      vscode.window.showWarningMessage('Open a workspace folder first.');
+      return;
+    }
+    const alpDir = path.join(workspacePath, '.alp');
+    if (!fs.existsSync(alpDir)) {
+      vscode.window.showWarningMessage('No .alp directory found. Run `alp init` first.');
+      return;
+    }
+
+    const sourcePath = path.join(alpDir, sourceFile);
+    const targetPath = path.join(alpDir, targetFile);
+    if (!fs.existsSync(sourcePath) || !fs.existsSync(targetPath)) {
+      vscode.window.showWarningMessage('Source or target file not found in .alp directory.');
+      return;
+    }
+
+    const parser = new AlpParser();
+    const sourceContent = fs.readFileSync(sourcePath, 'utf-8');
+    const targetContent = fs.readFileSync(targetPath, 'utf-8');
+    const sourceObjects = parser.parse(sourceContent);
+    const targetObjects = parser.parse(targetContent);
+    const targetIds = new Set(targetObjects.map((o: any) => o.id).filter(Boolean));
+    const newObjects = sourceObjects.filter((o: any) => !targetIds.has(o.id));
+
+    if (newObjects.length === 0) {
+      vscode.window.showInformationMessage('No new objects to merge (all source objects already exist in target).');
+      return;
+    }
+
+    const objectBlocks = newObjects.map((o: any) => formatObject(o)).join('\n\n');
+    const updatedTarget = targetContent.trimEnd() + '\n\n' + objectBlocks + '\n';
+    fs.writeFileSync(targetPath, updatedTarget, 'utf-8');
+    vscode.window.showInformationMessage(`Merged ${newObjects.length} object(s) from ${sourceFile} into ${targetFile}.`);
+  });
+
+  function formatObject(obj: any): string {
+    const lines: string[] = [`@${obj._type}`];
+    for (const [key, value] of Object.entries(obj)) {
+      if (key === '_type') continue;
+      if (value === undefined || value === null || value === '') continue;
+      if (Array.isArray(value)) {
+        const items = value.map((v) => (typeof v === 'string' ? `"${v}"` : v)).join(', ');
+        lines.push(`  ${key}: [${items}]`);
+      } else {
+        lines.push(`  ${key}: ${value}`);
+      }
+    }
+    return lines.join('\n');
+  }
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, inspectCmd, deleteCmd, mergeCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {
