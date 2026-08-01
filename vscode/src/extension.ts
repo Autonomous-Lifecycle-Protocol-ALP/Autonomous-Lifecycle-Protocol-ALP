@@ -548,7 +548,74 @@ export function activate(context: vscode.ExtensionContext) {
 </body></html>`;
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd);
+  const archiveCmd = vscode.commands.registerCommand('alp.archiveObjects', async () => {
+    const status = await vscode.window.showInputBox({ prompt: 'Status to archive', placeHolder: 'e.g. done' });
+    if (!status) return;
+
+    const wsFolder = vscode.workspace.workspaceFoldings?.[0];
+    if (!wsFolder) {
+      vscode.window.showWarningMessage('Open a workspace folder first.');
+      return;
+    }
+    const alpDir = path.join(wsFolder.uri.fsPath, '.alp');
+    if (!fs.existsSync(alpDir)) {
+      vscode.window.showWarningMessage('No .alp directory found. Run `alp init` first.');
+      return;
+    }
+
+    const parser = new AlpParser();
+    const files = fs.readdirSync(alpDir).filter((f) => f.endsWith('.alp') && f !== 'archive.alp');
+    const archivePath = path.join(alpDir, 'archive.alp');
+    const archivedIds: string[] = [];
+
+    for (const file of files) {
+      const fullPath = path.join(alpDir, file);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      const objects = parser.parse(content);
+      const keep: any[] = [];
+      const toArchive: any[] = [];
+      for (const obj of objects) {
+        if (obj.status === status) {
+          toArchive.push(obj);
+        } else {
+          keep.push(obj);
+        }
+      }
+
+      if (toArchive.length > 0) {
+        const existing = fs.existsSync(archivePath) ? fs.readFileSync(archivePath, 'utf-8') : '';
+        const newBlocks = toArchive.map((o: any) => formatObject(o)).join('\n\n');
+        fs.writeFileSync(archivePath, existing.trimEnd() + '\n\n' + newBlocks + '\n', 'utf-8');
+        archivedIds.push(...toArchive.map((o: any) => o.id).filter(Boolean));
+
+        const keptLines = keep.map((o: any) => formatObject(o)).join('\n\n');
+        fs.writeFileSync(fullPath, keptLines + '\n', 'utf-8');
+      }
+    }
+
+    if (archivedIds.length === 0) {
+      vscode.window.showInformationMessage(`No objects with status '${status}' found.`);
+    } else {
+      vscode.window.showInformationMessage(`Archived ${archivedIds.length} object(s) with status '${status}': ${archivedIds.join(', ')}`);
+    }
+  });
+
+  function formatObject(obj: any): string {
+    const lines: string[] = [`@${obj._type}`];
+    for (const [key, value] of Object.entries(obj)) {
+      if (key === '_type') continue;
+      if (value == null || value === '') continue;
+      if (Array.isArray(value)) {
+        const items = value.map((v: any) => (typeof v === 'string' ? `"${v}"` : v)).join(', ');
+        lines.push(`  ${key}: [${items}]`);
+      } else {
+        lines.push(`  ${key}: ${value}`);
+      }
+    }
+    return lines.join('\n');
+  }
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, archiveCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {

@@ -31,7 +31,8 @@
     "onCommand:alp.showStats",
     "onCommand:alp.createFromTemplate",
     "onCommand:alp.moveObject",
-    "onCommand:alp.searchWorkspace"
+    "onCommand:alp.searchWorkspace",
+    "onCommand:alp.archiveObjects"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -151,6 +152,11 @@
       {
         "command": "alp.searchWorkspace",
         "title": "ALP: Search Workspace",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.archiveObjects",
+        "title": "ALP: Archive Objects",
         "category": "ALP"
       }
     ]

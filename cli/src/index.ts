@@ -92,6 +92,7 @@ import { intelligenceCommand } from './commands/intelligence';
 import { autonomyCommand } from './commands/autonomy';
 import { settingsCommand } from './commands/settings';
 import { searchCommand } from './commands/search';
+import { archiveCommand } from './commands/archive';
 import { gitCommand } from './commands/git';
 const program = new Command();
 
@@ -365,6 +366,12 @@ program
   .description('Show dependencies for an ALP object')
   .argument('<id>', 'Object id to inspect')
   .action((id) => dependsCommand(id));
+
+program
+  .command('archive')
+  .description('Move objects with a given status to an archive file')
+  .argument('<status>', 'Status to archive (e.g. done)')
+  .action((status) => archiveCommand(status));
 
 program
   .command('cost')
