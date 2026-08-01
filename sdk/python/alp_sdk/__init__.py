@@ -260,6 +260,15 @@ from .formatter import (
     FormatOptions,
     FormatResult,
 )
+from .archive_engine import ArchiveEngine
+from .deduplicate_engine import DeduplicateEngine
+from .format_engine import FormatEngine
+from .graph_engine import GraphEngine
+from .linter_engine import LintEngine
+from .promote_engine import PromoteEngine
+from .status_engine import StatusEngine
+from .test_engine import TestEngine, TestSuiteResult
+from .visualize_engine import VisualizeEngine
 from .intelligence import (
     IntelligenceEngine,
     SmartSuggestion,
@@ -537,6 +546,16 @@ __all__ = [
     "AlpFormatter",
     "FormatOptions",
     "FormatResult",
+    "ArchiveEngine",
+    "DeduplicateEngine",
+    "FormatEngine",
+    "GraphEngine",
+    "LintEngine",
+    "PromoteEngine",
+    "StatusEngine",
+    "TestEngine",
+    "TestSuiteResult",
+    "VisualizeEngine",
     "IntelligenceEngine",
     "SmartSuggestion",
     "DiagnosisResult",
