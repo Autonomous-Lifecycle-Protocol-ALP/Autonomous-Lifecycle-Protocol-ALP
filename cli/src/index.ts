@@ -17,7 +17,7 @@ import { statsCommand } from './commands/stats';
 import { templateCommand } from './commands/template';
 import { moveCommand } from './commands/move';
 import { dependsCommand } from './commands/depends';
-import { inspectCommand } from './commands/inspect';
+import { deleteCommand } from './commands/delete';
 import { lintCommand } from './commands/lint';
 import { testCommand } from './commands/test';
 import { formatCommand } from './commands/format';
@@ -93,7 +93,7 @@ import { intelligenceCommand } from './commands/intelligence';
 import { autonomyCommand } from './commands/autonomy';
 import { settingsCommand } from './commands/settings';
 import { searchCommand } from './commands/search';
-import { deduplicateCommand } from './commands/deduplicate';
+import { inspectCommand } from './commands/inspect';
 import { gitCommand } from './commands/git';
 const program = new Command();
 
@@ -369,16 +369,18 @@ program
   .action((id) => dependsCommand(id));
 
 program
-  .command('deduplicate')
-  .description('Remove duplicate objects from workspace files')
-  .action(() => deduplicateCommand());
-
-program
   .command('inspect')
-  .description('Inspect a specific ALP object')
+  .description('Inspect an ALP object and show its properties')
   .argument('<id>', 'Object id to inspect')
   .option('--file <path>', 'Optional specific file to inspect')
   .action((id, opts) => inspectCommand(id, opts));
+
+program
+  .command('delete')
+  .description('Delete an ALP object from a workspace file')
+  .argument('<id>', 'Object id to delete')
+  .option('--file <path>', 'Optional specific file to delete from')
+  .action((id, opts) => deleteCommand(id, opts));
 
 program
   .command('cost')

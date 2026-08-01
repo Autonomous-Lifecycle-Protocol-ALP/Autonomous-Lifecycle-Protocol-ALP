@@ -6,58 +6,58 @@ import * as path from 'path';
 
 const CLI = path.resolve(process.cwd(), 'cli/dist/index.js');
 
-describe('alp inspect', () => {
-  it('inspects an object from a file', () => {
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'alp-inspect-'));
+describe('alp delete', () => {
+  it('deletes an object from a file', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'alp-delete-'));
     try {
       fs.mkdirSync(path.join(tmp, '.alp'), { recursive: true });
-      fs.writeFileSync(path.join(tmp, '.alp', 'a.alp'), '@task\n  id: task-1\n  description: Alpha\n  status: todo\n', 'utf-8');
+      fs.writeFileSync(path.join(tmp, '.alp', 'a.alp'), '@task\n  id: task-1\n  description: Alpha\n@task\n  id: task-2\n  description: Beta\n', 'utf-8');
 
-      const out = execFileSync('node', [CLI, 'inspect', 'task-1'], {
+      execFileSync('node', [CLI, 'delete', 'task-1'], {
         cwd: tmp,
         encoding: 'utf-8',
         timeout: 30000,
       });
 
-      expect(out).toContain('task-1');
-      expect(out).toContain('task');
-      expect(out).toContain('Alpha');
-      expect(out).toContain('todo');
+      const content = fs.readFileSync(path.join(tmp, '.alp', 'a.alp'), 'utf-8');
+      expect(content).not.toContain('task-1');
+      expect(content).toContain('task-2');
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
   });
 
-  it('inspects an object from a specific file', () => {
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'alp-inspect-'));
+  it('deletes an object from a specific file', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'alp-delete-'));
     try {
       fs.mkdirSync(path.join(tmp, '.alp'), { recursive: true });
       fs.writeFileSync(path.join(tmp, '.alp', 'a.alp'), '@task\n  id: task-1\n  description: Alpha\n', 'utf-8');
-      fs.writeFileSync(path.join(tmp, '.alp', 'b.alp'), '@agent\n  id: agent-1\n  model: gpt-4\n', 'utf-8');
+      fs.writeFileSync(path.join(tmp, '.alp', 'b.alp'), '@task\n  id: task-2\n  description: Beta\n', 'utf-8');
 
-      const out = execFileSync('node', [CLI, 'inspect', 'agent-1', '--file', path.join(tmp, '.alp', 'b.alp')], {
+      execFileSync('node', [CLI, 'delete', 'task-1', '--file', path.join(tmp, '.alp', 'a.alp')], {
         cwd: tmp,
         encoding: 'utf-8',
         timeout: 30000,
       });
 
-      expect(out).toContain('agent-1');
-      expect(out).toContain('agent');
-      expect(out).toContain('gpt-4');
+      const contentA = fs.readFileSync(path.join(tmp, '.alp', 'a.alp'), 'utf-8');
+      const contentB = fs.readFileSync(path.join(tmp, '.alp', 'b.alp'), 'utf-8');
+      expect(contentA).not.toContain('task-1');
+      expect(contentB).toContain('task-2');
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
   });
 
   it('reports error for missing object', () => {
-    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'alp-inspect-'));
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'alp-delete-'));
     try {
       fs.mkdirSync(path.join(tmp, '.alp'), { recursive: true });
       fs.writeFileSync(path.join(tmp, '.alp', 'a.alp'), '@task\n  id: task-1\n', 'utf-8');
 
       let failed = false;
       try {
-        execFileSync('node', [CLI, 'inspect', 'missing'], {
+        execFileSync('node', [CLI, 'delete', 'missing'], {
           cwd: tmp,
           encoding: 'utf-8',
           timeout: 30000,

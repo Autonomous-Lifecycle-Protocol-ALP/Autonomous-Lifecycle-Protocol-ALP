@@ -1,12 +1,11 @@
 import fs from 'fs';
 import path from 'path';
-import { AlpParser } from '@autonomous-lifecycle-protocol-alp/parser';
 
-export interface InspectOptions {
+export interface DeleteOptions {
   file?: string;
 }
 
-export function inspectCommand(objectId: string, options?: InspectOptions) {
+export function deleteCommand(objectId: string, options?: DeleteOptions) {
   const cwd = process.cwd();
   const alpDir = options?.file ? path.dirname(options.file) : path.join(cwd, '.alp');
   const targetFile = options?.file || findFileWithId(alpDir, objectId);
@@ -17,27 +16,30 @@ export function inspectCommand(objectId: string, options?: InspectOptions) {
   }
 
   const content = fs.readFileSync(targetFile, 'utf8');
-  const parser = new AlpParser();
-  const objects = parser.parse(content);
-  const obj = objects.find((o: any) => o.id === objectId);
+  const lines = content.split('\n');
+  let blockStart = -1;
+  let blockEnd = lines.length;
 
-  if (!obj) {
+  for (let i = 0; i < lines.length; i++) {
+    const idMatch = lines[i].match(/^\s*id:\s*(.+)$/);
+    if (idMatch && idMatch[1].trim() === objectId) {
+      blockStart = i - 1;
+      while (blockStart >= 0 && !lines[blockStart].match(/^(@\w+)/)) blockStart -= 1;
+      blockStart = Math.max(0, blockStart);
+      blockEnd = i + 1;
+      while (blockEnd < lines.length && !lines[blockEnd].match(/^(@\w+)/)) blockEnd += 1;
+      break;
+    }
+  }
+
+  if (blockStart === -1) {
     console.error(`Error: Object '${objectId}' not found in ${targetFile}.`);
     process.exit(1);
   }
 
-  console.log(`\n📋 Inspecting '${objectId}'\n`);
-  console.log(`  Type: ${obj._type}`);
-  console.log(`  File: ${targetFile}`);
-  console.log('');
-  console.log('  Properties:');
-  const skip = new Set(['_type', 'id']);
-  for (const [key, value] of Object.entries(obj)) {
-    if (skip.has(key)) continue;
-    const display = Array.isArray(value) ? value.join(', ') : value;
-    console.log(`    ${key}: ${display}`);
-  }
-  console.log('');
+  const updated = lines.slice(0, blockStart).concat(lines.slice(blockEnd)).filter((l) => l.trim()).join('\n');
+  fs.writeFileSync(targetFile, updated, 'utf-8');
+  console.log(`✅ Deleted '${objectId}' from ${targetFile}`);
 }
 
 function findFileWithId(alpDir: string, objectId: string): string | null {

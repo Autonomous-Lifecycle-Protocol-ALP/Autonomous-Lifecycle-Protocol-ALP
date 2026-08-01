@@ -548,69 +548,6 @@ export function activate(context: vscode.ExtensionContext) {
 </body></html>`;
   });
 
-  const deduplicateCmd = vscode.commands.registerCommand('alp.deduplicateWorkspace', async () => {
-    const wsFolder = vscode.workspace.workspaceFoldings?.[0];
-    if (!wsFolder) {
-      vscode.window.showWarningMessage('Open a workspace folder first.');
-      return;
-    }
-    const alpDir = path.join(wsFolder.uri.fsPath, '.alp');
-    if (!fs.existsSync(alpDir)) {
-      vscode.window.showWarningMessage('No .alp directory found. Run `alp init` first.');
-      return;
-    }
-
-    const parser = new AlpParser();
-    const files = fs.readdirSync(alpDir).filter((f) => f.endsWith('.alp'));
-    const seen = new Map<string, string>();
-    let removed = 0;
-    const removedIds: string[] = [];
-
-    for (const file of files) {
-      const fullPath = path.join(alpDir, file);
-      const content = fs.readFileSync(fullPath, 'utf-8');
-      const objects = parser.parse(content);
-      const keep: any[] = [];
-      for (const obj of objects) {
-        const id = obj.id;
-        if (!id) {
-          keep.push(obj);
-          continue;
-        }
-        if (seen.has(id)) {
-          removed += 1;
-          removedIds.push(id);
-        } else {
-          seen.set(id, fullPath);
-          keep.push(obj);
-        }
-      }
-
-      const lines: string[] = [];
-      for (const obj of keep) {
-        lines.push(`@${obj._type}`);
-        for (const [key, value] of Object.entries(obj)) {
-          if (key === '_type') continue;
-          if (value == null || value === '') continue;
-          if (Array.isArray(value)) {
-            const items = value.map((v: any) => (typeof v === 'string' ? `"${v}"` : v)).join(', ');
-            lines.push(`  ${key}: [${items}]`);
-          } else {
-            lines.push(`  ${key}: ${value}`);
-          }
-        }
-        lines.push('');
-      }
-      fs.writeFileSync(fullPath, lines.join('\n'), 'utf-8');
-    }
-
-    if (removed === 0) {
-      vscode.window.showInformationMessage('No duplicate objects found.');
-    } else {
-      vscode.window.showInformationMessage(`Deduplicated ${removed} object(s): ${removedIds.join(', ')}`);
-    }
-  });
-
   const inspectCmd = vscode.commands.registerCommand('alp.inspectObject', async () => {
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
@@ -638,7 +575,49 @@ export function activate(context: vscode.ExtensionContext) {
     panel.webview.html = getWebviewContent(`<pre>${escapeHtml(lines.join('\n'))}</pre>`);
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, deduplicateCmd, inspectCmd);
+  const deleteCmd = vscode.commands.registerCommand('alp.deleteObject', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const objectId = await vscode.window.showInputBox({ prompt: 'Object id to delete', placeHolder: 'e.g. task-1' });
+    if (!objectId) return;
+
+    const document = editor.document;
+    const text = document.getText();
+    const lines = text.split('\n');
+    let blockStart = -1;
+    let blockEnd = lines.length;
+    for (let i = 0; i < lines.length; i++) {
+      const idMatch = lines[i].match(/^\s*id:\s*(.+)$/);
+      if (idMatch && idMatch[1].trim() === objectId) {
+        blockStart = i - 1;
+        while (blockStart >= 0 && !lines[blockStart].match(/^(@\w+)/)) blockStart -= 1;
+        blockStart = Math.max(0, blockStart);
+        blockEnd = i + 1;
+        while (blockEnd < lines.length && !lines[blockEnd].match(/^(@\w+)/)) blockEnd += 1;
+        break;
+      }
+    }
+
+    if (blockStart === -1) {
+      vscode.window.showInformationMessage(`Object '${objectId}' not found in current file.`);
+      return;
+    }
+
+    const updated = lines.slice(0, blockStart).concat(lines.slice(blockEnd)).filter((l) => l.trim()).join('\n');
+    await editor.edit((builder) => {
+      const firstLine = document.lineAt(0);
+      const lastLine = document.lineAt(document.lineCount - 1);
+      const range = new vscode.Range(firstLine.range.start, lastLine.range.end);
+      builder.replace(range, updated);
+    });
+
+    vscode.window.showInformationMessage(`Deleted '${objectId}' from current file.`);
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, inspectCmd, deleteCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {
