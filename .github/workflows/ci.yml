@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install jsonschema referencing
+          pip install jsonschema referencing pytest
           npm ci
           npm run build --workspace @autonomous-lifecycle-protocol-alp/parser --workspace @autonomous-lifecycle-protocol-alp/cli
 
