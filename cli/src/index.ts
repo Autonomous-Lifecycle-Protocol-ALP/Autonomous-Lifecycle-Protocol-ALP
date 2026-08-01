@@ -93,6 +93,7 @@ import { autonomyCommand } from './commands/autonomy';
 import { settingsCommand } from './commands/settings';
 import { searchCommand } from './commands/search';
 import { promoteCommand } from './commands/promote';
+import { archiveCommand } from './commands/archive';
 import { gitCommand } from './commands/git';
 const program = new Command();
 
@@ -368,11 +369,10 @@ program
   .action((id) => dependsCommand(id));
 
 program
-  .command('promote')
-  .description('Promote an ALP object to a different type')
-  .argument('<id>', 'Object id to promote')
-  .argument('<type>', 'New object type (e.g. task, agent, feature)')
-  .action((id, type) => promoteCommand(id, type));
+  .command('archive')
+  .description('Move objects with a given status to an archive file')
+  .argument('<status>', 'Status to archive (e.g. done)')
+  .action((status) => archiveCommand(status));
 
 program
   .command('cost')

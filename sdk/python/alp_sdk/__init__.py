@@ -122,6 +122,7 @@ from .graph_engine import GraphEngine, GraphNode, GraphResult
 from .visualize_engine import VisualizeEngine, WorkflowDiagram
 from .linter_engine import LintEngine, LintResult, LintDiagnostic
 from .format_engine import FormatEngine, FormatResult
+from .archive_engine import ArchiveEngine, ArchiveResult
 from .compliance import run_suite, HarnessResult
 from .observ import (
     RuntimeLog,
@@ -435,6 +436,8 @@ __all__ = [
     "LintDiagnostic",
     "FormatEngine",
     "FormatResult",
+    "ArchiveEngine",
+    "ArchiveResult",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",
