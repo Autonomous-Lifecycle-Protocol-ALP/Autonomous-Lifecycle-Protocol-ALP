@@ -117,6 +117,7 @@ from .move_engine import MoveEngine, MoveResult
 from .dependency_engine import DependencyEngine, DependencyResult
 from .search_engine import SearchEngine, SearchResult
 from .status_engine import StatusEngine, StatusResult, StatusCounts
+from .graph_engine import GraphEngine, GraphNode, GraphResult
 from .compliance import run_suite, HarnessResult
 from .observ import (
     RuntimeLog,
@@ -409,6 +410,9 @@ __all__ = [
     "StatusEngine",
     "StatusResult",
     "StatusCounts",
+    "GraphEngine",
+    "GraphNode",
+    "GraphResult",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",
