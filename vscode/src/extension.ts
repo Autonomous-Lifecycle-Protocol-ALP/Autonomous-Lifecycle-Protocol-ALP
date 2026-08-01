@@ -619,7 +619,34 @@ export function activate(context: vscode.ExtensionContext) {
 </body></html>`;
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, promoteCmd, listCmd);
+  const validateCmd = vscode.commands.registerCommand('alp.validateWorkspace', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+
+    try {
+      const objects = getParsedObjects(editor.document);
+      vscode.window.showInformationMessage(`Validation passed: ${objects.length} object(s) found.`);
+    } catch (err: any) {
+      const panel = vscode.window.createWebviewPanel('alpValidate', 'ALP Validation Errors', vscode.ViewColumn.One, {});
+      panel.webview.html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><style>
+  body { font-family: var(--vscode-font-family); padding: 16px; color: var(--vscode-foreground); }
+  h2 { margin-top: 0; }
+  .error { color: #f48771; }
+  pre { background: var(--vscode-textBlockQuote-background); padding: 12px; border-radius: 4px; }
+</style></head>
+<body>
+  <h2>Validation Errors</h2>
+  <pre class="error">${escapeHtml(err.message || err)}</pre>
+</body></html>`;
+    }
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, promoteCmd, listCmd, validateCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {

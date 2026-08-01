@@ -57,6 +57,7 @@ export default defineConfig({
           { text: 'Python SDK Templates', link: '/python-sdk-templates' },
           { text: 'Python SDK Move', link: '/python-sdk-move' },
           { text: 'Python SDK List', link: '/python-sdk-list' },
+          { text: 'Python SDK Validate', link: '/python-sdk-validate' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' }
@@ -90,6 +91,7 @@ export default defineConfig({
           { text: 'Python SDK Refactor', link: '/python-sdk-refactor' },
           { text: 'Python SDK Search', link: '/python-sdk-search' },
           { text: 'Python SDK List', link: '/python-sdk-list' },
+          { text: 'Python SDK Validate', link: '/python-sdk-validate' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' },

@@ -117,6 +117,7 @@ from .move_engine import MoveEngine, MoveResult
 from .dependency_engine import DependencyEngine, DependencyResult
 from .search_engine import SearchEngine, SearchResult
 from .list_engine import ListEngine, ListResult
+from .validate_engine import ValidateEngine, ValidationResult, ValidationError
 from .compliance import run_suite, HarnessResult
 from .observ import (
     RuntimeLog,
@@ -408,6 +409,9 @@ __all__ = [
     "SearchResult",
     "ListEngine",
     "ListResult",
+    "ValidateEngine",
+    "ValidationResult",
+    "ValidationError",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",

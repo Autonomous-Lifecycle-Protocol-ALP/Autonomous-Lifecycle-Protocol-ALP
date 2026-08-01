@@ -33,7 +33,8 @@
     "onCommand:alp.moveObject",
     "onCommand:alp.searchWorkspace",
     "onCommand:alp.promoteObject",
-    "onCommand:alp.listObjects"
+    "onCommand:alp.listObjects",
+    "onCommand:alp.validateWorkspace"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -163,6 +164,11 @@
       {
         "command": "alp.listObjects",
         "title": "ALP: List Objects",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.validateWorkspace",
+        "title": "ALP: Validate Workspace",
         "category": "ALP"
       }
     ]
