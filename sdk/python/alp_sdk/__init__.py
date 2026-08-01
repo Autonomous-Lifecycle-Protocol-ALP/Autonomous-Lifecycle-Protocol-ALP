@@ -111,6 +111,10 @@ from .snapshot import SnapshotEngine, WorkspaceSnapshot, SnapshotDiff
 from .diff_engine import DiffEngine, DiffResult, DiffEntry
 from .refactor_engine import RefactorEngine, RenameResult
 from .copy_engine import CopyEngine, CopyResult
+from .stats_engine import StatsEngine, WorkspaceStats, FileStats
+from .template_engine import TemplateEngine
+from .move_engine import MoveEngine, MoveResult
+from .dependency_engine import DependencyEngine, DependencyResult
 from .compliance import run_suite, HarnessResult
 from .observ import (
     RuntimeLog,
@@ -390,6 +394,14 @@ __all__ = [
     "RenameResult",
     "CopyEngine",
     "CopyResult",
+    "StatsEngine",
+    "WorkspaceStats",
+    "FileStats",
+    "TemplateEngine",
+    "MoveEngine",
+    "MoveResult",
+    "DependencyEngine",
+    "DependencyResult",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",

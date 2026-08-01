@@ -369,7 +369,145 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage(`Copied ${replacements} occurrence${replacements === 1 ? '' : 's'} of '${sourceId}' to '${targetId}'.`);
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd);
+  const statsCmd = vscode.commands.registerCommand('alp.showStats', () => {
+    const editor = vscode.window.activeTextEditor;
+    const objects = editor ? getParsedObjects(editor.document) : [];
+    const typeCounts: Record<string, number> = {};
+    for (const obj of objects) {
+      const type = obj._type || obj.type || 'unknown';
+      typeCounts[type] = (typeCounts[type] || 0) + 1;
+    }
+    const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
+    const listItems = sorted.map(([type, count]) => `  ${type}: ${count}`).join('\n') || '  (no objects)';
+
+    const panel = vscode.window.createWebviewPanel('alpStats', 'ALP Workspace Stats', vscode.ViewColumn.One, {});
+    panel.webview.html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><style>
+  body { font-family: var(--vscode-font-family); padding: 16px; color: var(--vscode-foreground); }
+  h2 { margin-top: 0; }
+  .count { font-weight: bold; }
+  pre { background: var(--vscode-textBlockQuote-background); padding: 12px; border-radius: 4px; }
+</style></head>
+<body>
+  <h2>Workspace Stats</h2>
+  <p><span class="count">Files:</span> ${editor ? '1 (active)' : '0'}</p>
+  <p><span class="count">Objects:</span> ${objects.length}</p>
+  <h3>By type</h3>
+  <pre>${escapeHtml(listItems)}</pre>
+</body></html>`;
+  });
+
+  const templateCmd = vscode.commands.registerCommand('alp.createFromTemplate', async () => {
+    const type = await vscode.window.showQuickPick(['task', 'agent', 'workflow', 'policy', 'test'], { placeHolder: 'Select template type' });
+    if (!type) return;
+    const id = await vscode.window.showInputBox({ prompt: 'Object id', placeHolder: 'e.g. my-task' });
+    if (!id) return;
+
+    const templates: Record<string, string> = {
+      task: `@task\n  id: ${id}\n  description: ""\n  status: todo\n  agent: ""\n  depends_on: []`,
+      agent: `@agent\n  id: ${id}\n  description: ""\n  model: ""\n  capabilities: []\n  tools: []`,
+      workflow: `@workflow\n  id: ${id}\n  description: ""\n  steps: []\n  triggers: []`,
+      policy: `@policy\n  id: ${id}\n  description: ""\n  rules: []\n  enforcement: warn`,
+      test: `@test\n  id: ${id}\n  description: ""\n  command: ""\n  expected: ""`,
+    };
+
+    const filename = `${id}.alp`;
+    const workspacePath = vscode.workspace.workspaceFoldings?.[0]?.uri.fsPath;
+    if (!workspacePath) {
+      vscode.window.showWarningMessage('Open a workspace folder first.');
+      return;
+    }
+    const alpDir = path.join(workspacePath, '.alp');
+    if (!fs.existsSync(alpDir)) {
+      vscode.window.showWarningMessage('No .alp directory found. Run `alp init` first.');
+      return;
+    }
+    const targetPath = path.join(alpDir, filename);
+    if (fs.existsSync(targetPath)) {
+      vscode.window.showWarningMessage(`${filename} already exists.`);
+      return;
+    }
+
+    fs.writeFileSync(targetPath, templates[type], 'utf-8');
+    vscode.window.showInformationMessage(`Created ${filename} from ${type} template.`);
+
+    const doc = await vscode.workspace.openTextDocument(targetPath);
+    await vscode.window.showTextDocument(doc);
+  });
+
+  const moveCmd = vscode.commands.registerCommand('alp.moveObject', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const objectId = await vscode.window.showInputBox({ prompt: 'Object id to move', placeHolder: 'e.g. task-1' });
+    if (!objectId) return;
+    const targetFile = await vscode.window.showInputBox({ prompt: 'Target .alp file', placeHolder: 'e.g. tasks.alp' });
+    if (!targetFile) return;
+
+    if (!targetFile.endsWith('.alp')) {
+      vscode.window.showWarningMessage('Target file must have .alp extension.');
+      return;
+    }
+
+    const workspacePath = vscode.workspace.workspaceFoldings?.[0]?.uri.fsPath;
+    if (!workspacePath) {
+      vscode.window.showWarningMessage('Open a workspace folder first.');
+      return;
+    }
+    const alpDir = path.join(workspacePath, '.alp');
+    if (!fs.existsSync(alpDir)) {
+      vscode.window.showWarningMessage('No .alp directory found. Run `alp init` first.');
+      return;
+    }
+
+    const document = editor.document;
+    const text = document.getText();
+    const lines = text.split('\n');
+    let blockStart = -1;
+    let blockEnd = lines.length;
+    for (let i = 0; i < lines.length; i++) {
+      const idMatch = lines[i].match(/^id:\s*(.+)$/);
+      if (idMatch && idMatch[1].trim() === objectId) {
+        blockStart = i - 1;
+        while (blockStart >= 0 && !lines[blockStart].match(/^(@\w+)/)) blockStart -= 1;
+        blockStart = Math.max(0, blockStart);
+        blockEnd = i + 1;
+        while (blockEnd < lines.length && !lines[blockEnd].match(/^(@\w+)/)) blockEnd += 1;
+        break;
+      }
+    }
+
+    if (blockStart === -1) {
+      vscode.window.showInformationMessage(`No object '${objectId}' found in current file.`);
+      return;
+    }
+
+    const block = lines.slice(blockStart, blockEnd).join('\n');
+    const targetPath = path.join(alpDir, targetFile);
+    if (!fs.existsSync(targetPath)) {
+      fs.writeFileSync(targetPath, '', 'utf-8');
+    }
+
+    let targetContent = fs.readFileSync(targetPath, 'utf-8');
+    if (targetContent && !targetContent.endsWith('\n')) targetContent += '\n';
+    targetContent += block + '\n';
+    fs.writeFileSync(targetPath, targetContent, 'utf-8');
+
+    const updatedSource = lines.slice(0, blockStart).concat(lines.slice(blockEnd)).filter((l) => l.trim()).join('\n');
+    await editor.edit((builder) => {
+      const firstLine = document.lineAt(0);
+      const lastLine = document.lineAt(document.lineCount - 1);
+      const range = new vscode.Range(firstLine.range.start, lastLine.range.end);
+      builder.replace(range, updatedSource);
+    });
+
+    vscode.window.showInformationMessage(`Moved '${objectId}' to ${targetFile}.`);
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {

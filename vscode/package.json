@@ -152,57 +152,57 @@
         "category": "ALP"
       },
       {
-        "command": "alp.moveObject",
-        "title": "ALP: Move Object",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.searchWorkspace",
-        "title": "ALP: Search Workspace",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.formatWorkspace",
-        "title": "ALP: Format Workspace",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.lintWorkspace",
-        "title": "ALP: Lint Workspace",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.runTests",
-        "title": "ALP: Run Tests",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.visualizeWorkflow",
-        "title": "ALP: Visualize Workflow",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.showGraph",
-        "title": "ALP: Show Dependency Graph",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.showStatus",
-        "title": "ALP: Show Project Status",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.archiveObjects",
-        "title": "ALP: Archive Objects",
-        "category": "ALP"
-      },
-      {
-        "command": "alp.promoteObject",
-        "title": "ALP: Promote Object",
-        "category": "ALP"
-      }
-    ]
-  },
+         "command": "alp.moveObject",
+         "title": "ALP: Move Object",
+         "category": "ALP"
+       },
+       {
+         "command": "alp.searchWorkspace",
+         "title": "ALP: Search Workspace",
+         "category": "ALP"
+       },
+       {
+         "command": "alp.formatWorkspace",
+         "title": "ALP: Format Workspace",
+         "category": "ALP"
+       },
+       {
+         "command": "alp.lintWorkspace",
+         "title": "ALP: Lint Workspace",
+         "category": "ALP"
+       },
+       {
+         "command": "alp.runTests",
+         "title": "ALP: Run Tests",
+         "category": "ALP"
+       },
+       {
+         "command": "alp.visualizeWorkflow",
+         "title": "ALP: Visualize Workflow",
+         "category": "ALP"
+       },
+       {
+         "command": "alp.showGraph",
+         "title": "ALP: Show Dependency Graph",
+         "category": "ALP"
+       },
+       {
+         "command": "alp.showStatus",
+         "title": "ALP: Show Project Status",
+         "category": "ALP"
+       },
+       {
+         "command": "alp.archiveObjects",
+         "title": "ALP: Archive Objects",
+         "category": "ALP"
+       },
+       {
+         "command": "alp.promoteObject",
+         "title": "ALP: Promote Object",
+         "category": "ALP"
+       }
+     ]
+   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "node esbuild.js --production",
