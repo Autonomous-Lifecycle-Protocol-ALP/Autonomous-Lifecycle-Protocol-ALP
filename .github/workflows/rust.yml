@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: Rust SDK CI / build
     runs-on: ubuntu-latest
     defaults:
       run:
