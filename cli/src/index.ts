@@ -92,6 +92,7 @@ import { intelligenceCommand } from './commands/intelligence';
 import { autonomyCommand } from './commands/autonomy';
 import { settingsCommand } from './commands/settings';
 import { searchCommand } from './commands/search';
+import { promoteCommand } from './commands/promote';
 import { gitCommand } from './commands/git';
 const program = new Command();
 
@@ -365,6 +366,13 @@ program
   .description('Show dependencies for an ALP object')
   .argument('<id>', 'Object id to inspect')
   .action((id) => dependsCommand(id));
+
+program
+  .command('promote')
+  .description('Promote an ALP object to a different type')
+  .argument('<id>', 'Object id to promote')
+  .argument('<type>', 'New object type (e.g. task, agent, feature)')
+  .action((id, type) => promoteCommand(id, type));
 
 program
   .command('cost')

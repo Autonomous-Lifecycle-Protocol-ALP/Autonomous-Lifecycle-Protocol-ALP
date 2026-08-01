@@ -116,6 +116,7 @@ from .template_engine import TemplateEngine
 from .move_engine import MoveEngine, MoveResult
 from .dependency_engine import DependencyEngine, DependencyResult
 from .search_engine import SearchEngine, SearchResult
+from .promote_engine import PromoteEngine, PromoteResult
 from .compliance import run_suite, HarnessResult
 from .observ import (
     RuntimeLog,
@@ -405,6 +406,8 @@ __all__ = [
     "DependencyResult",
     "SearchEngine",
     "SearchResult",
+    "PromoteEngine",
+    "PromoteResult",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",
