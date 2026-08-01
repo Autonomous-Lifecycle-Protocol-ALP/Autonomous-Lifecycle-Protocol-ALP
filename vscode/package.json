@@ -41,7 +41,8 @@
     "onCommand:alp.archiveObjects",
     "onCommand:alp.promoteObject",
     "onCommand:alp.deduplicateWorkspace",
-    "onCommand:alp.inspectObject"
+    "onCommand:alp.inspectObject",
+    "onCommand:alp.deleteObject"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -211,6 +212,11 @@
         {
           "command": "alp.inspectObject",
           "title": "ALP: Inspect Object",
+          "category": "ALP"
+        },
+        {
+          "command": "alp.deleteObject",
+          "title": "ALP: Delete Object",
           "category": "ALP"
         }
       ]
