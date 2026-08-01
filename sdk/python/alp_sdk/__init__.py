@@ -251,6 +251,12 @@ from .test_runner import (
     TestSuiteResult,
     CoverageReport,
 )
+from .test_engine import (
+    TestEngine,
+    TestSuiteResult,
+    TestCaseResult,
+    TestSummary,
+)
 from .linter import (
     Linter,
     LintRule,
@@ -416,6 +422,10 @@ __all__ = [
     "GraphResult",
     "VisualizeEngine",
     "WorkflowDiagram",
+    "TestEngine",
+    "TestSuiteResult",
+    "TestCaseResult",
+    "TestSummary",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",
@@ -536,6 +546,9 @@ __all__ = [
     "TestCase",
     "TestSuiteResult",
     "CoverageReport",
+    "TestEngine",
+    "TestCaseResult",
+    "TestSummary",
     "Linter",
     "LintRule",
     "LintDiagnostic",

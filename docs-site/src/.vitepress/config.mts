@@ -59,6 +59,7 @@ export default defineConfig({
            { text: 'Python SDK Status', link: '/python-sdk-status' },
            { text: 'Python SDK Graph', link: '/python-sdk-graph' },
            { text: 'Python SDK Visualize', link: '/python-sdk-visualize' },
+           { text: 'Python SDK Test', link: '/python-sdk-test' },
            { text: 'Best Practices', link: '/best-practices' },
            { text: 'FAQ', link: '/faq' },
            { text: 'Contributing', link: '/contributing' }
@@ -94,12 +95,13 @@ export default defineConfig({
            { text: 'Python SDK Status', link: '/python-sdk-status' },
            { text: 'Python SDK Graph', link: '/python-sdk-graph' },
            { text: 'Python SDK Visualize', link: '/python-sdk-visualize' },
+           { text: 'Python SDK Test', link: '/python-sdk-test' },
            { text: 'Best Practices', link: '/best-practices' },
            { text: 'FAQ', link: '/faq' },
            { text: 'Contributing', link: '/contributing' },
            { text: 'Roadmap', link: '/roadmap' },
            { text: 'SDKs', link: '/guide/sdk' }
-        ]
+         ]
       },
       {
         text: 'Ecosystem & Execution',
