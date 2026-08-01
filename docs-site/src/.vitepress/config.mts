@@ -60,6 +60,8 @@ export default defineConfig({
            { text: 'Python SDK Graph', link: '/python-sdk-graph' },
            { text: 'Python SDK Visualize', link: '/python-sdk-visualize' },
            { text: 'Python SDK Test', link: '/python-sdk-test' },
+           { text: 'Python SDK Format', link: '/python-sdk-format' },
+           { text: 'Python SDK Lint', link: '/python-sdk-lint' },
            { text: 'Best Practices', link: '/best-practices' },
            { text: 'FAQ', link: '/faq' },
            { text: 'Contributing', link: '/contributing' }
@@ -96,6 +98,8 @@ export default defineConfig({
            { text: 'Python SDK Graph', link: '/python-sdk-graph' },
            { text: 'Python SDK Visualize', link: '/python-sdk-visualize' },
            { text: 'Python SDK Test', link: '/python-sdk-test' },
+           { text: 'Python SDK Format', link: '/python-sdk-format' },
+           { text: 'Python SDK Lint', link: '/python-sdk-lint' },
            { text: 'Best Practices', link: '/best-practices' },
            { text: 'FAQ', link: '/faq' },
            { text: 'Contributing', link: '/contributing' },

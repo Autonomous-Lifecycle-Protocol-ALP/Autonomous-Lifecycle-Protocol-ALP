@@ -119,6 +119,7 @@ from .search_engine import SearchEngine, SearchResult
 from .status_engine import StatusEngine, StatusResult, StatusCounts
 from .graph_engine import GraphEngine, GraphNode, GraphResult
 from .visualize_engine import VisualizeEngine, WorkflowDiagram
+from .linter_engine import LintEngine, LintResult, LintDiagnostic
 from .compliance import run_suite, HarnessResult
 from .observ import (
     RuntimeLog,
@@ -426,6 +427,9 @@ __all__ = [
     "TestSuiteResult",
     "TestCaseResult",
     "TestSummary",
+    "LintEngine",
+    "LintResult",
+    "LintDiagnostic",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",
