@@ -40,7 +40,8 @@
     "onCommand:alp.showStatus",
     "onCommand:alp.archiveObjects",
     "onCommand:alp.promoteObject",
-    "onCommand:alp.deduplicateWorkspace"
+    "onCommand:alp.deduplicateWorkspace",
+    "onCommand:alp.inspectObject"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -205,6 +206,11 @@
         {
           "command": "alp.deduplicateWorkspace",
           "title": "ALP: Deduplicate Workspace",
+          "category": "ALP"
+        },
+        {
+          "command": "alp.inspectObject",
+          "title": "ALP: Inspect Object",
           "category": "ALP"
         }
       ]

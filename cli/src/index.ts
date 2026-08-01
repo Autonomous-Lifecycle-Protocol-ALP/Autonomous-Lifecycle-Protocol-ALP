@@ -17,6 +17,7 @@ import { statsCommand } from './commands/stats';
 import { templateCommand } from './commands/template';
 import { moveCommand } from './commands/move';
 import { dependsCommand } from './commands/depends';
+import { inspectCommand } from './commands/inspect';
 import { lintCommand } from './commands/lint';
 import { testCommand } from './commands/test';
 import { formatCommand } from './commands/format';
@@ -371,6 +372,13 @@ program
   .command('deduplicate')
   .description('Remove duplicate objects from workspace files')
   .action(() => deduplicateCommand());
+
+program
+  .command('inspect')
+  .description('Inspect a specific ALP object')
+  .argument('<id>', 'Object id to inspect')
+  .option('--file <path>', 'Optional specific file to inspect')
+  .action((id, opts) => inspectCommand(id, opts));
 
 program
   .command('cost')
