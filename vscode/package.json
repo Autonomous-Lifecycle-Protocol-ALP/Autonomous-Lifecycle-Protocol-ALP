@@ -39,7 +39,8 @@
     "onCommand:alp.showGraph",
     "onCommand:alp.showStatus",
     "onCommand:alp.archiveObjects",
-    "onCommand:alp.promoteObject"
+    "onCommand:alp.promoteObject",
+    "onCommand:alp.deduplicateWorkspace"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -196,13 +197,18 @@
          "title": "ALP: Archive Objects",
          "category": "ALP"
        },
-       {
-         "command": "alp.promoteObject",
-         "title": "ALP: Promote Object",
-         "category": "ALP"
-       }
-     ]
-   },
+        {
+          "command": "alp.promoteObject",
+          "title": "ALP: Promote Object",
+          "category": "ALP"
+        },
+        {
+          "command": "alp.deduplicateWorkspace",
+          "title": "ALP: Deduplicate Workspace",
+          "category": "ALP"
+        }
+      ]
+    },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "node esbuild.js --production",
