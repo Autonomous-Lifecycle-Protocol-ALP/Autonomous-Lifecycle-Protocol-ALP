@@ -548,7 +548,88 @@ export function activate(context: vscode.ExtensionContext) {
 </body></html>`;
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd);
+  const formatCmd = vscode.commands.registerCommand('alp.formatWorkspace', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const document = editor.document;
+    const text = document.getText();
+    const lines = text.split('\n');
+    const formatted = lines.map((line) => line.trim()).join('\n');
+    await editor.edit((builder) => {
+      const firstLine = document.lineAt(0);
+      const lastLine = document.lineAt(document.lineCount - 1);
+      const range = new vscode.Range(firstLine.range.start, lastLine.range.end);
+      builder.replace(range, formatted);
+    });
+    vscode.window.showInformationMessage('Formatted current ALP file.');
+  });
+
+  const lintCmd = vscode.commands.registerCommand('alp.lintWorkspace', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+
+    const objects = getParsedObjects(editor.document);
+    const issues: string[] = [];
+    for (const obj of objects) {
+      if (!obj.id) {
+        issues.push(`Missing id on @${obj._type}`);
+      }
+    }
+
+    if (issues.length === 0) {
+      vscode.window.showInformationMessage(`Lint passed: ${objects.length} object(s), no issues.`);
+    } else {
+      const panel = vscode.window.createWebviewPanel('alpLint', 'ALP Lint Issues', vscode.ViewColumn.One, {});
+      panel.webview.html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><style>
+  body { font-family: var(--vscode-font-family); padding: 16px; color: var(--vscode-foreground); }
+  h2 { margin-top: 0; }
+  .warn { color: #dcdcaa; }
+  pre { background: var(--vscode-textBlockQuote-background); padding: 12px; border-radius: 4px; }
+</style></head>
+<body>
+  <h2>Lint Issues (${issues.length})</h2>
+  <pre class="warn">${escapeHtml(issues.join('\n'))}</pre>
+</body></html>`;
+    }
+  });
+
+  const testCmd = vscode.commands.registerCommand('alp.runTests', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+
+    const objects = getParsedObjects(editor.document);
+    const tests = objects.filter((o: any) => o._type === 'test');
+    const passed = tests.filter((t: any) => t.status === 'passed' || !t.status).length;
+    const failed = tests.length - passed;
+
+    const panel = vscode.window.createWebviewPanel('alpTest', 'ALP Test Results', vscode.ViewColumn.One, {});
+    panel.webview.html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><style>
+  body { font-family: var(--vscode-font-family); padding: 16px; color: var(--vscode-foreground); }
+  h2 { margin-top: 0; }
+  .passed { color: #4ec9b0; }
+  .failed { color: #f48771; }
+  pre { background: var(--vscode-textBlockQuote-background); padding: 12px; border-radius: 4px; }
+</style></head>
+<body>
+  <h2>Test Results</h2>
+  <p><span class="passed">${passed} passed</span> | <span class="failed">${failed} failed</span> | ${tests.length} total</p>
+</body></html>`;
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, formatCmd, lintCmd, testCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {
