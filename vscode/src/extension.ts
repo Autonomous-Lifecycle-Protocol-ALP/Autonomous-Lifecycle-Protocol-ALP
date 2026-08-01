@@ -548,7 +548,26 @@ export function activate(context: vscode.ExtensionContext) {
 </body></html>`;
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd);
+  const formatCmd = vscode.commands.registerCommand('alp.formatWorkspace', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Open an ALP file first.');
+      return;
+    }
+    const document = editor.document;
+    const text = document.getText();
+    const lines = text.split('\n');
+    const formatted = lines.map((line) => line.trim()).join('\n');
+    await editor.edit((builder) => {
+      const firstLine = document.lineAt(0);
+      const lastLine = document.lineAt(document.lineCount - 1);
+      const range = new vscode.Range(firstLine.range.start, lastLine.range.end);
+      builder.replace(range, formatted);
+    });
+    vscode.window.showInformationMessage('Formatted current ALP file.');
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, formatCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {
