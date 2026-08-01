@@ -1,77 +1,49 @@
-# Python SDK: RefactorEngine
+# Python SDK — RefactorEngine
 
-The `RefactorEngine` supports renaming ALP objects and updating cross-references automatically.
+The `RefactorEngine` renames ALP object ids across all `.alp` files in a workspace. It is the counterpart to `SnapshotEngine` and `DiffEngine` in the workspace-management toolkit.
 
 ## Installation
 
 ```bash
-pip install autonomous-lifecycle-protocol-alp
+pip install @autonomous-lifecycle-protocol-alp/sdk
 ```
 
-## Quick Start
+## Quick start
 
 ```python
 from alp_sdk import RefactorEngine
 
 engine = RefactorEngine()
-result = engine.rename(".alp", "task-1", "task-1-renamed", update_refs=True)
+result = engine.rename("/path/to/workspace", "old-task-id", "new-task-id")
 
-print(f"Renamed {result.occurrences} occurrences")
-print(f"Updated {result.references_updated} references")
+print(result.replacements, "replacements across", result.files_updated, "files")
+print(result.to_dict())
 ```
 
-## API Reference
+## Classes
 
 ### `RefactorEngine`
 
-#### `rename(workspace_path, old_id, new_id, update_refs=False) -> RenameResult`
+| Method | Description |
+|--------|-------------|
+| `rename(workspace_path, old_id, new_id)` | Rename `id: old-id` to `id: new-id` in every `.alp` file under `.alp/` |
 
-Renames an ALP object and optionally updates all references to it.
+Only top-level `id:` declarations are renamed. References in other fields (`depends_on`, etc.) are not rewritten.
 
-- `workspace_path`: Path to workspace containing `.alp` directory
-- `old_id`: Current object ID
-- `new_id`: New object ID
-- `update_refs`: If `True`, updates reference fields (`depends_on`, `references`, `links`, `parent`, `child`) that point to `old_id`
+### `RenameResult`
 
-#### `RenameResult`
+Fields: `old_id`, `new_id`, `files_updated`, `replacements`.
 
-- `occurrences`: Number of `id:` fields renamed
-- `references_updated`: Number of reference fields updated
-- `files_modified`: Number of files changed
+Methods: `to_dict()`.
 
-## Reference Fields
+## CLI integration
 
-The following fields are treated as references when `update_refs=True`:
-
-- `depends_on`
-- `references`
-- `links`
-- `parent`
-- `child`
-
-## Examples
-
-### Basic Rename
-
-```python
-from alp_sdk import RefactorEngine
-
-engine = RefactorEngine()
-result = engine.rename("./my-project", "old-task", "new-task")
-print(f"Renamed {result.occurrences} occurrences in {result.files_modified} files")
+```bash
+alp rename <old-id> <new-id>
 ```
 
-### Rename with Reference Updates
+Renames matching `id:` declarations across all `.alp` files and reports the number of replacements per file.
 
-```python
-from alp_sdk import RefactorEngine
+## VS Code integration
 
-engine = RefactorEngine()
-result = engine.rename(
-    "./my-project",
-    "auth-service",
-    "auth-service-v2",
-    update_refs=True
-)
-print(f"Renamed {result.occurrences} occurrences, updated {result.references_updated} references")
-```
+Use **ALP: Rename Object** (`alp.renameObject`) from the command palette. It prompts for the current id and new id, then updates the active ALP file in place.

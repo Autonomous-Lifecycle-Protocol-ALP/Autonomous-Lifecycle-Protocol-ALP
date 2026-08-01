@@ -13,10 +13,6 @@ import { backupCommand } from './commands/backup';
 import { diffCommand } from './commands/diff';
 import { renameCommand } from './commands/rename';
 import { copyCommand } from './commands/copy';
-import { statsCommand } from './commands/stats';
-import { templateCommand } from './commands/template';
-import { moveCommand } from './commands/move';
-import { dependsCommand } from './commands/depends';
 import { lintCommand } from './commands/lint';
 import { testCommand } from './commands/test';
 import { formatCommand } from './commands/format';
@@ -92,15 +88,13 @@ import { intelligenceCommand } from './commands/intelligence';
 import { autonomyCommand } from './commands/autonomy';
 import { settingsCommand } from './commands/settings';
 import { searchCommand } from './commands/search';
-import { promoteCommand } from './commands/promote';
-import { archiveCommand } from './commands/archive';
 import { gitCommand } from './commands/git';
 const program = new Command();
 
 program
   .name('alp')
   .description('Autonomous Lifecycle Protocol (ALP) CLI')
-  .version('80.0.0');
+  .version('45.0.0');
 
 program
   .command('init')
@@ -342,37 +336,6 @@ program
   .argument('<target-id>', 'New object id')
   .option('--update-refs', 'Update reference fields (depends_on, references, links, parent, child) to the new id')
   .action((sourceId, targetId, opts) => copyCommand(sourceId, targetId, opts.updateRefs));
-
-program
-  .command('stats')
-  .description('Show workspace statistics: object counts by type and file')
-  .action(() => statsCommand());
-
-program
-  .command('template')
-  .description('Create a new ALP object from a built-in template')
-  .argument('<type>', 'Template type: task, agent, workflow, policy, test')
-  .argument('<id>', 'Object id for the new template')
-  .action((type, id) => templateCommand(type, id));
-
-program
-  .command('move')
-  .description('Move an ALP object from one file to another')
-  .argument('<id>', 'Object id to move')
-  .argument('<target-file>', 'Target .alp file (e.g. tasks.alp)')
-  .action((id, targetFile) => moveCommand(id, targetFile));
-
-program
-  .command('depends')
-  .description('Show dependencies for an ALP object')
-  .argument('<id>', 'Object id to inspect')
-  .action((id) => dependsCommand(id));
-
-program
-  .command('archive')
-  .description('Move objects with a given status to an archive file')
-  .argument('<status>', 'Status to archive (e.g. done)')
-  .action((status) => archiveCommand(status));
 
 program
   .command('cost')

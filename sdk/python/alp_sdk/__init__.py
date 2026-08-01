@@ -111,18 +111,6 @@ from .snapshot import SnapshotEngine, WorkspaceSnapshot, SnapshotDiff
 from .diff_engine import DiffEngine, DiffResult, DiffEntry
 from .refactor_engine import RefactorEngine, RenameResult
 from .copy_engine import CopyEngine, CopyResult
-from .stats_engine import StatsEngine, WorkspaceStats, FileStats
-from .template_engine import TemplateEngine
-from .move_engine import MoveEngine, MoveResult
-from .dependency_engine import DependencyEngine, DependencyResult
-from .search_engine import SearchEngine, SearchResult
-from .promote_engine import PromoteEngine, PromoteResult
-from .status_engine import StatusEngine, StatusResult, StatusCounts
-from .graph_engine import GraphEngine, GraphNode, GraphResult
-from .visualize_engine import VisualizeEngine, WorkflowDiagram
-from .linter_engine import LintEngine, LintResult, LintDiagnostic
-from .format_engine import FormatEngine, FormatResult
-from .archive_engine import ArchiveEngine, ArchiveResult
 from .compliance import run_suite, HarnessResult
 from .observ import (
     RuntimeLog,
@@ -254,12 +242,6 @@ from .test_runner import (
     TestCase,
     TestSuiteResult,
     CoverageReport,
-)
-from .test_engine import (
-    TestEngine,
-    TestSuiteResult,
-    TestCaseResult,
-    TestSummary,
 )
 from .linter import (
     Linter,
@@ -402,42 +384,12 @@ __all__ = [
     "WorkspaceSnapshot",
     "SnapshotDiff",
     "DiffEngine",
+    "DiffResult",
     "DiffEntry",
     "RefactorEngine",
     "RenameResult",
     "CopyEngine",
     "CopyResult",
-    "StatsEngine",
-    "WorkspaceStats",
-    "FileStats",
-    "TemplateEngine",
-    "MoveEngine",
-    "MoveResult",
-    "DependencyEngine",
-    "DependencyResult",
-    "SearchEngine",
-    "SearchResult",
-    "PromoteEngine",
-    "PromoteResult",
-    "StatusEngine",
-    "StatusResult",
-    "StatusCounts",
-    "GraphEngine",
-    "GraphNode",
-    "GraphResult",
-    "VisualizeEngine",
-    "WorkflowDiagram",
-    "TestEngine",
-    "TestSuiteResult",
-    "TestCaseResult",
-    "TestSummary",
-    "LintEngine",
-    "LintResult",
-    "LintDiagnostic",
-    "FormatEngine",
-    "FormatResult",
-    "ArchiveEngine",
-    "ArchiveResult",
     "DebugSession",
     "PolicyFederation",
     "PolicySource",

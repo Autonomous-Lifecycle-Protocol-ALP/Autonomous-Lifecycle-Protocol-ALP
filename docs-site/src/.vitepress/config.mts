@@ -51,22 +51,10 @@ export default defineConfig({
           { text: 'Python SDK Snapshots', link: '/python-sdk-snapshot' },
           { text: 'Python SDK Diff', link: '/python-sdk-diff' },
           { text: 'Python SDK Refactor', link: '/python-sdk-refactor' },
-          { text: 'Python SDK Search', link: '/python-sdk-search' },
           { text: 'Python SDK Copy', link: '/python-sdk-copy' },
-          { text: 'Python SDK Stats', link: '/python-sdk-stats' },
-          { text: 'Python SDK Templates', link: '/python-sdk-templates' },
-          { text: 'Python SDK Move', link: '/python-sdk-move' },
-          { text: 'Python SDK Archive', link: '/python-sdk-archive' },
-          { text: 'Python SDK Promote', link: '/python-sdk-promote' },
-           { text: 'Python SDK Status', link: '/python-sdk-status' },
-           { text: 'Python SDK Graph', link: '/python-sdk-graph' },
-           { text: 'Python SDK Visualize', link: '/python-sdk-visualize' },
-           { text: 'Python SDK Test', link: '/python-sdk-test' },
-           { text: 'Python SDK Format', link: '/python-sdk-format' },
-           { text: 'Python SDK Lint', link: '/python-sdk-lint' },
-           { text: 'Best Practices', link: '/best-practices' },
-           { text: 'FAQ', link: '/faq' },
-           { text: 'Contributing', link: '/contributing' }
+          { text: 'Best Practices', link: '/best-practices' },
+          { text: 'FAQ', link: '/faq' },
+          { text: 'Contributing', link: '/contributing' }
         ]
       },
       {
@@ -95,25 +83,12 @@ export default defineConfig({
           { text: 'Python SDK Snapshots', link: '/python-sdk-snapshot' },
           { text: 'Python SDK Diff', link: '/python-sdk-diff' },
           { text: 'Python SDK Refactor', link: '/python-sdk-refactor' },
-          { text: 'Python SDK Search', link: '/python-sdk-search' },
-          { text: 'Python SDK Copy', link: '/python-sdk-copy' },
-          { text: 'Python SDK Stats', link: '/python-sdk-stats' },
-          { text: 'Python SDK Templates', link: '/python-sdk-templates' },
-          { text: 'Python SDK Move', link: '/python-sdk-move' },
-          { text: 'Python SDK Archive', link: '/python-sdk-archive' },
-          { text: 'Python SDK Promote', link: '/python-sdk-promote' },
-           { text: 'Python SDK Status', link: '/python-sdk-status' },
-           { text: 'Python SDK Graph', link: '/python-sdk-graph' },
-           { text: 'Python SDK Visualize', link: '/python-sdk-visualize' },
-           { text: 'Python SDK Test', link: '/python-sdk-test' },
-           { text: 'Python SDK Format', link: '/python-sdk-format' },
-           { text: 'Python SDK Lint', link: '/python-sdk-lint' },
-           { text: 'Best Practices', link: '/best-practices' },
-           { text: 'FAQ', link: '/faq' },
-           { text: 'Contributing', link: '/contributing' },
-           { text: 'Roadmap', link: '/roadmap' },
-           { text: 'SDKs', link: '/guide/sdk' }
-         ]
+          { text: 'Best Practices', link: '/best-practices' },
+          { text: 'FAQ', link: '/faq' },
+          { text: 'Contributing', link: '/contributing' },
+          { text: 'Roadmap', link: '/roadmap' },
+          { text: 'SDKs', link: '/guide/sdk' }
+        ]
       },
       {
         text: 'Ecosystem & Execution',
