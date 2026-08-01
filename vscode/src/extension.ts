@@ -548,7 +548,131 @@ export function activate(context: vscode.ExtensionContext) {
 </body></html>`;
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd);
+  const deduplicateCmd = vscode.commands.registerCommand('alp.deduplicateWorkspace', async () => {
+    const wsFolder = vscode.workspace.workspaceFoldings?.[0];
+    if (!wsFolder) {
+      vscode.window.showWarningMessage('Open a workspace folder first.');
+      return;
+    }
+    const alpDir = path.join(wsFolder.uri.fsPath, '.alp');
+    if (!fs.existsSync(alpDir)) {
+      vscode.window.showWarningMessage('No .alp directory found. Run `alp init` first.');
+      return;
+    }
+
+    const parser = new AlpParser();
+    const files = fs.readdirSync(alpDir).filter((f) => f.endsWith('.alp'));
+    const seen = new Map<string, string>();
+    let removed = 0;
+    const removedIds: string[] = [];
+
+    for (const file of files) {
+      const fullPath = path.join(alpDir, file);
+      const content = fs.readFileSync(fullPath, 'utf-8');
+      const objects = parser.parse(content);
+      const keep: any[] = [];
+      for (const obj of objects) {
+        const id = obj.id;
+        if (!id) {
+          keep.push(obj);
+          continue;
+        }
+        if (seen.has(id)) {
+          removed += 1;
+          removedIds.push(id);
+        } else {
+          seen.set(id, fullPath);
+          keep.push(obj);
+        }
+      }
+
+      const lines: string[] = [];
+      for (const obj of keep) {
+        lines.push(`@${obj._type}`);
+        for (const [key, value] of Object.entries(obj)) {
+          if (key === '_type') continue;
+          if (value == null || value === '') continue;
+          if (Array.isArray(value)) {
+            const items = value.map((v: any) => (typeof v === 'string' ? `"${v}"` : v)).join(', ');
+            lines.push(`  ${key}: [${items}]`);
+          } else {
+            lines.push(`  ${key}: ${value}`);
+          }
+        }
+        lines.push('');
+      }
+      fs.writeFileSync(fullPath, lines.join('\n'), 'utf-8');
+    }
+
+    if (removed === 0) {
+      vscode.window.showInformationMessage('No duplicate objects found.');
+    } else {
+      vscode.window.showInformationMessage(`Deduplicated ${removed} object(s): ${removedIds.join(', ')}`);
+    }
+  });
+
+  const splitCmd = vscode.commands.registerCommand('alp.splitFile', async () => {
+    const sourceFile = await vscode.window.showInputBox({ prompt: 'Source .alp file to split', placeHolder: 'e.g. mixed.alp' });
+    if (!sourceFile) return;
+
+    const workspacePath = vscode.workspace.workspaceFoldings?.[0]?.uri.fsPath;
+    if (!workspacePath) {
+      vscode.window.showWarningMessage('Open a workspace folder first.');
+      return;
+    }
+    const alpDir = path.join(workspacePath, '.alp');
+    if (!fs.existsSync(alpDir)) {
+      vscode.window.showWarningMessage('No .alp directory found. Run `alp init` first.');
+      return;
+    }
+
+    const sourcePath = path.join(alpDir, sourceFile);
+    if (!fs.existsSync(sourcePath)) {
+      vscode.window.showWarningMessage('Source file not found in .alp directory.');
+      return;
+    }
+
+    const parser = new AlpParser();
+    const content = fs.readFileSync(sourcePath, 'utf-8');
+    const objects = parser.parse(content);
+    if (objects.length === 0) {
+      vscode.window.showInformationMessage('No objects found in source file.');
+      return;
+    }
+
+    const groups = new Map<string, any[]>();
+    for (const obj of objects) {
+      const type = obj._type || 'unknown';
+      if (!groups.has(type)) groups.set(type, []);
+      groups.get(type)!.push(obj);
+    }
+
+    const createdFiles: string[] = [];
+    for (const [type, objs] of groups) {
+      const targetFile = path.join(alpDir, `${type}s.alp`);
+      const lines: string[] = [];
+      for (const obj of objs) {
+        lines.push(`@${type}`);
+        for (const [key, value] of Object.entries(obj)) {
+          if (key === '_type') continue;
+          if (value == null || value === '') continue;
+          if (Array.isArray(value)) {
+            const items = value.map((v: any) => (typeof v === 'string' ? `"${v}"` : v)).join(', ');
+            lines.push(`  ${key}: [${items}]`);
+          } else {
+            lines.push(`  ${key}: ${value}`);
+          }
+        }
+        lines.push('');
+      }
+      fs.writeFileSync(targetFile, lines.join('\n'), 'utf-8');
+      createdFiles.push(`${type}s.alp`);
+    }
+
+    vscode.window.showInformationMessage(`Split ${sourceFile} into ${createdFiles.length} file(s): ${createdFiles.join(', ')}`);
+  });
+
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, deduplicateCmd, splitCmd);
 }
 
 export function deactivate(): Thenable<void> | undefined {

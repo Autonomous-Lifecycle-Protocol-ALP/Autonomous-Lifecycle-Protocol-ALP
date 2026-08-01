@@ -92,6 +92,7 @@ import { intelligenceCommand } from './commands/intelligence';
 import { autonomyCommand } from './commands/autonomy';
 import { settingsCommand } from './commands/settings';
 import { searchCommand } from './commands/search';
+import { splitCommand } from './commands/split';
 import { gitCommand } from './commands/git';
 const program = new Command();
 
@@ -365,6 +366,13 @@ program
   .description('Show dependencies for an ALP object')
   .argument('<id>', 'Object id to inspect')
   .action((id) => dependsCommand(id));
+
+program
+  .command('split')
+  .description('Split an ALP file into multiple files by object type')
+  .argument('<file>', 'Source .alp file to split')
+  .option('--type <type>', 'Only split objects of this type')
+  .action((file, opts) => splitCommand(file, opts));
 
 program
   .command('cost')

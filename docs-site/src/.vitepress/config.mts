@@ -56,6 +56,8 @@ export default defineConfig({
           { text: 'Python SDK Stats', link: '/python-sdk-stats' },
           { text: 'Python SDK Templates', link: '/python-sdk-templates' },
           { text: 'Python SDK Move', link: '/python-sdk-move' },
+          { text: 'Python SDK Deduplicate', link: '/python-sdk-deduplicate' },
+          { text: 'Python SDK Split', link: '/python-sdk-split' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' }
@@ -88,6 +90,8 @@ export default defineConfig({
           { text: 'Python SDK Diff', link: '/python-sdk-diff' },
           { text: 'Python SDK Refactor', link: '/python-sdk-refactor' },
           { text: 'Python SDK Search', link: '/python-sdk-search' },
+          { text: 'Python SDK Deduplicate', link: '/python-sdk-deduplicate' },
+          { text: 'Python SDK Split', link: '/python-sdk-split' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' },
