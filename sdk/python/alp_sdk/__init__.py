@@ -27,6 +27,8 @@ from .policy import (
     glob_to_regexp,
     normalize_objects,
     parse_inline_object,
+    PolicyLearner,
+    PolicyContext,
 )
 from .predictive_policy import (
     PredictivePolicyEngine,
