@@ -32,6 +32,90 @@ export class Lesson {
   ) {}
 }
 
+export interface ReasoningStep {
+  step_id: string;
+  agent_id: string;
+  thought: string;
+  action: string;
+  observation?: string;
+  confidence: number;
+  dependencies: string[];
+  timestamp: string;
+}
+
+export interface ReasoningChain {
+  chain_id: string;
+  goal: string;
+  steps: ReasoningStep[];
+  created_at: string;
+  status: 'draft' | 'executing' | 'completed' | 'failed';
+  result?: string;
+}
+
+export class ReasoningTracer {
+  private chains: Map<string, ReasoningChain> = new Map();
+  private stepCounter = 0;
+
+  createChain(goal: string): ReasoningChain {
+    const chain: ReasoningChain = {
+      chain_id: `chain-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+      goal,
+      steps: [],
+      created_at: new Date().toISOString(),
+      status: 'draft',
+    };
+    this.chains.set(chain.chain_id, chain);
+    return chain;
+  }
+
+  addStep(chainId: string, input: Omit<ReasoningStep, 'step_id' | 'timestamp'>): ReasoningStep {
+    const chain = this.chains.get(chainId);
+    if (!chain) throw new Error(`Reasoning chain '${chainId}' not found.`);
+    if (chain.status !== 'executing') {
+      chain.status = 'executing';
+    }
+    const step: ReasoningStep = {
+      step_id: `step-${chainId}-${++this.stepCounter}`,
+      timestamp: new Date().toISOString(),
+      ...input,
+    };
+    chain.steps.push(step);
+    return step;
+  }
+
+  completeChain(chainId: string, result: string): ReasoningChain {
+    const chain = this.chains.get(chainId);
+    if (!chain) throw new Error(`Reasoning chain '${chainId}' not found.`);
+    chain.status = 'completed';
+    chain.result = result;
+    return chain;
+  }
+
+  failChain(chainId: string, reason: string): ReasoningChain {
+    const chain = this.chains.get(chainId);
+    if (!chain) throw new Error(`Reasoning chain '${chainId}' not found.`);
+    chain.status = 'failed';
+    chain.result = reason;
+    return chain;
+  }
+
+  getChain(chainId: string): ReasoningChain | undefined {
+    return this.chains.get(chainId);
+  }
+
+  getStepsByAgent(agentId: string): ReasoningStep[] {
+    const steps: ReasoningStep[] = [];
+    for (const chain of this.chains.values()) {
+      for (const step of chain.steps) {
+        if (step.agent_id === agentId) {
+          steps.push(step);
+        }
+      }
+    }
+    return steps;
+  }
+}
+
 export class GoalDecomposer {
   decompose(goal: string, constraints?: Record<string, any>): Plan {
     const trimmed = goal.trim();

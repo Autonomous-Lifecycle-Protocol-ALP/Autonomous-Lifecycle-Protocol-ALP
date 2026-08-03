@@ -215,3 +215,121 @@ class Reflector:
                 tags=["handoff"],
             ))
         return lessons
+
+
+class ReasoningStep:
+    """A single chain-of-thought step across agent boundaries."""
+
+    def __init__(
+        self,
+        step_id: str,
+        agent_id: str,
+        thought: str,
+        action: str,
+        confidence: float,
+        dependencies: Optional[List[str]] = None,
+        observation: Optional[str] = None,
+        timestamp: Optional[str] = None,
+    ):
+        self.step_id = step_id
+        self.agent_id = agent_id
+        self.thought = thought
+        self.action = action
+        self.observation = observation
+        self.confidence = confidence
+        self.dependencies = dependencies or []
+        self.timestamp = timestamp or __import__("datetime").datetime.utcnow().isoformat() + "Z"
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "step_id": self.step_id,
+            "agent_id": self.agent_id,
+            "thought": self.thought,
+            "action": self.action,
+            "observation": self.observation,
+            "confidence": self.confidence,
+            "dependencies": self.dependencies,
+            "timestamp": self.timestamp,
+        }
+
+
+class ReasoningChain:
+    """Executable chain-of-thought trace with lifecycle state."""
+
+    def __init__(self, chain_id: str, goal: str):
+        self.chain_id = chain_id
+        self.goal = goal
+        self.steps: List[ReasoningStep] = []
+        self.created_at = __import__("datetime").datetime.utcnow().isoformat() + "Z"
+        self.status: str = "draft"
+        self.result: Optional[str] = None
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "chain_id": self.chain_id,
+            "goal": self.goal,
+            "steps": [s.to_dict() for s in self.steps],
+            "created_at": self.created_at,
+            "status": self.status,
+            "result": self.result,
+        }
+
+
+class ReasoningTracer:
+    """Creates and mutates ReasoningChain instances."""
+
+    def __init__(self):
+        self._chains: Dict[str, ReasoningChain] = {}
+        self._step_counter = 0
+
+    def create_chain(self, goal: str) -> ReasoningChain:
+        chain_id = f"chain-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{self._step_counter:04d}"
+        chain = ReasoningChain(chain_id=chain_id, goal=goal)
+        self._chains[chain_id] = chain
+        return chain
+
+    def add_step(self, chain_id: str, step: Dict[str, Any]) -> ReasoningStep:
+        chain = self._chains.get(chain_id)
+        if not chain:
+            raise ValueError(f"Reasoning chain '{chain_id}' not found.")
+        if chain.status != "executing":
+            chain.status = "executing"
+        self._step_counter += 1
+        created = ReasoningStep(
+            step_id=f"step-{chain_id}-{self._step_counter}",
+            agent_id=step["agent_id"],
+            thought=step["thought"],
+            action=step["action"],
+            confidence=float(step.get("confidence", 0.0)),
+            dependencies=list(step.get("dependencies", [])),
+            observation=step.get("observation"),
+        )
+        chain.steps.append(created)
+        return created
+
+    def complete_chain(self, chain_id: str, result: str) -> ReasoningChain:
+        chain = self._chains.get(chain_id)
+        if not chain:
+            raise ValueError(f"Reasoning chain '{chain_id}' not found.")
+        chain.status = "completed"
+        chain.result = result
+        return chain
+
+    def fail_chain(self, chain_id: str, reason: str) -> ReasoningChain:
+        chain = self._chains.get(chain_id)
+        if not chain:
+            raise ValueError(f"Reasoning chain '{chain_id}' not found.")
+        chain.status = "failed"
+        chain.result = reason
+        return chain
+
+    def get_chain(self, chain_id: str) -> Optional[ReasoningChain]:
+        return self._chains.get(chain_id)
+
+    def get_steps_by_agent(self, agent_id: str) -> List[ReasoningStep]:
+        steps = []
+        for chain in self._chains.values():
+            for step in chain.steps:
+                if step.agent_id == agent_id:
+                    steps.append(step)
+        return steps
