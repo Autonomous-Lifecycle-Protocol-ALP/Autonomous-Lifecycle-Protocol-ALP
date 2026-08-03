@@ -12,7 +12,7 @@
  * `sdk/python/alp_sdk/bridge.py`.
  */
 
-export const SUPPORTED_FORMATS = ['openapi', 'graphql', 'grpc', 'asyncapi'] as const
+export const SUPPORTED_FORMATS = ['openapi', 'graphql', 'grpc', 'asyncapi', 'a2a'] as const
 export type SupportedFormat = typeof SUPPORTED_FORMATS[number]
 
 export class BridgeError extends Error {
@@ -46,12 +46,14 @@ export class ProtocolBridge {
       graphql: (wf) => this.exportGraphql(wf),
       grpc: (wf) => this.exportGrpc(wf),
       asyncapi: (wf) => this.exportAsyncapi(wf),
+      a2a: (wf) => this.exportA2A(wf),
     }
     this.importers = {
       openapi: (spec) => this.importOpenapi(spec),
       graphql: (spec) => this.importGraphql(spec),
       grpc: (spec) => this.importGrpc(spec),
       asyncapi: (spec) => this.importAsyncapi(spec),
+      a2a: (spec) => this.importA2A(spec),
     }
   }
 
@@ -335,6 +337,50 @@ export class ProtocolBridge {
     }
     if (!steps.length) {
       warnings.push('No channels found in AsyncAPI spec.')
+    }
+    return [workflow, warnings]
+  }
+
+  private exportA2A(workflow: Record<string, any>): [Record<string, any>, string[]] {
+    const warnings: string[] = []
+    const wfId = String(workflow.id ?? workflow.name ?? 'alp-workflow')
+    const agentCard = {
+      '@context': 'https://a2a-protocol.org/v1',
+      '@type': 'AgentCard',
+      id: wfId,
+      name: String(workflow.name ?? wfId),
+      description: String(workflow.description ?? 'ALP-generated A2A agent'),
+      capabilities: {
+        streaming: false,
+        pushNotifications: false,
+      },
+      skills: (workflow.steps ?? []).map((step: any) => ({
+        id: String(step.id ?? step.name ?? `skill-${Math.random().toString(36).slice(2, 8)}`),
+        name: String(step.name ?? step.id ?? 'Unknown Skill'),
+        description: String(step.description ?? `Step from ${wfId}`),
+      })),
+    }
+    return [agentCard, warnings]
+  }
+
+  private importA2A(spec: Record<string, any>): [Record<string, any>, string[]] {
+    const warnings: string[] = []
+    const agentId = String(spec.id ?? spec.name ?? 'imported-a2a-agent')
+    const skills = spec.skills ?? []
+    const steps = skills.map((skill: any) => ({
+      id: String(skill.id ?? `step-${Math.random().toString(36).slice(2, 8)}`),
+      name: String(skill.name ?? skill.id ?? 'Imported Step'),
+      type: 'step',
+      description: String(skill.description ?? ''),
+    }))
+    const workflow = {
+      id: agentId,
+      name: String(spec.name ?? agentId),
+      source_format: 'a2a',
+      steps,
+    }
+    if (!steps.length) {
+      warnings.push('No skills found in A2A agent card.')
     }
     return [workflow, warnings]
   }

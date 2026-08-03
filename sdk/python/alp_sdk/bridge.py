@@ -20,7 +20,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Union
 
 
-SUPPORTED_FORMATS = ["openapi", "graphql", "grpc", "asyncapi"]
+SUPPORTED_FORMATS = ["openapi", "graphql", "grpc", "asyncapi", "a2a"]
 
 
 class BridgeError(Exception):
@@ -78,12 +78,14 @@ class ProtocolBridge:
             "graphql": self._export_graphql,
             "grpc": self._export_grpc,
             "asyncapi": self._export_asyncapi,
+            "a2a": self._export_a2a,
         }
         self._importers = {
             "openapi": self._import_openapi,
             "graphql": self._import_graphql,
             "grpc": self._import_grpc,
             "asyncapi": self._import_asyncapi,
+            "a2a": self._import_a2a,
         }
 
     def export_workflow(self, workflow: Dict[str, Any], fmt: str) -> BridgeExportResult:
@@ -287,4 +289,55 @@ class ProtocolBridge:
         }
         if not steps:
             warnings.append("No channels found in AsyncAPI spec.")
+        return workflow, warnings
+
+    # ── A2A Agent Card ───────────────────────────────────────────────────────
+
+    def _export_a2a(self, workflow: Dict[str, Any]) -> tuple[Dict[str, Any], List[str]]:
+        warnings: List[str] = []
+        wf_id = str(workflow.get("id", workflow.get("name", "alp-workflow")))
+        agent_card: Dict[str, Any] = {
+            "@context": "https://a2a-protocol.org/v1",
+            "@type": "AgentCard",
+            "id": wf_id,
+            "name": str(workflow.get("name", wf_id)),
+            "description": str(workflow.get("description", "ALP-generated A2A agent")),
+            "capabilities": {
+                "streaming": False,
+                "pushNotifications": False,
+            },
+            "skills": [],
+        }
+        for step in workflow.get("steps", []):
+            skill_id = str(step.get("id", step.get("name", f"skill-{__import__('random').random().hex()[2:8]}")))
+            skill_name = str(step.get("name", step.get("id", "Unknown Skill")))
+            agent_card["skills"].append({
+                "id": skill_id,
+                "name": skill_name,
+                "description": str(step.get("description", f"Step from {wf_id}")),
+            })
+        return agent_card, warnings
+
+    def _import_a2a(self, spec: Dict[str, Any]) -> tuple[Dict[str, Any], List[str]]:
+        warnings: List[str] = []
+        agent_id = str(spec.get("id", spec.get("name", "imported-a2a-agent")))
+        skills = spec.get("skills", [])
+        steps: List[Dict[str, Any]] = []
+        for skill in skills:
+            step_id = str(skill.get("id", f"step-{__import__('random').random().hex()[2:8]}"))
+            step_name = str(skill.get("name", skill.get("id", "Imported Step")))
+            steps.append({
+                "id": step_id,
+                "name": step_name,
+                "type": "step",
+                "description": str(skill.get("description", "")),
+            })
+        workflow = {
+            "id": agent_id,
+            "name": str(spec.get("name", agent_id)),
+            "source_format": "a2a",
+            "steps": steps,
+        }
+        if not steps:
+            warnings.append("No skills found in A2A agent card.")
         return workflow, warnings

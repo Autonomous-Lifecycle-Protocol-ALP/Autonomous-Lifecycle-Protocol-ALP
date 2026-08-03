@@ -116,6 +116,33 @@ service testService {
   })
 
   it('lists supported formats', () => {
-    expect(SUPPORTED_FORMATS).toEqual(['openapi', 'graphql', 'grpc', 'asyncapi'])
+    expect(SUPPORTED_FORMATS).toEqual(['openapi', 'graphql', 'grpc', 'asyncapi', 'a2a'])
+  })
+
+  it('exports A2A agent card', () => {
+    const result = bridge.exportWorkflow(workflow, 'a2a')
+    expect(result.format).toBe('a2a')
+    expect(result.spec['@type']).toBe('AgentCard')
+    expect(result.spec.skills).toHaveLength(2)
+    expect(result.spec.skills[0].name).toBe('create')
+  })
+
+  it('imports A2A agent card back to workflow', () => {
+    const agentCard = {
+      id: 'agent-1',
+      name: 'Test Agent',
+      skills: [
+        { id: 'skill-1', name: 'Analyze', description: 'Analyze data' },
+      ],
+    }
+    const result = bridge.importSpec(agentCard, 'a2a')
+    expect(result.format).toBe('a2a')
+    expect(result.workflow.steps).toHaveLength(1)
+    expect(result.workflow.steps[0].name).toBe('Analyze')
+  })
+
+  it('warns on empty A2A agent card', () => {
+    const result = bridge.importSpec({ id: 'agent-empty', skills: [] }, 'a2a')
+    expect(result.warnings).toContain('No skills found in A2A agent card.')
   })
 })
