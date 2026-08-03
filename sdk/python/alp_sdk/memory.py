@@ -167,3 +167,108 @@ class MemoryStore:
     @property
     def size(self) -> int:
         return len(self.entries)
+
+    def retrieve_rag(self, query: str, limit: int = 5) -> List[Dict[str, Any]]:
+        q = query.lower()
+        scored = []
+        for entry in self.entries.values():
+            haystack = f"{entry.key} {entry.value} {entry.type}".lower()
+            terms = [t for t in q.split() if t]
+            if not terms:
+                continue
+            matches = sum(1 for t in terms if t in haystack)
+            score = matches / len(terms)
+            citation = f"{entry.scope or 'global'}/{entry.type}/{entry.key}"
+            scored.append({"entry": entry, "score": score, "citation": citation})
+        scored.sort(key=lambda x: x["score"], reverse=True)
+        return [r for r in scored[:limit] if r["score"] > 0]
+
+    def consolidate(self) -> List[Dict[str, Any]]:
+        by_scope: Dict[str, List[MemoryEntry]] = {}
+        for entry in self.entries.values():
+            scope = entry.scope or "global"
+            by_scope.setdefault(scope, []).append(entry)
+        results = []
+        for scope, scoped in by_scope.items():
+            if len(scoped) < 2:
+                continue
+            summary = "; ".join(f"[{e.type}] {e.key}: {e.value}" for e in scoped)
+            results.append({
+                "source_ids": [e.id for e in scoped],
+                "summary": summary,
+                "importance": "high",
+                "created": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
+            })
+        return results
+
+
+class MemoryRelation:
+    def __init__(self, source_id: str, target_id: str, relation: str, weight: float = 1.0):
+        self.source_id = source_id
+        self.target_id = target_id
+        self.relation = relation
+        self.weight = weight
+
+
+class MemoryGraph:
+    def __init__(self):
+        self.nodes: Dict[str, MemoryEntry] = {}
+        self.relations: List[MemoryRelation] = []
+
+    def add_node(self, entry: MemoryEntry) -> None:
+        self.nodes[entry.id] = entry
+
+    def relate(self, source_id: str, target_id: str, relation: str, weight: float = 1.0) -> None:
+        if source_id not in self.nodes or target_id not in self.nodes:
+            raise ValueError("Both source and target nodes must exist in the memory graph.")
+        self.relations.append(MemoryRelation(source_id, target_id, relation, weight))
+
+    def neighbors(self, node_id: str, relation: Optional[str] = None) -> List[MemoryEntry]:
+        related = [r for r in self.relations if r.source_id == node_id and (relation is None or r.relation == relation)]
+        related.sort(key=lambda r: r.weight, reverse=True)
+        return [self.nodes[r.target_id] for r in related if r.target_id in self.nodes]
+
+    def decay(self, now: Optional[float] = None) -> None:
+        if now is None:
+            now = time.time() * 1000
+        for entry in self.nodes.values():
+            if entry.ttl:
+                age = now - __import__("datetime").datetime.fromisoformat(entry.created).timestamp() * 1000
+                remaining = max(0.0, 1.0 - age / entry.ttl)
+                entry.updated = __import__("datetime").datetime.fromtimestamp(now / 1000, __import__("datetime").timezone.utc).isoformat()
+
+
+class MemoryConsolidation:
+    def __init__(self, source_ids: List[str], summary: str, importance: str, created: str):
+        self.source_ids = source_ids
+        self.summary = summary
+        self.importance = importance
+        self.created = created
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "source_ids": self.source_ids,
+            "summary": self.summary,
+            "importance": self.importance,
+            "created": self.created,
+        }
+
+
+class MemoryConsolidator:
+    def consolidate(self, entries: List[MemoryEntry]) -> List[Dict[str, Any]]:
+        by_scope: Dict[str, List[MemoryEntry]] = {}
+        for entry in entries:
+            scope = entry.scope or "global"
+            by_scope.setdefault(scope, []).append(entry)
+        results = []
+        for scope, scoped in by_scope.items():
+            if len(scoped) < 2:
+                continue
+            summary = "; ".join(f"[{e.type}] {e.key}: {e.value}" for e in scoped)
+            results.append({
+                "source_ids": [e.id for e in scoped],
+                "summary": summary,
+                "importance": "high",
+                "created": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
+            })
+        return results

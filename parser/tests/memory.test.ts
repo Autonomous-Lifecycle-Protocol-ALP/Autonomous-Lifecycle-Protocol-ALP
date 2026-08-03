@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { MemoryStore } from '../src/memory';
+import { MemoryStore, MemoryGraph, MemoryConsolidator, RAGResult } from '../src/memory';
 
 describe('MemoryStore', () => {
   let store: MemoryStore;
@@ -90,3 +90,46 @@ describe('MemoryStore', () => {
     expect(store.getAll()).toHaveLength(2);
   });
 });
+
+describe('MemoryGraph', () => {
+  it('adds nodes and relates them', () => {
+    const graph = new MemoryGraph();
+    graph.addNode({ id: 'a', type: 'decision', key: 'k1', value: 'v1', importance: 'high', created: '', updated: '' });
+    graph.addNode({ id: 'b', type: 'task', key: 'k2', value: 'v2', importance: 'high', created: '', updated: '' });
+    graph.relate('a', 'b', 'depends_on', 0.9);
+    const neighbors = graph.neighbors('a');
+    expect(neighbors).toHaveLength(1);
+    expect(neighbors[0].id).toBe('b');
+  });
+
+  it('throws when relating missing nodes', () => {
+    const graph = new MemoryGraph();
+    graph.addNode({ id: 'a', type: 'decision', key: 'k1', value: 'v1', importance: 'high', created: '', updated: '' });
+    expect(() => graph.relate('a', 'missing', 'depends_on')).toThrow();
+  });
+});
+
+describe('MemoryStore RAG', () => {
+  it('retrieves relevant entries with citations', () => {
+    const store = new MemoryStore('/tmp/alp-memory-rag');
+    store.store({ id: 'm1', type: 'decision', key: 'database', value: 'postgres', scope: 'project', importance: 'high' });
+    store.store({ id: 'm2', type: 'task', key: 'frontend', value: 'react', scope: 'project', importance: 'medium' });
+    const results = store.retrieveRAG('database postgres');
+    expect(results.length).toBeGreaterThanOrEqual(1);
+    expect(results[0].entry.id).toBe('m1');
+    expect(results[0].citation).toContain('project');
+  });
+});
+
+describe('MemoryConsolidator', () => {
+  it('consolidates entries by scope', () => {
+    const store = new MemoryStore('/tmp/alp-memory-consolidate');
+    store.store({ id: 'm1', type: 'decision', key: 'k1', value: 'v1', scope: 'alpha', importance: 'high' });
+    store.store({ id: 'm2', type: 'error', key: 'k2', value: 'v2', scope: 'alpha', importance: 'low' });
+    const results = store.consolidate();
+    expect(results.length).toBe(1);
+    expect(results[0].source_ids).toEqual(['m1', 'm2']);
+    expect(results[0].summary).toContain('v1');
+  });
+});
+

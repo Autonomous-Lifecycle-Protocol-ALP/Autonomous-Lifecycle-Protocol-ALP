@@ -12,7 +12,7 @@ from .negotiate import Negotiator, ReputationStore, TeamComposer, Offer, Contrac
 from .provenance import TraceSigner, ProvenanceStore, AuditLedger, VerifiableCredential
 from .trace import TraceEntry, TraceStore, MerkleTree, verify_trace_integrity
 from .graph import AlpGraph, GraphNode, GraphEdge
-from .memory import MemoryStore, MemoryEntry, MemoryQuery
+from .memory import MemoryStore, MemoryEntry, MemoryQuery, MemoryGraph, MemoryConsolidator, MemoryConsolidation
 from .policy import (
     PolicyEngine,
     PolicyDecision,
