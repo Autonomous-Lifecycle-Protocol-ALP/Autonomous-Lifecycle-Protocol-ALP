@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { AlpParser, AlpObject, PolicyEngine, PolicyActionKind } from '@autonomous-lifecycle-protocol-alp/parser';
+import { loadAlpDir } from '../utils';
 
 interface PolicyOptions {
   path?: string;
@@ -33,7 +34,7 @@ export function policyCommand(options?: PolicyOptions) {
 
   const parser = new AlpParser();
   const objects: AlpObject[] = [];
-  loadDir(alpDir, parser, objects);
+  loadAlpDir(alpDir, parser, objects);
 
   const engine = new PolicyEngine(objects);
 
@@ -116,21 +117,5 @@ export function policyCommand(options?: PolicyOptions) {
   }
 }
 
-function loadDir(dir: string, parser: AlpParser, out: AlpObject[]) {
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      if (entry.name === '.runtime' || entry.name === '.cache') continue;
-      loadDir(full, parser, out);
-    } else if (entry.name.endsWith('.alp')) {
-      try {
-        out.push(...parser.parse(fs.readFileSync(full, 'utf-8')));
-      } catch {
-        /* skip unparseable files */
-      }
-    }
-  }
-}
 
 

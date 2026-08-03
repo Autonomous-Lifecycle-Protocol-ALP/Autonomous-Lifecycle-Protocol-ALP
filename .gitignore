@@ -69,3 +69,13 @@ sham/test-results/
 
 # Project-specific out-of-scope documents
 prd2.md
+
+# Kilo configuration and agent workspace
+.kilo/
+.kilocode/
+.kiloinfo
+.kilodone
+.kilostate
+.kilocache
+.kilotmp
+agent-workspace/

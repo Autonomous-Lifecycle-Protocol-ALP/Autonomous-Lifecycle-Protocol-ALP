@@ -20,7 +20,6 @@ export function createWindow(): BrowserWindow {
 
   if (process.env.NODE_ENV === 'development') {
     win.loadURL('http://localhost:5173');
-    win.webContents.openDevTools();
   } else {
     win.loadFile(join(__dirname, '../renderer/index.html'));
   }

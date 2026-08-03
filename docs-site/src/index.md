@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: "ALP v80.0.0"
+  name: "ALP v81.0.0"
   text: "The Autonomous Lifecycle Protocol"
   tagline: "The open standard & high-performance execution engine for AI-driven software engineering. Write a machine-readable spec — let your agents plan, build, verify, and remember."
   image:
@@ -163,7 +163,7 @@ flowchart LR
   <a class="alp-eco-card" href="/guide/sdk"><h3>@autonomous-lifecycle-protocol-alp/sdk &amp; alp-sdk</h3><p>Official TypeScript and Python SDKs with complete 1:1 implementation parity.</p></a>
   <a class="alp-eco-card" href="/guide/sdk"><h3>alp-go / alp-rs / alp-java</h3><p>Official Go, Rust, and Java SDKs with core parsing, graph, and workspace APIs.</p></a>
   <a class="alp-eco-card" href="/spec/22-autonomous-marketplace"><h3>@swarm_marketplace</h3><p>Autonomous skill registry, provider discovery, invocation, and cost tracking (v38.0.0).</p></a>
-  <a class="alp-eco-card" href="/sham"><h3>SHAM IDE</h3><p>The unified ALP desktop IDE (Mac/Windows/Linux). Faster, more secure, and error-free vs. fragmented multi-IDE setups. Native <code>@autonomous-lifecycle-protocol-alp/parser</code>, Monaco editor, agent manager, and integrated terminal.</p></a>
+  <a class="alp-eco-card" href="/sham"><h3>SHAM IDE (v81.0.0)</h3><p>The unified ALP desktop IDE (Mac/Windows/Linux). Faster, more secure, and error-free vs. fragmented multi-IDE setups. Native <code>@autonomous-lifecycle-protocol-alp/parser</code>, Monaco editor, agent manager, IDE Intelligence with AI suggestions/predictions/review, and Autonomous Orchestration with self-healing DAGs.</p></a>
 </div>
 
 ---
@@ -242,12 +242,12 @@ Released versions are tracked in the [versioning spec](/spec/10-versioning.md). 
 | Era | Versions | Focus |
 |---|---|---|
 | V8 — The Collaboration Era | 38.0.0–38.x | Event mesh, swarm marketplace, macro expansion, collaboration/negotiation/reputation, memory mesh |
-| V9 — Native Desktop | 80.0.0 | SHAM IDE cross-platform release, native ALP integration, Monaco editor, agent manager, auto-updater, Pro/Enterprise licensing |
-| V10 — The Intelligence Era | 80.0.0+ | Autonomous orchestration, self-healing workflows, predictive governance, edge-native execution |
+| V9 — Native Desktop | 80.0.0–80.x | SHAM IDE cross-platform release, native ALP integration, Monaco editor, agent manager, auto-updater, Pro/Enterprise licensing |
+| V10 — The Intelligence Era | 81.0.0 | Autonomous multi-agent orchestration with self-healing DAGs, predictive governance, edge-native execution, and AI-native lifecycle management |
 
 ### What's Next
 
 - **SHAM IDE** (V9, 80.0.0) — Already released. Cross-platform desktop application for Mac, Windows, and Linux with native ALP integration, Monaco editor, agent manager, auto-updater, and Pro/Enterprise licensing.
-- **V10 — The Intelligence Era** (80.0.0+) — Autonomous multi-agent orchestration with self-healing DAGs, predictive governance, edge-native execution, and AI-native lifecycle management.
+- **V10 — The Intelligence Era** (81.0.0) — Autonomous multi-agent orchestration with self-healing DAGs, predictive governance, edge-native execution, and AI-native lifecycle management.
 
 

@@ -6,16 +6,16 @@ Strategic direction and planned features for the Autonomous Lifecycle Protocol.
 
 ALP aims to become the **standard protocol for autonomous software engineering** — the way Git standardized version control, Docker standardized environments, and OpenAPI standardized APIs.
 
-## Current Version: v80.0.0
+## Current Version: v81.0.0
 
-**Release Date:** 2026-07-30
+**Release Date:** 2026-08-02
 
 ### Key Features
 
 - **Autonomy Controller**: Self-healing DAGs and self-modifying workflows
 - **Intelligence Engine**: AI-powered suggestions, diagnostics, predictions
 - **Workflow Mutator**: Propose, apply, and rollback workflow edits
-- **SHAM IDE**: Cross-platform desktop IDE (Mac/Windows/Linux)
+- **SHAM IDE**: Cross-platform desktop IDE with IDE Intelligence and Autonomous Orchestration (v81.0.0)
 - **Swarm Marketplace**: Skill registration, discovery, and invocation
 - **Event Mesh**: Pub/sub topic routing across distributed nodes
 - **Encrypted Vault**: X25519 + AES-256-GCM secrets management
@@ -24,7 +24,15 @@ ALP aims to become the **standard protocol for autonomous software engineering**
 
 ## Version History
 
-### V80.0.0 — Autonomous Orchestration (Current)
+### V81.0.0 — IDE Intelligence & Autonomous Orchestration (Current)
+
+**Theme:** AI-powered IDE assistance and autonomous workflow management
+
+- **IDE Intelligence Panel**: AI-powered suggestions, diagnostics, predictions, and automated code review for `.alp` specs
+- **Autonomous Orchestration Panel**: Self-healing DAGs, adaptive runtime tuning, edge-native execution
+- **Enhanced SHAM IDE**: v81.0.0 release with integrated intelligence and autonomy tools
+
+### V80.0.0 — Autonomous Orchestration
 
 **Theme:** Self-governing, self-healing AI workflows
 
@@ -147,6 +155,61 @@ timeline
 
 - **Zero-Human Delivery Pipelines**: Autonomous software lifecycle management from natural language requirements to production canary deployment.
 - **AI Model Cost Arbitrage**: Real-time multi-LLM routing optimizing for budget, latency, and capability SLAs.
+
+## Upcoming Roadmap (v82.0.0 – v160.0.0)
+
+```mermaid
+timeline
+    title ALP Roadmap (v82.0.0 - v160.0.0)
+    v82.0.0 : Multi-Modal Protocol Specs : Vision-Language-Action Agent Control
+    v90.0.0 : Quantum-Classical Hybrid Agents : QALP Protocol
+    v100.0.0 : AGI Alignment Protocol Layer : Constitutional AI Framework
+    v120.0.0 : Self-Replicating Codebase Evolution : Meta-Learning Codegen
+    v140.0.0 : Neural-Symbolic Fusion Engine : Neuro-Symbolic Planning
+    v160.0.0 : Autonomous Civilization Protocol : Multi-Agent Society Governance
+```
+
+### V82.0.0 — Multi-Modal Protocol Specifications
+**Planned Release:** Q4 2026
+
+- **Vision-Language-Action Agent Control**: Extend ALP specs to include vision, voice, and sensor inputs as first-class protocol primitives.
+- **Multi-Modal Context Bundles**: Context bundles that include images, audio, and sensor data alongside code.
+- **Action Space Definitions**: Protocol-level definitions for agent physical and digital action capabilities.
+
+### V90.0.0 — Quantum-Classical Hybrid Agents
+**Planned Release:** Q2 2028
+
+- **QALP Protocol**: Quantum-classical hybrid agent specification with quantum circuit integration.
+- **Quantum Task Scheduling**: Quantum annealing for NP-hard dependency resolution.
+- **Hybrid Execution Engine**: Quantum processors for search, classical for deterministic tasks.
+
+### V100.0.0 — AGI Alignment Protocol Layer
+**Planned Release:** Q4 2029
+
+- **Constitutional AI Framework**: ALP-native constitutional AI with verifiable alignment properties.
+- **Value Learning Protocol**: Machine-readable value alignment specifications.
+- **Safety Constraint Verification**: Formal verification of safety properties in autonomous agents.
+
+### V120.0.0 — Self-Replicating Codebase Evolution
+**Planned Release:** Q2 2031
+
+- **Meta-Learning Codegen**: Agents that write better agents, with ALP specs describing their own improvement.
+- **Recursive Self-Improvement Engine**: Codified framework for agent self-modification and enhancement.
+- **Codebase Evolution Graphs**: Track and verify codebase evolution over time.
+
+### V140.0.0 — Neural-Symbolic Fusion Engine
+**Planned Release:** Q4 2032
+
+- **Neuro-Symbolic Planning**: Combine neural reasoning with symbolic ALP constraints.
+- **Neural-Symbolic Contract Verification**: Neural networks verify symbolic contracts and vice versa.
+- **Hybrid Reasoning DAGs**: Dependency graphs that mix neural and symbolic reasoning steps.
+
+### V160.0.0 — Autonomous Civilization Protocol
+**Planned Release:** Q2 2034
+
+- **Multi-Agent Society Governance**: Full civilization-scale ALP deployment.
+- **Inter-Society Protocol**: ALP agents that can operate across human and digital societies.
+- **Civilization State Management**: Persistent, versioned civilization-level state with rollback capability.
 
 ---
 

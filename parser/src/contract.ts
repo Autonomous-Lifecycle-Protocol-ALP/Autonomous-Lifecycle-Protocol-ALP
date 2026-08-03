@@ -82,11 +82,7 @@ export class ContractEngine {
 
   private violation(contract: ContractObject, rule: string, reason: string, context: Record<string, unknown>): ContractResult {
     const v: ContractViolation = { contractId: contract.id, rule, reason, context };
-    if (contract.on_violation === 'log') {
-      console.log(`[contract] violation: ${contract.id} — ${rule}: ${reason}`);
-    }
     if (contract.on_violation === 'warn') {
-      console.warn(`[contract] violation (warn): ${contract.id} — ${rule}: ${reason}`);
       return { ok: true };
     }
     return { ok: false, violation: v };

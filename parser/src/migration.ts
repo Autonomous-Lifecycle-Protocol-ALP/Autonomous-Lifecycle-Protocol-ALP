@@ -1,6 +1,7 @@
 import * as crypto from "crypto";
 import * as fs from "fs";
 import * as path from "path";
+import { requireChildProcess } from "./node-utils";
 
 export enum MigrationStatus {
   PENDING = "pending",
@@ -144,6 +145,7 @@ export class MigrationEngine {
     } else if (stepType === "callback" && typeof step["fn"] === "function") {
       (step["fn"] as () => void)();
     } else if (stepType === "shell" && typeof step["command"] === "string") {
+      requireChildProcess();
       require("child_process").execSync(step["command"], {
         stdio: "ignore",
       });

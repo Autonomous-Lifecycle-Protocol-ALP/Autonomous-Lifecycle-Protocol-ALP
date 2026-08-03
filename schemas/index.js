@@ -1,4 +1,5 @@
-// AUTO-GENERATED. DO NOT EDIT.
+// Barrel file: imports all ALP JSON schemas and exports them as a single namespace.
+// Add new schema imports here when new .schema.json files are added to this package.
 import schema_agent from './agent.schema.json' with { type: 'json' };
 import schema_arch_decomposer from './arch_decomposer.schema.json' with { type: 'json' };
 import schema_artifact from './artifact.schema.json' with { type: 'json' };

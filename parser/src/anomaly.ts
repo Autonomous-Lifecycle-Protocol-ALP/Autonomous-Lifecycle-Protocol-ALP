@@ -63,6 +63,8 @@ export class AnomalyDetector {
       if (handoff_rate_stddev > 0) {
         const z = Math.abs(1 - handoff_rate_mean) / handoff_rate_stddev;
         if (z > this.zThreshold) anomalies.push('handoff_spike');
+      } else if (handoff_rate_mean === 0) {
+        anomalies.push('handoff_spike');
       }
     }
 

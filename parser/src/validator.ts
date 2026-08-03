@@ -2,7 +2,6 @@ import Ajv from 'ajv';
 import addFormats from 'ajv-formats';
 import { AlpObject } from './reader';
 import { ValidationError } from './error';
-// @ts-ignore
 import schemas from '@autonomous-lifecycle-protocol-alp/schemas';
 
 export class AlpValidator {
@@ -15,9 +14,9 @@ export class AlpValidator {
     // Pre-compile all schemas
     for (const [name, schema] of Object.entries(schemas)) {
       if (name === 'common') {
-        this.ajv.addSchema(schema as any, 'common.schema.json');
+        this.ajv.addSchema(schema, 'common.schema.json');
       } else {
-        this.ajv.addSchema(schema as any, `${name}.schema.json`);
+        this.ajv.addSchema(schema, `${name}.schema.json`);
       }
     }
   }

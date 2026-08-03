@@ -1,6 +1,7 @@
 import { AlpReader, AlpObject } from './reader';
 import { AlpValidator } from './validator';
 
+// ── Core ──────────────────────────────────────────────────────────────────────
 export * from './error';
 export * from './graph';
 export * from './loop';
@@ -14,6 +15,9 @@ export * from './state-store';
 export * from './debug';
 export * from './swarm-client';
 export * from './repo-resolver';
+export * from './node-utils';
+
+// ── Parsing & Lifecycle ───────────────────────────────────────────────────────
 export * from './status';
 export * from './schedule';
 export * from './contract';
@@ -33,6 +37,8 @@ export * from './cost-optimizer';
 export * from './bridge';
 export * from './identity';
 export * from './p2p';
+
+// ── Governance & Security ─────────────────────────────────────────────────────
 export * from './healing';
 export * from './resilience';
 export * from './tenant';
@@ -45,6 +51,8 @@ export * from './did-identity';
 export * from './crdt-sync';
 export * from './self-healing';
 export * from './formal-verification';
+
+// ── Resource & Asset Management ───────────────────────────────────────────────
 export * from './asset-context';
 export * from './cost-budget';
 export * from './sandbox-env';
@@ -58,6 +66,8 @@ export * from './consensus-vote';
 export * from './code-transform';
 export * from './event-mesh';
 export * from './swarm-marketplace';
+
+// ── IDE & Editor Extensions ───────────────────────────────────────────────────
 export * from './macro';
 export * from './collaboration';
 export * from './memory-mesh';

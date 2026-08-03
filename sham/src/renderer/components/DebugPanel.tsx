@@ -21,8 +21,8 @@ interface DebugPanelProps {
 export function DebugPanel({ session, output, onAppendOutput, onStartDebug, onStopDebug, onToggleBreakpoint }: DebugPanelProps): React.JSX.Element {
   return (
     <div className="panel-container">
-      <div style={{ padding: '4px 12px', background: 'var(--header-bg)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 8, height: 32, flexShrink: 0 }}>
-        <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Debug Console</span>
+      <div className="panel-header">
+        <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>Debug Console</span>
         <div style={{ flex: 1 }} />
         {session && session.status !== 'idle' ? (
           <button className="btn btn-danger btn-sm" onClick={onStopDebug}>Stop</button>
@@ -34,9 +34,9 @@ export function DebugPanel({ session, output, onAppendOutput, onStartDebug, onSt
         {session && session.status !== 'idle' ? (
           <>
             <div style={{ borderBottom: '1px solid var(--border)' }}>
-              <div style={{ padding: '8px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Breakpoints</div>
+              <div style={{ padding: '8px 12px', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Breakpoints</div>
               {session.breakpoints.length === 0 ? (
-                <div style={{ padding: '0 12px 8px', fontSize: 12, color: 'var(--text-muted)' }}>No breakpoints</div>
+                <div style={{ padding: '0 12px 8px', fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No breakpoints</div>
               ) : (
                 session.breakpoints.map((bp, i) => (
                   <div key={i} className="list-item" onClick={() => onToggleBreakpoint(Number(bp))}>
@@ -49,9 +49,9 @@ export function DebugPanel({ session, output, onAppendOutput, onStartDebug, onSt
               )}
             </div>
             <div style={{ borderBottom: '1px solid var(--border)' }}>
-              <div style={{ padding: '8px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Call Stack</div>
+              <div style={{ padding: '8px 12px', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Call Stack</div>
               {session.callStack.length === 0 ? (
-                <div style={{ padding: '0 12px 8px', fontSize: 12, color: 'var(--text-muted)' }}>No active stack</div>
+                <div style={{ padding: '0 12px 8px', fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>No active stack</div>
               ) : (
                 session.callStack.map((frame, i) => (
                   <div key={i} className="list-item">
@@ -64,7 +64,7 @@ export function DebugPanel({ session, output, onAppendOutput, onStartDebug, onSt
                 ))
               )}
             </div>
-            <div style={{ flex: 1, overflow: 'auto', fontFamily: 'var(--font-mono)', fontSize: 12, padding: 8 }}>
+            <div style={{ flex: 1, overflow: 'auto', fontFamily: 'var(--font-mono)', fontSize: 'var(--font-size-sm)', padding: 'var(--spacing-xs)' }}>
               {output.map((line, i) => (
                 <div key={i} style={{ padding: '2px 0', color: 'var(--text-secondary)' }}>{line}</div>
               ))}

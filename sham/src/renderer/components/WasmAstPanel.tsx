@@ -70,63 +70,64 @@ export function WasmAstPanel(): React.JSX.Element {
   };
 
   const styles = {
-    container: { display: 'flex', flexDirection: 'column' as const, height: '100%', background: '#0a0a14', color: '#e0e0e0', fontFamily: 'Inter, sans-serif' },
-    header: { padding: '12px 16px', borderBottom: '1px solid #1e2035', display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
-    body: { flex: 1, display: 'flex', overflow: 'hidden' },
-    editorPane: { flex: 1, padding: 16, borderRight: '1px solid #1e2035', display: 'flex', flexDirection: 'column' as const, gap: 12 },
-    astPane: { flex: 1, padding: 16, overflowY: 'auto' as const, display: 'flex', flexDirection: 'column' as const, gap: 12 },
-    textarea: { width: '100%', flex: 1, background: '#16182a', border: '1px solid #2a2d4a', borderRadius: 8, color: '#e0e0e0', padding: 12, fontSize: 13, fontFamily: 'monospace', resize: 'none' as const },
-    btn: { background: '#a78bfa', border: 'none', borderRadius: 6, color: '#fff', padding: '8px 16px', cursor: 'pointer', fontSize: 13, fontWeight: 600 },
-    badge: (color: string) => ({ padding: '3px 10px', borderRadius: 12, background: color + '22', color, fontSize: 11, fontWeight: 600, border: `1px solid ${color}44` }),
-    card: { background: '#16182a', borderRadius: 8, padding: 12, border: '1px solid #1e2035' },
+    container: { display: 'flex', flexDirection: 'column' as const, height: '100%', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', boxSizing: 'border-box' as const },
+    header: { padding: 'var(--spacing-sm) var(--spacing-md)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' },
+    body: { flex: 1, display: 'flex', overflow: 'hidden', flexDirection: 'column' },
+    editorPane: { flex: 1, padding: 'var(--spacing-sm)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column' as const, gap: 'clamp(6px, 1.5vw, 12px)', boxSizing: 'border-box' },
+    astPane: { flex: 1, padding: 'var(--spacing-sm)', overflowY: 'auto' as const, display: 'flex', flexDirection: 'column' as const, gap: 'clamp(6px, 1.5vw, 12px)', boxSizing: 'border-box' },
+    textarea: { width: '100%', flex: 1, background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', color: 'var(--text-primary)', padding: 'clamp(6px, 1.5vw, 12px)', fontSize: 'var(--font-size-sm)', fontFamily: 'monospace', resize: 'none' as const, boxSizing: 'border-box' },
+    btn: { background: 'var(--accent)', border: 'none', borderRadius: 'var(--radius-sm)', color: 'var(--bg-primary)', padding: 'clamp(4px, 1vw, 8px) clamp(10px, 2vw, 16px)', cursor: 'pointer', fontSize: 'var(--font-size-sm)', fontWeight: 600 },
+    badge: (color: string) => ({ padding: '3px 10px', borderRadius: 12, background: color + '22', color, fontSize: 'var(--font-size-xs)', fontWeight: 600, border: `1px solid ${color}44` }),
+    card: { background: 'var(--bg-secondary)', borderRadius: 'var(--radius)', padding: 'clamp(6px, 1.5vw, 12px)', border: '1px solid var(--border)', boxSizing: 'border-box' },
   };
 
   return (
     <div style={styles.container}>
-      <div style={styles.header}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 18 }}>⚡</span>
-          <span style={{ fontWeight: 700, fontSize: 14, color: '#a78bfa' }}>Wasm-Compiled AST Evaluator</span>
-          <span style={{ fontSize: 11, background: '#a78bfa22', color: '#a78bfa', padding: '2px 8px', borderRadius: 10 }}>v66.0.0</span>
+      <div className="panel-header" style={styles.header}>
+        <div className="flex-wrap-gap">
+          <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)' }}>⚡</span>
+          <span style={{ fontWeight: 700, fontSize: 'var(--font-size-md)', color: 'var(--accent)' }}>Wasm-Compiled AST Evaluator</span>
+          <span className="badge badge-responsive" style={{ background: 'var(--accent)22', color: 'var(--accent)', border: '1px solid var(--accent)44' }}>v66.0.0</span>
         </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <span style={styles.badge('#4fc3f7')}>Parse: {parseLatencyMs}ms (Sub-5ms Target)</span>
-          <span style={styles.badge(offlineValid ? '#aed581' : '#ff8a65')}>{offlineValid ? '✅ Offline Valid' : '❌ Syntax Error'}</span>
+        <div className="flex-wrap-gap">
+          <span className="badge badge-responsive" style={{ background: 'var(--accent-blue)22', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue)44' }}>Parse: {parseLatencyMs}ms (Sub-5ms Target)</span>
+          <span className="badge badge-responsive" style={{ background: offlineValid ? 'var(--accent-green)22' : 'var(--accent-orange)22', color: offlineValid ? 'var(--accent-green)' : 'var(--accent-orange)', border: '1px solid ' + (offlineValid ? 'var(--accent-green)44' : 'var(--accent-orange)44') }}>{offlineValid ? '✅ Offline Valid' : '❌ Syntax Error'}</span>
         </div>
       </div>
 
-      <div style={styles.body}>
-        <div style={styles.editorPane}>
-          <div style={{ fontSize: 12, color: '#6b7280' }}>ALP Spec Source Input:</div>
+      <div className="panel-split" style={{ ...styles.body, flexDirection: 'row' }}>
+        <div className="panel-split-sidebar" style={{ ...styles.editorPane, width: 'clamp(180px, 30vw, 400px)', maxWidth: '500px', minWidth: '200px' }}>
+          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>ALP Spec Source Input:</div>
           <textarea
             value={content}
             onChange={e => setContent(e.target.value)}
+            className="input-field input-fluid"
             style={styles.textarea}
           />
-          <button onClick={handleEvaluate} style={styles.btn}>
+          <button onClick={handleEvaluate} style={styles.btn} className="btn btn-sm btn-responsive">
             ⚡ Run Local Wasm AST Evaluation
           </button>
         </div>
 
-        <div style={styles.astPane}>
-          <div style={{ fontSize: 12, color: '#6b7280' }}>Parsed AST Nodes ({astNodes.length}):</div>
+        <div className="panel-split-main" style={{ ...styles.astPane, overflowY: 'auto' }}>
+          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Parsed AST Nodes ({astNodes.length}):</div>
           {astNodes.map(node => (
-            <div key={node.id} style={styles.card}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: KIND_COLORS[node.kind] || '#4fc3f7' }}>{node.kind}</span>
-                <span style={{ fontSize: 11, color: '#6b7280' }}>Line {node.line}</span>
+            <div key={node.id} className="card">
+              <div className="flex-between">
+                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 700, color: KIND_COLORS[node.kind] || 'var(--accent-blue)' }}>{node.kind}</span>
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Line {node.line}</span>
               </div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>{node.name}</div>
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{node.name}</div>
             </div>
           ))}
 
           {diagnostics.length > 0 && (
-            <div style={{ marginTop: 12 }}>
-              <div style={{ fontSize: 12, color: '#ff8a65', fontWeight: 600, marginBottom: 8 }}>Offline Diagnostics:</div>
+            <div style={{ marginTop: 'clamp(6px, 1.5vw, 12px)' }}>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent-orange)', fontWeight: 600, marginBottom: 8 }}>Offline Diagnostics:</div>
               {diagnostics.map((diag, i) => (
-                <div key={i} style={{ ...styles.card, borderColor: '#ff8a65' }}>
-                  <div style={{ fontSize: 12, color: '#ff8a65', fontWeight: 600 }}>[Line {diag.line}] {diag.message}</div>
-                  <div style={{ fontSize: 10, color: '#6b7280', marginTop: 2 }}>Rule: {diag.ruleId}</div>
+                <div key={i} className="card" style={{ border: '1px solid var(--accent-orange)', boxSizing: 'border-box' }}>
+                  <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent-orange)', fontWeight: 600 }}>[Line {diag.line}] {diag.message}</div>
+                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 2 }}>Rule: {diag.ruleId}</div>
                 </div>
               ))}
             </div>

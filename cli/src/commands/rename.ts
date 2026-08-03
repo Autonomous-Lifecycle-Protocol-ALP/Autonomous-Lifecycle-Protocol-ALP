@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { AlpParser, AlpError } from '@autonomous-lifecycle-protocol-alp/parser';
+import { escapeRegex } from '../utils';
 
 export function renameCommand(oldId: string, newId: string) {
   const targetDir = path.join(process.cwd(), '.alp');
@@ -36,8 +37,4 @@ export function renameCommand(oldId: string, newId: string) {
 function renameInContent(content: string, oldId: string, newId: string): string {
   const idPattern = new RegExp(`(id:\\s*)${escapeRegex(oldId)}(?=\\s|$)`, 'g');
   return content.replace(idPattern, `$1${newId}`);
-}
-
-function escapeRegex(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

@@ -25,7 +25,7 @@ The ALP repo ships an active CI workflow at `.github/workflows/ci.yml` (TypeScri
 
 > **CLI:** the drop-in workflows build `@autonomous-lifecycle-protocol-alp/cli` from source (`npm ci && npm run build --workspace @autonomous-lifecycle-protocol-alp/cli`) and invoke it via `node cli/dist/index.js`. This matches the `validate` job in the repo's own `.github/workflows/ci.yml`.
 
-## Current Toolchain Surface (v45.0.0)
+## Current Toolchain Surface (v81.0.0)
 
 Integrations should be aware of the modern ALP surface so agents operate with full protocol coverage:
 
@@ -33,7 +33,7 @@ Integrations should be aware of the modern ALP surface so agents operate with fu
 - **`@timeline`** — native cron / `at` scheduling evaluated by `alp schedule`; agents can discover deferred work without an external cron daemon.
 - **`@contract`** — least-privilege runtime boundaries enforced at handoff points (`ContractEngine.check`).
 - **`@vault`** — encrypted secrets (X25519 envelope + AES-256-GCM); CI should inject secrets via `alp vault get` rather than committing them.
-- **MCP Server** — 31 tools exposed to Claude Desktop, Cursor, Windsurf, and any MCP client (see `mcp-server/README.md`).
+- **MCP Server** — 52 tools exposed to Claude Desktop, Cursor, Windsurf, and any MCP client (see `mcp-server/README.md`).
 - **Multi-Language SDKs** — Official TypeScript (`@autonomous-lifecycle-protocol-alp/sdk`), Python (`alp-sdk`), Go (`alp-go`), Rust (`alp-rs`), and Java (`alp-java`) SDKs with core parsing, graph, and workspace APIs. See `sdk/README.md`.
 - **Registry & signing** — publish/install with `alp registry`, per-namespace bearer tokens, and Ed25519 package signatures (`alp keys generate`, `alp keys trust add`).
 - **Autonomous Orchestration** — `alp autonomy` command group with `run`, `heal`, `predict`, `observe`, `mutate`, and `decisions` subcommands. Self-healing DAGs with auto-patching and adaptive runtime tuning.

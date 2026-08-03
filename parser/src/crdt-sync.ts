@@ -97,4 +97,14 @@ export class CRDTSyncEngine {
 
     return result;
   }
+
+  toJSON(): Record<string, any> {
+    return {
+      states: Array.from(this.states.entries()).map(([docId, state]) => ({ ...state, docId })),
+    };
+  }
+
+  fromJSON(data: Record<string, any>): void {
+    this.states = new Map((data.states || []).map((s: any) => [s.docId, s]));
+  }
 }

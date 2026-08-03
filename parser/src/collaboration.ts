@@ -635,4 +635,61 @@ export class CollaborationEngine {
   exportAuditLog(): string {
     return JSON.stringify(this.auditLog, null, 2);
   }
+
+  toJSON(): Record<string, any> {
+    return {
+      sessions: Array.from(this.sessions.entries()).map(([docId, session]) => ({
+        docId,
+        createdAt: session.createdAt,
+        agents: Array.from(session.agents.entries()).map(([agentId, presence]) => ({ ...presence, agentId })),
+        operations: session.operations,
+        state: session.state,
+        branches: Array.from(session.branches.entries()).map(([branchId, branch]) => ({ ...branch, branchId })),
+      })),
+      permissions: Array.from(this.permissions.entries()).map(([docId, perms]) => ({ docId, permissions: perms })),
+      comments: this.comments,
+      threads: this.threads,
+      activities: this.activities,
+      liveShares: Array.from(this.liveShares.entries()).map(([sessionId, share]) => ({ ...share, sessionId })),
+      auditLog: this.auditLog,
+      counters: {
+        op: opCounter,
+        comment: commentCounter,
+        thread: threadCounter,
+        activity: activityCounter,
+        audit: auditCounter,
+        share: shareCounter,
+      },
+    };
+  }
+
+  fromJSON(data: Record<string, any>): void {
+    this.sessions = new Map(
+      (data.sessions || []).map((s: any) => [
+        s.docId,
+        {
+          docId: s.docId,
+          createdAt: s.createdAt,
+          agents: new Map((s.agents || []).map((a: any) => [a.agentId, a])),
+          operations: s.operations || [],
+          state: s.state || {},
+          branches: new Map((s.branches || []).map((b: any) => [b.branchId, b])),
+        },
+      ])
+    );
+    this.permissions = new Map((data.permissions || []).map((p: any) => [p.docId, p.permissions || []]));
+    this.comments = data.comments || [];
+    this.threads = data.threads || [];
+    this.activities = data.activities || [];
+    this.liveShares = new Map((data.liveShares || []).map((s: any) => [s.sessionId, s]));
+    this.auditLog = data.auditLog || [];
+    if (data.counters) {
+      opCounter = data.counters.op ?? opCounter;
+      commentCounter = data.counters.comment ?? commentCounter;
+      threadCounter = data.counters.thread ?? threadCounter;
+      activityCounter = data.counters.activity ?? activityCounter;
+      auditCounter = data.counters.audit ?? auditCounter;
+      shareCounter = data.counters.share ?? shareCounter;
+    }
+  }
 }

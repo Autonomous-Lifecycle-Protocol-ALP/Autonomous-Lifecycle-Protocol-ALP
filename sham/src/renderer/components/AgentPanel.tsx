@@ -23,40 +23,40 @@ export function AgentPanel({ agents, onRunAgent }: AgentPanelProps): React.JSX.E
   };
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 12 }}>
-      <div style={{ marginBottom: 12 }}>
+    <div className="detail-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: 'var(--spacing-sm)', boxSizing: 'border-box' }}>
+      <div style={{ marginBottom: '12px' }}>
         <div className="panel-title" style={{ padding: 0, marginBottom: 8 }}>Agent Manager</div>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div className="flex-wrap-gap">
           <input
             value={newAgentName}
             onChange={(e) => setNewAgentName(e.target.value)}
             placeholder="New agent name..."
-            className="input-field"
-            style={{ flex: 1 }}
+            className="input-field input-fluid"
+            style={{ flex: 1, minWidth: '120px' }}
           />
-          <button className="btn btn-primary" onClick={handleAddAgent}>Add</button>
+          <button className="btn btn-primary btn-responsive" onClick={handleAddAgent}>Add</button>
         </div>
       </div>
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {agents.length === 0 ? (
-          <div className="empty-state" style={{ height: 'auto', padding: 32 }}>
+          <div className="empty-state">
             <div className="empty-state-icon">&#128100;</div>
             <div className="empty-state-title">No agents yet</div>
             <div className="empty-state-desc">Create an agent to get started with autonomous workflows.</div>
           </div>
         ) : (
           agents.map((agent) => (
-            <div key={agent.id} className="section-card" style={{ marginBottom: 8 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontSize: 13, fontWeight: 500 }}>{agent.name}</span>
-                <span className={`badge ${agent.status === 'running' ? 'badge-success' : agent.status === 'error' ? 'badge-error' : 'badge-muted'}`}>
+            <div key={agent.id} className="section-card" style={{ marginBottom: 8, boxSizing: 'border-box' }}>
+              <div className="flex-between">
+                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 500 }}>{agent.name}</span>
+                <span className={`badge badge-responsive ${agent.status === 'running' ? 'badge-success' : agent.status === 'error' ? 'badge-error' : 'badge-muted'}`}>
                   {agent.status}
                 </span>
               </div>
-              <div style={{ marginTop: 8, display: 'flex', gap: 6 }}>
-                <button className="btn btn-primary btn-sm" onClick={() => onRunAgent(agent.id, agent.config)}>Run</button>
-                <button className="btn btn-secondary btn-sm">Configure</button>
-                <button className="btn btn-danger btn-sm">Delete</button>
+              <div className="flex-wrap-gap" style={{ marginTop: 8, gap: 6 }}>
+                <button className="btn btn-primary btn-sm btn-responsive" onClick={() => onRunAgent(agent.id, agent.config)}>Run</button>
+                <button className="btn btn-secondary btn-sm btn-responsive">Configure</button>
+                <button className="btn btn-danger btn-sm btn-responsive">Delete</button>
               </div>
             </div>
           ))

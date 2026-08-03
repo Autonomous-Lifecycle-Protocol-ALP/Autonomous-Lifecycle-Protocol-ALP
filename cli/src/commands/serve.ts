@@ -5,6 +5,7 @@ import { AlpParser, AlpObject, StateStore, computeAnalytics } from '@autonomous-
 import { readEvents, runtimeLogPath } from '../runtime';
 import { RegistryStore } from '../registry-store';
 import { loadAlprc } from '../registry';
+import { loadAlpDir, extractDeps } from '../utils';
 
 interface ServeOptions {
   port?: number;
@@ -165,7 +166,7 @@ export function serveCommand(options?: ServeOptions) {
   function buildState() {
     const parser = new AlpParser();
     const objects: AlpObject[] = [];
-    loadAll(alpDir, parser, objects);
+    loadAlpDir(alpDir, parser, objects);
 
     const tasks = objects.filter((o) => o._type === 'task');
     const statusCount: Record<string, number> = {};
@@ -195,7 +196,7 @@ export function serveCommand(options?: ServeOptions) {
   function buildGraph() {
     const parser = new AlpParser();
     const objects: AlpObject[] = [];
-    loadAll(alpDir, parser, objects);
+    loadAlpDir(alpDir, parser, objects);
     const nodes = objects
       .filter((o) => o._type === 'task')
       .map((t) => ({ id: t.id, status: t.status ?? '[ ]' }));
@@ -516,38 +517,6 @@ function handleRegistry(
   }
 
   sendJson(res, { error: 'unknown registry endpoint' }, 404);
-}
-
-function loadAll(dir: string, parser: AlpParser, out: AlpObject[]) {
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      if (entry.name === '.runtime' || entry.name === '.cache') continue;
-      loadAll(full, parser, out);
-    } else if (entry.name.endsWith('.alp')) {
-      try {
-        const content = fs.readFileSync(full, 'utf-8');
-        out.push(...parser.parse(content));
-      } catch {
-        /* skip unparseable files */
-      }
-    }
-  }
-}
-
-function extractDeps(obj: AlpObject): string[] {
-  const deps: string[] = [];
-  for (const key of ['depends_on', 'blocked_by', 'requires']) {
-    const val = (obj as any)[key];
-    if (!val) continue;
-    const arr = Array.isArray(val) ? val : [val];
-    for (const v of arr) {
-      const cleaned = String(v).replace(/^->\s*/, '').trim();
-      if (cleaned) deps.push(cleaned);
-    }
-  }
-  return deps;
 }
 
 function readLocks(cwd: string): string[] {

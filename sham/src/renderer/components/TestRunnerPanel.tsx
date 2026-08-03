@@ -47,8 +47,8 @@ export function TestRunnerPanel({ suites, output, onRunTests, onAppendOutput }: 
           Run Tests
         </button>
       </div>
-      <div style={{ flex: 1, overflow: 'auto', display: 'flex', flexDirection: 'row' }}>
-        <div style={{ width: '40%', borderRight: '1px solid var(--border)', overflow: 'auto' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'row', overflow: 'hidden' }}>
+        <div className="panel-split-sidebar" style={{ width: '40%', minWidth: 200, borderRight: '1px solid var(--border)', overflow: 'auto' }}>
           {suites.length === 0 ? (
             <div className="empty-state">
               <div className="empty-state-title">No test suites</div>
@@ -70,7 +70,7 @@ export function TestRunnerPanel({ suites, output, onRunTests, onAppendOutput }: 
                     </div>
                   </div>
                   <span
-                    className="badge"
+                    className="badge badge-responsive"
                     style={{
                       background:
                         suite.status === 'passed' ? 'rgba(166, 227, 161, 0.15)' :
@@ -120,7 +120,7 @@ export function TestRunnerPanel({ suites, output, onRunTests, onAppendOutput }: 
             ))
           )}
         </div>
-        <div style={{ flex: 1, overflow: 'auto', fontFamily: 'var(--font-mono)', fontSize: 12, padding: 8, background: 'var(--bg-primary)' }}>
+        <div style={{ flex: 1, overflow: 'auto', fontFamily: 'var(--font-mono)', fontSize: 'var(--font-size-sm)', padding: 'var(--spacing-xs)', background: 'var(--bg-primary)', boxSizing: 'border-box' }}>
           {output.length === 0 ? (
             <div style={{ color: 'var(--text-muted)' }}>Run a test suite to see output here.</div>
           ) : (

@@ -123,28 +123,30 @@ export function CopilotPanel({
   const filtered = filter === 'all' ? suggestions : suggestions.filter((s) => s.type === filter);
 
   const styles = {
-    container: { display: 'flex', flexDirection: 'column' as const, height: '100%', background: '#0f0f1a', color: '#e0e0e0', fontFamily: 'Inter, sans-serif' },
-    header: { padding: '12px 16px', borderBottom: '1px solid #1e2035', display: 'flex', alignItems: 'center', gap: 10 },
-    tabs: { display: 'flex', borderBottom: '1px solid #1e2035' },
-    tab: (active: boolean) => ({ padding: '8px 16px', cursor: 'pointer', fontSize: 13, color: active ? '#a78bfa' : '#6b7280', borderBottom: active ? '2px solid #a78bfa' : '2px solid transparent', background: 'transparent', border: 'none', fontFamily: 'inherit' }),
-    body: { flex: 1, overflowY: 'auto' as const, padding: 16 },
-    intentBadge: (i: CopilotIntent) => ({ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 12px', borderRadius: 20, background: INTENT_COLORS[i] + '22', color: INTENT_COLORS[i], fontSize: 12, fontWeight: 600, border: `1px solid ${INTENT_COLORS[i]}44` }),
-    planStep: { display: 'flex', gap: 12, padding: '10px 0', borderBottom: '1px solid #1e2035' },
-    stepBubble: { width: 24, height: 24, borderRadius: '50%', background: '#a78bfa22', border: '1px solid #a78bfa', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: '#a78bfa', flexShrink: 0 },
-    input: { width: '100%', background: '#16182a', border: '1px solid #2a2d4a', borderRadius: 8, color: '#e0e0e0', padding: '10px 12px', fontSize: 13, fontFamily: 'inherit', boxSizing: 'border-box' as const },
-    btn: (color: string) => ({ background: color, border: 'none', borderRadius: 6, color: '#fff', padding: '8px 16px', cursor: 'pointer', fontSize: 13, fontWeight: 600 }),
-    suggCard: { background: '#16182a', borderRadius: 8, padding: '10px 14px', marginBottom: 8, borderLeft: '3px solid #a78bfa' },
+    container: { display: 'flex', flexDirection: 'column' as const, height: '100%', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', boxSizing: 'border-box' as const },
+    header: { padding: 'var(--spacing-sm) var(--spacing-md)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10 },
+    tabs: { display: 'flex', borderBottom: '1px solid var(--border)', flexWrap: 'wrap' },
+    tab: (active: boolean) => ({ padding: '8px 16px', cursor: 'pointer', fontSize: 'var(--font-size-sm)', color: active ? 'var(--accent)' : 'var(--text-muted)', borderBottom: active ? '2px solid var(--accent)' : '2px solid transparent', background: 'transparent', border: 'none', fontFamily: 'inherit' }),
+    body: { flex: 1, overflowY: 'auto' as const, padding: 'var(--spacing-sm)', boxSizing: 'border-box' as const },
+    intentBadge: (i: CopilotIntent) => ({ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 12px', borderRadius: 20, background: INTENT_COLORS[i] + '22', color: INTENT_COLORS[i], fontSize: 'var(--font-size-xs)', fontWeight: 600, border: `1px solid ${INTENT_COLORS[i]}44` }),
+    planStep: { display: 'flex', gap: 12, padding: '10px 0', borderBottom: '1px solid var(--border)' },
+    stepBubble: { width: 24, height: 24, borderRadius: '50%', background: 'var(--accent)22', border: '1px solid var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, color: 'var(--accent)', flexShrink: 0 },
+    input: { width: '100%', background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', color: 'var(--text-primary)', padding: '10px 12px', fontSize: 'var(--font-size-sm)', fontFamily: 'inherit', boxSizing: 'border-box' as const },
+    btn: (color: string) => ({ background: color, border: 'none', borderRadius: 'var(--radius-sm)', color: '#fff', padding: '8px 16px', cursor: 'pointer', fontSize: 'var(--font-size-sm)', fontWeight: 600 }),
+    suggCard: { background: 'var(--bg-secondary)', borderRadius: 'var(--radius)', padding: '10px 14px', marginBottom: 8, borderLeft: '3px solid var(--accent)' },
   };
 
   return (
     <div style={styles.container}>
-      <div style={styles.header}>
-        <span style={{ fontSize: 16 }}>🤖</span>
-        <span style={{ fontWeight: 700, fontSize: 14, color: '#a78bfa' }}>Agent Copilot</span>
-        <span style={{ fontSize: 11, color: '#6b7280', marginLeft: 'auto' }}>v62.0.0</span>
+      <div className="panel-header">
+        <div className="flex-wrap-gap">
+          <span style={{ fontSize: 'var(--font-size-md)' }}>🤖</span>
+          <span style={{ fontWeight: 700, fontSize: 'var(--font-size-sm)', color: 'var(--accent)' }}>Agent Copilot</span>
+          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>v62.0.0</span>
+        </div>
       </div>
 
-      <div style={styles.tabs}>
+      <div className="tab-nav">
         {(['chat', 'plan', 'suggestions'] as const).map(tab => (
           <button key={tab} style={styles.tab(activeTab === tab)} onClick={() => setActiveTab(tab)}>
             {tab === 'chat' ? '💬 Chat' : tab === 'plan' ? '🗺️ Plan' : '✨ Suggestions'}
@@ -154,37 +156,39 @@ export function CopilotPanel({
 
       <div style={styles.body}>
         {activeTab === 'chat' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div style={{ fontSize: 12, color: '#6b7280' }}>Describe what you want the copilot to do:</div>
+          <div className="card-container">
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Describe what you want the copilot to do:</div>
             <textarea
               rows={3}
               placeholder='e.g. "generate a TypeScript async API handler" or "fix the auth bug"'
               value={prompt}
               onChange={e => setPrompt(e.target.value)}
-              style={{ ...styles.input, resize: 'none' }}
+              className="input-field input-fluid"
+              style={{ ...styles.input, resize: 'none', fontFamily: 'inherit' }}
             />
-            <button style={styles.btn('#a78bfa')} onClick={handlePromptSubmit}>
+            <button className="btn btn-responsive" style={styles.btn('var(--accent)')} onClick={handlePromptSubmit}>
               🧠 Classify & Plan
             </button>
 
             {intent && (
-              <div style={{ background: '#16182a', borderRadius: 8, padding: 12 }}>
-                <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 8 }}>Detected Intent:</div>
+              <div className="card">
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 8 }}>Detected Intent:</div>
                 <span style={styles.intentBadge(intent)}>
                   {INTENT_ICONS[intent]} {intent.replace('_', ' ')}
                 </span>
               </div>
             )}
 
-            <div style={{ marginTop: 16, fontSize: 12, color: '#6b7280' }}>Or get inline code suggestions:</div>
+            <div style={{ marginTop: 16, fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Or get inline code suggestions:</div>
             <textarea
               rows={4}
               placeholder="Paste code for analysis..."
               value={content}
               onChange={e => setContent(e.target.value)}
+              className="input-field input-fluid"
               style={{ ...styles.input, fontFamily: 'monospace', resize: 'none' }}
             />
-            <button style={styles.btn('#4fc3f7')} onClick={handleSuggest} disabled={loading}>
+            <button className="btn btn-responsive" style={styles.btn('var(--accent-blue)')} onClick={handleSuggest} disabled={loading}>
               {loading ? '⏳ Analyzing…' : '⚡ Get Suggestions'}
             </button>
           </div>
@@ -194,24 +198,26 @@ export function CopilotPanel({
           <div>
             {intent ? (
               <>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                <div className="flex-wrap-gap" style={{ marginBottom: 16 }}>
                   <span style={styles.intentBadge(intent)}>{INTENT_ICONS[intent]} {intent.replace('_', ' ')}</span>
-                  <span style={{ fontSize: 12, color: '#6b7280' }}>{planSteps.length} steps</span>
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{planSteps.length} steps</span>
                 </div>
                 {planSteps.map(step => (
                   <div key={step.stepIndex} style={styles.planStep}>
                     <div style={styles.stepBubble}>{step.stepIndex}</div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#e0e0e0' }}>{step.action}</div>
-                      <div style={{ fontSize: 11, color: '#a78bfa', marginTop: 2 }}>{step.agentRole}</div>
-                      <div style={{ fontSize: 11, color: '#6b7280', marginTop: 2 }}>{step.rationale}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{step.action}</div>
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', marginTop: 2 }}>{step.agentRole}</div>
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 2 }}>{step.rationale}</div>
                     </div>
                   </div>
                 ))}
               </>
             ) : (
-              <div style={{ color: '#6b7280', fontSize: 13, textAlign: 'center', paddingTop: 32 }}>
-                💬 Enter a prompt in the Chat tab to generate a plan.
+              <div className="empty-state">
+                <div className="empty-state-icon">💬</div>
+                <div className="empty-state-title">No plan generated</div>
+                <div className="empty-state-desc">Enter a prompt in the Chat tab to generate a plan.</div>
               </div>
             )}
           </div>
@@ -219,31 +225,34 @@ export function CopilotPanel({
 
         {activeTab === 'suggestions' && (
           <div>
-            <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' as const }}>
+            <div className="flex-wrap-gap" style={{ marginBottom: 12 }}>
               {(['all', 'fix', 'completion', 'tip'] as const).map(f => (
-                <button key={f} onClick={() => setFilter(f)} style={{ ...styles.btn(filter === f ? '#a78bfa' : '#1e2035'), padding: '4px 12px', fontSize: 12 }}>
+                <button key={f} onClick={() => setFilter(f)} style={{ ...styles.btn(filter === f ? 'var(--accent)' : 'var(--border)'), padding: '4px 12px', fontSize: 'var(--font-size-xs)' }}>
                   {f.charAt(0).toUpperCase() + f.slice(1)}
                 </button>
               ))}
             </div>
             {filtered.length === 0 ? (
-              <div style={{ color: '#6b7280', fontSize: 13, textAlign: 'center', paddingTop: 32 }}>
-                ✨ No suggestions yet. Paste code in Chat and click "Get Suggestions".
+              <div className="empty-state">
+                <div className="empty-state-icon">✨</div>
+                <div className="empty-state-title">No suggestions</div>
+                <div className="empty-state-desc">Paste code in Chat and click "Get Suggestions".</div>
               </div>
             ) : filtered.map((s, i) => (
-              <div key={i} style={styles.suggCard}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                  <span style={{ fontSize: 11, color: '#a78bfa', fontWeight: 600 }}>{s.type.toUpperCase()}</span>
+              <div key={i} className="card" style={{ ...styles.suggCard }}>
+                <div className="flex-between" style={{ marginBottom: 6 }}>
+                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', fontWeight: 600 }}>{s.type.toUpperCase()}</span>
                   <button
                     onClick={() => copilotApplyFix({ filePath: 'untitled.alp', suggestionId: (s as unknown as { id: string }).id ?? 's-1' }).then(r => { if (r.success) onAppendOutput([`[Copilot] Applied fix: ${s.message}`]); })}
-                    style={{ ...styles.btn('#4fc3f7'), padding: '2px 10px', fontSize: 11 }}
+                    className="btn btn-sm"
+                    style={{ ...styles.btn('var(--accent-blue)'), padding: '2px 10px', fontSize: 'var(--font-size-xs)' }}
                   >
                     Apply
                   </button>
                 </div>
-                <div style={{ fontSize: 13, color: '#e0e0e0' }}>{s.message}</div>
+                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{s.message}</div>
                 {(s as unknown as { replacement?: string }).replacement && (
-                  <pre style={{ fontSize: 11, color: '#aed581', background: '#0a0a16', borderRadius: 6, padding: 8, marginTop: 6, overflowX: 'auto' }}>
+                  <pre style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent-green)', background: 'var(--bg-primary)', borderRadius: 'var(--radius-sm)', padding: 8, marginTop: 6, overflowX: 'auto' }} className="table-responsive">
                     {(s as unknown as { replacement?: string }).replacement}
                   </pre>
                 )}
@@ -254,9 +263,9 @@ export function CopilotPanel({
       </div>
 
       {output.length > 0 && (
-        <div style={{ borderTop: '1px solid #1e2035', padding: '8px 16px', maxHeight: 100, overflowY: 'auto' }}>
+        <div className="panel-header" style={{ borderTop: '1px solid var(--border)', maxHeight: 'clamp(80px, 15vh, 100px)', overflowY: 'auto' }}>
           {output.slice(-5).map((line, i) => (
-            <div key={i} style={{ fontSize: 11, color: '#6b7280', fontFamily: 'monospace' }}>{line}</div>
+            <div key={i} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{line}</div>
           ))}
         </div>
       )}

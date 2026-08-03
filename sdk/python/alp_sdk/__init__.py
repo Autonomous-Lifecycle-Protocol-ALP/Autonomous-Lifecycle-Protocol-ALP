@@ -195,6 +195,7 @@ from .policy_federation import (
     FederatedDecision,
     FederatedTrustRoot,
 )
+from .anomaly import AnomalyDetector
 from .event_store import Event, EventStore, EVENT_SCHEMA_VERSION
 from .visualize import (
     WorkflowVisualizer,

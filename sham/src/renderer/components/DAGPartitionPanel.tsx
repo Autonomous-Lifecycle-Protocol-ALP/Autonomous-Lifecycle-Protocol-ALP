@@ -46,29 +46,30 @@ export function DAGPartitionPanel(): React.JSX.Element {
   };
 
   return (
-    <div className="dag-partition-panel" style={{ padding: '16px', color: '#e0e0e0', fontFamily: 'sans-serif' }}>
-      <h2 style={{ borderBottom: '1px solid #333', paddingBottom: '8px', marginTop: 0 }}>
-        🌐 Multi-Region DAG Partitioner (v50.0.0)
-      </h2>
-      <p style={{ color: '#aaa', fontSize: '13px' }}>
-        Partition workspace execution graph across distributed cloud edge regions for parallel execution.
-      </p>
+    <div className="panel-container" style={{ padding: 'var(--spacing-sm)', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', boxSizing: 'border-box' }}>
+      <div className="panel-header">
+        <h2 style={{ borderBottom: '1px solid var(--border)', paddingBottom: '8px', marginTop: 0, fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--accent)' }}>
+           🌐 Multi-Region DAG Partitioner (v50.0.0)
+        </h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
+          Partition workspace execution graph across distributed cloud edge regions for parallel execution.
+        </p>
+      </div>
 
       {/* Region Selector */}
       <div style={{ marginBottom: '16px' }}>
-        <label style={{ fontSize: '12px', color: '#888', display: 'block', marginBottom: '6px' }}>Target Cloud Regions</label>
-        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>Target Cloud Regions</label>
+        <div className="flex-wrap-gap">
           {Object.entries(regionColors).map(([region, color]) => (
             <button
               key={region}
               onClick={() => toggleRegion(region)}
+              className="btn btn-sm badge-responsive"
               style={{
-                padding: '6px 14px',
                 borderRadius: '4px',
-                border: `1px solid ${selectedRegions.includes(region) ? color : '#444'}`,
-                background: selectedRegions.includes(region) ? `${color}22` : '#222',
-                color: selectedRegions.includes(region) ? color : '#666',
-                cursor: 'pointer',
+                border: `1px solid ${selectedRegions.includes(region) ? color : 'var(--border)'}`,
+                background: selectedRegions.includes(region) ? `${color}22` : 'var(--bg-secondary)',
+                color: selectedRegions.includes(region) ? color : 'var(--text-muted)',
                 fontWeight: selectedRegions.includes(region) ? 'bold' : 'normal',
               }}
             >
@@ -81,13 +82,10 @@ export function DAGPartitionPanel(): React.JSX.Element {
       <button
         onClick={handlePartition}
         disabled={selectedRegions.length === 0}
+        className="btn btn-lg btn-block"
         style={{
-          padding: '10px 20px',
-          background: selectedRegions.length > 0 ? '#0066cc' : '#333',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: selectedRegions.length > 0 ? 'pointer' : 'not-allowed',
+          background: selectedRegions.length > 0 ? 'var(--accent)' : 'var(--text-muted)',
+          color: 'var(--bg-primary)',
           fontWeight: 'bold',
           marginBottom: '20px',
         }}
@@ -97,30 +95,33 @@ export function DAGPartitionPanel(): React.JSX.Element {
 
       {/* Partition Results */}
       {partitions && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '12px' }}>
+        <div className="grid-auto-fit-md">
           {partitions.map(p => (
             <div
               key={p.region}
+              className="card"
               style={{
                 border: `1px solid ${p.color}`,
-                borderRadius: '8px',
-                padding: '14px',
+                borderRadius: 'var(--radius-sm)',
+                padding: 'var(--spacing-sm)',
                 background: `${p.color}08`,
+                boxSizing: 'border-box',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                <strong style={{ color: p.color }}>📍 {p.region.toUpperCase()}</strong>
-                <span style={{ fontSize: '11px', color: '#888' }}>{p.latencyMs} ms</span>
+              <div className="flex-between">
+                <strong style={{ color: p.color, fontSize: 'var(--font-size-sm)' }}>📍 {p.region.toUpperCase()}</strong>
+                <span className="badge badge-responsive" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{p.latencyMs} ms</span>
               </div>
-              <div style={{ fontSize: '12px', color: '#aaa', marginBottom: '8px' }}>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '8px' }}>
                 {p.nodeIds.length} nodes assigned
               </div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+              <div className="flex-wrap-gap">
                 {p.nodeIds.map(id => (
                   <span
                     key={id}
+                    className="badge badge-responsive"
                     style={{
-                      fontSize: '11px',
+                      fontSize: 'var(--font-size-xs)',
                       padding: '2px 8px',
                       background: `${p.color}22`,
                       color: p.color,
@@ -139,16 +140,8 @@ export function DAGPartitionPanel(): React.JSX.Element {
 
       {/* Summary Stats */}
       {partitions && (
-        <div style={{
-          marginTop: '16px',
-          padding: '12px',
-          background: '#111',
-          border: '1px solid #333',
-          borderRadius: '6px',
-          fontSize: '12px',
-          fontFamily: 'monospace',
-        }}>
-          <strong style={{ color: '#0066cc' }}>Partition Summary</strong>
+        <div className="card" style={{ marginTop: '16px', fontFamily: 'monospace', fontSize: 'var(--font-size-xs)' }}>
+          <strong style={{ color: 'var(--accent-blue)' }}>Partition Summary</strong>
           <div style={{ marginTop: '6px' }}>
             Total Nodes: {sampleTasks.length} | Regions: {partitions.length} |
             Avg Latency: {(partitions.reduce((s, p) => s + p.latencyMs, 0) / partitions.length).toFixed(1)} ms

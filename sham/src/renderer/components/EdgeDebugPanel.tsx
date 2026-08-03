@@ -49,77 +49,64 @@ export function EdgeDebugPanel(): React.JSX.Element {
     setBreakpoints(prev => prev.map(b => b.id === id ? { ...b, enabled: !b.enabled } : b));
   };
 
-  const styles = {
-    container: { display: 'flex', flexDirection: 'column' as const, height: '100%', background: '#0a0a14', color: '#e0e0e0', fontFamily: 'Inter, sans-serif' },
-    header: { padding: '12px 16px', borderBottom: '1px solid #1e2035', display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
-    controls: { padding: '8px 16px', background: '#121324', borderBottom: '1px solid #1e2035', display: 'flex', gap: 10, alignItems: 'center' },
-    body: { flex: 1, display: 'flex', overflow: 'hidden' },
-    pane: { flex: 1, padding: 16, borderRight: '1px solid #1e2035', overflowY: 'auto' as const, display: 'flex', flexDirection: 'column' as const, gap: 12 },
-    btn: (color: string) => ({ background: color, border: 'none', borderRadius: 6, color: '#fff', padding: '6px 12px', cursor: 'pointer', fontSize: 12, fontWeight: 600 }),
-    badge: (color: string) => ({ padding: '3px 10px', borderRadius: 12, background: color + '22', color, fontSize: 11, fontWeight: 600, border: `1px solid ${color}44` }),
-    card: { background: '#16182a', borderRadius: 8, padding: 12, border: '1px solid #1e2035' },
-  };
-
   return (
-    <div style={styles.container}>
-      <div style={styles.header}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 18 }}>🐛</span>
-          <span style={{ fontWeight: 700, fontSize: 14, color: '#a78bfa' }}>Cloud Edge Live Debugger</span>
-          <span style={{ fontSize: 11, background: '#a78bfa22', color: '#a78bfa', padding: '2px 8px', borderRadius: 10 }}>v68.0.0</span>
+    <div className="panel-container" style={{ height: '100%', backgroundColor: 'var(--terminal-bg)', color: 'var(--text-primary)', boxSizing: 'border-box' }}>
+      <div className="panel-header">
+        <div className="flex-wrap-gap">
+          <span style={{ fontSize: 'var(--font-size-md)' }}>🐛</span>
+          <span style={{ fontWeight: 700, fontSize: 'var(--font-size-sm)', color: 'var(--accent)' }}>Cloud Edge Live Debugger</span>
+          <span className="badge badge-responsive" style={{ background: 'var(--accent)22', color: 'var(--accent)', border: '1px solid var(--accent)44' }}>v68.0.0</span>
         </div>
-        <div style={{ display: 'flex', gap: 10 }}>
-          <span style={styles.badge('#4fc3f7')}>Node: {nodeId}</span>
-          <span style={styles.badge(status === 'PAUSED' ? '#ffd54f' : '#aed581')}>● {status}</span>
+        <div className="flex-wrap-gap">
+          <span className="badge badge-responsive" style={{ background: 'var(--accent-blue)22', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue)44' }}>Node: {nodeId}</span>
+          <span className="badge badge-responsive" style={{ background: status === 'PAUSED' ? 'var(--accent-yellow)22' : 'var(--accent-green)22', color: status === 'PAUSED' ? 'var(--accent-yellow)' : 'var(--accent-green)', border: `1px solid ${status === 'PAUSED' ? 'var(--accent-yellow)' : 'var(--accent-green)'}44` }}>● {status}</span>
         </div>
       </div>
 
-      <div style={styles.controls}>
-        <button style={styles.btn('#4fc3f7')} onClick={handleStepOver}>
-          ⏭️ Step Over
-        </button>
-        <button style={styles.btn('#aed581')} onClick={handleResume}>
-          ▶️ Resume
-        </button>
-        <button style={styles.btn('#ff8a65')} onClick={() => setStatus('PAUSED')}>
-          ⏸️ Pause
-        </button>
+      <div className="action-bar" style={{ background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border)', flexShrink: 0 }}>
+        <button className="btn btn-responsive btn-primary" onClick={handleStepOver}>⏭️ Step Over</button>
+        <button className="btn btn-responsive btn-success" onClick={handleResume}>▶️ Resume</button>
+        <button className="btn btn-responsive btn-warning" onClick={() => setStatus('PAUSED')}>⏸️ Pause</button>
       </div>
 
-      <div style={styles.body}>
+      <div className="panel-split" style={{ height: '100%', overflow: 'hidden', flex: 1, flexDirection: 'row' }}>
         {/* Left Pane: Stack & Breakpoints */}
-        <div style={styles.pane}>
-          <div style={{ fontSize: 12, color: '#6b7280', fontWeight: 600 }}>Active Call Frame:</div>
-          <div style={styles.card}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#a78bfa' }}>{frame.functionName}()</div>
-            <div style={{ fontSize: 11, color: '#9ca3af', marginTop: 2 }}>{frame.file}:{frame.line}</div>
-          </div>
-
-          <div style={{ fontSize: 12, color: '#6b7280', fontWeight: 600, marginTop: 12 }}>Distributed Breakpoints ({breakpoints.length}):</div>
-          {breakpoints.map(bp => (
-            <div key={bp.id} style={{ ...styles.card, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontSize: 12, color: '#e0e0e0' }}>{bp.file}:{bp.line}</div>
-              </div>
-              <input
-                type="checkbox"
-                checked={bp.enabled}
-                onChange={() => toggleBreakpoint(bp.id)}
-              />
+        <div className="panel-split-sidebar" style={{ width: 'clamp(200px, 30vw, 320px)', maxWidth: '400px', borderRight: '1px solid var(--border)', overflowY: 'auto', boxSizing: 'border-box' }}>
+          <div className="section-card">
+            <div className="section-card-title">Active Call Frame</div>
+            <div className="card">
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--accent)' }}>{frame.functionName}()</div>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 2 }}>{frame.file}:{frame.line}</div>
             </div>
-          ))}
+
+            <div className="section-card-title">Distributed Breakpoints ({breakpoints.length})</div>
+            {breakpoints.map(bp => (
+              <div key={bp.id} className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>{bp.file}:{bp.line}</div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={bp.enabled}
+                  onChange={() => toggleBreakpoint(bp.id)}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Right Pane: Variable Watch Tree */}
-        <div style={styles.pane}>
-          <div style={{ fontSize: 12, color: '#6b7280', fontWeight: 600 }}>Variables Watch Tree:</div>
-          <div style={styles.card}>
-            {Object.entries(variables).map(([k, v]) => (
-              <div key={k} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px solid #1e2035', fontSize: 12 }}>
-                <span style={{ color: '#4fc3f7', fontFamily: 'monospace' }}>{k}</span>
-                <span style={{ color: '#aed581', fontFamily: 'monospace' }}>{JSON.stringify(v)}</span>
-              </div>
-            ))}
+        <div className="panel-split-main" style={{ overflowY: 'auto', boxSizing: 'border-box' }}>
+          <div className="section-card">
+            <div className="section-card-title">Variables Watch Tree</div>
+            <div className="card">
+              {Object.entries(variables).map(([k, v]) => (
+                <div key={k} className="info-row">
+                  <span style={{ color: 'var(--accent-blue)', fontFamily: 'monospace' }}>{k}</span>
+                  <span style={{ color: 'var(--accent-green)', fontFamily: 'monospace' }}>{JSON.stringify(v)}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

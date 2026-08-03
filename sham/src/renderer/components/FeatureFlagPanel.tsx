@@ -56,79 +56,81 @@ export function FeatureFlagPanel(): React.JSX.Element {
   const experimentCount = flags.filter(f => f.status === 'EXPERIMENT').length;
 
   const s = {
-    container: { display: 'flex', flexDirection: 'column' as const, height: '100%', background: '#0a0a14', color: '#e0e0e0', fontFamily: 'Inter, sans-serif' },
-    header: { padding: '14px 20px', borderBottom: '1px solid #1e2035', display: 'flex', alignItems: 'center', justifyContent: 'space-between' },
-    kpiRow: { display: 'flex', gap: 12, padding: '12px 20px', borderBottom: '1px solid #1e2035', background: '#0e1020' },
-    kpi: (accent: string) => ({ flex: 1, background: '#16182a', borderRadius: 10, padding: '12px 14px', border: `1px solid ${accent}33`, display: 'flex', flexDirection: 'column' as const, gap: 3 }),
-    kpiLabel: { fontSize: 10, color: '#6b7280', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: 1 },
-    kpiValue: (accent: string) => ({ fontSize: 20, fontWeight: 700, color: accent }),
-    body: { flex: 1, display: 'flex', overflow: 'hidden' },
-    list: { width: 320, borderRight: '1px solid #1e2035', overflowY: 'auto' as const },
-    detail: { flex: 1, overflowY: 'auto' as const, padding: 20 },
+    container: { display: 'flex', flexDirection: 'column' as const, height: '100%', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', boxSizing: 'border-box' as const },
+    header: { padding: 'var(--spacing-sm) var(--spacing-md)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' as const },
+    kpiRow: { display: 'flex', gap: 'var(--spacing-xs)', padding: 'var(--spacing-xs) var(--spacing-md)', borderBottom: '1px solid var(--border)', flexWrap: 'wrap' },
+    kpi: (accent: string) => ({ flex: 1, minWidth: 'clamp(100px, 25vw, 150px)', background: 'var(--bg-secondary)', borderRadius: 'var(--radius)', padding: 'clamp(8px, 2vw, 12px) clamp(10px, 3vw, 14px)', border: `1px solid ${accent}33`, display: 'flex', flexDirection: 'column' as const, gap: 3 }),
+    kpiLabel: { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: 0.5 },
+    kpiValue: (accent: string) => ({ fontSize: 'clamp(1rem, 2.5vw, 1.3rem)', fontWeight: 700, color: accent }),
+    body: { flex: 1, display: 'flex', overflow: 'hidden', flexDirection: 'column' },
+    list: { width: 'clamp(200px, 30vw, 320px)', borderRight: '1px solid var(--border)', overflowY: 'auto' as const, maxWidth: '400px' },
+    detail: { flex: 1, overflowY: 'auto' as const, padding: 'var(--spacing-sm)' },
     flagRow: (active: boolean) => ({
-      padding: '12px 16px', cursor: 'pointer', borderBottom: '1px solid #1e203544',
-      background: active ? '#1a1d35' : 'transparent',
-      borderLeft: active ? '3px solid #4ade80' : '3px solid transparent',
+      padding: 'clamp(6px, 1.5vw, 12px) clamp(10px, 2vw, 16px)', cursor: 'pointer', borderBottom: '1px solid var(--border)',
+      background: active ? 'var(--bg-secondary)' : 'transparent',
+      borderLeft: active ? '3px solid var(--accent-green)' : '3px solid transparent',
+      boxSizing: 'border-box',
     }),
-    badge: (color: string) => ({ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 10, background: color + '18', color, fontSize: 10, fontWeight: 600, border: `1px solid ${color}33` }),
-    card: { background: '#16182a', borderRadius: 10, padding: 16, border: '1px solid #1e2035', marginBottom: 12 },
-    btn: (color: string) => ({ background: color, border: 'none', borderRadius: 6, color: '#fff', padding: '6px 14px', cursor: 'pointer', fontSize: 12, fontWeight: 600 }),
-    slider: { width: '100%', accentColor: '#a78bfa' },
+    badge: (color: string) => ({ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 10, background: color + '18', color, fontSize: 'var(--font-size-xs)', fontWeight: 600, border: `1px solid ${color}33` }),
+    card: { background: 'var(--bg-secondary)', borderRadius: 'var(--radius)', padding: 'clamp(8px, 2vw, 16px)', border: '1px solid var(--border)', marginBottom: 12, boxSizing: 'border-box' },
+    btn: (color: string) => ({ background: color, border: 'none', borderRadius: 'var(--radius-sm)', color: '#fff', padding: '6px 14px', cursor: 'pointer', fontSize: 'var(--font-size-sm)', fontWeight: 600 }),
+    slider: { width: '100%', accentColor: 'var(--accent)' },
   };
 
   return (
     <div style={s.container}>
-      <div style={s.header}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 20 }}>🚩</span>
-          <span style={{ fontWeight: 700, fontSize: 15, color: '#4ade80' }}>Feature Flag Engine</span>
-          <span style={{ fontSize: 10, background: '#4ade8022', color: '#4ade80', padding: '2px 8px', borderRadius: 10 }}>v74.0.0</span>
+      <div className="panel-header" style={s.header}>
+        <div className="flex-wrap-gap">
+          <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)' }}>🚩</span>
+          <span style={{ fontWeight: 700, fontSize: 'var(--font-size-md)', color: 'var(--accent-green)' }}>Feature Flag Engine</span>
+          <span className="badge badge-responsive" style={{ background: 'var(--accent-green)22', color: 'var(--accent-green)', border: '1px solid var(--accent-green)44' }}>v74.0.0</span>
         </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <span style={s.badge('#4ade80')}>{enabledCount} Active</span>
-          <span style={s.badge('#a78bfa')}>{experimentCount} Experiments</span>
+        <div className="flex-wrap-gap">
+          <span className="badge badge-responsive" style={{ background: 'var(--accent-green)22', color: 'var(--accent-green)' }}>{enabledCount} Active</span>
+          <span className="badge badge-responsive" style={{ background: 'var(--accent)22', color: 'var(--accent)' }}>{experimentCount} Experiments</span>
         </div>
       </div>
 
+      {/* KPI Strip */}
       <div style={s.kpiRow}>
-        <div style={s.kpi('#4ade80')}>
+        <div style={s.kpi('var(--accent-green)')}>
           <div style={s.kpiLabel}>Total Flags</div>
-          <div style={s.kpiValue('#4ade80')}>{flags.length}</div>
+          <div style={s.kpiValue('var(--accent-green)')}>{flags.length}</div>
         </div>
-        <div style={s.kpi('#fbbf24')}>
+        <div style={s.kpi('var(--accent-yellow)')}>
           <div style={s.kpiLabel}>Rolling Out</div>
-          <div style={s.kpiValue('#fbbf24')}>{flags.filter(f => f.status === 'ROLLOUT').length}</div>
+          <div style={s.kpiValue('var(--accent-yellow)')}>{flags.filter(f => f.status === 'ROLLOUT').length}</div>
         </div>
-        <div style={s.kpi('#a78bfa')}>
+        <div style={s.kpi('var(--accent)')}>
           <div style={s.kpiLabel}>Experiments</div>
-          <div style={s.kpiValue('#a78bfa')}>{experimentCount}</div>
+          <div style={s.kpiValue('var(--accent)')}>{experimentCount}</div>
         </div>
-        <div style={s.kpi('#f87171')}>
+        <div style={s.kpi('var(--accent-red)')}>
           <div style={s.kpiLabel}>Kill Switches</div>
-          <div style={s.kpiValue('#f87171')}>{flags.filter(f => f.killSwitch).length}</div>
+          <div style={s.kpiValue('var(--accent-red)')}>{flags.filter(f => f.killSwitch).length}</div>
         </div>
       </div>
 
       <div style={s.body}>
         <div style={s.list}>
-          <div style={{ padding: '10px 16px', fontSize: 11, color: '#6b7280', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, borderBottom: '1px solid #1e2035' }}>
+          <div style={{ padding: '10px 16px', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, borderBottom: '1px solid var(--border)', boxSizing: 'border-box' }}>
             Flags ({flags.length})
           </div>
           {flags.map(f => (
             <div key={f.id} style={s.flagRow(selected === f.id)} onClick={() => setSelected(f.id)}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div className="flex-between">
+                <div className="flex-wrap-gap">
                   <span>{statusMeta[f.status].icon}</span>
-                  <span style={{ fontSize: 13, fontWeight: 600 }}>{f.name}</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600 }}>{f.name}</span>
                 </div>
-                {f.killSwitch && <span style={s.badge('#f87171')}>🔴 KILLED</span>}
+                {f.killSwitch && <span className="badge badge-responsive" style={{ background: 'var(--accent-red)18', color: 'var(--accent-red)' }}>🔴 KILLED</span>}
               </div>
-              <div style={{ fontSize: 11, color: '#6b7280', marginTop: 4 }}>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 4 }}>
                 {f.description} • {f.updatedAt}
               </div>
               {f.status === 'ROLLOUT' && (
-                <div style={{ marginTop: 6, height: 4, borderRadius: 2, background: '#1e2035', overflow: 'hidden' }}>
-                  <div style={{ width: `${f.rollout}%`, height: '100%', background: '#fbbf24', borderRadius: 2 }} />
+                <div style={{ marginTop: 6, height: 4, borderRadius: 2, background: 'var(--border)', overflow: 'hidden' }}>
+                  <div style={{ width: `${f.rollout}%`, height: '100%', background: 'var(--accent-yellow)', borderRadius: 2 }} />
                 </div>
               )}
             </div>
@@ -138,61 +140,61 @@ export function FeatureFlagPanel(): React.JSX.Element {
         <div style={s.detail}>
           {selectedFlag ? (
             <>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+              <div className="flex-between" style={{ marginBottom: 16, flexWrap: 'wrap', gap: 'var(--spacing-xs)' }}>
                 <div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: statusMeta[selectedFlag.status].color }}>
+                  <div style={{ fontSize: 'clamp(1rem, 2vw, 1.1rem)', fontWeight: 700, color: statusMeta[selectedFlag.status].color }}>
                     {statusMeta[selectedFlag.status].icon} {selectedFlag.name}
                   </div>
-                  <div style={{ fontSize: 12, color: '#6b7280', marginTop: 4 }}>{selectedFlag.description}</div>
+                  <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: 4 }}>{selectedFlag.description}</div>
                 </div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <button style={s.btn('#4fc3f7')} onClick={() => toggleStatus(selectedFlag.id)}>⚡ Toggle</button>
-                  <button style={s.btn(selectedFlag.killSwitch ? '#4ade80' : '#f87171')} onClick={() => toggleKill(selectedFlag.id)}>
+                <div className="flex-wrap-gap">
+                  <button className="btn btn-sm" style={s.btn('var(--accent-blue)')} onClick={() => toggleStatus(selectedFlag.id)}>⚡ Toggle</button>
+                  <button className="btn btn-sm" style={s.btn(selectedFlag.killSwitch ? 'var(--accent-green)' : 'var(--accent-red)')} onClick={() => toggleKill(selectedFlag.id)}>
                     {selectedFlag.killSwitch ? '✅ Revive' : '🔴 Kill'}
                   </button>
                 </div>
               </div>
 
-              <div style={{ ...s.card, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 20px', fontSize: 12 }}>
-                <span style={{ color: '#6b7280' }}>Status:</span><span style={s.badge(statusMeta[selectedFlag.status].color)}>{selectedFlag.status}</span>
-                <span style={{ color: '#6b7280' }}>Kill Switch:</span><span style={{ color: selectedFlag.killSwitch ? '#f87171' : '#4ade80' }}>{selectedFlag.killSwitch ? '🔴 ACTIVE' : '⚪ OFF'}</span>
-                <span style={{ color: '#6b7280' }}>Environments:</span><span>{selectedFlag.environments.length > 0 ? selectedFlag.environments.join(', ') : 'All'}</span>
-                <span style={{ color: '#6b7280' }}>Variants:</span><span>{selectedFlag.variants.length || 'None'}</span>
+              <div className="card" style={{ ...s.card, display: 'grid', gridTemplateColumns: '1fr clamp(120px, 30vw, 200px)', gap: '8px 20px', fontSize: 'var(--font-size-sm)', boxSizing: 'border-box' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Status:</span><span className="badge badge-responsive" style={{ background: statusMeta[selectedFlag.status].color + '18', color: statusMeta[selectedFlag.status].color, border: '1px solid ' + statusMeta[selectedFlag.status].color + '33' }}>{selectedFlag.status}</span>
+                <span style={{ color: 'var(--text-muted)' }}>Kill Switch:</span><span style={{ color: selectedFlag.killSwitch ? 'var(--accent-red)' : 'var(--accent-green)' }}>{selectedFlag.killSwitch ? '🔴 ACTIVE' : '⚪ OFF'}</span>
+                <span style={{ color: 'var(--text-muted)' }}>Environments:</span><span>{selectedFlag.environments.length > 0 ? selectedFlag.environments.join(', ') : 'All'}</span>
+                <span style={{ color: 'var(--text-muted)' }}>Variants:</span><span>{selectedFlag.variants.length || 'None'}</span>
               </div>
 
               {(selectedFlag.status === 'ROLLOUT' || selectedFlag.status === 'EXPERIMENT') && (
-                <div style={s.card}>
-                  <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 600, marginBottom: 8 }}>ROLLOUT PERCENTAGE</div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div className="card">
+                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 600, marginBottom: 8 }}>ROLLOUT PERCENTAGE</div>
+                  <div className="flex-wrap-gap">
                     <input type="range" min={0} max={100} value={selectedFlag.rollout} onChange={e => updateRollout(selectedFlag.id, parseInt(e.target.value))} style={s.slider} />
-                    <span style={{ fontSize: 18, fontWeight: 700, color: '#a78bfa', minWidth: 50 }}>{selectedFlag.rollout}%</span>
+                    <span style={{ fontSize: 'clamp(1rem, 2vw, 1.1rem)', fontWeight: 700, color: 'var(--accent)', minWidth: 'clamp(40px, 10vw, 50px)' }}>{selectedFlag.rollout}%</span>
                   </div>
-                  <div style={{ marginTop: 8, height: 6, borderRadius: 3, background: '#1e2035', overflow: 'hidden' }}>
-                    <div style={{ width: `${selectedFlag.rollout}%`, height: '100%', background: 'linear-gradient(90deg, #a78bfa, #4ade80)', borderRadius: 3, transition: 'width 0.3s' }} />
+                  <div style={{ marginTop: 8, height: 6, borderRadius: 3, background: 'var(--border)', overflow: 'hidden' }}>
+                    <div style={{ width: `${selectedFlag.rollout}%`, height: '100%', background: 'linear-gradient(90deg, var(--accent), var(--accent-green))', borderRadius: 3, transition: 'width 0.3s' }} />
                   </div>
                 </div>
               )}
 
               {selectedFlag.variants.length > 0 && (
-                <div style={s.card}>
-                  <div style={{ fontSize: 11, color: '#6b7280', fontWeight: 600, marginBottom: 10 }}>VARIANT DISTRIBUTION</div>
+                <div className="card">
+                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 600, marginBottom: 10 }}>VARIANT DISTRIBUTION</div>
                   {selectedFlag.variants.map(v => (
-                    <div key={v.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', borderBottom: '1px solid #1e203522' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: v.id === 'control' || v.id === 'v1' || v.id === 'fifo' ? '#4fc3f7' : v.id === 'treatment' || v.id === 'v2' || v.id === 'priority' ? '#4ade80' : '#a78bfa' }} />
-                        <span style={{ fontSize: 12, fontWeight: 600 }}>{v.name}</span>
-                        <span style={{ fontSize: 10, color: '#6b7280', fontFamily: 'monospace' }}>{v.id}</span>
+                    <div key={v.id} className="info-row">
+                      <div className="flex-wrap-gap">
+                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: v.id === 'control' || v.id === 'v1' || v.id === 'fifo' ? 'var(--accent-blue)' : v.id === 'treatment' || v.id === 'v2' || v.id === 'priority' ? 'var(--accent-green)' : 'var(--accent)' }} />
+                        <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600 }}>{v.name}</span>
+                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{v.id}</span>
                       </div>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: '#a78bfa' }}>{v.weight}%</span>
+                      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: 'var(--accent)' }}>{v.weight}%</span>
                     </div>
                   ))}
                 </div>
               )}
             </>
           ) : (
-            <div style={{ textAlign: 'center', padding: 60, color: '#6b7280' }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>🚩</div>
-              <div style={{ fontSize: 14, fontWeight: 600 }}>Select a feature flag</div>
+            <div className="empty-state">
+              <div className="empty-state-icon">🚩</div>
+              <div className="empty-state-title">Select a feature flag</div>
             </div>
           )}
         </div>

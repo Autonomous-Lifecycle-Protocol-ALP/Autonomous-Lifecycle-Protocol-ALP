@@ -81,4 +81,25 @@ describe('ExternalResolver (Pillar 2: cross-repo)', () => {
       cleanup();
     }
   });
+
+  it('fetches a git-backed repo via child_process', () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'alp-git-'));
+    try {
+      const wsAlp = path.join(root, '.alp');
+      fs.mkdirSync(wsAlp, { recursive: true });
+      fs.writeFileSync(path.join(wsAlp, 'project.alp'), `
+@repo
+  id: local-git
+  src: "${root.replace(/\\/g, '/')}"
+  description: "self-referencing local git repo"
+`);
+      const resolver = new ExternalResolver(wsAlp);
+      const repos = resolver.discover();
+      const repo = repos.find((r) => r.id === 'local-git');
+      expect(repo).toBeDefined();
+      expect(repo!.fetched).toBe(false);
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
 });

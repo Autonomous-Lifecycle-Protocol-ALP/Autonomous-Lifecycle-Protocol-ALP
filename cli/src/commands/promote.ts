@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { AlpParser } from '@autonomous-lifecycle-protocol-alp/parser';
+import { findFileWithId } from '../utils';
 
 export interface PromoteOptions {
   file?: string;
@@ -55,17 +56,4 @@ export function promoteCommand(objectId: string, newType: string, options?: Prom
   const updated = lines.join('\n');
   fs.writeFileSync(targetFile, updated, 'utf-8');
   console.log(`✅ Promoted '${objectId}' from @${oldType} to @${newType} in ${targetFile}`);
-}
-
-function findFileWithId(alpDir: string, objectId: string): string | null {
-  if (!fs.existsSync(alpDir)) return null;
-  const files = fs.readdirSync(alpDir).filter((f) => f.endsWith('.alp'));
-  for (const file of files) {
-    const fullPath = path.join(alpDir, file);
-    const content = fs.readFileSync(fullPath, 'utf8');
-    if (content.includes(`id: ${objectId}`)) {
-      return fullPath;
-    }
-  }
-  return null;
 }

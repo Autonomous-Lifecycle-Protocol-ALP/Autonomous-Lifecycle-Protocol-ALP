@@ -80,22 +80,22 @@ export function CommandPalette({ onClose, onSelect }: { onClose: () => void; onS
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <span style={{ color: 'var(--text-muted)', fontSize: 14 }}>&#128269;</span>
+      <div className="modal dialog" onClick={(e) => e.stopPropagation()} style={{ maxWidth: 'clamp(400px, 80vw, 600px)', width: '90vw' }}>
+        <div className="modal-header panel-header">
+          <span style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>&#128269;</span>
           <input
             ref={inputRef}
-            className="input-field"
+            className="input-field input-fluid"
             style={{ border: 'none', background: 'transparent', padding: 0 }}
             placeholder="Type a command or search..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
-        <div className="modal-body" style={{ padding: 0 }}>
+        <div className="modal-body table-responsive" style={{ padding: 0, maxHeight: 'clamp(200px, 40vh, 320px)', overflowY: 'auto' }}>
           {Object.entries(grouped).map(([category, cmds]) => (
             <div key={category} style={{ marginBottom: 4 }}>
-              <div style={{ padding: '6px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: 600 }}>
+              <div style={{ padding: '6px 12px', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 0.5, fontWeight: 600 }}>
                 {category}
               </div>
               {cmds.map((cmd) => {

@@ -34,11 +34,11 @@ export function SearchPanel({ onOpenFile }: { onOpenFile: (file: string) => void
               placeholder="Search files, symbols, and references..."
             />
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            <span className="badge badge-info">*.ts</span>
-            <span className="badge badge-info">*.tsx</span>
-            <span className="badge badge-muted">*.js</span>
-            <span className="badge badge-muted">*.css</span>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            <span className="badge badge-info badge-responsive">*.ts</span>
+            <span className="badge badge-info badge-responsive">*.tsx</span>
+            <span className="badge badge-muted badge-responsive">*.js</span>
+            <span className="badge badge-muted badge-responsive">*.css</span>
           </div>
         </div>
       </div>

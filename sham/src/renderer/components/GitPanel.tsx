@@ -41,11 +41,11 @@ export function GitPanel(): React.JSX.Element {
       <div className="section-card">
         <div className="section-card-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>Changes</span>
-          <span style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'none', fontWeight: 400 }}>
+          <span className="badge badge-responsive" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textTransform: 'none', fontWeight: 400 }}>
             {modifiedCount + addedCount} changed
           </span>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <div className="list-view">
           {mockFiles.map((file) => (
             <div key={file.name} className="list-item">
               <span className="list-item-icon" style={{ color: statusColors[file.status], fontSize: 10 }}>
@@ -54,7 +54,7 @@ export function GitPanel(): React.JSX.Element {
               <div className="list-item-content">
                 <div className="list-item-title">{file.name}</div>
               </div>
-              <span className="badge badge-muted" style={{ fontSize: 10 }}>{file.status}</span>
+              <span className="badge badge-muted badge-responsive">{file.status}</span>
             </div>
           ))}
         </div>
@@ -62,23 +62,23 @@ export function GitPanel(): React.JSX.Element {
 
       <div className="section-card">
         <div className="section-card-title">Commit</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <div>
-            <label style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'block', marginBottom: 4 }}>Message</label>
+        <div className="form-row">
+          <div className="form-row">
+            <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', display: 'block', marginBottom: 4 }}>Message</label>
             <input
-              className="input-field"
+              className="input-field input-fluid"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Enter commit message..."
             />
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+          <div className="flex-between" style={{ flexWrap: 'wrap', gap: 'var(--spacing-xs)' }}>
+            <span className="badge badge-responsive" style={{ fontSize: 'var(--font-size-xs)' }}>
               Branch: <span style={{ color: 'var(--accent)' }}>{branch}</span>
             </span>
-            <div style={{ display: 'flex', gap: 6 }}>
-              <button className="btn btn-secondary btn-sm">Stage All</button>
-              <button className="btn btn-primary btn-sm">Commit</button>
+            <div className="flex-wrap-gap" style={{ gap: 6 }}>
+              <button className="btn btn-secondary btn-sm btn-responsive">Stage All</button>
+              <button className="btn btn-primary btn-sm btn-responsive">Commit</button>
             </div>
           </div>
         </div>
@@ -86,21 +86,19 @@ export function GitPanel(): React.JSX.Element {
 
       <div className="section-card">
         <div className="section-card-title">Repository</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, fontSize: 12, color: 'var(--text-secondary)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>Remote</span>
-            <span style={{ color: 'var(--text-primary)' }}>origin</span>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>URL</span>
-            <span style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)', fontSize: 11 }}>
-              github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/...
-            </span>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span>Branch</span>
-            <span style={{ color: 'var(--text-primary)' }}>{branch}</span>
-          </div>
+        <div className="info-row" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+          <span>Remote</span>
+          <span style={{ color: 'var(--text-primary)' }}>origin</span>
+        </div>
+        <div className="info-row" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+          <span>URL</span>
+          <span className="table-responsive" style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)', fontSize: 'clamp(0.7rem, 1.5vw, 0.8rem)' }}>
+            github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/...
+          </span>
+        </div>
+        <div className="info-row" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
+          <span>Branch</span>
+          <span style={{ color: 'var(--text-primary)' }}>{branch}</span>
         </div>
       </div>
     </div>

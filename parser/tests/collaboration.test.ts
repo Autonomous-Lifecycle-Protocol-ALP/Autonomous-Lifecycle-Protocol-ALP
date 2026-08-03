@@ -257,5 +257,25 @@ describe('CollaborationEngine (v43.0.0)', () => {
     const exported = engine.exportAuditLog();
     expect(JSON.parse(exported).length).toBeGreaterThanOrEqual(2);
   });
+
+  it('serializes and deserializes engine state', () => {
+    const engine = engineFrom();
+    engine.createSession('doc-1', { title: 'Hello' });
+    engine.joinSession('doc-1', 'agent-1');
+    engine.applyOperation('doc-1', 'insert', 'path', 'agent-1', 'value');
+    engine.startLiveShare('doc-1', 'host-1');
+
+    const json = engine.toJSON();
+    expect(json.sessions).toHaveLength(1);
+    expect(json.liveShares).toHaveLength(1);
+    expect(json.counters.op).toBeGreaterThanOrEqual(1);
+
+    const restored = new CollaborationEngine();
+    restored.fromJSON(json);
+    expect(restored.getSession('doc-1')?.state.title).toBe('Hello');
+    expect(restored.getPresence('doc-1')).toHaveLength(1);
+    expect(restored.getLiveShares('doc-1')).toHaveLength(1);
+    expect(restored.getOperationLog('doc-1')).toHaveLength(1);
+  });
 });
 
