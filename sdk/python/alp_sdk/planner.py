@@ -333,3 +333,79 @@ class ReasoningTracer:
                 if step.agent_id == agent_id:
                     steps.append(step)
         return steps
+
+
+class AgentContribution:
+    def __init__(self, agent_id: str, nodes: List[Dict[str, Any]], resources: Optional[Dict[str, Any]] = None, rationale: str = ""):
+        self.agent_id = agent_id
+        self.nodes = [PlanNode(**n) if isinstance(n, dict) else n for n in nodes]
+        self.resources = resources or {}
+        self.rationale = rationale
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "agent_id": self.agent_id,
+            "nodes": [n.to_dict() for n in self.nodes],
+            "resources": self.resources,
+            "rationale": self.rationale,
+        }
+
+
+class CollabPlanResult:
+    def __init__(self, plan: Plan, contributions: List[AgentContribution], allocation: Dict[str, str], conflicts: List[str]):
+        self.plan = plan
+        self.contributions = contributions
+        self.allocation = allocation
+        self.conflicts = conflicts
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "plan": self.plan.to_dict(),
+            "contributions": [c.to_dict() for c in self.contributions],
+            "allocation": self.allocation,
+            "conflicts": self.conflicts,
+        }
+
+
+class CollabPlanner:
+    def __init__(self, tracer: Optional[ReasoningTracer] = None):
+        self.tracer = tracer
+
+    def build(self, goal: str, contributions: List[AgentContribution]) -> CollabPlanResult:
+        if not contributions:
+            raise ValueError("At least one agent contribution is required for collaborative planning.")
+        nodes: List[PlanNode] = []
+        allocation: Dict[str, str] = {}
+        conflicts: List[str] = []
+        seen = set()
+        by_agent: Dict[str, List[PlanNode]] = {}
+        for c in contributions:
+            if not c.agent_id:
+                continue
+            by_agent.setdefault(c.agent_id, [])
+            for node in c.nodes:
+                key = node.node_id or node.label
+                if key in seen:
+                    conflicts.append(f"Duplicate node '{key}' from {c.agent_id}")
+                    continue
+                seen.add(key)
+                nodes.append(node)
+                allocation[node.node_id] = c.agent_id
+                by_agent[c.agent_id].append(node)
+        plan = Plan(
+            plan_id=f"collab-{__import__('re').sub(r'[^a-z0-9_-]+', '-', goal.lower())[:30] or 'plan'}",
+            goal=goal,
+            nodes=nodes,
+            metadata={"contributions": [{"agent_id": c.agent_id, "node_count": len(c.nodes)} for c in contributions]},
+        )
+        if self.tracer:
+            chain = self.tracer.create_chain(goal)
+            self.tracer.add_step(chain.chain_id, {
+                "agent_id": "collab-planner",
+                "thought": f"Synthesized {len(nodes)} nodes from {len(contributions)} contributions",
+                "action": "collab-plan",
+                "observation": f"Conflicts: {len(conflicts)}; allocation entries: {len(allocation)}",
+                "confidence": 0.6 if conflicts else 0.95,
+                "dependencies": [],
+            })
+        return CollabPlanResult(plan=plan, contributions=contributions, allocation=allocation, conflicts=conflicts)

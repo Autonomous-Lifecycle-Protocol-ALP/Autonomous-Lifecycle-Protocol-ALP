@@ -204,6 +204,68 @@ export class Planner {
   }
 }
 
+export interface AgentContribution {
+  agent_id: string;
+  nodes: PlanNode[];
+  resources: Record<string, number>;
+  rationale: string;
+}
+
+export interface CollabPlanResult {
+  plan: Plan;
+  contributions: AgentContribution[];
+  allocation: Record<string, string>;
+  conflicts: string[];
+}
+
+export class CollabPlanner {
+  constructor(private tracer?: ReasoningTracer) {}
+
+  build(goal: string, contributions: AgentContribution[]): CollabPlanResult {
+    if (!contributions.length) {
+      throw new Error('At least one agent contribution is required for collaborative planning.');
+    }
+    const nodes: PlanNode[] = [];
+    const allocation: Record<string, string> = {};
+    const conflicts: string[] = [];
+    const seen = new Set<string>();
+    const byAgent: Record<string, PlanNode[]> = {};
+    for (const c of contributions) {
+      if (!c.agent_id) continue;
+      byAgent[c.agent_id] = byAgent[c.agent_id] || [];
+      for (const node of c.nodes) {
+        const key = node.id || node.label;
+        if (seen.has(key)) {
+          conflicts.push(`Duplicate node '${key}' from ${c.agent_id}`);
+          continue;
+        }
+        seen.add(key);
+        nodes.push(node);
+        allocation[node.id] = c.agent_id;
+        byAgent[c.agent_id].push(node);
+      }
+    }
+    const plan = new Plan(
+      `collab-${goal.toLowerCase().replace(/[^a-z0-9_-]+/g, '-').slice(0, 30) || 'plan'}`,
+      goal,
+      nodes,
+      { contributions: contributions.map((c) => ({ agent_id: c.agent_id, node_count: c.nodes.length })) },
+    );
+    if (this.tracer) {
+      const chain = this.tracer.createChain(goal);
+      this.tracer.addStep(chain.chain_id, {
+        agent_id: 'collab-planner',
+        thought: `Synthesized ${nodes.length} nodes from ${contributions.length} contributions`,
+        action: 'collab-plan',
+        observation: `Conflicts: ${conflicts.length}; allocation entries: ${Object.keys(allocation).length}`,
+        confidence: conflicts.length ? 0.6 : 0.95,
+        dependencies: [],
+      });
+    }
+    return { plan, contributions, allocation, conflicts };
+  }
+}
+
 export class Reflector {
   constructor(private events: any[] = []) {}
 

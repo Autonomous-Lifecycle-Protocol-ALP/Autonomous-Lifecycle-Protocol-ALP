@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, ReasoningTracer, ReasoningChain, ReasoningStep } from '../src/planner';
+import { GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, ReasoningTracer, ReasoningChain, ReasoningStep, CollabPlanner, AgentContribution, CollabPlanResult } from '../src/planner';
 
 describe('GoalDecomposer', () => {
   it('decomposes a goal into a plan', () => {
@@ -189,5 +189,75 @@ describe('ReasoningTracer', () => {
       confidence: 0.1,
       dependencies: [],
     })).toThrow("Reasoning chain 'chain-unknown' not found.");
+  });
+});
+
+describe('CollabPlanner', () => {
+  it('builds a collaborative plan from multiple agent contributions', () => {
+    const planner = new CollabPlanner();
+    const contributions: AgentContribution[] = [
+      {
+        agent_id: 'agent-planner',
+        nodes: [new PlanNode('step-1', 'task', 'Design')],
+        resources: { cpu: 1 },
+        rationale: 'Design the system',
+      },
+      {
+        agent_id: 'agent-builder',
+        nodes: [new PlanNode('step-2', 'task', 'Build', ['step-1'])],
+        resources: { cpu: 2 },
+        rationale: 'Implement the design',
+      },
+    ];
+    const result = planner.build('Ship feature X', contributions);
+    expect(result.plan.nodes).toHaveLength(2);
+    expect(result.allocation['step-1']).toBe('agent-planner');
+    expect(result.allocation['step-2']).toBe('agent-builder');
+    expect(result.conflicts).toHaveLength(0);
+  });
+
+  it('detects duplicate nodes as conflicts', () => {
+    const planner = new CollabPlanner();
+    const contributions: AgentContribution[] = [
+      {
+        agent_id: 'agent-a',
+        nodes: [new PlanNode('step-1', 'task', 'Design')],
+        resources: {},
+        rationale: 'A designs',
+      },
+      {
+        agent_id: 'agent-b',
+        nodes: [new PlanNode('step-1', 'task', 'Design')],
+        resources: {},
+        rationale: 'B also designs',
+      },
+    ];
+    const result = planner.build('Ship feature X', contributions);
+    expect(result.plan.nodes).toHaveLength(1);
+    expect(result.conflicts.length).toBeGreaterThanOrEqual(1);
+    expect(result.conflicts.some((c) => c.includes("Duplicate node 'step-1'"))).toBe(true);
+  });
+
+  it('throws when no contributions are provided', () => {
+    const planner = new CollabPlanner();
+    expect(() => planner.build('Ship feature X', [])).toThrow('At least one agent contribution is required');
+  });
+
+  it('records collaboration in ReasoningTracer when provided', () => {
+    const tracer = new ReasoningTracer();
+    const planner = new CollabPlanner(tracer);
+    const contributions: AgentContribution[] = [
+      {
+        agent_id: 'agent-planner',
+        nodes: [new PlanNode('step-1', 'task', 'Design')],
+        resources: { cpu: 1 },
+        rationale: 'Design',
+      },
+    ];
+    planner.build('Ship feature X', contributions);
+    const chains = Array.from(tracer['chains'].values());
+    expect(chains.length).toBe(1);
+    expect(chains[0].steps).toHaveLength(1);
+    expect(chains[0].steps[0].agent_id).toBe('collab-planner');
   });
 });

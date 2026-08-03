@@ -6,7 +6,7 @@ SDK_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if SDK_ROOT not in sys.path:
     sys.path.insert(0, SDK_ROOT)
 
-from alp_sdk import GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, PredictiveEstimator, ReasoningTracer, ReasoningChain, ReasoningStep
+from alp_sdk import GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, PredictiveEstimator, ReasoningTracer, ReasoningChain, ReasoningStep, CollabPlanner, AgentContribution, CollabPlanResult
 
 
 class FakeEstimator:
@@ -192,3 +192,68 @@ class TestReasoningTracer(unittest.TestCase):
                 "confidence": 0.1,
                 "dependencies": [],
             })
+
+
+class TestCollabPlanner(unittest.TestCase):
+    def test_build_from_multiple_contributions(self):
+        planner = CollabPlanner()
+        contributions = [
+            AgentContribution(
+                agent_id="agent-planner",
+                nodes=[PlanNode("step-1", "task", "Design")],
+                resources={"cpu": 1},
+                rationale="Design the system",
+            ),
+            AgentContribution(
+                agent_id="agent-builder",
+                nodes=[PlanNode("step-2", "task", "Build", ["step-1"])],
+                resources={"cpu": 2},
+                rationale="Implement the design",
+            ),
+        ]
+        result = planner.build("Ship feature X", contributions)
+        self.assertEqual(len(result.plan.nodes), 2)
+        self.assertEqual(result.allocation["step-1"], "agent-planner")
+        self.assertEqual(result.allocation["step-2"], "agent-builder")
+        self.assertEqual(result.conflicts, [])
+
+    def test_detects_duplicate_nodes_as_conflicts(self):
+        planner = CollabPlanner()
+        contributions = [
+            AgentContribution(
+                agent_id="agent-a",
+                nodes=[PlanNode("step-1", "task", "Design")],
+                resources={},
+                rationale="A designs",
+            ),
+            AgentContribution(
+                agent_id="agent-b",
+                nodes=[PlanNode("step-1", "task", "Design")],
+                resources={},
+                rationale="B also designs",
+            ),
+        ]
+        result = planner.build("Ship feature X", contributions)
+        self.assertEqual(len(result.plan.nodes), 1)
+        self.assertTrue(any("Duplicate node 'step-1'" in c for c in result.conflicts))
+
+    def test_raises_without_contributions(self):
+        planner = CollabPlanner()
+        with self.assertRaises(ValueError):
+            planner.build("Ship feature X", [])
+
+    def test_records_collaboration_in_tracer(self):
+        tracer = ReasoningTracer()
+        planner = CollabPlanner(tracer)
+        contributions = [
+            AgentContribution(
+                agent_id="agent-planner",
+                nodes=[PlanNode("step-1", "task", "Design")],
+                resources={"cpu": 1},
+                rationale="Design",
+            ),
+        ]
+        planner.build("Ship feature X", contributions)
+        chains = list(tracer._chains.values())
+        self.assertEqual(len(chains), 1)
+        self.assertEqual(chains[0].steps[0].agent_id, "collab-planner")

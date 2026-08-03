@@ -7,7 +7,7 @@ from .error import AlpError, SyntaxError, IndentationError, ValidationError, Dir
 from .reader import load_workspace, AlpReader, AlpParser
 from .validator import validate_object, verify_workspace
 from .analytics import compute_analytics, PredictiveEstimator
-from .planner import GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, ReasoningTracer, ReasoningChain, ReasoningStep
+from .planner import GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, ReasoningTracer, ReasoningChain, ReasoningStep, CollabPlanner, AgentContribution, CollabPlanResult
 from .negotiate import Negotiator, ReputationStore, TeamComposer, Offer, ContractDraft, NegotiationResult, Capability
 from .provenance import TraceSigner, ProvenanceStore, AuditLedger, VerifiableCredential
 from .trace import TraceEntry, TraceStore, MerkleTree, verify_trace_integrity
