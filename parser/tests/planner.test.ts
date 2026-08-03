@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, ReasoningTracer, ReasoningChain, ReasoningStep, CollabPlanner, AgentContribution, CollabPlanResult } from '../src/planner';
+import { GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, ReasoningTracer, ReasoningChain, ReasoningStep, CollabPlanner, AgentContribution, CollabPlanResult, ImprovementProposal } from '../src/planner';
 
 describe('GoalDecomposer', () => {
   it('decomposes a goal into a plan', () => {
@@ -85,6 +85,32 @@ describe('Reflector', () => {
   it('returns empty for no events', () => {
     const ref = new Reflector([]);
     expect(ref.reflect('run-1')).toEqual([]);
+  });
+
+  it('generates improvement proposals from lessons', () => {
+    const ref = new Reflector([
+      { type: 'task_status', task_id: 't1', status: '[!]', timestamp: '2026-01-01T00:00:00Z' },
+      { type: 'task_status', task_id: 't1', status: '[!]', timestamp: '2026-01-01T00:00:01Z' },
+      { type: 'task_claim', task_id: 't1', timestamp: '2026-01-01T00:00:02Z' },
+      { type: 'human_handoff', task_id: 't1', status: '[?]', timestamp: '2026-01-01T00:00:03Z' },
+      { type: 'human_handoff', task_id: 't2', status: '[?]', timestamp: '2026-01-01T00:00:04Z' },
+    ]);
+    const plan = new Plan('p1', 'Goal', [new PlanNode('t1', 'task', 'A')]);
+    const result = ref.improvePlan(plan, ref.reflect('run-1'));
+    expect(result.proposals.length).toBeGreaterThanOrEqual(2);
+    expect(result.plan.nodes.length).toBeGreaterThanOrEqual(1);
+    expect(result.plan.metadata.improvements).toBeDefined();
+  });
+
+  it('adds automation node for handoff lessons', () => {
+    const ref = new Reflector([
+      { type: 'human_handoff', task_id: 't1', status: '[?]', timestamp: '2026-01-01T00:00:03Z' },
+      { type: 'human_handoff', task_id: 't2', status: '[?]', timestamp: '2026-01-01T00:00:04Z' },
+    ]);
+    const plan = new Plan('p1', 'Goal', []);
+    const result = ref.improvePlan(plan, ref.reflect('run-1'));
+    const hasAutomation = result.plan.nodes.some((n) => n.label.includes('automation'));
+    expect(hasAutomation).toBe(true);
   });
 });
 

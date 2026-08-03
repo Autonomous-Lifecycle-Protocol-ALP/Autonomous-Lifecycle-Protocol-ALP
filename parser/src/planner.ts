@@ -266,6 +266,15 @@ export class CollabPlanner {
   }
 }
 
+export interface ImprovementProposal {
+  proposal_id: string;
+  lesson_id: string;
+  target_node_id?: string;
+  action: 'add_node' | 'remove_node' | 'reassign' | 'add_dependency';
+  detail: string;
+  confidence: number;
+}
+
 export class Reflector {
   constructor(private events: any[] = []) {}
 
@@ -275,6 +284,56 @@ export class Reflector {
     lessons.push(...this.detectInefficiencies(runId));
     lessons.push(...this.detectHandoffPatterns(runId));
     return lessons;
+  }
+
+  improvePlan(plan: Plan, lessons: Lesson[]): { plan: Plan; proposals: ImprovementProposal[] } {
+    const proposals: ImprovementProposal[] = [];
+    const nodes = plan.nodes.map((n) => ({ ...n }));
+    const seen = new Set<string>();
+    for (const lesson of lessons) {
+      if (lesson.tags.includes('failure') && lesson.insight.includes('failed')) {
+        const match = lesson.insight.match(/Task '([^']+)'/);
+        const targetId = match ? match[1] : undefined;
+        proposals.push({
+          proposal_id: `prop-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+          lesson_id: lesson.lesson_id,
+          target_node_id: targetId,
+          action: 'add_dependency',
+          detail: `Add fallback or retry dependency for '${targetId ?? 'unknown'}' due to repeated failures.`,
+          confidence: 0.75,
+        });
+      }
+      if (lesson.tags.includes('efficiency') && lesson.insight.includes('claimed')) {
+        const match = lesson.insight.match(/Task '([^']+)'/);
+        const targetId = match ? match[1] : undefined;
+        proposals.push({
+          proposal_id: `prop-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+          lesson_id: lesson.lesson_id,
+          target_node_id: targetId,
+          action: 'reassign',
+          detail: `Reassign '${targetId ?? 'unknown'}' to a more stable owner.`,
+          confidence: 0.6,
+        });
+      }
+      if (lesson.tags.includes('handoff')) {
+        proposals.push({
+          proposal_id: `prop-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+          lesson_id: lesson.lesson_id,
+          action: 'add_node',
+          detail: 'Add automation gate to reduce human handoff frequency.',
+          confidence: 0.5,
+        });
+      }
+    }
+    for (const p of proposals) {
+      if (p.action === 'add_node' && !seen.has(p.proposal_id)) {
+        const newNode = new PlanNode(`node-${p.proposal_id}`, 'task', p.detail, []);
+        nodes.push(newNode);
+        seen.add(p.proposal_id);
+      }
+    }
+    const improved = new Plan(plan.plan_id, plan.goal, nodes, { ...plan.metadata, improvements: proposals.map((p) => p.action) });
+    return { plan: improved, proposals };
   }
 
   private detectFailurePatterns(runId: string): Lesson[] {

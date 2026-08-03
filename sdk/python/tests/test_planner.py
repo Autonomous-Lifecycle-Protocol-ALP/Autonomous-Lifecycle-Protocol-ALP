@@ -6,7 +6,7 @@ SDK_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if SDK_ROOT not in sys.path:
     sys.path.insert(0, SDK_ROOT)
 
-from alp_sdk import GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, PredictiveEstimator, ReasoningTracer, ReasoningChain, ReasoningStep, CollabPlanner, AgentContribution, CollabPlanResult
+from alp_sdk import GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, PredictiveEstimator, ReasoningTracer, ReasoningChain, ReasoningStep, CollabPlanner, AgentContribution, CollabPlanResult, ImprovementProposal
 
 
 class FakeEstimator:
@@ -93,6 +93,30 @@ class TestReflector(unittest.TestCase):
         self.assertEqual(d["lesson_id"], "l1")
         self.assertEqual(d["severity"], "warn")
         self.assertIn("tag1", d["tags"])
+
+    def test_improve_plan_generates_proposals(self):
+        ref = Reflector([
+            {"type": "task_status", "task_id": "t1", "status": "[!]", "timestamp": "2026-01-01T00:00:00Z"},
+            {"type": "task_status", "task_id": "t1", "status": "[!]", "timestamp": "2026-01-01T00:00:01Z"},
+            {"type": "task_claim", "task_id": "t1", "timestamp": "2026-01-01T00:00:02Z"},
+            {"type": "human_handoff", "task_id": "t1", "status": "[?]", "timestamp": "2026-01-01T00:00:03Z"},
+            {"type": "human_handoff", "task_id": "t2", "status": "[?]", "timestamp": "2026-01-01T00:00:04Z"},
+        ])
+        plan = Plan("p1", "Goal", [PlanNode("t1", "task", "A")])
+        result = ref.improve_plan(plan, ref.reflect("run-1"))
+        self.assertGreaterEqual(len(result["proposals"]), 2)
+        self.assertGreaterEqual(len(result["plan"].nodes), 1)
+        self.assertIn("improvements", result["plan"].metadata)
+
+    def test_improve_plan_adds_automation_node_for_handoffs(self):
+        ref = Reflector([
+            {"type": "human_handoff", "task_id": "t1", "status": "[?]", "timestamp": "2026-01-01T00:00:03Z"},
+            {"type": "human_handoff", "task_id": "t2", "status": "[?]", "timestamp": "2026-01-01T00:00:04Z"},
+        ])
+        plan = Plan("p1", "Goal", [])
+        result = ref.improve_plan(plan, ref.reflect("run-1"))
+        has_automation = any("automation" in n.label for n in result["plan"].nodes)
+        self.assertTrue(has_automation)
 
 
 class TestReasoningTracer(unittest.TestCase):

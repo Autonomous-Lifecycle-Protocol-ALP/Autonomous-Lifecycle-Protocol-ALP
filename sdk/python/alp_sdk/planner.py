@@ -151,6 +151,26 @@ class Planner:
         return max(depths.values())
 
 
+class ImprovementProposal:
+    def __init__(self, proposal_id: str, lesson_id: str, action: str, detail: str, confidence: float, target_node_id: Optional[str] = None):
+        self.proposal_id = proposal_id
+        self.lesson_id = lesson_id
+        self.target_node_id = target_node_id
+        self.action = action
+        self.detail = detail
+        self.confidence = confidence
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "proposal_id": self.proposal_id,
+            "lesson_id": self.lesson_id,
+            "target_node_id": self.target_node_id,
+            "action": self.action,
+            "detail": self.detail,
+            "confidence": self.confidence,
+        }
+
+
 class Reflector:
     """Post-run self-critique that emits reusable lessons."""
 
@@ -215,6 +235,57 @@ class Reflector:
                 tags=["handoff"],
             ))
         return lessons
+
+    def improve_plan(self, plan: Plan, lessons: List[Lesson]) -> Dict[str, Any]:
+        proposals: List[ImprovementProposal] = []
+        nodes = [PlanNode(n.node_id, n.kind, n.label, list(n.depends_on)) for n in plan.nodes]
+        seen = set()
+        for lesson in lessons:
+            if "failure" in lesson.tags and "failed" in lesson.insight:
+                target = None
+                match = __import__("re").search(r"Task '([^']+)'", lesson.insight)
+                if match:
+                    target = match.group(1)
+                proposals.append(ImprovementProposal(
+                    proposal_id=f"prop-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{__import__('random').random().hex()[2:6]}",
+                    lesson_id=lesson.lesson_id,
+                    target_node_id=target,
+                    action="add_dependency",
+                    detail=f"Add fallback or retry dependency for '{target or 'unknown'}' due to repeated failures.",
+                    confidence=0.75,
+                ))
+            if "efficiency" in lesson.tags and "claimed" in lesson.insight:
+                target = None
+                match = __import__("re").search(r"Task '([^']+)'", lesson.insight)
+                if match:
+                    target = match.group(1)
+                proposals.append(ImprovementProposal(
+                    proposal_id=f"prop-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{__import__('random').random().hex()[2:6]}",
+                    lesson_id=lesson.lesson_id,
+                    target_node_id=target,
+                    action="reassign",
+                    detail=f"Reassign '{target or 'unknown'}' to a more stable owner.",
+                    confidence=0.6,
+                ))
+            if "handoff" in lesson.tags:
+                proposals.append(ImprovementProposal(
+                    proposal_id=f"prop-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{__import__('random').random().hex()[2:6]}",
+                    lesson_id=lesson.lesson_id,
+                    action="add_node",
+                    detail="Add automation gate to reduce human handoff frequency.",
+                    confidence=0.5,
+                ))
+        for p in proposals:
+            if p.action == "add_node" and p.proposal_id not in seen:
+                nodes.append(PlanNode(f"node-{p.proposal_id}", "task", p.detail, []))
+                seen.add(p.proposal_id)
+        improved = Plan(
+            plan_id=plan.plan_id,
+            goal=plan.goal,
+            nodes=nodes,
+            metadata={**plan.metadata, "improvements": [p.action for p in proposals]},
+        )
+        return {"plan": improved, "proposals": proposals}
 
 
 class ReasoningStep:
