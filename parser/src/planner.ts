@@ -216,12 +216,18 @@ export interface CollabPlanResult {
   contributions: AgentContribution[];
   allocation: Record<string, string>;
   conflicts: string[];
+  negotiation?: {
+    total: Record<string, number>;
+    limit: Record<string, number>;
+    overruns: string[];
+    adjusted: boolean;
+  };
 }
 
 export class CollabPlanner {
   constructor(private tracer?: ReasoningTracer) {}
 
-  build(goal: string, contributions: AgentContribution[]): CollabPlanResult {
+  build(goal: string, contributions: AgentContribution[], constraints?: Record<string, number>): CollabPlanResult {
     if (!contributions.length) {
       throw new Error('At least one agent contribution is required for collaborative planning.');
     }
@@ -229,10 +235,10 @@ export class CollabPlanner {
     const allocation: Record<string, string> = {};
     const conflicts: string[] = [];
     const seen = new Set<string>();
-    const byAgent: Record<string, PlanNode[]> = {};
+    const byAgent: Record<string, AgentContribution> = {};
     for (const c of contributions) {
       if (!c.agent_id) continue;
-      byAgent[c.agent_id] = byAgent[c.agent_id] || [];
+      byAgent[c.agent_id] = c;
       for (const node of c.nodes) {
         const key = node.id || node.label;
         if (seen.has(key)) {
@@ -242,14 +248,37 @@ export class CollabPlanner {
         seen.add(key);
         nodes.push(node);
         allocation[node.id] = c.agent_id;
-        byAgent[c.agent_id].push(node);
+      }
+    }
+    const totalResources: Record<string, number> = {};
+    for (const c of contributions) {
+      for (const [resource, amount] of Object.entries(c.resources)) {
+        totalResources[resource] = (totalResources[resource] || 0) + amount;
+      }
+    }
+    const limit = constraints ?? {};
+    const overruns: string[] = [];
+    let adjusted = false;
+    for (const [resource, total] of Object.entries(totalResources)) {
+      const max = limit[resource];
+      if (typeof max === 'number' && total > max) {
+        overruns.push(`${resource}: ${total} > ${max}`);
+        adjusted = true;
       }
     }
     const plan = new Plan(
       `collab-${goal.toLowerCase().replace(/[^a-z0-9_-]+/g, '-').slice(0, 30) || 'plan'}`,
       goal,
       nodes,
-      { contributions: contributions.map((c) => ({ agent_id: c.agent_id, node_count: c.nodes.length })) },
+      {
+        contributions: contributions.map((c) => ({ agent_id: c.agent_id, node_count: c.nodes.length })),
+        negotiation: {
+          total: totalResources,
+          limit,
+          overruns,
+          adjusted,
+        },
+      },
     );
     if (this.tracer) {
       const chain = this.tracer.createChain(goal);
@@ -257,12 +286,23 @@ export class CollabPlanner {
         agent_id: 'collab-planner',
         thought: `Synthesized ${nodes.length} nodes from ${contributions.length} contributions`,
         action: 'collab-plan',
-        observation: `Conflicts: ${conflicts.length}; allocation entries: ${Object.keys(allocation).length}`,
-        confidence: conflicts.length ? 0.6 : 0.95,
+        observation: `Conflicts: ${conflicts.length}; allocation entries: ${Object.keys(allocation).length}; resource overruns: ${overruns.length}`,
+        confidence: conflicts.length || overruns.length ? 0.6 : 0.95,
         dependencies: [],
       });
     }
-    return { plan, contributions, allocation, conflicts };
+    return {
+      plan,
+      contributions,
+      allocation,
+      conflicts,
+      negotiation: {
+        total: totalResources,
+        limit,
+        overruns,
+        adjusted,
+      },
+    };
   }
 }
 
@@ -286,10 +326,11 @@ export class Reflector {
     return lessons;
   }
 
-  improvePlan(plan: Plan, lessons: Lesson[]): { plan: Plan; proposals: ImprovementProposal[] } {
+  improvePlan(plan: Plan, lessons: Lesson[], constraints?: Record<string, number>): { plan: Plan; proposals: ImprovementProposal[] } {
     const proposals: ImprovementProposal[] = [];
     const nodes = plan.nodes.map((n) => ({ ...n }));
     const seen = new Set<string>();
+    const totalNodes = nodes.length;
     for (const lesson of lessons) {
       if (lesson.tags.includes('failure') && lesson.insight.includes('failed')) {
         const match = lesson.insight.match(/Task '([^']+)'/);
@@ -325,8 +366,9 @@ export class Reflector {
         });
       }
     }
+    const maxNodes = typeof constraints?.max_nodes === 'number' ? constraints.max_nodes : Infinity;
     for (const p of proposals) {
-      if (p.action === 'add_node' && !seen.has(p.proposal_id)) {
+      if (p.action === 'add_node' && !seen.has(p.proposal_id) && totalNodes + seen.size < maxNodes) {
         const newNode = new PlanNode(`node-${p.proposal_id}`, 'task', p.detail, []);
         nodes.push(newNode);
         seen.add(p.proposal_id);

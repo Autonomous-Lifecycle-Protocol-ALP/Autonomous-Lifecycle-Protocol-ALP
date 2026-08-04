@@ -112,6 +112,16 @@ describe('Reflector', () => {
     const hasAutomation = result.plan.nodes.some((n) => n.label.includes('automation'));
     expect(hasAutomation).toBe(true);
   });
+
+  it('respects max_nodes constraint when improving plan', () => {
+    const ref = new Reflector([
+      { type: 'human_handoff', task_id: 't1', status: '[?]', timestamp: '2026-01-01T00:00:03Z' },
+      { type: 'human_handoff', task_id: 't2', status: '[?]', timestamp: '2026-01-01T00:00:04Z' },
+    ]);
+    const plan = new Plan('p1', 'Goal', [new PlanNode('existing', 'task', 'Existing')]);
+    const result = ref.improvePlan(plan, ref.reflect('run-1'), { max_nodes: 1 });
+    expect(result.plan.nodes.length).toBeLessThanOrEqual(1);
+  });
 });
 
 describe('ReasoningTracer', () => {
@@ -285,5 +295,43 @@ describe('CollabPlanner', () => {
     expect(chains.length).toBe(1);
     expect(chains[0].steps).toHaveLength(1);
     expect(chains[0].steps[0].agent_id).toBe('collab-planner');
+  });
+
+  it('reports resource overruns when constraints are exceeded', () => {
+    const planner = new CollabPlanner();
+    const contributions: AgentContribution[] = [
+      {
+        agent_id: 'agent-a',
+        nodes: [new PlanNode('step-1', 'task', 'A')],
+        resources: { cpu: 3 },
+        rationale: 'A',
+      },
+      {
+        agent_id: 'agent-b',
+        nodes: [new PlanNode('step-2', 'task', 'B')],
+        resources: { cpu: 2 },
+        rationale: 'B',
+      },
+    ];
+    const result = planner.build('Ship feature X', contributions, { cpu: 4 });
+    expect(result.negotiation).toBeDefined();
+    expect(result.negotiation?.adjusted).toBe(true);
+    expect(result.negotiation?.overruns.length).toBeGreaterThanOrEqual(1);
+    expect(result.negotiation?.overruns.some((o) => o.includes('cpu'))).toBe(true);
+  });
+
+  it('does not report overruns when resources are within constraints', () => {
+    const planner = new CollabPlanner();
+    const contributions: AgentContribution[] = [
+      {
+        agent_id: 'agent-a',
+        nodes: [new PlanNode('step-1', 'task', 'A')],
+        resources: { cpu: 2 },
+        rationale: 'A',
+      },
+    ];
+    const result = planner.build('Ship feature X', contributions, { cpu: 4 });
+    expect(result.negotiation?.adjusted).toBe(false);
+    expect(result.negotiation?.overruns).toHaveLength(0);
   });
 });

@@ -72,6 +72,7 @@ impl PolicyEngine {
             reasons,
             policies: matched_policies,
             requires_approval,
+            audit: std::collections::HashMap::new(),
         }
     }
 }
@@ -125,4 +126,5 @@ pub struct PolicyDecision {
     pub reasons: Vec<String>,
     pub policies: Vec<String>,
     pub requires_approval: bool,
+    pub audit: std::collections::HashMap<String, serde_json::Value>,
 }

@@ -47,6 +47,7 @@ from .self_healing import SelfHealingEngine, ASTDiagnosis
 from .formal_verification import FormalVerificationEngine, Transition
 from .asset_context import AssetContextEngine, AssetBundle
 from .cost_budget import CostBudgetEngine, CostBudget
+from .execution_quota import ExecutionQuotaEngine, ExecutionQuota
 from .sandbox_env import SandboxEnvEngine, SandboxInstance
 from .tenant_mesh import TenantMeshEngine, TenantMesh
 from .arch_decomposer import ArchDecomposerEngine, MicroservicePlan
@@ -58,6 +59,16 @@ from .consensus_vote import ConsensusVoteEngine, ConsensusVoteConfig
 from .code_transform import CodeTransformEngine, CodeTransformConfig
 from .event_mesh import EventMeshEngine, EventMeshConfig
 from .swarm_marketplace import SwarmMarketplaceEngine, SkillListing
+from .swarm_intelligence import (
+    SwarmSignal,
+    EmergentPattern,
+    AgentSpecialization,
+    EmergentBehaviorDetector,
+    RoleSpecializer,
+    CollectiveVote,
+    CollectiveDecision,
+    CollectiveDecisionMaker,
+)
 from .alpel import (
     AlpelError,
     build_context,
@@ -272,6 +283,7 @@ from .promote_engine import PromoteEngine
 from .status_engine import StatusEngine
 from .test_engine import TestEngine, TestSuiteResult
 from .visualize_engine import VisualizeEngine
+from .wasm_ast import WasmAstEvaluator, ASTNode, ASTDiagnostic, ASTEvaluationResult
 from .intelligence import (
     IntelligenceEngine,
     SmartSuggestion,
@@ -559,6 +571,10 @@ __all__ = [
     "TestEngine",
     "TestSuiteResult",
     "VisualizeEngine",
+    "WasmAstEvaluator",
+    "ASTNode",
+    "ASTDiagnostic",
+    "ASTEvaluationResult",
     "IntelligenceEngine",
     "SmartSuggestion",
     "DiagnosisResult",

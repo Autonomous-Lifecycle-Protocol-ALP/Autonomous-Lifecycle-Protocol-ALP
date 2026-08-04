@@ -236,7 +236,7 @@ class Reflector:
             ))
         return lessons
 
-    def improve_plan(self, plan: Plan, lessons: List[Lesson]) -> Dict[str, Any]:
+    def improve_plan(self, plan: Plan, lessons: List[Lesson], constraints: Optional[Dict[str, int]] = None) -> Dict[str, Any]:
         proposals: List[ImprovementProposal] = []
         nodes = [PlanNode(n.node_id, n.kind, n.label, list(n.depends_on)) for n in plan.nodes]
         seen = set()
@@ -275,8 +275,11 @@ class Reflector:
                     detail="Add automation gate to reduce human handoff frequency.",
                     confidence=0.5,
                 ))
+        max_nodes = constraints.get("max_nodes") if constraints and isinstance(constraints.get("max_nodes"), int) else None
         for p in proposals:
             if p.action == "add_node" and p.proposal_id not in seen:
+                if max_nodes is not None and len(nodes) >= max_nodes:
+                    continue
                 nodes.append(PlanNode(f"node-{p.proposal_id}", "task", p.detail, []))
                 seen.add(p.proposal_id)
         improved = Plan(
@@ -423,11 +426,12 @@ class AgentContribution:
 
 
 class CollabPlanResult:
-    def __init__(self, plan: Plan, contributions: List[AgentContribution], allocation: Dict[str, str], conflicts: List[str]):
+    def __init__(self, plan: Plan, contributions: List[AgentContribution], allocation: Dict[str, str], conflicts: List[str], negotiation: Optional[Dict[str, Any]] = None):
         self.plan = plan
         self.contributions = contributions
         self.allocation = allocation
         self.conflicts = conflicts
+        self.negotiation = negotiation
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -435,6 +439,7 @@ class CollabPlanResult:
             "contributions": [c.to_dict() for c in self.contributions],
             "allocation": self.allocation,
             "conflicts": self.conflicts,
+            "negotiation": self.negotiation,
         }
 
 
@@ -442,18 +447,18 @@ class CollabPlanner:
     def __init__(self, tracer: Optional[ReasoningTracer] = None):
         self.tracer = tracer
 
-    def build(self, goal: str, contributions: List[AgentContribution]) -> CollabPlanResult:
+    def build(self, goal: str, contributions: List[AgentContribution], constraints: Optional[Dict[str, int]] = None) -> CollabPlanResult:
         if not contributions:
             raise ValueError("At least one agent contribution is required for collaborative planning.")
         nodes: List[PlanNode] = []
         allocation: Dict[str, str] = {}
         conflicts: List[str] = []
         seen = set()
-        by_agent: Dict[str, List[PlanNode]] = {}
+        by_agent: Dict[str, AgentContribution] = {}
         for c in contributions:
             if not c.agent_id:
                 continue
-            by_agent.setdefault(c.agent_id, [])
+            by_agent[c.agent_id] = c
             for node in c.nodes:
                 key = node.node_id or node.label
                 if key in seen:
@@ -462,12 +467,31 @@ class CollabPlanner:
                 seen.add(key)
                 nodes.append(node)
                 allocation[node.node_id] = c.agent_id
-                by_agent[c.agent_id].append(node)
+        total_resources: Dict[str, int] = {}
+        for c in contributions:
+            for resource, amount in (c.resources or {}).items():
+                total_resources[resource] = total_resources.get(resource, 0) + amount
+        limit = constraints or {}
+        overruns: List[str] = []
+        adjusted = False
+        for resource, total in total_resources.items():
+            max_allowed = limit.get(resource)
+            if isinstance(max_allowed, int) and total > max_allowed:
+                overruns.append(f"{resource}: {total} > {max_allowed}")
+                adjusted = True
         plan = Plan(
             plan_id=f"collab-{__import__('re').sub(r'[^a-z0-9_-]+', '-', goal.lower())[:30] or 'plan'}",
             goal=goal,
             nodes=nodes,
-            metadata={"contributions": [{"agent_id": c.agent_id, "node_count": len(c.nodes)} for c in contributions]},
+            metadata={
+                "contributions": [{"agent_id": c.agent_id, "node_count": len(c.nodes)} for c in contributions],
+                "negotiation": {
+                    "total": total_resources,
+                    "limit": limit,
+                    "overruns": overruns,
+                    "adjusted": adjusted,
+                },
+            },
         )
         if self.tracer:
             chain = self.tracer.create_chain(goal)
@@ -475,8 +499,19 @@ class CollabPlanner:
                 "agent_id": "collab-planner",
                 "thought": f"Synthesized {len(nodes)} nodes from {len(contributions)} contributions",
                 "action": "collab-plan",
-                "observation": f"Conflicts: {len(conflicts)}; allocation entries: {len(allocation)}",
-                "confidence": 0.6 if conflicts else 0.95,
+                "observation": f"Conflicts: {len(conflicts)}; allocation entries: {len(allocation)}; resource overruns: {len(overruns)}",
+                "confidence": 0.6 if conflicts or overruns else 0.95,
                 "dependencies": [],
             })
-        return CollabPlanResult(plan=plan, contributions=contributions, allocation=allocation, conflicts=conflicts)
+        return CollabPlanResult(
+            plan=plan,
+            contributions=contributions,
+            allocation=allocation,
+            conflicts=conflicts,
+            negotiation={
+                "total": total_resources,
+                "limit": limit,
+                "overruns": overruns,
+                "adjusted": adjusted,
+            },
+        )

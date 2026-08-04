@@ -118,6 +118,15 @@ class TestReflector(unittest.TestCase):
         has_automation = any("automation" in n.label for n in result["plan"].nodes)
         self.assertTrue(has_automation)
 
+    def test_improve_plan_respects_max_nodes_constraint(self):
+        ref = Reflector([
+            {"type": "human_handoff", "task_id": "t1", "status": "[?]", "timestamp": "2026-01-01T00:00:03Z"},
+            {"type": "human_handoff", "task_id": "t2", "status": "[?]", "timestamp": "2026-01-01T00:00:04Z"},
+        ])
+        plan = Plan("p1", "Goal", [PlanNode("existing", "task", "Existing")])
+        result = ref.improve_plan(plan, ref.reflect("run-1"), {"max_nodes": 1})
+        self.assertLessEqual(len(result["plan"].nodes), 1)
+
 
 class TestReasoningTracer(unittest.TestCase):
     def test_create_chain(self):
@@ -281,3 +290,38 @@ class TestCollabPlanner(unittest.TestCase):
         chains = list(tracer._chains.values())
         self.assertEqual(len(chains), 1)
         self.assertEqual(chains[0].steps[0].agent_id, "collab-planner")
+
+    def test_reports_resource_overruns_when_constraints_exceeded(self):
+        planner = CollabPlanner()
+        contributions = [
+            AgentContribution(
+                agent_id="agent-a",
+                nodes=[PlanNode("step-1", "task", "A")],
+                resources={"cpu": 3},
+                rationale="A",
+            ),
+            AgentContribution(
+                agent_id="agent-b",
+                nodes=[PlanNode("step-2", "task", "B")],
+                resources={"cpu": 2},
+                rationale="B",
+            ),
+        ]
+        result = planner.build("Ship feature X", contributions, {"cpu": 4})
+        self.assertIsNotNone(result.negotiation)
+        self.assertTrue(result.negotiation["adjusted"])
+        self.assertTrue(any("cpu" in o for o in result.negotiation["overruns"]))
+
+    def test_no_overruns_when_resources_within_constraints(self):
+        planner = CollabPlanner()
+        contributions = [
+            AgentContribution(
+                agent_id="agent-a",
+                nodes=[PlanNode("step-1", "task", "A")],
+                resources={"cpu": 2},
+                rationale="A",
+            ),
+        ]
+        result = planner.build("Ship feature X", contributions, {"cpu": 4})
+        self.assertFalse(result.negotiation["adjusted"])
+        self.assertEqual(result.negotiation["overruns"], [])

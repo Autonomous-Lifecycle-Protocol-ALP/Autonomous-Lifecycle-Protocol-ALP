@@ -48,7 +48,7 @@ public class PolicyEngine {
         }
 
         boolean allowed = !blocked;
-        return new PolicyDecision(allowed, blocked, reasons, matchedPolicies, requiresApproval);
+        return new PolicyDecision(allowed, blocked, reasons, matchedPolicies, requiresApproval, new java.util.HashMap<>());
     }
 
     private boolean matches(PolicyQuery query, String policyKind, String policyValue) {

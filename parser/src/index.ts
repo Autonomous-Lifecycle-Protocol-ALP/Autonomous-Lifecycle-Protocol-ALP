@@ -55,6 +55,7 @@ export * from './formal-verification';
 // ── Resource & Asset Management ───────────────────────────────────────────────
 export * from './asset-context';
 export * from './cost-budget';
+export * from './execution-quota';
 export * from './sandbox-env';
 export * from './tenant-mesh';
 export * from './arch-decomposer';
@@ -85,6 +86,7 @@ export * from './pq-crypto';
 export * from './swarm-settlement';
 export * from './workflow-replay';
 export * from './swarm-self-healing-mesh';
+export * from './swarm-intelligence';
 export * from './agent-copilot';
 export * from './crdt-canvas';
 export * from './wasm-ast';

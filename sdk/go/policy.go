@@ -115,6 +115,7 @@ type PolicyDecision struct {
 	Reasons          []string
 	Policies         []string
 	RequiresApproval bool
+	Audit            map[string]interface{}
 }
 
 func getStringProperty(props map[string]any, key string) string {

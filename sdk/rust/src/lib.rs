@@ -826,3 +826,21 @@ impl Default for EdgeAgentDebugger {
         Self::new()
     }
 }
+
+pub mod reasoning;
+pub mod planner;
+pub mod swarm_intelligence;
+pub mod execution_quota;
+pub mod policy_learner;
+pub mod memory_semantic;
+pub mod bridge;
+pub mod predictive_policy;
+
+pub use reasoning::{ReasoningChain, ReasoningStep, ReasoningTracer};
+pub use planner::{CollabPlanner, GoalDecomposer, Plan, PlanNode, Planner, RankedPlan, Reflector};
+pub use swarm_intelligence::{AgentRecord, CollectiveDecisionMaker, EmergentBehaviorDetector, RoleSpecializer, SwarmDecision};
+pub use execution_quota::ExecutionQuotaEngine;
+pub use policy_learner::PolicyLearner;
+pub use memory_semantic::{MemoryEdge, MemoryNode, SemanticGraph};
+pub use bridge::{BridgeExportResult, BridgeImportResult, BridgeError, ProtocolBridge, SUPPORTED_FORMATS};
+pub use predictive_policy::{AnomalyScore, BaselineProfile, EventEntry, PredictivePolicyEngine};
