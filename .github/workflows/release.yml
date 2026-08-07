@@ -34,6 +34,18 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-optional
 
+      - name: Install Linux native bindings
+        run: npm install @rollup/rollup-linux-x64-gnu @rolldown/binding-linux-x64-gnu --no-save
+        if: runner.os == 'Linux'
+
+      - name: Install Windows native bindings
+        run: npm install @rollup/rollup-win32-x64-msvc @rolldown/binding-win32-x64-msvc --no-save
+        if: runner.os == 'Windows'
+
+      - name: Install macOS native bindings
+        run: npm install @rollup/rollup-darwin-x64 @rolldown/binding-darwin-x64 --no-save
+        if: runner.os == 'macOS'
+
       - name: Build workspaces
         run: npm run build
 
