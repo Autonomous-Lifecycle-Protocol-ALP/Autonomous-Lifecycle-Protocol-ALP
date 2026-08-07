@@ -11,6 +11,9 @@ jobs:
   publish:
     name: Publish @autonomous-lifecycle-protocol-alp/* packages to GitHub Packages
     runs-on: ubuntu-latest
+    env:
+      ROLLUP_DISABLE_NATIVE: "1"
+      ROLLDOWN_DISABLE_NATIVE: "1"
     permissions:
       contents: read
       packages: write
@@ -27,7 +30,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "npm"
+          cache: false
 
       - name: Write npm auth and registry config
         run: |

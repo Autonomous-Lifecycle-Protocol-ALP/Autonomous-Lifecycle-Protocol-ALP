@@ -10,6 +10,9 @@ jobs:
   package:
     name: Package SHAM for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    env:
+      ROLLUP_DISABLE_NATIVE: "1"
+      ROLLDOWN_DISABLE_NATIVE: "1"
     strategy:
       fail-fast: false
       matrix:
@@ -32,7 +35,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "npm"
+          cache: false
 
       - name: Install dependencies
         run: npm ci --no-optional
