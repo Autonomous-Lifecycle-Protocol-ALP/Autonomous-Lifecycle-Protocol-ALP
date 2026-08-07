@@ -21,7 +21,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: false
 
       - name: Install dependencies
         run: npm ci --no-optional
@@ -70,7 +69,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: false
 
       - name: Install dependencies
         run: npm ci --no-optional
@@ -104,7 +102,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: false
 
       - name: Install dependencies
         run: npm ci --no-optional
