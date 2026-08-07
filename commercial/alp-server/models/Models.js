@@ -17,7 +17,7 @@ const WorkspaceSchema = new mongoose.Schema({
   slug: { type: String, required: true },
   description: String,
   gitUrl: String,
-  alpVersion: { type: String, default: '81.0.0' },
+  alpVersion: { type: String, default: '80.0.0' },
   status: { type: String, enum: ['planned', 'active', 'blocked', 'completed'], default: 'active' },
   apiSpend: { type: Number, default: 0 },
   apiSavings: { type: Number, default: 0 },

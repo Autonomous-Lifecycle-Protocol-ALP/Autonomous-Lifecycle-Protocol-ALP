@@ -46,12 +46,6 @@ router.get('/:id/snapshots', asyncHandler(async (req, res) => {
   res.json(workspace.snapshots || []);
 }));
 
-router.post('/:id/snapshots/:snapshotId/rollback', asyncHandler(async (req, res) => {
-  const workspace = await CloudWorkspace.findOne({ _id: req.params.id, organization: req.orgId });
-  if (!workspace) return res.status(404).json({ error: 'Workspace not found' });
-  res.json({ ok: true, message: 'Rollback initiated' });
-}));
-
 router.post('/:id/members', asyncHandler(async (req, res) => {
   const workspace = await CloudWorkspace.findOne({ _id: req.params.id, organization: req.orgId });
   if (!workspace) return res.status(404).json({ error: 'Workspace not found' });

@@ -30,7 +30,12 @@ const zeroTrustRoutes = require('./routes/zero-trust');
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors({ origin: [process.env.FRONTEND_URL || 'http://localhost:5174', 'http://localhost:5173', 'http://localhost:5175'], credentials: true }));
+const corsOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim())
+  : [process.env.FRONTEND_URL || 'http://localhost:5174', 'http://localhost:5173', 'http://localhost:5175'];
+
+app.use(cors({ origin: corsOrigins, credentials: true }));
+
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/alp-enterprise')
@@ -38,7 +43,7 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/alp-enterpr
   .catch(err => console.error('MongoDB connection error:', err));
 
 const io = new Server(server, {
-  cors: { origin: [process.env.FRONTEND_URL || 'http://localhost:5174', 'http://localhost:5173', 'http://localhost:5175'], credentials: true }
+  cors: { origin: corsOrigins, credentials: true }
 });
 
 io.on('connection', (socket) => {

@@ -1,6 +1,21 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import api from "../utils/api.js";
 
+function getTokenExpiry(token) {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp ? payload.exp * 1000 : null;
+  } catch {
+    return null;
+  }
+}
+
+function isTokenExpired(token) {
+  const expiry = getTokenExpiry(token);
+  if (!expiry) return false;
+  return Date.now() >= expiry - 60000;
+}
+
 const AuthContext = createContext();
 
 export function useAuth() {
@@ -14,6 +29,15 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
+      if (isTokenExpired(token)) {
+        localStorage.removeItem("token");
+        setUser(null);
+        setLoading(false);
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
+        return;
+      }
       api.get("/auth/profile")
         .then(({ data }) => {
           setUser(data.user);
