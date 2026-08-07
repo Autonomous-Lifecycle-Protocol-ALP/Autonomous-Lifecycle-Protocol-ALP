@@ -36,12 +36,15 @@ impl SemanticGraph {
     }
 
     pub fn add_node(&mut self, id: &str, content: &str, meta: Option<HashMap<String, String>>) {
-        self.nodes.insert(id.to_string(), MemoryNode {
-            id: id.to_string(),
-            content: content.to_string(),
-            embed: None,
-            meta,
-        });
+        self.nodes.insert(
+            id.to_string(),
+            MemoryNode {
+                id: id.to_string(),
+                content: content.to_string(),
+                embed: None,
+                meta,
+            },
+        );
     }
 
     pub fn add_edge(&mut self, source: &str, target: &str, relation: &str, weight: f64) {
@@ -55,7 +58,10 @@ impl SemanticGraph {
 
     pub fn search(&self, query: &str, threshold: f64) -> Vec<&MemoryNode> {
         let q = query.to_lowercase();
-        self.nodes.values().filter(|n| similarity(&n.content.to_lowercase(), &q) >= threshold).collect()
+        self.nodes
+            .values()
+            .filter(|n| similarity(&n.content.to_lowercase(), &q) >= threshold)
+            .collect()
     }
 
     pub fn consolidate(&mut self) {
@@ -87,7 +93,11 @@ fn similarity(a: &str, b: &str) -> f64 {
         }
     }
     let denom = words_a.len() + words_b.len();
-    if denom == 0 { 0.0 } else { (common * 2) as f64 / denom as f64 }
+    if denom == 0 {
+        0.0
+    } else {
+        (common * 2) as f64 / denom as f64
+    }
 }
 
 pub fn init_global_graph(graph: SemanticGraph) {

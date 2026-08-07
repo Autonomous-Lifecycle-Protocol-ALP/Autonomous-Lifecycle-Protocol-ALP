@@ -1,3 +1,4 @@
+use crate::AlpError;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Mutex;
@@ -19,7 +20,11 @@ pub struct ExecutionQuotaEngine {
 
 impl ExecutionQuotaEngine {
     pub fn new(reset_interval: Duration) -> Self {
-        let interval = if reset_interval > Duration::ZERO { reset_interval } else { Duration::from_secs(3600) };
+        let interval = if reset_interval > Duration::ZERO {
+            reset_interval
+        } else {
+            Duration::from_secs(3600)
+        };
         Self {
             quotas: Mutex::new(HashMap::new()),
             reset_interval: interval,
@@ -28,13 +33,16 @@ impl ExecutionQuotaEngine {
 
     pub fn set_quota(&self, agent_id: &str, limit: f64) {
         let mut quotas = self.quotas.lock().unwrap();
-        quotas.insert(agent_id.to_string(), QuotaUsage {
-            agent_id: agent_id.to_string(),
-            used: 0.0,
-            limit,
-            remaining: limit,
-            last_checked: chrono::Utc::now().to_rfc3339(),
-        });
+        quotas.insert(
+            agent_id.to_string(),
+            QuotaUsage {
+                agent_id: agent_id.to_string(),
+                used: 0.0,
+                limit,
+                remaining: limit,
+                last_checked: chrono::Utc::now().to_rfc3339(),
+            },
+        );
     }
 
     pub fn consume(&self, agent_id: &str, amount: f64) -> Result<(), AlpError> {
@@ -42,14 +50,24 @@ impl ExecutionQuotaEngine {
             return Ok(());
         }
         let mut quotas = self.quotas.lock().unwrap();
-        let q = quotas.get_mut(agent_id).ok_or_else(|| AlpError::new(format!("quota not set for agent '{}'", agent_id)))?;
-        if chrono::Utc::now().signed_duration_since(chrono::DateTime::parse_from_rfc3339(&q.last_checked).unwrap().fixed_offset()) >= chrono::Duration::from_std(self.reset_interval).unwrap() {
+        let q = quotas
+            .get_mut(agent_id)
+            .ok_or_else(|| AlpError::new(format!("quota not set for agent '{}'", agent_id)))?;
+        if chrono::Utc::now().signed_duration_since(
+            chrono::DateTime::parse_from_rfc3339(&q.last_checked)
+                .unwrap()
+                .fixed_offset(),
+        ) >= chrono::Duration::from_std(self.reset_interval).unwrap()
+        {
             q.used = 0.0;
             q.remaining = q.limit;
             q.last_checked = chrono::Utc::now().to_rfc3339();
         }
         if q.remaining < amount {
-            return Err(AlpError::new(format!("quota exceeded for agent '{}': remaining={:.2}, requested={:.2}", agent_id, q.remaining, amount)));
+            return Err(AlpError::new(format!(
+                "quota exceeded for agent '{}': remaining={:.2}, requested={:.2}",
+                agent_id, q.remaining, amount
+            )));
         }
         q.used += amount;
         q.remaining -= amount;
@@ -59,7 +77,9 @@ impl ExecutionQuotaEngine {
 
     pub fn remaining(&self, agent_id: &str) -> Result<f64, AlpError> {
         let quotas = self.quotas.lock().unwrap();
-        let q = quotas.get(agent_id).ok_or_else(|| AlpError::new(format!("quota not set for agent '{}'", agent_id)))?;
+        let q = quotas
+            .get(agent_id)
+            .ok_or_else(|| AlpError::new(format!("quota not set for agent '{}'", agent_id)))?;
         Ok(q.remaining)
     }
 

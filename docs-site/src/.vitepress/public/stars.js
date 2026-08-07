@@ -1,7 +1,7 @@
 (function() {
   function initInteractiveBg() {
-    // Avoid double initialization
     if (document.getElementById('alp-canvas-bg')) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const canvas = document.createElement('canvas');
     canvas.id = 'alp-canvas-bg';
@@ -12,7 +12,7 @@
     canvas.style.height = '100vh';
     canvas.style.pointerEvents = 'none';
     canvas.style.zIndex = '0';
-    canvas.style.opacity = '0.75';
+    canvas.style.opacity = '1';
     canvas.style.transition = 'opacity 0.5s ease';
 
     document.body.insertBefore(canvas, document.body.firstChild);
@@ -21,15 +21,19 @@
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }, 150);
     });
 
     const isDark = () => document.documentElement.classList.contains('dark');
 
-    // Particle nodes
-    const particleCount = Math.min(Math.floor((width * height) / 12000), 75);
+    const particleCount = Math.min(Math.floor((width * height) / 15000), 50);
+
     const particles = [];
 
     const mouse = {
@@ -49,7 +53,6 @@
       mouse.active = false;
     });
 
-    // Ripple click shockwave
     const ripples = [];
     window.addEventListener('click', (e) => {
       ripples.push({
@@ -69,18 +72,17 @@
       reset() {
         this.x = Math.random() * width;
         this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * 0.8;
-        this.vy = (Math.random() - 0.5) * 0.8;
-        this.baseRadius = Math.random() * 2 + 1.5;
+        this.vx = (Math.random() - 0.5) * 0.6;
+        this.vy = (Math.random() - 0.5) * 0.6;
+        this.baseRadius = Math.random() * 1.5 + 1;
         this.radius = this.baseRadius;
         this.pulse = Math.random() * Math.PI * 2;
       }
 
       update() {
-        this.pulse += 0.03;
-        this.radius = this.baseRadius + Math.sin(this.pulse) * 0.8;
+        this.pulse += 0.02;
+        this.radius = this.baseRadius + Math.sin(this.pulse) * 0.5;
 
-        // Mouse gravitational attraction & deflection
         if (mouse.active) {
           const dx = mouse.x - this.x;
           const dy = mouse.y - this.y;
@@ -89,8 +91,8 @@
           if (dist < mouse.radius) {
             const force = (mouse.radius - dist) / mouse.radius;
             const angle = Math.atan2(dy, dx);
-            this.x += Math.cos(angle) * force * 1.5;
-            this.y += Math.sin(angle) * force * 1.5;
+            this.x += Math.cos(angle) * force * 1.2;
+            this.y += Math.sin(angle) * force * 1.2;
           }
         }
 
@@ -107,8 +109,8 @@
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fillStyle = isDark()
-          ? 'rgba(0, 240, 255, 0.85)'
-          : 'rgba(0, 102, 255, 0.75)';
+          ? 'rgba(0, 240, 255, 0.9)'
+          : 'rgba(0, 102, 255, 0.9)';
         ctx.fill();
       }
     }
@@ -117,6 +119,7 @@
       particles.push(new Particle());
     }
 
+    let animationId;
     function animate() {
       ctx.clearRect(0, 0, width, height);
 
@@ -124,7 +127,6 @@
       const nodeColor = dark ? '0, 240, 255' : '0, 102, 255';
       const accentColor = dark ? '255, 0, 255' : '124, 58, 237';
 
-      // Draw constellation connections between nearby particles
       for (let i = 0; i < particles.length; i++) {
         const p1 = particles[i];
         p1.update();
@@ -137,7 +139,7 @@
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < 130) {
-            const alpha = (1 - dist / 130) * (dark ? 0.35 : 0.2);
+            const alpha = (1 - dist / 130) * (dark ? 0.5 : 0.3);
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
@@ -147,7 +149,6 @@
           }
         }
 
-        // Draw connections to mouse cursor
         if (mouse.active) {
           const dx = p1.x - mouse.x;
           const dy = p1.y - mouse.y;
@@ -165,7 +166,6 @@
         }
       }
 
-      // Draw mouse aura ring
       if (mouse.active) {
         ctx.beginPath();
         ctx.arc(mouse.x, mouse.y, mouse.radius * 0.4, 0, Math.PI * 2);
@@ -183,7 +183,6 @@
         ctx.fill();
       }
 
-      // Render shockwave ripples
       for (let i = ripples.length - 1; i >= 0; i--) {
         const r = ripples[i];
         r.radius += 4;
@@ -201,10 +200,14 @@
         ctx.stroke();
       }
 
-      requestAnimationFrame(animate);
+      animationId = requestAnimationFrame(animate);
     }
 
     animate();
+
+    window.addEventListener('beforeunload', () => {
+      if (animationId) cancelAnimationFrame(animationId);
+    });
   }
 
   if (document.readyState === 'loading') {

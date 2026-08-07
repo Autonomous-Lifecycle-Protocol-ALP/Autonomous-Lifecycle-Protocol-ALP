@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 
 interface GitFile {
   name: string;
@@ -14,10 +15,10 @@ const mockFiles: GitFile[] = [
 ];
 
 const statusIcons: Record<string, string> = {
-  modified: '&#9679;',
-  added: '&#10010;',
-  deleted: '&#8857;',
-  renamed: '&#8596;',
+  modified: 'edit',
+  added: 'plus',
+  deleted: 'trash',
+  renamed: 'gitCompare',
 };
 
 const statusColors: Record<string, string> = {
@@ -49,7 +50,7 @@ export function GitPanel(): React.JSX.Element {
           {mockFiles.map((file) => (
             <div key={file.name} className="list-item">
               <span className="list-item-icon" style={{ color: statusColors[file.status], fontSize: 10 }}>
-                {statusIcons[file.status]}
+                <Icon name={statusIcons[file.status]} size={14} />
               </span>
               <div className="list-item-content">
                 <div className="list-item-title">{file.name}</div>

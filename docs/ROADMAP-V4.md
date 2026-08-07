@@ -10,7 +10,7 @@ grows from one `.alp/` folder to many, working together under shared policy.
 
 ---
 
-## Pillar 1: Remote & Networked Swarms ✅ (landed on main, toward 4.0.0)
+## Pillar 1: Remote & Networked Swarms [Complete] (landed on main, toward 4.0.0)
 **Target:** Run the swarm across more than one machine.
 - **`@swarm` object:** Declares a networked swarm (coordinator URL, token, node id,
   heartbeat, peers). Validated by the same JSON-schema machinery as other objects.
@@ -23,7 +23,7 @@ grows from one `.alp/` folder to many, working together under shared policy.
   task claims through the coordinator instead of the local `LockManager`, so
   multiple machines/CI runners work the same DAG without double-claiming.
 
-## Pillar 2: Cross-Repository Orchestration ✅ (landed on main, toward 4.0.0)
+## Pillar 2: Cross-Repository Orchestration [Complete] (landed on main, toward 4.0.0)
 **Target:** One DAG spanning many repos.
 - **`@repo` object:** Declares an external repository (local `path`, Git `url`,
   pinned to `commit`/`branch`). Validated by the JSON-schema machinery.
@@ -37,32 +37,32 @@ grows from one `.alp/` folder to many, working together under shared policy.
 - **Atomic cross-repo checkpoints:** A feature that touches 3 repos is only
   marked `[x]` when all 3 verify.
 
-## Pillar 3: Hosted Registry & Marketplace ✅ (landed on main, toward 4.0.0)
+## Pillar 3: Hosted Registry & Marketplace [Complete] (landed on main, toward 4.0.0)
 **Target:** Graduate `alp install`/`alp publish` from a stub to a real service.
-- **Signed packages:** ✅ sha256 integrity on every published version, verified
+- **Signed packages:** [Done] sha256 integrity on every published version, verified
   on download by both `alp install` and `alp registry install`.
-- **Versioned resolution:** ✅ Semver ranges (`^`, `~`, `x`-ranges, `>=`/`</`
+- **Versioned resolution:** [Done] Semver ranges (`^`, `~`, `x`-ranges, `>=`/`</`
   comparators) resolved by `RegistryClient.resolveVersion`; resolved versions
   are pinned to `.alp/registry.lock.json` on install.
-- **Discovery:** ✅ `alp search` against both the local store and a hosted
+- **Discovery:** [Done] `alp search` against both the local store and a hosted
   `/api/registry?q=` index; `alp registry serve`/`list`/`publish`/`install`
   round-trip through `alp serve --registry`.
 
-## Pillar 4: Policy & Permission Governance ✅ (landed on main, toward 4.0.0)
+## Pillar 4: Policy & Permission Governance [Complete] (landed on main, toward 4.0.0)
 **Target:** Make autonomous agents safe to run unattended.
-- **`@policy` object:** ✅ Declarative guardrails — `allow_paths`/`deny_paths`
+- **`@policy` object:** [Done] Declarative guardrails — `allow_paths`/`deny_paths`
   (globs), `allow_commands`/`deny_commands` (prefixes), `budgets`, `enforcement`
   (`strict`/`warn`), and `applies_to` agent scoping. Schema-validated in both
   the TS and Python SDKs.
-- **Policy Engine + `alp policy`:** ✅ Evaluate a proposed path/command/agent
+- **Policy Engine + `alp policy`:** [Done] Evaluate a proposed path/command/agent
   action; `deny` beats `allow`; exits non-zero on strict blocks (CI-friendly).
-- **Enforcement in `alp verify`:** ✅ Verify commands that violate a strict
+- **Enforcement in `alp verify`:** [Done] Verify commands that violate a strict
   policy are blocked and never executed.
-- **Capability scoping (MCP):** ✅ The MCP server enforces policy on mutating
+- **Capability scoping (MCP):** [Done] The MCP server enforces policy on mutating
   tools (`alp_update_status`, `alp_delegate`, `alp_decompose`); denied path
   writes are rejected. Protocol-coordination files under `.alp/` are governed
   by deny rules only, so allow-lists like `src/**` don't block task creation.
-- **Audit trail:** ✅ Every MCP mutation is appended to
+- **Audit trail:** [Done] Every MCP mutation is appended to
   `.alp/.runtime/log.jsonl` (`source: mcp-server`), visible live in `alp serve`.
 
 ## Pillar 5: Persistent State Store
@@ -81,11 +81,11 @@ grows from one `.alp/` folder to many, working together under shared policy.
 
 | Phase | Goal | Status |
 |---|---|---|
-| Pillar 4 | Policy & Permission Governance | ✅ Complete (toward 4.0.0) |
-| Pillar 5 | Persistent State Store | ✅ Complete (toward 4.0.0) |
-| Pillar 1 | Remote & Networked Swarms | ✅ Complete (toward 4.0.0) |
-| Pillar 2 | Cross-Repository Orchestration | ✅ Complete (toward 4.0.0) |
-| Pillar 3 | Hosted Registry & Marketplace | ✅ Complete (toward 4.0.0) |
+| Pillar 4 | Policy & Permission Governance | [Complete] (toward 4.0.0) |
+| Pillar 5 | Persistent State Store | [Complete] (toward 4.0.0) |
+| Pillar 1 | Remote & Networked Swarms | [Complete] (toward 4.0.0) |
+| Pillar 2 | Cross-Repository Orchestration | [Complete] (toward 4.0.0) |
+| Pillar 3 | Hosted Registry & Marketplace | [Complete] (toward 4.0.0) |
 
 > V4 is a **major** version: `@policy` and cross-repo references may introduce
 > breaking changes to the workspace schema, gated behind the deprecation policy

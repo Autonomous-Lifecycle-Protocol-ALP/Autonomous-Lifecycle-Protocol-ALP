@@ -16,6 +16,7 @@ import { GitPanel } from './components/GitPanel.js';
 import { SearchPanel } from './components/SearchPanel.js';
 import { CommandPalette } from './components/CommandPalette.js';
 import { DebugPanel } from './components/DebugPanel.js';
+import { Icon } from './components/Icon.js';
 import { TestRunnerPanel } from './components/TestRunnerPanel.js';
 import { SwarmMarketplacePanel } from './components/SwarmMarketplacePanel.js';
 import { ZKProofPanel } from './components/ZKProofPanel.js';
@@ -330,11 +331,11 @@ export function App(): React.JSX.Element {
           <div className="app-header-logo-icon">S</div>
           <span>SHAM</span>
         </div>
-        <span className="app-header-title">v81.0.0 — IDE Intelligence</span>
+        <span className="app-header-title">v80.0.0 — IDE Intelligence</span>
         <div className="app-header-spacer" />
         <div className="app-header-actions">
           <button className="header-btn" onClick={() => setShowCommandPalette(true)} title="Command Palette (Ctrl+Shift+P)">
-            <span>&#9776;</span> Commands
+            <Icon name="menu" size={16} /> Commands
           </button>
           {panels.map((panel) => (
             <button
@@ -412,7 +413,7 @@ export function App(): React.JSX.Element {
                   <div>
                     {state.diagnostics.length === 0 ? (
                       <div className="empty-state">
-                        <div className="empty-state-icon">&#10003;</div>
+                        <div className="empty-state-icon"><Icon name="check" size={48} color="var(--accent-green)" /></div>
                         <div className="empty-state-title">No problems detected</div>
                         <div className="empty-state-desc">Your workspace is clean. Keep up the good work!</div>
                       </div>
@@ -486,7 +487,7 @@ export function App(): React.JSX.Element {
             </span>
           )}
           <span className="status-bar-separator" />
-          <span className="status-bar-item">SHAM v81.0.0</span>
+          <span className="status-bar-item">SHAM v80.0.0</span>
           <span className="status-bar-item">ALP v80.0.0</span>
         </div>
       </footer>

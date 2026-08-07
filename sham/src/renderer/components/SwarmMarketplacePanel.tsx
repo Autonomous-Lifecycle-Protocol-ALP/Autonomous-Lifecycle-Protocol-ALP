@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 
 interface Skill {
   id: string;
@@ -35,7 +36,7 @@ export function SwarmMarketplacePanel(): React.JSX.Element {
     <div className="panel-container" style={{ padding: 'var(--spacing-sm)', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', boxSizing: 'border-box' }}>
       <div className="panel-header">
         <h2 style={{ borderBottom: '1px solid var(--border)', paddingBottom: '8px', marginTop: 0, fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--accent)' }}>
-           🛒 Swarm Skill Marketplace (v45.0.0)
+           <Icon name="shopping-cart" size={20} /> Swarm Skill Marketplace (v45.0.0)
         </h2>
       </div>
       <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
@@ -80,7 +81,7 @@ export function SwarmMarketplacePanel(): React.JSX.Element {
           >
             <div className="flex-between">
               <span style={{ fontWeight: 'bold', fontSize: 'var(--font-size-sm)' }}>{skill.name}</span>
-              <span style={{ color: 'var(--accent-yellow)' }}>&#9733; {skill.rating}</span>
+              <span style={{ color: 'var(--accent-yellow)' }}><Icon name="star" size={14} /> {skill.rating}</span>
             </div>
             <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', margin: '6px 0' }}>{skill.description}</p>
             <div className="flex-between" style={{ marginTop: '10px' }}>
@@ -108,7 +109,7 @@ export function SwarmMarketplacePanel(): React.JSX.Element {
       {/* Invocation Telemetry Log */}
       {invocationLog.length > 0 && (
         <div className="card">
-          <h4 style={{ margin: '0 0 8px 0', color: 'var(--accent-blue)' }}>⚡ Live Invocation Telemetry</h4>
+          <h4 style={{ margin: '0 0 8px 0', color: 'var(--accent-blue)' }}><Icon name="zap" size={16} /> Live Invocation Telemetry</h4>
           <div style={{ fontFamily: 'monospace', fontSize: 'var(--font-size-xs)', maxHeight: 'clamp(80px, 15vh, 120px)', overflowY: 'auto' }}>
             {invocationLog.map((log, index) => (
               <div key={index} style={{ padding: '2px 0', color: 'var(--accent-green)' }}>{log}</div>

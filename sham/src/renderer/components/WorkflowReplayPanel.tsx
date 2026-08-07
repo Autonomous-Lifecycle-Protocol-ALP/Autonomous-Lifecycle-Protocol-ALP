@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 import { WorkflowReplayEngine, ReplayTrace, ReplayStep, ReplayDiff } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export const WorkflowReplayPanel: React.FC = () => {
@@ -279,7 +280,7 @@ export const WorkflowReplayPanel: React.FC = () => {
           {/* Active Step Inspector */}
           <div className="panel-split-main" style={{ borderRadius: 'var(--radius)', border: '1px solid var(--border)', padding: 'var(--spacing-sm)', overflow: 'auto', boxSizing: 'border-box' }}>
             <h3 className="section-card-title">
-              🔍 Step #{activeStepIndex} State Inspector
+              <Icon name="search" size={16} /> Step #{activeStepIndex} State Inspector
             </h3>
             {activeStep ? (
               <div className="card-container">
@@ -300,7 +301,7 @@ export const WorkflowReplayPanel: React.FC = () => {
               </div>
             ) : (
               <div className="empty-state">
-                <div className="empty-state-icon">🔍</div>
+                <div className="empty-state-icon"><Icon name="search" size={24} /></div>
                 <div className="empty-state-title">No active step selected</div>
               </div>
             )}

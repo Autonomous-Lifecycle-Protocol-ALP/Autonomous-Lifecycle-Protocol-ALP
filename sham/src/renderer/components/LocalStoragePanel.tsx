@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 import { LocalStorageContainer, ContainerMetrics, StorageItem } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export const LocalStoragePanel: React.FC = () => {
@@ -50,9 +51,7 @@ export const LocalStoragePanel: React.FC = () => {
       {/* Header */}
       <div className="flex-between" style={{ marginBottom: '24px', borderBottom: '1px solid var(--border)', paddingBottom: '16px', flexWrap: 'wrap', gap: 'var(--spacing-xs)' }}>
         <div>
-          <h2 style={{ margin: 0, color: 'var(--accent-blue)', fontSize: 'clamp(1.1rem, 3vw, 1.5rem)', fontWeight: 700, letterSpacing: '0.5px' }}>
-            📦 Isolated Local Storage Container (v78.0.0)
-          </h2>
+          <h2 style={{ margin: 0, color: 'var(--accent-blue)', fontSize: 'clamp(1.1rem, 3vw, 1.5rem)', fontWeight: 700, letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="database" size={20} /> Isolated Local Storage Container (v78.0.0)</h2>
           <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
             Scoped namespace key-value persistence, encrypted state envelopes, checksums, and TTL decay manager
           </p>

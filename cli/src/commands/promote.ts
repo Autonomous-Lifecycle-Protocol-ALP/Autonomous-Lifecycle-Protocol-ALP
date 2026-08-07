@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { AlpParser } from '@autonomous-lifecycle-protocol-alp/parser';
 import { findFileWithId } from '../utils';
 
 export interface PromoteOptions {

@@ -1,10 +1,10 @@
-# 🚀 ALP Strategic Product & Architecture Roadmap (v17.0.0 – v45.0.0)
+# ALP Strategic Product & Architecture Roadmap (v17.0.0 – v45.0.0)
 
 This strategic roadmap outlines the evolution of the **Autonomous Lifecycle Protocol (ALP)** across its major release cycles, transforming ALP from a repo-native orchestration standard into a global, sovereign, zero-trust autonomous software engineering ecosystem.
 
 ---
 
-## 🗺️ Version Roadmap Matrix
+## Version Roadmap Matrix
 
 | Version | Codename | Core Innovation Focus | Key Deliverables & Primitives |
 | :--- | :--- | :--- | :--- |
@@ -38,7 +38,7 @@ This strategic roadmap outlines the evolution of the **Autonomous Lifecycle Prot
 
 ---
 
-## 🛠️ Detailed Breakdown by Era
+## Detailed Breakdown by Era
 
 ### Phase 4: Autonomy, Resilience & Next-Gen Intelligence (v29 - v39)
 - **v29.0.0 (Edge Execution)**: Support for local LLM inference engines (GGUF, Apple Metal, TensorRT) enabling offline autonomous engineering.

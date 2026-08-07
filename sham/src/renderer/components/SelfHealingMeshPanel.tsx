@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 import { SwarmSelfHealingMesh, SwarmNodeHealth, SelfHealingPlan } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export const SelfHealingMeshPanel: React.FC = () => {
@@ -41,9 +42,7 @@ export const SelfHealingMeshPanel: React.FC = () => {
       {/* Header */}
       <div className="flex-between" style={{ marginBottom: '24px', borderBottom: '1px solid ' + 'var(--border)', paddingBottom: '16px' }}>
         <div>
-          <h2 style={{ margin: 0, color: 'var(--accent)', fontSize: 'var(--font-size-lg)', fontWeight: 700, letterSpacing: '0.5px' }}>
-             🛡️ Autonomous Swarm Self-Healing Mesh (v81.0.0)
-          </h2>
+          <h2 style={{ margin: 0, color: 'var(--accent)', fontSize: 'var(--font-size-lg)', fontWeight: 700, letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="shield" size={20} /> Autonomous Swarm Self-Healing Mesh (v80.0.0)</h2>
           <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
             Automated node health telemetry, failure detection, peer rerouting, and adaptive load redistribution
           </p>
@@ -53,7 +52,7 @@ export const SelfHealingMeshPanel: React.FC = () => {
           className="btn btn-lg"
           style={{ background: 'linear-gradient(135deg, var(--accent-green), var(--accent-blue))', color: 'var(--bg-primary)', fontWeight: 700 }}
         >
-          ⚡ Synthesize Healing Plan
+          <Icon name="zap" size={16} /> Synthesize Healing Plan
         </button>
       </div>
 
@@ -98,7 +97,7 @@ export const SelfHealingMeshPanel: React.FC = () => {
       <div className="grid-responsive">
         {/* Roster List */}
         <div className="section-card">
-          <h3 className="section-card-title">🌐 Swarm Node Roster & Telemetry</h3>
+          <h3 className="section-card-title"><Icon name="globe" size={16} /> Swarm Node Roster & Telemetry</h3>
           <div className="card-container">
             {['node-us-east-1', 'node-eu-central-1', 'node-ap-south-1', newNodeId].filter(id => mesh.getNode(id)).map((id) => {
               const node = mesh.getNode(id)!;
@@ -147,7 +146,7 @@ export const SelfHealingMeshPanel: React.FC = () => {
 
         {/* Healing Plan & Reroute Matrix */}
         <div className="section-card">
-          <h3 className="section-card-title">🩺 Automated Healing Plan & Task Reroutes</h3>
+          <h3 className="section-card-title"><Icon name="heart" size={16} /> Automated Healing Plan & Task Reroutes</h3>
           {activePlan ? (
             <div>
               <div style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginBottom: '12px' }}>
@@ -158,7 +157,7 @@ export const SelfHealingMeshPanel: React.FC = () => {
                   <div key={i} className="card">
                     <div style={{ fontWeight: 600, color: 'var(--accent-yellow)', fontSize: 'var(--font-size-sm)' }}>{r.taskId}</div>
                     <div style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
-                      <span style={{ color: 'var(--accent-red)' }}>{r.fromNode}</span> ➔ <span style={{ color: 'var(--accent-green)' }}>{r.toNode}</span>
+                      <span style={{ color: 'var(--accent-red)' }}>{r.fromNode}</span> → <span style={{ color: 'var(--accent-green)' }}>{r.toNode}</span>
                     </div>
                   </div>
                 ))}
@@ -166,7 +165,7 @@ export const SelfHealingMeshPanel: React.FC = () => {
             </div>
           ) : (
             <div className="empty-state">
-              <div className="empty-state-icon">🩺</div>
+              <div className="empty-state-icon"><Icon name="heart" size={32} color="var(--text-muted)" /></div>
               <div className="empty-state-title">No healing plan</div>
               <div className="empty-state-desc">
                 {failures.length > 0 ? `${failures.length} degraded/failed node(s) detected. Click 'Synthesize Healing Plan' to failover.` : 'All swarm nodes healthy. No healing plan needed.'}

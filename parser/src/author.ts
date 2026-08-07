@@ -1,7 +1,5 @@
 /** ALP natural-language workflow authoring (v7.1.0 — The Autonomous Era). */
 
-import { StoredEvent } from './state-store';
-
 export class AuthoringError extends Error {
   constructor(message: string) {
     super(message);

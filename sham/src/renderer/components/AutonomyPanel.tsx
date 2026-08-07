@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { Icon } from './Icon.js';
 import type { AutonomyDecision } from '../shared/types.js';
 import {
   autonomyRun,
@@ -92,7 +93,7 @@ export const AutonomyPanel: React.FC<AutonomyPanelProps> = ({ state, onUpdateSta
   return (
     <div className="panel-container" style={{ padding: 'var(--spacing-sm)', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', height: '100%', display: 'flex', flexDirection: 'column', boxSizing: 'border-box' }}>
       <div style={{ marginBottom: '16px' }}>
-        <h2 style={{ margin: 0, color: 'var(--accent-pink)', fontSize: 'clamp(1rem, 2.5vw, 1.3rem)', fontWeight: 700 }}>🔄 Autonomous Orchestration (v81.0.0)</h2>
+        <h2 style={{ margin: 0, color: 'var(--accent-pink)', fontSize: 'clamp(1rem, 2.5vw, 1.3rem)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="refreshCw" size={18} /> Autonomous Orchestration (v80.0.0)</h2>
         <div style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: '4px' }}>
           Self-healing DAGs, predictive governance, edge-native execution
         </div>

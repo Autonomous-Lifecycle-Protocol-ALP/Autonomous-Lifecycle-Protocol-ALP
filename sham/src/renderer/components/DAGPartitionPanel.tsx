@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 
 interface RegionAssignment {
   region: string;
@@ -48,9 +49,7 @@ export function DAGPartitionPanel(): React.JSX.Element {
   return (
     <div className="panel-container" style={{ padding: 'var(--spacing-sm)', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', boxSizing: 'border-box' }}>
       <div className="panel-header">
-        <h2 style={{ borderBottom: '1px solid var(--border)', paddingBottom: '8px', marginTop: 0, fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--accent)' }}>
-           🌐 Multi-Region DAG Partitioner (v50.0.0)
-        </h2>
+        <h2 style={{ borderBottom: '1px solid var(--border)', paddingBottom: '8px', marginTop: 0, fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="globe" size={20} /> Multi-Region DAG Partitioner (v50.0.0)</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
           Partition workspace execution graph across distributed cloud edge regions for parallel execution.
         </p>
@@ -73,7 +72,7 @@ export function DAGPartitionPanel(): React.JSX.Element {
                 fontWeight: selectedRegions.includes(region) ? 'bold' : 'normal',
               }}
             >
-              📍 {region}
+              <Icon name="target" size={14} /> {region}
             </button>
           ))}
         </div>
@@ -90,7 +89,7 @@ export function DAGPartitionPanel(): React.JSX.Element {
           marginBottom: '20px',
         }}
       >
-        ⚡ Partition DAG ({sampleTasks.length} nodes → {selectedRegions.length} regions)
+        <Icon name="zap" size={14} /> Partition DAG ({sampleTasks.length} nodes → {selectedRegions.length} regions)
       </button>
 
       {/* Partition Results */}
@@ -109,7 +108,7 @@ export function DAGPartitionPanel(): React.JSX.Element {
               }}
             >
               <div className="flex-between">
-                <strong style={{ color: p.color, fontSize: 'var(--font-size-sm)' }}>📍 {p.region.toUpperCase()}</strong>
+                <strong style={{ color: p.color, fontSize: 'var(--font-size-sm)' }}><Icon name="mapPin" size={14} /> {p.region.toUpperCase()}</strong>
                 <span className="badge badge-responsive" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{p.latencyMs} ms</span>
               </div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '8px' }}>

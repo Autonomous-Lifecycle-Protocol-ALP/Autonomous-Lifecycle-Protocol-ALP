@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from './Icon.js';
 
 interface DebugSession {
   id: string;
@@ -40,7 +41,7 @@ export function DebugPanel({ session, output, onAppendOutput, onStartDebug, onSt
               ) : (
                 session.breakpoints.map((bp, i) => (
                   <div key={i} className="list-item" onClick={() => onToggleBreakpoint(Number(bp))}>
-                    <span className="list-item-icon" style={{ color: 'var(--accent-red)' }}>&#9679;</span>
+                     <span className="list-item-icon" style={{ color: 'var(--accent-red)' }}><Icon name="circle" size={10} /></span>
                     <div className="list-item-content">
                       <div className="list-item-title">Line {bp}</div>
                     </div>
@@ -55,7 +56,7 @@ export function DebugPanel({ session, output, onAppendOutput, onStartDebug, onSt
               ) : (
                 session.callStack.map((frame, i) => (
                   <div key={i} className="list-item">
-                    <span className="list-item-icon" style={{ color: 'var(--accent)' }}>&#8596;</span>
+                     <span className="list-item-icon" style={{ color: 'var(--accent)' }}><Icon name="gitCompare" size={14} /></span>
                     <div className="list-item-content">
                       <div className="list-item-title">{frame.name}</div>
                       <div className="list-item-subtitle">{frame.file}:{frame.line}</div>
@@ -72,7 +73,7 @@ export function DebugPanel({ session, output, onAppendOutput, onStartDebug, onSt
           </>
         ) : (
           <div className="empty-state">
-            <div className="empty-state-icon">&#128269;</div>
+            <div className="empty-state-icon"><Icon name="search" size={32} color="var(--text-muted)" /></div>
             <div className="empty-state-title">No debug session</div>
             <div className="empty-state-desc">Open an ALP file and click Start Debugging to attach the debugger.</div>
           </div>

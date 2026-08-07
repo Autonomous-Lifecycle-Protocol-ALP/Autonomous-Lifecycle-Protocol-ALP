@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 
 interface TopicMetric {
   topic: string;
@@ -84,7 +85,7 @@ export function TelemetryInspectorPanel(): React.JSX.Element {
     <div style={s.container}>
       <div className="panel-header" style={s.header}>
         <div className="flex-wrap-gap">
-          <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)' }}>📡</span>
+          <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)' }}><Icon name="wifi" size={18} /></span>
           <span style={{ fontWeight: 700, fontSize: 'var(--font-size-md)', color: 'var(--accent)' }}>Pub/Sub Telemetry Inspector</span>
           <span className="badge badge-responsive" style={{ background: 'var(--accent)22', color: 'var(--accent)', border: '1px solid var(--accent)44' }}>v70.0.0</span>
         </div>
@@ -116,11 +117,11 @@ export function TelemetryInspectorPanel(): React.JSX.Element {
 
       {/* Tabs */}
       <div style={s.tabs}>
-        <button style={s.tab(activeTab === 'topics')} onClick={() => setActiveTab('topics')}>📊 Topic Metrics</button>
-        <button style={s.tab(activeTab === 'subscriptions')} onClick={() => setActiveTab('subscriptions')}>🔗 Subscriptions</button>
-        <button style={s.tab(activeTab === 'dlq')} onClick={() => setActiveTab('dlq')}>
-          🚨 DLQ Alerts {dlqAlerts.length > 0 && <span className="badge badge-responsive" style={{ marginLeft: 6, background: 'var(--accent-red)22', color: 'var(--accent-red)', border: '1px solid var(--accent-red)33' }}>{dlqAlerts.length}</span>}
-        </button>
+        <button style={s.tab(activeTab === 'topics')} onClick={() => setActiveTab('topics')}><Icon name="barChart2" size={14} /> Topic Metrics</button>
+        <button style={s.tab(activeTab === 'subscriptions')} onClick={() => setActiveTab('subscriptions')}><Icon name="link" size={14} /> Subscriptions</button>
+          <button style={s.tab(activeTab === 'dlq')} onClick={() => setActiveTab('dlq')}>
+            <Icon name="alertTriangle" size={14} /> DLQ Alerts {dlqAlerts.length > 0 && <span className="badge badge-responsive" style={{ marginLeft: 6, background: 'var(--accent-red)22', color: 'var(--accent-red)', border: '1px solid var(--accent-red)33' }}>{dlqAlerts.length}</span>}
+          </button>
       </div>
 
       {/* Body */}
@@ -189,14 +190,14 @@ export function TelemetryInspectorPanel(): React.JSX.Element {
           <div>
             {dlqAlerts.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-state-icon">✅</div>
+                <div className="empty-state-icon"><Icon name="check" size={32} color="var(--accent-green)" /></div>
                 <div className="empty-state-title">No dead-letter queue alerts</div>
                 <div className="empty-state-desc">All messages are being delivered successfully.</div>
               </div>
             ) : (
               dlqAlerts.map(a => (
                 <div key={a.id} className="alert-card card">
-                  <span style={{ fontSize: 'var(--font-size-md)', marginTop: 2 }}>⚠️</span>
+                  <span style={{ fontSize: 'var(--font-size-md)', marginTop: 2 }}><Icon name="alertTriangle" size={16} color="var(--accent-yellow)" /></span>
                   <div style={{ flex: 1 }}>
                     <div className="flex-between">
                       <span style={{ fontWeight: 600, fontSize: 'var(--font-size-sm)', color: 'var(--accent-red)' }}>{a.id}</span>

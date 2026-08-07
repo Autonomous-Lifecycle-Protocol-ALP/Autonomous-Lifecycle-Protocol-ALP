@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 
 type ExpType = 'LATENCY' | 'ERROR' | 'RESOURCE_EXHAUSTION' | 'PARTITION' | 'KILL_AGENT';
 type ExpStatus = 'PENDING' | 'RUNNING' | 'COMPLETED' | 'ABORTED';
@@ -19,16 +20,16 @@ interface Experiment {
 }
 
 const TYPE_META: Record<ExpType, { icon: string; color: string; label: string }> = {
-  LATENCY: { icon: '⏱️', color: '#fbbf24', label: 'Latency Injection' },
-  ERROR: { icon: '💥', color: '#f87171', label: 'Error Simulation' },
-  RESOURCE_EXHAUSTION: { icon: '🔥', color: '#fb923c', label: 'Resource Exhaustion' },
-  PARTITION: { icon: '🔌', color: '#a78bfa', label: 'Network Partition' },
-  KILL_AGENT: { icon: '💀', color: '#ef4444', label: 'Kill Agent' },
+  LATENCY: { icon: 'clock', color: '#fbbf24', label: 'Latency Injection' },
+  ERROR: { icon: 'alertTriangle', color: '#f87171', label: 'Error Simulation' },
+  RESOURCE_EXHAUSTION: { icon: 'zap', color: '#fb923c', label: 'Resource Exhaustion' },
+  PARTITION: { icon: 'wifiOff', color: '#a78bfa', label: 'Network Partition' },
+  KILL_AGENT: { icon: 'xCircle', color: '#ef4444', label: 'Kill Agent' },
 };
 
 const INITIAL_EXPERIMENTS: Experiment[] = [
-  { id: 'chaos-001', name: 'Latency Storm', type: 'LATENCY', target: 'agent-executor-1', status: 'COMPLETED', intensity: 0.7, blastRadius: 'SINGLE', score: 92, injected: 18, recovered: 17, meanRecoveryMs: 245, observations: ['Circuit breaker activated within SLA', '✅ System demonstrates excellent resilience'] },
-  { id: 'chaos-002', name: 'Payment Gateway Errors', type: 'ERROR', target: 'payment-gateway', status: 'COMPLETED', intensity: 0.5, blastRadius: 'WORKFLOW', score: 78, injected: 12, recovered: 9, meanRecoveryMs: 520, observations: ['Retry exhaustion detected — escalation needed', '⚠️ Acceptable resilience with room for improvement'] },
+  { id: 'chaos-001', name: 'Latency Storm', type: 'LATENCY', target: 'agent-executor-1', status: 'COMPLETED', intensity: 0.7, blastRadius: 'SINGLE', score: 92, injected: 18, recovered: 17, meanRecoveryMs: 245, observations: ['Circuit breaker activated within SLA', 'PASS: System demonstrates excellent resilience'] },
+  { id: 'chaos-002', name: 'Payment Gateway Errors', type: 'ERROR', target: 'payment-gateway', status: 'COMPLETED', intensity: 0.5, blastRadius: 'WORKFLOW', score: 78, injected: 12, recovered: 9, meanRecoveryMs: 520, observations: ['Retry exhaustion detected — escalation needed', 'WARN: Acceptable resilience with room for improvement'] },
   { id: 'chaos-003', name: 'Memory Pressure Test', type: 'RESOURCE_EXHAUSTION', target: 'analytics-worker', status: 'RUNNING', intensity: 0.9, blastRadius: 'SWARM' },
   { id: 'chaos-004', name: 'Split-Brain Simulation', type: 'PARTITION', target: 'consensus-node-3', status: 'PENDING', intensity: 0.6, blastRadius: 'SWARM' },
 ];
@@ -50,7 +51,7 @@ export function ChaosEnginePanel(): React.JSX.Element {
         meanRecoveryMs: Math.floor(Math.random() * 600) + 100,
         observations: [
           score >= 80 ? 'Fault recovery within acceptable bounds' : 'Recovery time exceeded SLA thresholds',
-          score >= 90 ? '✅ System demonstrates excellent resilience' : score >= 70 ? '⚠️ Acceptable resilience' : '🚨 Below threshold',
+          score >= 90 ? <><Icon name="check" size={12} /> System demonstrates excellent resilience</> : score >= 70 ? <><Icon name="alertTriangle" size={12} /> Acceptable resilience</> : <><Icon name="alertTriangle" size={12} /> Below threshold</>,
         ],
       };
     }));
@@ -92,7 +93,7 @@ export function ChaosEnginePanel(): React.JSX.Element {
     <div style={s.container}>
       <div className="panel-header" style={s.header}>
         <div className="flex-wrap-gap">
-          <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)' }}>💥</span>
+          <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)' }}><Icon name="alertTriangle" size={18} /></span>
           <span style={{ fontWeight: 700, fontSize: 'var(--font-size-md)', color: 'var(--accent-red)' }}>Chaos Engineering Engine</span>
           <span className="badge badge-responsive" style={{ background: 'var(--accent-red)22', color: 'var(--accent-red)', border: '1px solid var(--accent-red)44' }}>v72.0.0</span>
         </div>
@@ -237,7 +238,7 @@ export function ChaosEnginePanel(): React.JSX.Element {
             </>
           ) : (
             <div className="empty-state">
-              <div className="empty-state-icon">💥</div>
+              <div className="empty-state-icon"><Icon name="alertTriangle" size={32} color="var(--text-muted)" /></div>
               <div className="empty-state-title">Select an experiment</div>
               <div className="empty-state-desc">Choose a chaos experiment from the list to view details.</div>
             </div>

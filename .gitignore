@@ -30,7 +30,7 @@ coverage/
 
 # Cache
 .alp/.cache/
-*.lock
+.cache/
 
 # Logs
 *.log
@@ -79,3 +79,17 @@ prd2.md
 .kilocache
 .kilotmp
 agent-workspace/
+
+# Credentials and secrets
+token.txt
+login.json
+
+# Downloaded toolchains and build artifacts
+maven/
+mingw64/
+
+# Browser automation artifacts
+.playwright-mcp/
+
+# Dashboard screenshots (generated artifacts)
+dashboard-*.png

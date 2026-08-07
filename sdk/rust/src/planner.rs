@@ -56,7 +56,11 @@ pub struct PlanScore {
 pub struct GoalDecomposer;
 
 impl GoalDecomposer {
-    pub fn decompose(&self, goal: &str, constraints: Option<HashMap<String, serde_json::Value>>) -> Option<Plan> {
+    pub fn decompose(
+        &self,
+        goal: &str,
+        constraints: Option<HashMap<String, serde_json::Value>>,
+    ) -> Option<Plan> {
         let goal = goal.trim();
         if goal.is_empty() {
             return None;
@@ -65,7 +69,11 @@ impl GoalDecomposer {
         let steps = extract_verbs(goal);
         let mut nodes = Vec::new();
         for (i, step) in steps.iter().enumerate() {
-            let deps = if i > 0 { vec![format!("step-{}", i)] } else { Vec::new() };
+            let deps = if i > 0 {
+                vec![format!("step-{}", i)]
+            } else {
+                Vec::new()
+            };
             nodes.push(PlanNode {
                 id: format!("step-{}", i + 1),
                 kind: "task".to_string(),
@@ -74,7 +82,10 @@ impl GoalDecomposer {
             });
         }
         let mut metadata = HashMap::new();
-        metadata.insert("constraints".to_string(), serde_json::json!(constraints.unwrap_or_default()));
+        metadata.insert(
+            "constraints".to_string(),
+            serde_json::json!(constraints.unwrap_or_default()),
+        );
         Some(Plan {
             plan_id,
             goal: goal.to_string(),
@@ -131,7 +142,9 @@ pub struct Reflector {
 
 impl Reflector {
     pub fn new(events: Option<Vec<HashMap<String, serde_json::Value>>>) -> Self {
-        Self { events: events.unwrap_or_default() }
+        Self {
+            events: events.unwrap_or_default(),
+        }
     }
 
     pub fn reflect(&self, run_id: &str) -> Vec<Lesson> {
@@ -146,7 +159,9 @@ impl Reflector {
         let mut lessons = Vec::new();
         let mut task_failures: HashMap<String, usize> = HashMap::new();
         for e in &self.events {
-            if e.get("type").and_then(|v| v.as_str()) == Some("task_status") && e.get("status").and_then(|v| v.as_str()) == Some("[!]") {
+            if e.get("type").and_then(|v| v.as_str()) == Some("task_status")
+                && e.get("status").and_then(|v| v.as_str()) == Some("[!]")
+            {
                 if let Some(tid) = e.get("task_id").and_then(|v| v.as_str()) {
                     *task_failures.entry(tid.to_string()).or_insert(0) += 1;
                 }
@@ -157,7 +172,10 @@ impl Reflector {
                 lessons.push(Lesson {
                     lesson_id: format!("lesson-{}", lessons.len() + 1),
                     run_id: run_id.to_string(),
-                    insight: format!("Task '{}' failed {} times; consider retry or fallback strategy.", tid, count),
+                    insight: format!(
+                        "Task '{}' failed {} times; consider retry or fallback strategy.",
+                        tid, count
+                    ),
                     severity: "warn".to_string(),
                     tags: vec!["failure".to_string(), tid],
                 });
@@ -181,7 +199,10 @@ impl Reflector {
                 lessons.push(Lesson {
                     lesson_id: format!("lesson-{}", lessons.len() + 1),
                     run_id: run_id.to_string(),
-                    insight: format!("Task '{}' was claimed {} times; review ownership logic.", tid, count),
+                    insight: format!(
+                        "Task '{}' was claimed {} times; review ownership logic.",
+                        tid, count
+                    ),
                     severity: "info".to_string(),
                     tags: vec!["efficiency".to_string(), tid],
                 });
@@ -193,7 +214,9 @@ impl Reflector {
     fn detect_handoff_patterns(&self, run_id: &str) -> Vec<Lesson> {
         let mut handoffs = 0;
         for e in &self.events {
-            if e.get("type").and_then(|v| v.as_str()) == Some("human_handoff") || e.get("status").and_then(|v| v.as_str()) == Some("[?]") {
+            if e.get("type").and_then(|v| v.as_str()) == Some("human_handoff")
+                || e.get("status").and_then(|v| v.as_str()) == Some("[?]")
+            {
                 handoffs += 1;
             }
         }
@@ -201,7 +224,10 @@ impl Reflector {
             return vec![Lesson {
                 lesson_id: "lesson-1".to_string(),
                 run_id: run_id.to_string(),
-                insight: format!("Run had {} human handoffs; consider automating or simplifying decision gates.", handoffs),
+                insight: format!(
+                    "Run had {} human handoffs; consider automating or simplifying decision gates.",
+                    handoffs
+                ),
                 severity: "warn".to_string(),
                 tags: vec!["handoff".to_string()],
             }];
@@ -209,28 +235,40 @@ impl Reflector {
         Vec::new()
     }
 
-    pub fn improve_plan(&self, plan: &Plan, lessons: &[Lesson], constraints: Option<&HashMap<String, serde_json::Value>>) -> HashMap<String, serde_json::Value> {
+    pub fn improve_plan(
+        &self,
+        plan: &Plan,
+        lessons: &[Lesson],
+        constraints: Option<&HashMap<String, serde_json::Value>>,
+    ) -> HashMap<String, serde_json::Value> {
         let mut nodes = plan.nodes.clone();
         let mut seen = std::collections::HashSet::new();
         let mut proposals = Vec::new();
         for lesson in lessons {
-            if lesson.tags.contains(&"failure".to_string()) && lesson.tags.contains(&"failed".to_string()) {
+            if lesson.tags.contains(&"failure".to_string())
+                && lesson.tags.contains(&"failed".to_string())
+            {
                 let target = extract_task_id(&lesson.insight);
                 proposals.push(ImprovementProposal {
                     proposal_id: format!("prop-{}", proposals.len() + 1),
                     lesson_id: lesson.lesson_id.clone(),
-                    target_node_id: Some(target),
+                    target_node_id: Some(target.clone()),
                     action: "add_dependency".to_string(),
-                    detail: format!("Add fallback or retry dependency for '{}' due to repeated failures.", target),
+                    detail: format!(
+                        "Add fallback or retry dependency for '{}' due to repeated failures.",
+                        target
+                    ),
                     confidence: 0.75,
                 });
             }
-            if lesson.tags.contains(&"efficiency".to_string()) && lesson.tags.contains(&"claimed".to_string()) {
+            if lesson.tags.contains(&"efficiency".to_string())
+                && lesson.tags.contains(&"claimed".to_string())
+            {
                 let target = extract_task_id(&lesson.insight);
                 proposals.push(ImprovementProposal {
                     proposal_id: format!("prop-{}", proposals.len() + 1),
                     lesson_id: lesson.lesson_id.clone(),
-                    target_node_id: Some(target),
+                    target_node_id: Some(target.clone()),
                     action: "reassign".to_string(),
                     detail: format!("Reassign '{}' to a more stable owner.", target),
                     confidence: 0.6,
@@ -247,7 +285,10 @@ impl Reflector {
                 });
             }
         }
-        let max_nodes = constraints.and_then(|c| c.get("max_nodes")).and_then(|v| v.as_u64()).map(|v| v as usize);
+        let max_nodes = constraints
+            .and_then(|c| c.get("max_nodes"))
+            .and_then(|v| v.as_u64())
+            .map(|v| v as usize);
         for p in &proposals {
             if p.action == "add_node" && !seen.contains(&p.proposal_id) {
                 if let Some(max) = max_nodes {
@@ -270,7 +311,13 @@ impl Reflector {
             nodes,
             metadata: plan.metadata.clone(),
         };
-        improved.metadata.insert("improvements".to_string(), serde_json::json!(proposals.iter().map(|p| p.action.clone()).collect::<Vec<_>>()));
+        improved.metadata.insert(
+            "improvements".to_string(),
+            serde_json::json!(proposals
+                .iter()
+                .map(|p| p.action.clone())
+                .collect::<Vec<_>>()),
+        );
         let mut result = HashMap::new();
         result.insert("plan".to_string(), serde_json::json!(improved));
         result.insert("proposals".to_string(), serde_json::json!(proposals));
@@ -287,7 +334,11 @@ impl CollabPlanner {
         Self { estimator }
     }
 
-    pub fn build(&self, goal: &str, constraints: Option<HashMap<String, serde_json::Value>>) -> Option<Plan> {
+    pub fn build(
+        &self,
+        goal: &str,
+        constraints: Option<HashMap<String, serde_json::Value>>,
+    ) -> Option<Plan> {
         let constraints = constraints.unwrap_or_default();
         let decomposer = GoalDecomposer;
         let mut plan = decomposer.decompose(goal, Some(constraints.clone()))?;
@@ -297,7 +348,8 @@ impl CollabPlanner {
             plan = top.plan.clone();
         }
         if self.estimator.is_some() {
-            plan.metadata.insert("negotiation".to_string(), serde_json::json!("accepted"));
+            plan.metadata
+                .insert("negotiation".to_string(), serde_json::json!("accepted"));
         }
         Some(plan)
     }
@@ -348,7 +400,13 @@ fn extract_verbs(goal: &str) -> Vec<String> {
     let mut verbs = Vec::new();
     for w in words {
         let clean = w.trim_matches(|c: char| ",.!?:;".contains(c));
-        if !clean.is_empty() && clean.chars().next().map(|c| c.is_uppercase()).unwrap_or(false) {
+        if !clean.is_empty()
+            && clean
+                .chars()
+                .next()
+                .map(|c| c.is_uppercase())
+                .unwrap_or(false)
+        {
             verbs.push(clean.to_string());
         }
     }

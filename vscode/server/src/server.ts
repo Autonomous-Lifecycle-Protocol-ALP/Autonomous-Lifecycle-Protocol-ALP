@@ -576,7 +576,7 @@ connection.onCodeAction((params: CodeActionParams): CodeAction[] => {
     }
 
     if (diag.message.includes("Status marker '[!]' requires a reason")) {
-      const markerRange = new Range(diag.range.start.line, diag.range.start.character, diag.range.start.line, diag.range.end.character);
+      const markerRange = Range.create(diag.range.start.line, diag.range.start.character, diag.range.start.line, diag.range.end.character);
       actions.push(CodeAction.create(
         "Add placeholder reason for [!]",
         {
@@ -591,7 +591,7 @@ connection.onCodeAction((params: CodeActionParams): CodeAction[] => {
     }
 
     if (diag.message.includes("Status marker '[?]' requires a reason")) {
-      const markerRange = new Range(diag.range.start.line, diag.range.start.character, diag.range.start.line, diag.range.end.character);
+      const markerRange = Range.create(diag.range.start.line, diag.range.start.character, diag.range.start.line, diag.range.end.character);
       actions.push(CodeAction.create(
         "Add placeholder reason for [?]",
         {

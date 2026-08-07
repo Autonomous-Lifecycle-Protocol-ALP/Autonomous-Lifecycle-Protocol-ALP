@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 
 interface ASTNode {
   id: string;
@@ -85,13 +86,13 @@ export function WasmAstPanel(): React.JSX.Element {
     <div style={styles.container}>
       <div className="panel-header" style={styles.header}>
         <div className="flex-wrap-gap">
-          <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)' }}>⚡</span>
+          <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)' }}><Icon name="zap" size={18} /></span>
           <span style={{ fontWeight: 700, fontSize: 'var(--font-size-md)', color: 'var(--accent)' }}>Wasm-Compiled AST Evaluator</span>
           <span className="badge badge-responsive" style={{ background: 'var(--accent)22', color: 'var(--accent)', border: '1px solid var(--accent)44' }}>v66.0.0</span>
         </div>
         <div className="flex-wrap-gap">
           <span className="badge badge-responsive" style={{ background: 'var(--accent-blue)22', color: 'var(--accent-blue)', border: '1px solid var(--accent-blue)44' }}>Parse: {parseLatencyMs}ms (Sub-5ms Target)</span>
-          <span className="badge badge-responsive" style={{ background: offlineValid ? 'var(--accent-green)22' : 'var(--accent-orange)22', color: offlineValid ? 'var(--accent-green)' : 'var(--accent-orange)', border: '1px solid ' + (offlineValid ? 'var(--accent-green)44' : 'var(--accent-orange)44') }}>{offlineValid ? '✅ Offline Valid' : '❌ Syntax Error'}</span>
+          <span className="badge badge-responsive" style={{ background: offlineValid ? 'var(--accent-green)22' : 'var(--accent-orange)22', color: offlineValid ? 'var(--accent-green)' : 'var(--accent-orange)', border: '1px solid ' + (offlineValid ? 'var(--accent-green)44' : 'var(--accent-orange)44') }}>{offlineValid ? <><Icon name="check" size={12} /> Offline Valid</> : <><Icon name="xCircle" size={12} /> Syntax Error</>}</span>
         </div>
       </div>
 
@@ -105,7 +106,7 @@ export function WasmAstPanel(): React.JSX.Element {
             style={styles.textarea}
           />
           <button onClick={handleEvaluate} style={styles.btn} className="btn btn-sm btn-responsive">
-            ⚡ Run Local Wasm AST Evaluation
+            <Icon name="zap" size={16} /> Run Local Wasm AST Evaluation
           </button>
         </div>
 

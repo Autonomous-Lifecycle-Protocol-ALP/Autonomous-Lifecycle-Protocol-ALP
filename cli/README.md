@@ -61,7 +61,7 @@ alp memory-mesh query "context"    # query cross-agent memory (v38.0.0)
 
 ## Status
 
-✅ **Stable** — IDE Intelligence Era (V11), toolchain `45.0.0`. The `@autonomous-lifecycle-protocol-alp/cli`
+[Stable] — IDE Intelligence Era (V11), toolchain `45.0.0`. The `@autonomous-lifecycle-protocol-alp/cli`
 package is not yet published to npm; build from source with
 `npm ci && npm run build --workspace @autonomous-lifecycle-protocol-alp/cli` and invoke it via
 `node cli/dist/index.js`.

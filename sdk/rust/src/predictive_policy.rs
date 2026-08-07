@@ -17,9 +17,15 @@ impl AnomalyScore {
     pub fn to_map(&self) -> HashMap<String, serde_json::Value> {
         let mut map = HashMap::new();
         map.insert("score".to_string(), serde_json::Value::from(self.score));
-        map.insert("factors".to_string(), serde_json::Value::from(self.factors.clone()));
+        map.insert(
+            "factors".to_string(),
+            serde_json::Value::from(self.factors.clone()),
+        );
         map.insert("baseline".to_string(), serde_json::json!(self.baseline));
-        map.insert("recommendation".to_string(), serde_json::Value::from(self.recommendation.clone()));
+        map.insert(
+            "recommendation".to_string(),
+            serde_json::Value::from(self.recommendation.clone()),
+        );
         map
     }
 }
@@ -38,13 +44,34 @@ pub struct BaselineProfile {
 impl BaselineProfile {
     pub fn to_map(&self) -> HashMap<String, serde_json::Value> {
         let mut map = HashMap::new();
-        map.insert("kind".to_string(), serde_json::Value::from(self.kind.clone()));
-        map.insert("value".to_string(), serde_json::Value::from(self.value.clone()));
-        map.insert("sample_count".to_string(), serde_json::Value::from(self.sample_count));
-        map.insert("mean_frequency".to_string(), serde_json::Value::from(self.mean_frequency));
-        map.insert("stddev_frequency".to_string(), serde_json::Value::from(self.stddev_frequency));
-        map.insert("failure_rate".to_string(), serde_json::Value::from(self.failure_rate));
-        map.insert("last_seen".to_string(), serde_json::Value::from(self.last_seen.clone()));
+        map.insert(
+            "kind".to_string(),
+            serde_json::Value::from(self.kind.clone()),
+        );
+        map.insert(
+            "value".to_string(),
+            serde_json::Value::from(self.value.clone()),
+        );
+        map.insert(
+            "sample_count".to_string(),
+            serde_json::Value::from(self.sample_count),
+        );
+        map.insert(
+            "mean_frequency".to_string(),
+            serde_json::Value::from(self.mean_frequency),
+        );
+        map.insert(
+            "stddev_frequency".to_string(),
+            serde_json::Value::from(self.stddev_frequency),
+        );
+        map.insert(
+            "failure_rate".to_string(),
+            serde_json::Value::from(self.failure_rate),
+        );
+        map.insert(
+            "last_seen".to_string(),
+            serde_json::Value::from(self.last_seen.clone()),
+        );
         map
     }
 }
@@ -67,7 +94,7 @@ pub struct PredictivePolicyEngine {
 }
 
 #[derive(Debug, Clone)]
-struct HistoryEntry {
+pub(crate) struct HistoryEntry {
     query: crate::policy::PolicyQuery,
     decision: crate::policy::PolicyDecision,
 }
@@ -83,10 +110,15 @@ impl PredictivePolicyEngine {
         }
     }
 
-    pub fn evaluate(&mut self, query: &crate::policy::PolicyQuery) -> crate::policy::PolicyDecision {
+    pub fn evaluate(
+        &mut self,
+        query: &crate::policy::PolicyQuery,
+    ) -> crate::policy::PolicyDecision {
         let anomaly = self.score_query(query);
         let mut decision = self.engine.evaluate(query);
-        decision.audit.insert("anomaly".to_string(), serde_json::json!(anomaly.to_map()));
+        decision
+            .audit
+            .insert("anomaly".to_string(), serde_json::json!(anomaly.to_map()));
         self.history.push(HistoryEntry {
             query: query.clone(),
             decision: decision.clone(),
@@ -94,10 +126,15 @@ impl PredictivePolicyEngine {
         decision
     }
 
-    pub fn evaluate_deny_only(&mut self, query: &crate::policy::PolicyQuery) -> crate::policy::PolicyDecision {
+    pub fn evaluate_deny_only(
+        &mut self,
+        query: &crate::policy::PolicyQuery,
+    ) -> crate::policy::PolicyDecision {
         let anomaly = self.score_query(query);
         let mut decision = self.engine.evaluate(query);
-        decision.audit.insert("anomaly".to_string(), serde_json::json!(anomaly.to_map()));
+        decision
+            .audit
+            .insert("anomaly".to_string(), serde_json::json!(anomaly.to_map()));
         self.history.push(HistoryEntry {
             query: query.clone(),
             decision: decision.clone(),
@@ -120,7 +157,9 @@ impl PredictivePolicyEngine {
             requires_approval: false,
             audit: HashMap::new(),
         };
-        decision.audit.insert("anomaly".to_string(), serde_json::json!(anomaly.to_map()));
+        decision
+            .audit
+            .insert("anomaly".to_string(), serde_json::json!(anomaly.to_map()));
         self.history.push(HistoryEntry {
             query: crate::policy::PolicyQuery::new("proposal", proposal_id),
             decision: decision.clone(),
@@ -163,12 +202,21 @@ impl PredictivePolicyEngine {
                     continue;
                 }
             }
-            let score = anomaly.and_then(|v| v.get("score")).and_then(|v| v.as_f64()).unwrap_or(0.0);
+            let score = anomaly
+                .and_then(|v| v.get("score"))
+                .and_then(|v| v.as_f64())
+                .unwrap_or(0.0);
             if score >= self.z_threshold {
                 anomalous += 1;
             }
-            let factors = anomaly.and_then(|v| v.get("factors")).cloned().unwrap_or(serde_json::Value::Array(Vec::new()));
-            let recommendation = anomaly.and_then(|v| v.get("recommendation")).cloned().unwrap_or(serde_json::Value::Null);
+            let factors = anomaly
+                .and_then(|v| v.get("factors"))
+                .cloned()
+                .unwrap_or(serde_json::Value::Array(Vec::new()));
+            let recommendation = anomaly
+                .and_then(|v| v.get("recommendation"))
+                .cloned()
+                .unwrap_or(serde_json::Value::Null);
             items.push(serde_json::json!({
                 "kind": entry.query.kind,
                 "value": entry.query.value,
@@ -192,10 +240,19 @@ impl PredictivePolicyEngine {
 
         for event in events {
             let key = format!("{}:{}", event.payload_kind, event.payload_value);
-            counts.entry(key.clone()).and_modify(|e| *e += 1).or_insert(1);
-            samples.entry(key.clone()).or_default().push(counts[&key] as f64);
+            counts
+                .entry(key.clone())
+                .and_modify(|e| *e += 1)
+                .or_insert(1);
+            samples
+                .entry(key.clone())
+                .or_default()
+                .push(counts[&key] as f64);
             if event.status == "[!]" || event.blocked {
-                failures.entry(key.clone()).and_modify(|e| *e += 1).or_insert(1);
+                failures
+                    .entry(key.clone())
+                    .and_modify(|e| *e += 1)
+                    .or_insert(1);
             }
             last_seen.insert(key.clone(), event.timestamp.clone());
         }
@@ -212,20 +269,23 @@ impl PredictivePolicyEngine {
             } else {
                 0.0
             };
-            self.baselines.insert(key.clone(), BaselineProfile {
-                kind,
-                value,
-                sample_count: count,
-                mean_frequency: mean_freq,
-                stddev_frequency: stddev_freq,
-                failure_rate,
-                last_seen: last_seen.get(&key).cloned().unwrap_or_default(),
-            });
+            self.baselines.insert(
+                key.clone(),
+                BaselineProfile {
+                    kind,
+                    value,
+                    sample_count: count,
+                    mean_frequency: mean_freq,
+                    stddev_frequency: stddev_freq,
+                    failure_rate,
+                    last_seen: last_seen.get(&key).cloned().unwrap_or_default(),
+                },
+            );
         }
     }
 
     fn score_query(&self, query: &crate::policy::PolicyQuery) -> AnomalyScore {
-        let key = format!("{}:{}", query.kind, query.value);
+        let key = format!("{}:{:?}", query.kind, query.value);
         let profile = self.baselines.get(&key);
 
         let mut factors = Vec::new();
@@ -246,7 +306,11 @@ impl PredictivePolicyEngine {
             }
         }
 
-        let recent = self.history.iter().filter(|e| e.query.kind == query.kind && e.query.value == query.value).count();
+        let recent = self
+            .history
+            .iter()
+            .filter(|e| e.query.kind == query.kind && e.query.value == query.value)
+            .count();
         if recent == 0 {
             factors.push("rare_request".to_string());
             score_components.push(0.4);

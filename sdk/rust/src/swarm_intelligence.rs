@@ -27,15 +27,21 @@ pub struct EmergentBehaviorDetector {
 
 impl EmergentBehaviorDetector {
     pub fn new(threshold: f64) -> Self {
-        Self { threshold: if threshold > 0.0 { threshold } else { 0.8 } }
+        Self {
+            threshold: if threshold > 0.0 { threshold } else { 0.8 },
+        }
     }
 
     pub fn detect(&self, agents: &[AgentRecord]) -> Vec<String> {
         let mut signs = Vec::new();
         if agents.len() > 1 {
-            let loads: Vec<f64> = agents.iter().map(|a| a.load / a.capacity.max(0.001)).collect();
+            let loads: Vec<f64> = agents
+                .iter()
+                .map(|a| a.load / a.capacity.max(0.001))
+                .collect();
             let avg = loads.iter().sum::<f64>() / loads.len() as f64;
-            let variance = loads.iter().map(|&x| (x - avg).powi(2)).sum::<f64>() / loads.len() as f64;
+            let variance =
+                loads.iter().map(|&x| (x - avg).powi(2)).sum::<f64>() / loads.len() as f64;
             let std = variance.sqrt();
             if std > 0.25 {
                 signs.push(format!("load_variance={:.4}", std));
@@ -52,7 +58,11 @@ impl EmergentBehaviorDetector {
                 min_count = min_count.min(c);
                 max_count = max_count.max(c);
             }
-            let imbalance = if max_count > 0 { (max_count - min_count) as f64 / max_count as f64 } else { 0.0 };
+            let imbalance = if max_count > 0 {
+                (max_count - min_count) as f64 / max_count as f64
+            } else {
+                0.0
+            };
             if imbalance > 0.4 {
                 signs.push(format!("role_imbalance={:.4}", imbalance));
             }
@@ -92,7 +102,9 @@ pub struct CollectiveDecisionMaker {
 
 impl CollectiveDecisionMaker {
     pub fn new(quorum: usize) -> Self {
-        Self { quorum: if quorum > 0 { quorum } else { 3 } }
+        Self {
+            quorum: if quorum > 0 { quorum } else { 3 },
+        }
     }
 
     pub fn decide(&self, proposals: &[String], voters: &[AgentRecord]) -> Option<SwarmDecision> {
@@ -109,7 +121,10 @@ impl CollectiveDecisionMaker {
                 participants.push(voter.agent_id.clone());
             }
         }
-        let mut ranked: Vec<_> = votes.into_iter().map(|(proposal, count)| (proposal, count)).collect();
+        let mut ranked: Vec<_> = votes
+            .into_iter()
+            .map(|(proposal, count)| (proposal, count))
+            .collect();
         ranked.sort_by(|a, b| b.1.cmp(&a.1));
         if let Some((proposal, vote_count)) = ranked.first() {
             Some(SwarmDecision {

@@ -1,3 +1,4 @@
+use crate::AlpError;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -37,7 +38,11 @@ impl ReasoningTracer {
     }
 
     pub fn create_chain(&mut self, goal: &str) -> ReasoningChain {
-        let chain_id = format!("chain-{}-{}", chrono::Utc::now().timestamp_millis(), rand_suffix(5));
+        let chain_id = format!(
+            "chain-{}-{}",
+            chrono::Utc::now().timestamp_millis(),
+            rand_suffix(5)
+        );
         let chain = ReasoningChain {
             chain_id: chain_id.clone(),
             goal: goal.to_string(),
@@ -50,8 +55,15 @@ impl ReasoningTracer {
         chain
     }
 
-    pub fn add_step(&mut self, chain_id: &str, input: &ReasoningStep) -> Result<ReasoningStep, AlpError> {
-        let chain = self.chains.get_mut(chain_id).ok_or_else(|| AlpError::new(format!("Reasoning chain '{}' not found", chain_id)))?;
+    pub fn add_step(
+        &mut self,
+        chain_id: &str,
+        input: &ReasoningStep,
+    ) -> Result<ReasoningStep, AlpError> {
+        let chain = self
+            .chains
+            .get_mut(chain_id)
+            .ok_or_else(|| AlpError::new(format!("Reasoning chain '{}' not found", chain_id)))?;
         if chain.status != "executing" {
             chain.status = "executing".to_string();
         }
@@ -70,15 +82,25 @@ impl ReasoningTracer {
         Ok(step)
     }
 
-    pub fn complete_chain(&mut self, chain_id: &str, result: &str) -> Result<ReasoningChain, AlpError> {
-        let chain = self.chains.get_mut(chain_id).ok_or_else(|| AlpError::new(format!("Reasoning chain '{}' not found", chain_id)))?;
+    pub fn complete_chain(
+        &mut self,
+        chain_id: &str,
+        result: &str,
+    ) -> Result<ReasoningChain, AlpError> {
+        let chain = self
+            .chains
+            .get_mut(chain_id)
+            .ok_or_else(|| AlpError::new(format!("Reasoning chain '{}' not found", chain_id)))?;
         chain.status = "completed".to_string();
         chain.result = Some(result.to_string());
         Ok(chain.clone())
     }
 
     pub fn fail_chain(&mut self, chain_id: &str, reason: &str) -> Result<ReasoningChain, AlpError> {
-        let chain = self.chains.get_mut(chain_id).ok_or_else(|| AlpError::new(format!("Reasoning chain '{}' not found", chain_id)))?;
+        let chain = self
+            .chains
+            .get_mut(chain_id)
+            .ok_or_else(|| AlpError::new(format!("Reasoning chain '{}' not found", chain_id)))?;
         chain.status = "failed".to_string();
         chain.result = Some(reason.to_string());
         Ok(chain.clone())

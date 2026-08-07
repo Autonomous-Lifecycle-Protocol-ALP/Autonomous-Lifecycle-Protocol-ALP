@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 
 interface Breakpoint {
   id: string;
@@ -53,7 +54,7 @@ export function EdgeDebugPanel(): React.JSX.Element {
     <div className="panel-container" style={{ height: '100%', backgroundColor: 'var(--terminal-bg)', color: 'var(--text-primary)', boxSizing: 'border-box' }}>
       <div className="panel-header">
         <div className="flex-wrap-gap">
-          <span style={{ fontSize: 'var(--font-size-md)' }}>🐛</span>
+          <span style={{ fontSize: 'var(--font-size-md)' }}><Icon name="bug" size={18} /></span>
           <span style={{ fontWeight: 700, fontSize: 'var(--font-size-sm)', color: 'var(--accent)' }}>Cloud Edge Live Debugger</span>
           <span className="badge badge-responsive" style={{ background: 'var(--accent)22', color: 'var(--accent)', border: '1px solid var(--accent)44' }}>v68.0.0</span>
         </div>

@@ -70,7 +70,7 @@ flowchart TD
     s_wf_0 --> s_wf_1
     s_wf_1 --> s_wf_2
     s_wf_2 --> s_wf_3
-    s_wf_3 --> wf_standard_done(["✅ Done"])
+    s_wf_3 --> wf_standard_done(["[Done]"])
   end
 ```
 

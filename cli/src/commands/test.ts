@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { TestRunner, TestSuiteResult, CoverageReport } from '@autonomous-lifecycle-protocol-alp/parser';
+import { TestRunner, TestSuiteResult } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export interface TestOptions {
   coverage?: boolean;

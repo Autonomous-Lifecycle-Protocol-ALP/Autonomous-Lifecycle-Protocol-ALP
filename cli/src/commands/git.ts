@@ -1,6 +1,4 @@
 import { execSync } from 'child_process';
-import fs from 'fs';
-import path from 'path';
 
 export interface GitOptions {
   status?: boolean;

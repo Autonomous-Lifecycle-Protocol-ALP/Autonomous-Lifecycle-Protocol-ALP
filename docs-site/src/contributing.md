@@ -202,10 +202,10 @@ Releases are tagged with semantic versions:
 
 ## Getting Help
 
-- 📖 Read the [documentation](/)
-- 💬 Join [GitHub Discussions](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/discussions)
-- 🐛 Report issues in [GitHub Issues](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/issues)
-- 📧 Reach out to maintainers via GitHub
+- <Icon name="book" /> Read the [documentation](/)
+- <Icon name="message-circle" /> Join [GitHub Discussions](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/discussions)
+- <Icon name="bug" /> Report issues in [GitHub Issues](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/issues)
+- <Icon name="mail" /> Reach out to maintainers via GitHub
 
 ## Recognition
 

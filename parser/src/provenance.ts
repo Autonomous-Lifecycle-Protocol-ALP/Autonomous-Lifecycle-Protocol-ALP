@@ -1,7 +1,5 @@
 /** ALP end-to-end provenance (v10.0.0 — The Verifiable Era). */
 
-import { StoredEvent } from './state-store';
-
 export interface VerifiableCredential {
   id: string;
   agent: string;

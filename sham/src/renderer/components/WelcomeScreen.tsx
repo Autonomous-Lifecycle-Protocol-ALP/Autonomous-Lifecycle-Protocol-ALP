@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from './Icon.js';
 
 interface WelcomeScreenProps {
   onOpenFile: (filePath: string) => void;
@@ -7,8 +8,8 @@ interface WelcomeScreenProps {
 export function WelcomeScreen({ onOpenFile }: WelcomeScreenProps): React.JSX.Element {
   return (
     <div className="empty-state" style={{ height: '100%', flexWrap: 'wrap' }}>
-      <div className="empty-state-icon" style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', fontWeight: 700, color: 'var(--accent)', marginBottom: 'clamp(8px, 2vw, 16px)', fontFamily: 'var(--font-sans)', boxSizing: 'border-box' }}>
-        SHAM
+      <div className="empty-state-icon" style={{ fontSize: 'clamp(2.5rem, 6vw, 4rem)', fontWeight: 700, color: 'var(--accent)', marginBottom: 'clamp(8px, 2vw, 16px)', fontFamily: 'var(--font-sans)', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Icon name="cpu" size={48} color="var(--accent)" />
       </div>
       <div className="empty-state-title" style={{ fontSize: 'clamp(0.9rem, 2vw, 1.1rem)', color: 'var(--text-secondary)', marginBottom: 'clamp(8px, 2vw, 16px)', fontWeight: 400 }}>
         Smart Hosted Agent Manager

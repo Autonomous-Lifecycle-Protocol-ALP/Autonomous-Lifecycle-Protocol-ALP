@@ -12,8 +12,11 @@ export default defineConfig({
       'sdk/typescript/test/**/*.test.ts',
       'tests/compliance/**/*.test.ts',
       'sham/tests/**/*.test.ts',
+      'commercial/alp-platform/tests/**/*.test.ts',
+      'commercial/alp-server/tests/**/*.test.js',
     ],
     environment: 'node',
+    testTimeout: 60000,
   },
   resolve: {
     alias: {

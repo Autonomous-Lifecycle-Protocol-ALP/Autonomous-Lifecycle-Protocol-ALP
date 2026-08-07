@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 
 interface Peer {
   id: string;
@@ -103,7 +104,7 @@ export function CRDTCanvasPanel(): React.JSX.Element {
     <div style={styles.container}>
       <div style={styles.header}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontSize: 18 }}>🎨</span>
+          <span style={{ fontSize: 18 }}><Icon name="palette" size={20} color="#a78bfa" /></span>
           <span style={{ fontWeight: 700, fontSize: 14, color: '#a78bfa' }}>CRDT Multiplayer Canvas</span>
           <span style={{ fontSize: 11, background: '#a78bfa22', color: '#a78bfa', padding: '2px 8px', borderRadius: 10 }}>v64.0.0</span>
         </div>

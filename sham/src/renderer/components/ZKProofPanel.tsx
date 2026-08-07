@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 
 export function ZKProofPanel(): React.JSX.Element {
   const [statement, setStatement] = useState('vault-unseal-key');
@@ -21,17 +22,15 @@ export function ZKProofPanel(): React.JSX.Element {
 
   const handleVerify = () => {
     if (proofResult && proofResult.proofHash.startsWith('zk_hash_')) {
-      setVerifyStatus('✅ ZK-Proof Verified: Statement is valid without revealing secret!');
+      setVerifyStatus('PASS: ZK-Proof Verified: Statement is valid without revealing secret!');
     } else {
-      setVerifyStatus('❌ ZK-Proof Failed: Invalid commitment mismatch.');
+      setVerifyStatus('FAIL: ZK-Proof Failed: Invalid commitment mismatch.');
     }
   };
 
   return (
     <div className="panel-container" style={{ padding: 'var(--spacing-sm)' }}>
-      <h2 style={{ borderBottom: '1px solid var(--border)', paddingBottom: '8px', marginTop: 0, fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--accent)' }}>
-        🔒 Zero-Knowledge Proof Engine (v46.0.0)
-      </h2>
+      <h2 style={{ borderBottom: '1px solid var(--border)', paddingBottom: '8px', marginTop: 0, fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="lock" size={20} /> Zero-Knowledge Proof Engine (v46.0.0)</h2>
       <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>
         Generate and verify zk-SNARK cryptographic compliance proofs without exposing secret values.
       </p>
@@ -66,7 +65,7 @@ export function ZKProofPanel(): React.JSX.Element {
             fontWeight: 'bold',
           }}
         >
-          🔒 Generate ZK-Proof Commitment
+           <Icon name="lock" size={16} /> Generate ZK-Proof Commitment
         </button>
       </div>
 

@@ -14,7 +14,9 @@ pub struct PolicyLearner {
 
 impl PolicyLearner {
     pub fn new() -> Self {
-        Self { history: Vec::new() }
+        Self {
+            history: Vec::new(),
+        }
     }
 
     pub fn learn(&mut self, ctx: PolicyContext) {

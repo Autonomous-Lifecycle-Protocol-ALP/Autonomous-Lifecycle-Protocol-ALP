@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Icon } from './Icon.js';
 import {
   profilerStart,
   profilerStop,
@@ -139,7 +140,7 @@ export function ProfilerPanel({
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {traces.length === 0 ? (
           <div className="empty-state" style={{ height: 'auto', padding: 24 }}>
-            <div className="empty-state-icon">&#9201;</div>
+            <div className="empty-state-icon"><Icon name="activity" size={32} color="var(--text-muted)" /></div>
             <div className="empty-state-title">No traces recorded yet</div>
             <div className="empty-state-desc">Start a trace to profile agent execution, policy decisions, and memory operations.</div>
           </div>

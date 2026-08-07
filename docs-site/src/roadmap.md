@@ -6,7 +6,7 @@ Strategic direction and planned features for the Autonomous Lifecycle Protocol.
 
 ALP aims to become the **standard protocol for autonomous software engineering** — the way Git standardized version control, Docker standardized environments, and OpenAPI standardized APIs.
 
-## Current Version: v81.0.0
+## Current Version: v80.0.0
 
 **Release Date:** 2026-08-02
 
@@ -15,7 +15,7 @@ ALP aims to become the **standard protocol for autonomous software engineering**
 - **Autonomy Controller**: Self-healing DAGs and self-modifying workflows
 - **Intelligence Engine**: AI-powered suggestions, diagnostics, predictions
 - **Workflow Mutator**: Propose, apply, and rollback workflow edits
-- **SHAM IDE**: Cross-platform desktop IDE with IDE Intelligence and Autonomous Orchestration (v81.0.0)
+- **SHAM IDE**: Cross-platform desktop IDE with IDE Intelligence and Autonomous Orchestration (v80.0.0)
 - **Swarm Marketplace**: Skill registration, discovery, and invocation
 - **Event Mesh**: Pub/sub topic routing across distributed nodes
 - **Encrypted Vault**: X25519 + AES-256-GCM secrets management
@@ -24,13 +24,13 @@ ALP aims to become the **standard protocol for autonomous software engineering**
 
 ## Version History
 
-### V81.0.0 — IDE Intelligence & Autonomous Orchestration (Current)
+### V80.0.0 — IDE Intelligence & Autonomous Orchestration (Current)
 
 **Theme:** AI-powered IDE assistance and autonomous workflow management
 
 - **IDE Intelligence Panel**: AI-powered suggestions, diagnostics, predictions, and automated code review for `.alp` specs
 - **Autonomous Orchestration Panel**: Self-healing DAGs, adaptive runtime tuning, edge-native execution
-- **Enhanced SHAM IDE**: v81.0.0 release with integrated intelligence and autonomy tools
+- **Enhanced SHAM IDE**: v80.0.0 release with integrated intelligence and autonomy tools
 
 ### V80.0.0 — Autonomous Orchestration
 

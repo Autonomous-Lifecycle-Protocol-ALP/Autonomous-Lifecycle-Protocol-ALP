@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 
 interface TestCase {
   id: string;
@@ -57,12 +58,14 @@ export function TestRunnerPanel({ suites, output, onRunTests, onAppendOutput }: 
           ) : (
             suites.map((suite) => (
               <div key={suite.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                <div
-                  className="list-item"
-                  onClick={() => toggleSuite(suite.id)}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <span className="list-item-icon" dangerouslySetInnerHTML={{ __html: selected.includes(suite.id) ? '&#9662;' : '&#9656;' }} />
+                 <div
+                   className="list-item"
+                   onClick={() => toggleSuite(suite.id)}
+                   style={{ cursor: 'pointer' }}
+                 >
+                   <span className="list-item-icon">
+                     <Icon name={selected.includes(suite.id) ? 'folderOpen' : 'folder'} size={14} />
+                   </span>
                   <div className="list-item-content">
                     <div className="list-item-title">{suite.name}</div>
                     <div className="list-item-subtitle">
@@ -91,18 +94,18 @@ export function TestRunnerPanel({ suites, output, onRunTests, onAppendOutput }: 
                   <div style={{ paddingLeft: 24 }}>
                     {suite.tests.map((test) => (
                       <div key={test.id} className="list-item" style={{ padding: '4px 12px' }}>
-                        <span
-                          className="list-item-icon"
-                          style={{
-                            color:
-                              test.status === 'passed' ? 'var(--accent-green)' :
-                              test.status === 'failed' ? 'var(--accent-red)' :
-                              test.status === 'running' ? 'var(--accent)' :
-                              'var(--text-muted)',
-                          }}
-                        >
-                          {test.status === 'passed' ? '&#10003;' : test.status === 'failed' ? '&#10007;' : test.status === 'running' ? '&#8635;' : '&#9675;'}
-                        </span>
+                         <span
+                           className="list-item-icon"
+                           style={{
+                             color:
+                               test.status === 'passed' ? 'var(--accent-green)' :
+                               test.status === 'failed' ? 'var(--accent-red)' :
+                               test.status === 'running' ? 'var(--accent)' :
+                               'var(--text-muted)',
+                           }}
+                         >
+                           <Icon name={test.status === 'passed' ? 'check' : test.status === 'failed' ? 'xCircle' : test.status === 'running' ? 'refreshCw' : 'circle'} size={14} />
+                         </span>
                         <div className="list-item-content">
                           <div className="list-item-title">{test.name}</div>
                           {test.durationMs !== undefined && (

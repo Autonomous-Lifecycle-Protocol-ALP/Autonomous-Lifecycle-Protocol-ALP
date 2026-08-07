@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { AlpParser, AlpObject } from './index';
 
 export interface FormatOptions {
   indentSize?: number;

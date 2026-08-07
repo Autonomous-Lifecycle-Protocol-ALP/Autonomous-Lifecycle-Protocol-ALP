@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from './Icon.js';
 import type { ALPAgent } from '../shared/types.js';
 
 interface AgentPanelProps {
@@ -40,7 +41,7 @@ export function AgentPanel({ agents, onRunAgent }: AgentPanelProps): React.JSX.E
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {agents.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-state-icon">&#128100;</div>
+            <div className="empty-state-icon"><Icon name="users" size={32} color="var(--text-muted)" /></div>
             <div className="empty-state-title">No agents yet</div>
             <div className="empty-state-desc">Create an agent to get started with autonomous workflows.</div>
           </div>

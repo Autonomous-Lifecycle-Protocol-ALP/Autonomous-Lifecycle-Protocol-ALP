@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: "ALP v81.0.0"
+  name: "ALP v80.0.0"
   text: "The Autonomous Lifecycle Protocol"
   tagline: "The open standard & high-performance execution engine for AI-driven software engineering. Write a machine-readable spec — let your agents plan, build, verify, and remember."
   image:
@@ -122,8 +122,25 @@ alp run
 
 # Verify quality gates
 alp verify task-login-ui
+```
+
+---
+
+## How it works (detailed)
+
+### 1. The Execution & Verification Cycle
+
+ALP parses your workspace into a **Directed Acyclic Graph (DAG)**. Agents only receive the exact context they need, exactly when they need it.
+
+```mermaid
+graph TD
+    subgraph Repository [Your Repository .alp/]
+        D[Decision: Use PostgreSQL] --> T1[Task: Setup DB Schema]
+        T1 --> T2[Task: Build REST API]
+        R[Rule: No Raw SQL] --> T2
+        C[Contract: @contract c-api] --> T2
     end
-    
+
     subgraph ExecutionEngine [Execution Engine - alp run]
         T2 -->|Context Bundle - 1.8ms| Agent[Claude / Cursor Agent]
     end
@@ -153,7 +170,7 @@ flowchart LR
 
 ---
 
-## 📦 The ALP Ecosystem
+## The ALP Ecosystem
 
 <div class="alp-eco">
   <a class="alp-eco-card" href="/guide/cli"><h3>@autonomous-lifecycle-protocol-alp/cli</h3><p>Terminal CLI interface: <code>run</code>, <code>marketplace</code>, <code>event-mesh</code>, <code>policy</code>, <code>vault</code>, <code>verify</code>.</p></a>
@@ -163,12 +180,12 @@ flowchart LR
   <a class="alp-eco-card" href="/guide/sdk"><h3>@autonomous-lifecycle-protocol-alp/sdk &amp; alp-sdk</h3><p>Official TypeScript and Python SDKs with complete 1:1 implementation parity.</p></a>
   <a class="alp-eco-card" href="/guide/sdk"><h3>alp-go / alp-rs / alp-java</h3><p>Official Go, Rust, and Java SDKs with core parsing, graph, and workspace APIs.</p></a>
   <a class="alp-eco-card" href="/spec/22-autonomous-marketplace"><h3>@swarm_marketplace</h3><p>Autonomous skill registry, provider discovery, invocation, and cost tracking (v38.0.0).</p></a>
-  <a class="alp-eco-card" href="/sham"><h3>SHAM IDE (v81.0.0)</h3><p>The unified ALP desktop IDE (Mac/Windows/Linux). Faster, more secure, and error-free vs. fragmented multi-IDE setups. Native <code>@autonomous-lifecycle-protocol-alp/parser</code>, Monaco editor, agent manager, IDE Intelligence with AI suggestions/predictions/review, and Autonomous Orchestration with self-healing DAGs.</p></a>
+  <a class="alp-eco-card" href="/sham"><h3>SHAM IDE (v80.0.0)</h3><p>The unified ALP desktop IDE (Mac/Windows/Linux). Faster, more secure, and error-free vs. fragmented multi-IDE setups. Native <code>@autonomous-lifecycle-protocol-alp/parser</code>, Monaco editor, agent manager, IDE Intelligence with AI suggestions/predictions/review, and Autonomous Orchestration with self-healing DAGs.</p></a>
 </div>
 
 ---
 
-## 🚀 Getting Started in 60 Seconds
+## Getting Started in 60 Seconds
 
 ### Step 1: Install the CLI
 
@@ -222,32 +239,38 @@ alp verify task-login-ui
 
 ---
 
-## 📚 Learn More
+### 1. Ecosystem Overview
 
 <div class="alp-eco">
-  <a class="alp-eco-card" href="/guide/cli"><h3>📖 CLI Guide</h3><p>Complete guide to the ALP CLI — initialization, validation, execution, and all commands.</p></a>
-  <a class="alp-eco-card" href="/spec/01-overview"><h3>📐 Specification</h3><p>Deep dive into the ALP protocol — syntax, objects, engines, memory model, and more.</p></a>
-  <a class="alp-eco-card" href="/mcp-server"><h3>🔌 MCP Server</h3><p>Connect ALP to Claude Desktop, Cursor, and other MCP-compatible tools.</p></a>
-  <a class="alp-eco-card" href="/vscode-extension"><h3>💻 VS Code Extension</h3><p>IntelliSense, go-to-definition, and DAG visualization in VS Code.</p></a>
-  <a class="alp-eco-card" href="/guide/sdk"><h3>🛠️ SDKs</h3><p>TypeScript, Python, Go, Rust, and Java SDKs with full API reference.</p></a>
-  <a class="alp-eco-card" href="/cli-tools"><h3>🛠️ CLI Tools Reference</h3><p>Complete reference for all CLI commands, flags, and workflows.</p></a>
+  <a class="alp-eco-card" href="/architecture"><h3>Architecture</h3><p>Deep dive into the ALP architecture, topology, and execution model.</p></a>
+  <a class="alp-eco-card" href="/spec/01-overview"><h3>Specification</h3><p>Full technical protocol specification — syntax, objects, engines, memory model.</p></a>
+  <a class="alp-eco-card" href="/guide/cli"><h3>CLI Guide</h3><p>Complete guide to the ALP CLI — initialization, validation, execution, and all commands.</p></a>
+  <a class="alp-eco-card" href="/guide/sdk"><h3>SDKs</h3><p>TypeScript, Python, Go, Rust, and Java SDKs with full API reference.</p></a>
+  <a class="alp-eco-card" href="/mcp-server"><h3>MCP Server</h3><p>Connect ALP to Claude Desktop, Cursor, and other MCP-compatible tools.</p></a>
+  <a class="alp-eco-card" href="/vscode-extension"><h3>VS Code Extension</h3><p>IntelliSense, go-to-definition, and DAG visualization in VS Code.</p></a>
+  <a class="alp-eco-card" href="/sham"><h3>SHAM IDE</h3><p>Cross-platform desktop IDE with Monaco editor, agent manager, and AI-powered suggestions.</p></a>
+  <a class="alp-eco-card" href="/cli-tools"><h3>CLI Tools Reference</h3><p>Complete reference for all CLI commands, flags, and workflows.</p></a>
 </div>
 
 ---
 
-## 🗺️ Future Plans & Roadmap
+## Future Plans & Roadmap
 
 Released versions are tracked in the [versioning spec](/spec/10-versioning.md). This section captures active and planned focus areas.
 
 | Era | Versions | Focus |
 |---|---|---|
-| V8 — The Collaboration Era | 38.0.0–38.x | Event mesh, swarm marketplace, macro expansion, collaboration/negotiation/reputation, memory mesh |
-| V9 — Native Desktop | 80.0.0–80.x | SHAM IDE cross-platform release, native ALP integration, Monaco editor, agent manager, auto-updater, Pro/Enterprise licensing |
-| V10 — The Intelligence Era | 81.0.0 | Autonomous multi-agent orchestration with self-healing DAGs, predictive governance, edge-native execution, and AI-native lifecycle management |
+| V8 — The Cognitive Era | 12.0.0–12.x | AI-native planning & reasoning: GoalDecomposer, Planner, Reflector, memory-augmented inference |
+| V9 — The Collaborative Era | 13.0.0–13.x | Multi-agent negotiation, contracts-as-protocol, reputation & trust scoring, composable agent teams |
+| V10 — The Verifiable Era | 14.0.0–14.x | End-to-end provenance, signed execution traces, zero-knowledge policy proofs, tamper-evident audit ledger |
+| V11 — The Ambient Era | 15.0.0–15.x | Fully autonomous long-running swarms, safe self-modifying workflows, edge-native runtime, live upgrade & migration |
+| V12 — The Sentinel Era | 16.0.0–16.x | Immutable execution traces, self-healing workflows, predictive governance, swarm resilience, cost optimization |
+| V13 — The Universal Era | 17.0.0–17.x | Cross-protocol interoperability (OpenAPI, GraphQL, gRPC, AsyncAPI), universal adapters, bidirectional sync |
 
-### What's Next
+### Current Release
 
-- **SHAM IDE** (V9, 80.0.0) — Already released. Cross-platform desktop application for Mac, Windows, and Linux with native ALP integration, Monaco editor, agent manager, auto-updater, and Pro/Enterprise licensing.
-- **V10 — The Intelligence Era** (81.0.0) — Autonomous multi-agent orchestration with self-healing DAGs, predictive governance, edge-native execution, and AI-native lifecycle management.
+**V9 — Native Desktop (v80.0.0)** — SHAM IDE cross-platform release with native ALP integration, Monaco editor, agent manager, auto-updater, and Pro/Enterprise licensing.
+
+**V10 — The Intelligence Era (v80.0.0)** — Autonomous multi-agent orchestration with self-healing DAGs, predictive governance, edge-native execution, and AI-native lifecycle management.
 
 

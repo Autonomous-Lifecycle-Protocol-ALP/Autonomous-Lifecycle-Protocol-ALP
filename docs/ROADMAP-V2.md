@@ -6,7 +6,7 @@ Version 2 of the Autonomous Lifecycle Protocol transitions the project from a **
 
 ---
 
-## Pillar 1: Language Server Protocol (LSP) ✅
+## Pillar 1: Language Server Protocol (LSP)  [Complete]
 
 **Target:** Upgrade the VS Code extension to implement a full Language Server.
 
@@ -14,28 +14,28 @@ Version 2 of the Autonomous Lifecycle Protocol transitions the project from a **
 - **IntelliSense:** Autocomplete suggestions for agents, goals, and tasks based on the workspace graph.
 - **Rename Tracking:** Global symbol renaming across the `.alp` workspace.
 
-## Pillar 2: The Native Execution Engine ✅
+## Pillar 2: The Native Execution Engine  [Complete]
 
 **Target:** Add `alp run` to the CLI to orchestrate LLM agents natively.
 
 - Connect the CLI to OpenAI/Anthropic/Local APIs.
 - Allow developers to run `alp run --task "feat-auth"`. The CLI spins up the assigned `@agent`, provides context from the graph, executes the work in a sandbox, and handles verification loops until completion.
 
-## Pillar 3: Model Context Protocol (MCP) Server ✅
+## Pillar 3: Model Context Protocol (MCP) Server  [Complete]
 
 **Target:** Release an `@autonomous-lifecycle-protocol-alp/mcp-server` package.
 
 - Allow any modern AI IDE (Cursor, Claude Desktop, Windsurf) to connect securely to the ALP workspace.
 - Provide standardized MCP tools: `alp_get_graph`, `alp_read_task`, `alp_update_status`.
 
-## Pillar 4: Git & CI Synchronization ✅
+## Pillar 4: Git & CI Synchronization  [Complete]
 
 **Target:** Deeply integrate ALP state with human workflow tools.
 
 - GitHub Action to automatically transition linked `.alp` task statuses to `[~] In Review` when a PR opens, and `[x] Done` when merged.
 - Bi-directional sync with issue trackers (Linear, Jira, GitHub Issues).
 
-## Pillar 5: The ALP Package Registry ✅
+## Pillar 5: The ALP Package Registry  [Complete]
 
 **Target:** Establish a community hub for sharing autonomous knowledge.
 
@@ -48,8 +48,8 @@ Version 2 of the Autonomous Lifecycle Protocol transitions the project from a **
 
 | Phase | Goal | Status |
 | --- | --- | --- |
-| Pillar 1 | Language Server Protocol | ✅ Done |
-| Pillar 2 | Execution Engine (`alp run`) | ✅ Done |
-| Pillar 3 | MCP Server | ✅ Done |
-| Pillar 4 | Git & CI Sync | ✅ Done |
-| Pillar 5 | Package Registry | ✅ Done |
+| Pillar 1 | Language Server Protocol | [Done] |
+| Pillar 2 | Execution Engine (`alp run`) | [Done] |
+| Pillar 3 | MCP Server | [Done] |
+| Pillar 4 | Git & CI Sync | [Done] |
+| Pillar 5 | Package Registry | [Done] |

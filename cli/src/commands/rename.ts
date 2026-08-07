@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { AlpParser, AlpError } from '@autonomous-lifecycle-protocol-alp/parser';
+import { AlpParser } from '@autonomous-lifecycle-protocol-alp/parser';
 import { escapeRegex } from '../utils';
 
 export function renameCommand(oldId: string, newId: string) {

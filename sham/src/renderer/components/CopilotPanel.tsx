@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { Icon } from './Icon.js';
 import {
   copilotSuggest,
   copilotApplyFix,
@@ -25,12 +26,12 @@ const INTENT_COLORS: Record<CopilotIntent, string> = {
 };
 
 const INTENT_ICONS: Record<CopilotIntent, string> = {
-  CODE_GEN: '⚡',
-  REFACTOR: '♻️',
-  DEBUG: '🐛',
-  EXPLAIN: '📖',
-  PLAN: '🗺️',
-  DELEGATE: '🤝',
+  CODE_GEN: 'zap',
+  REFACTOR: 'refreshCw',
+  DEBUG: 'bug',
+  EXPLAIN: 'book',
+  PLAN: 'map',
+  DELEGATE: 'userPlus',
 };
 
 function classifyIntent(prompt: string): CopilotIntent {
@@ -140,7 +141,7 @@ export function CopilotPanel({
     <div style={styles.container}>
       <div className="panel-header">
         <div className="flex-wrap-gap">
-          <span style={{ fontSize: 'var(--font-size-md)' }}>🤖</span>
+          <span style={{ fontSize: 'var(--font-size-md)' }}><Icon name="bot" size={18} /></span>
           <span style={{ fontWeight: 700, fontSize: 'var(--font-size-sm)', color: 'var(--accent)' }}>Agent Copilot</span>
           <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>v62.0.0</span>
         </div>
@@ -149,7 +150,7 @@ export function CopilotPanel({
       <div className="tab-nav">
         {(['chat', 'plan', 'suggestions'] as const).map(tab => (
           <button key={tab} style={styles.tab(activeTab === tab)} onClick={() => setActiveTab(tab)}>
-            {tab === 'chat' ? '💬 Chat' : tab === 'plan' ? '🗺️ Plan' : '✨ Suggestions'}
+            {tab === 'chat' ? <><Icon name="messageCircle" size={14} /> Chat</> : tab === 'plan' ? <><Icon name="map" size={14} /> Plan</> : <><Icon name="star" size={14} /> Suggestions</>}
           </button>
         ))}
       </div>
@@ -167,7 +168,7 @@ export function CopilotPanel({
               style={{ ...styles.input, resize: 'none', fontFamily: 'inherit' }}
             />
             <button className="btn btn-responsive" style={styles.btn('var(--accent)')} onClick={handlePromptSubmit}>
-              🧠 Classify & Plan
+              <Icon name="cpu" size={14} /> Classify & Plan
             </button>
 
             {intent && (
@@ -189,7 +190,7 @@ export function CopilotPanel({
               style={{ ...styles.input, fontFamily: 'monospace', resize: 'none' }}
             />
             <button className="btn btn-responsive" style={styles.btn('var(--accent-blue)')} onClick={handleSuggest} disabled={loading}>
-              {loading ? '⏳ Analyzing…' : '⚡ Get Suggestions'}
+              {loading ? <><Icon name="refreshCw" size={14} /> Analyzing…</> : <><Icon name="zap" size={14} /> Get Suggestions</>}
             </button>
           </div>
         )}
@@ -199,7 +200,7 @@ export function CopilotPanel({
             {intent ? (
               <>
                 <div className="flex-wrap-gap" style={{ marginBottom: 16 }}>
-                  <span style={styles.intentBadge(intent)}>{INTENT_ICONS[intent]} {intent.replace('_', ' ')}</span>
+                  <span style={styles.intentBadge(intent)}><Icon name={INTENT_ICONS[intent] as any} size={14} /> {intent.replace('_', ' ')}</span>
                   <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{planSteps.length} steps</span>
                 </div>
                 {planSteps.map(step => (
@@ -215,7 +216,7 @@ export function CopilotPanel({
               </>
             ) : (
               <div className="empty-state">
-                <div className="empty-state-icon">💬</div>
+                <div className="empty-state-icon"><Icon name="messageCircle" size={32} color="var(--text-muted)" /></div>
                 <div className="empty-state-title">No plan generated</div>
                 <div className="empty-state-desc">Enter a prompt in the Chat tab to generate a plan.</div>
               </div>
@@ -234,7 +235,7 @@ export function CopilotPanel({
             </div>
             {filtered.length === 0 ? (
               <div className="empty-state">
-                <div className="empty-state-icon">✨</div>
+                <div className="empty-state-icon"><Icon name="zap" size={32} color="var(--text-muted)" /></div>
                 <div className="empty-state-title">No suggestions</div>
                 <div className="empty-state-desc">Paste code in Chat and click "Get Suggestions".</div>
               </div>

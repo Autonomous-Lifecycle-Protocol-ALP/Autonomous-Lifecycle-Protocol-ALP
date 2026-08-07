@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import type { SHAMState } from '../shared/types.js';
+import { Icon } from './Icon.js';
 
 interface SidebarProps {
   state: SHAMState;
@@ -20,42 +21,42 @@ interface TreeNode {
 }
 
 const panelIcons: Record<string, string> = {
-  editor: '&#9998;',
-  terminal: '&#9000;',
-  agents: '&#128100;',
-  mcp: '&#128230;',
-  collab: '&#128101;',
-  plugins: '&#128295;',
-  profiler: '&#9201;',
-  copilot: '&#129302;',
-  refactor: '&#10070;',
-  settings: '&#9881;',
-  git: '&#128193;',
-  search: '&#128269;',
-  marketplace: '&#128722;',
-  zk: '&#128274;',
-  partition: '&#127758;',
-  crdtCanvas: '&#127912;',
-  wasmAst: '&#9889;',
-  edgeDebug: '&#128030;',
-  telemetryInspector: '&#128225;',
-  chaosEngine: '&#128165;',
-  featureFlags: '&#127937;',
-  workflowReplay: '&#9201;',
-  localStorage: '&#128230;',
-  selfHealingMesh: '&#128737;',
+  editor: 'edit3',
+  terminal: 'terminal',
+  agents: 'users',
+  mcp: 'cpu',
+  collab: 'userPlus',
+  plugins: 'puzzle',
+  profiler: 'activity',
+  copilot: 'bot',
+  refactor: 'code',
+  settings: 'settings',
+  git: 'gitBranch',
+  search: 'search',
+  marketplace: 'shoppingBag',
+  zk: 'lock',
+  partition: 'globe',
+  crdtCanvas: 'palette',
+  wasmAst: 'zap',
+  edgeDebug: 'bug',
+  telemetryInspector: 'monitor',
+  chaosEngine: 'alertTriangle',
+  featureFlags: 'flag',
+  workflowReplay: 'playCircle',
+  localStorage: 'hardDrive',
+  selfHealingMesh: 'shield',
 };
 
 const FILE_ICONS: Record<string, string> = {
-  '.alp': '&#128196;',
-  '.md': '&#128220;',
-  '.json': '&#9881;',
-  '.ts': '&#128187;',
-  '.js': '&#128187;',
-  '.py': '&#128012;',
-  '.yml': '&#128196;',
-  '.yaml': '&#128196;',
-  '.sh': '&#9000;',
+  '.alp': 'fileText',
+  '.md': 'fileText',
+  '.json': 'fileCode',
+  '.ts': 'fileCode',
+  '.js': 'fileCode',
+  '.py': 'fileCode',
+  '.yml': 'fileText',
+  '.yaml': 'fileText',
+  '.sh': 'terminal',
 };
 
 const WORKSPACE_TREE: TreeNode[] = [
@@ -65,15 +66,15 @@ const WORKSPACE_TREE: TreeNode[] = [
     type: 'folder',
     path: 'src',
     children: [
-      { id: 'src-index', name: 'index.ts', type: 'file', path: 'src/index.ts', icon: '&#128187;' },
+      { id: 'src-index', name: 'index.ts', type: 'file', path: 'src/index.ts', icon: 'fileCode' },
       {
         id: 'src-agents',
         name: 'agents',
         type: 'folder',
         path: 'src/agents',
         children: [
-          { id: 'src-agents-hello', name: 'hello.alp', type: 'file', path: 'src/agents/hello.alp', icon: '&#128196;' },
-          { id: 'src-agents-swarm', name: 'swarm.alp', type: 'file', path: 'src/agents/swarm.alp', icon: '&#128196;' },
+          { id: 'src-agents-hello', name: 'hello.alp', type: 'file', path: 'src/agents/hello.alp', icon: 'fileText' },
+          { id: 'src-agents-swarm', name: 'swarm.alp', type: 'file', path: 'src/agents/swarm.alp', icon: 'fileText' },
         ],
       },
       {
@@ -82,7 +83,7 @@ const WORKSPACE_TREE: TreeNode[] = [
         type: 'folder',
         path: 'src/skills',
         children: [
-          { id: 'src-skills-utils', name: 'utils.alp', type: 'file', path: 'src/skills/utils.alp', icon: '&#128196;' },
+          { id: 'src-skills-utils', name: 'utils.alp', type: 'file', path: 'src/skills/utils.alp', icon: 'fileText' },
         ],
       },
     ],
@@ -93,26 +94,26 @@ const WORKSPACE_TREE: TreeNode[] = [
     type: 'folder',
     path: 'docs',
     children: [
-      { id: 'docs-readme', name: 'README.md', type: 'file', path: 'docs/README.md', icon: '&#128220;' },
-      { id: 'docs-api', name: 'API.md', type: 'file', path: 'docs/API.md', icon: '&#128220;' },
+      { id: 'docs-readme', name: 'README.md', type: 'file', path: 'docs/README.md', icon: 'fileText' },
+      { id: 'docs-api', name: 'API.md', type: 'file', path: 'docs/API.md', icon: 'fileText' },
     ],
   },
-  { id: 'root-alp', name: 'example.alp', type: 'file', path: 'example.alp', icon: '&#128196;' },
-  { id: 'root-readme', name: 'README.md', type: 'file', path: 'README.md', icon: '&#128220;' },
-  { id: 'root-config', name: 'alp.config.json', type: 'file', path: 'alp.config.json', icon: '&#9881;' },
-  { id: 'root-governance', name: 'governance.alp', type: 'file', path: 'governance.alp', icon: '&#128196;' },
-  { id: 'root-contracts', name: 'contracts.alp', type: 'file', path: 'contracts.alp', icon: '&#128196;' },
+  { id: 'root-alp', name: 'example.alp', type: 'file', path: 'example.alp', icon: 'fileText' },
+  { id: 'root-readme', name: 'README.md', type: 'file', path: 'README.md', icon: 'fileText' },
+  { id: 'root-config', name: 'alp.config.json', type: 'file', path: 'alp.config.json', icon: 'settings' },
+  { id: 'root-governance', name: 'governance.alp', type: 'file', path: 'governance.alp', icon: 'fileText' },
+  { id: 'root-contracts', name: 'contracts.alp', type: 'file', path: 'contracts.alp', icon: 'fileText' },
 ];
 
 function getFileIcon(name: string): string {
   const ext = name.includes('.') ? '.' + name.split('.').pop() : '';
-  return FILE_ICONS[ext] || '&#128196;';
+  return FILE_ICONS[ext] || 'fileText';
 }
 
 function TreeItem({ node, depth = 0, onOpenFile, activeFile }: { node: TreeNode; depth?: number; onOpenFile: (path: string) => void; activeFile: string | null }): React.JSX.Element {
   const [expanded, setExpanded] = useState(false);
   const isFolder = node.type === 'folder';
-  const icon = node.icon || (isFolder ? (expanded ? '&#9662;' : '&#9656;') : getFileIcon(node.name));
+  const icon = node.icon || (isFolder ? (expanded ? 'folderOpen' : 'folder') : getFileIcon(node.name));
 
   return (
     <div>
@@ -127,7 +128,7 @@ function TreeItem({ node, depth = 0, onOpenFile, activeFile }: { node: TreeNode;
           }
         }}
       >
-        <span className="tree-item-icon" dangerouslySetInnerHTML={{ __html: icon }} />
+        <span className="tree-item-icon"><Icon name={icon as any} size={14} /></span>
         <span className="tree-item-label">{node.name}</span>
       </div>
       {isFolder && expanded && node.children && (
@@ -148,7 +149,7 @@ export function Sidebar({ state, onOpenFile, onCloseFile, onSelectAgent, activeP
         <div className="sidebar-section-title">
           Explorer
           <button className="sidebar-section-action" onClick={() => onOpenFile('untitled.alp')} title="New ALP File">
-            +
+            <Icon name="plus" size={14} />
           </button>
         </div>
         <div className="sidebar-list">
@@ -158,7 +159,7 @@ export function Sidebar({ state, onOpenFile, onCloseFile, onSelectAgent, activeP
               className={`sidebar-item ${state.activeFile === file ? 'active' : ''}`}
               onClick={() => onOpenFile(file)}
             >
-              <span className="sidebar-item-icon">&#128196;</span>
+              <span className="sidebar-item-icon"><Icon name={getFileIcon(file) as any} size={14} /></span>
               <span className="sidebar-item-label">{file}</span>
               <button
                 className="sidebar-item-close"
@@ -167,7 +168,7 @@ export function Sidebar({ state, onOpenFile, onCloseFile, onSelectAgent, activeP
                   onCloseFile(file);
                 }}
               >
-                ×
+                <Icon name="x" size={12} />
               </button>
             </div>
           ))}
@@ -190,7 +191,7 @@ export function Sidebar({ state, onOpenFile, onCloseFile, onSelectAgent, activeP
             className={`sidebar-footer-item ${activePanel === panel ? 'active' : ''}`}
             onClick={() => setActivePanel(panel)}
           >
-            <span dangerouslySetInnerHTML={{ __html: panelIcons[panel] || '&#9635;' }} />
+            <Icon name={panelIcons[panel] || 'box'} size={14} />
             {panel.charAt(0).toUpperCase() + panel.slice(1)}
           </button>
         ))}

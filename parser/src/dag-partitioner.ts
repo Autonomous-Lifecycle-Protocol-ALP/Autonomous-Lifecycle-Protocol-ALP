@@ -6,7 +6,7 @@
  * minimize cross-region network latency penalties, and enable parallel multi-region execution.
  */
 
-import { AlpGraph, GraphNode } from './graph';
+import { AlpGraph } from './graph';
 
 export interface RegionAssignment {
   region: string;

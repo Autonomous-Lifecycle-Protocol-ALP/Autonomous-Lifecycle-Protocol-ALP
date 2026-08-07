@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 
 type FlagStatus = 'ENABLED' | 'DISABLED' | 'ROLLOUT' | 'EXPERIMENT';
 
@@ -29,10 +30,10 @@ export function FeatureFlagPanel(): React.JSX.Element {
   const selectedFlag = flags.find(f => f.id === selected);
 
   const statusMeta: Record<FlagStatus, { icon: string; color: string }> = {
-    ENABLED: { icon: '🟢', color: '#4ade80' },
-    DISABLED: { icon: '⚫', color: '#6b7280' },
-    ROLLOUT: { icon: '🟡', color: '#fbbf24' },
-    EXPERIMENT: { icon: '🔬', color: '#a78bfa' },
+    ENABLED: { icon: 'check', color: '#4ade80' },
+    DISABLED: { icon: 'xCircle', color: '#6b7280' },
+    ROLLOUT: { icon: 'alertTriangle', color: '#fbbf24' },
+    EXPERIMENT: { icon: 'search', color: '#a78bfa' },
   };
 
   const toggleStatus = (id: string) => {
@@ -81,7 +82,7 @@ export function FeatureFlagPanel(): React.JSX.Element {
     <div style={s.container}>
       <div className="panel-header" style={s.header}>
         <div className="flex-wrap-gap">
-          <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)' }}>🚩</span>
+          <span style={{ fontSize: 'clamp(1rem, 2.5vw, 1.2rem)' }}><Icon name="flag" size={18} /></span>
           <span style={{ fontWeight: 700, fontSize: 'var(--font-size-md)', color: 'var(--accent-green)' }}>Feature Flag Engine</span>
           <span className="badge badge-responsive" style={{ background: 'var(--accent-green)22', color: 'var(--accent-green)', border: '1px solid var(--accent-green)44' }}>v74.0.0</span>
         </div>
@@ -120,10 +121,10 @@ export function FeatureFlagPanel(): React.JSX.Element {
             <div key={f.id} style={s.flagRow(selected === f.id)} onClick={() => setSelected(f.id)}>
               <div className="flex-between">
                 <div className="flex-wrap-gap">
-                  <span>{statusMeta[f.status].icon}</span>
+                   <span><Icon name={statusMeta[f.status].icon} size={14} color={statusMeta[f.status].color} /></span>
                   <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600 }}>{f.name}</span>
                 </div>
-                {f.killSwitch && <span className="badge badge-responsive" style={{ background: 'var(--accent-red)18', color: 'var(--accent-red)' }}>🔴 KILLED</span>}
+                 {f.killSwitch && <span className="badge badge-responsive" style={{ background: 'var(--accent-red)18', color: 'var(--accent-red)' }}><Icon name="xCircle" size={12} /> KILLED</span>}
               </div>
               <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 4 }}>
                 {f.description} • {f.updatedAt}
@@ -142,22 +143,22 @@ export function FeatureFlagPanel(): React.JSX.Element {
             <>
               <div className="flex-between" style={{ marginBottom: 16, flexWrap: 'wrap', gap: 'var(--spacing-xs)' }}>
                 <div>
-                  <div style={{ fontSize: 'clamp(1rem, 2vw, 1.1rem)', fontWeight: 700, color: statusMeta[selectedFlag.status].color }}>
-                    {statusMeta[selectedFlag.status].icon} {selectedFlag.name}
+                     <div style={{ fontSize: 'clamp(1rem, 2vw, 1.1rem)', fontWeight: 700, color: statusMeta[selectedFlag.status].color }}>
+                     <Icon name={statusMeta[selectedFlag.status].icon} size={14} color={statusMeta[selectedFlag.status].color} /> {selectedFlag.name}
                   </div>
                   <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: 4 }}>{selectedFlag.description}</div>
                 </div>
                 <div className="flex-wrap-gap">
-                  <button className="btn btn-sm" style={s.btn('var(--accent-blue)')} onClick={() => toggleStatus(selectedFlag.id)}>⚡ Toggle</button>
-                  <button className="btn btn-sm" style={s.btn(selectedFlag.killSwitch ? 'var(--accent-green)' : 'var(--accent-red)')} onClick={() => toggleKill(selectedFlag.id)}>
-                    {selectedFlag.killSwitch ? '✅ Revive' : '🔴 Kill'}
-                  </button>
+                   <button className="btn btn-sm" style={s.btn('var(--accent-blue)')} onClick={() => toggleStatus(selectedFlag.id)}><Icon name="zap" size={14} /> Toggle</button>
+                   <button className="btn btn-sm" style={s.btn(selectedFlag.killSwitch ? 'var(--accent-green)' : 'var(--accent-red)')} onClick={() => toggleKill(selectedFlag.id)}>
+                     {selectedFlag.killSwitch ? <><Icon name="check" size={14} /> Revive</> : <><Icon name="xCircle" size={14} /> Kill</>}
+                   </button>
                 </div>
               </div>
 
               <div className="card" style={{ ...s.card, display: 'grid', gridTemplateColumns: '1fr clamp(120px, 30vw, 200px)', gap: '8px 20px', fontSize: 'var(--font-size-sm)', boxSizing: 'border-box' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Status:</span><span className="badge badge-responsive" style={{ background: statusMeta[selectedFlag.status].color + '18', color: statusMeta[selectedFlag.status].color, border: '1px solid ' + statusMeta[selectedFlag.status].color + '33' }}>{selectedFlag.status}</span>
-                <span style={{ color: 'var(--text-muted)' }}>Kill Switch:</span><span style={{ color: selectedFlag.killSwitch ? 'var(--accent-red)' : 'var(--accent-green)' }}>{selectedFlag.killSwitch ? '🔴 ACTIVE' : '⚪ OFF'}</span>
+                 <span style={{ color: 'var(--text-muted)' }}>Kill Switch:</span><span style={{ color: selectedFlag.killSwitch ? 'var(--accent-red)' : 'var(--accent-green)' }}>{selectedFlag.killSwitch ? <><Icon name="x-circle" size={12} /> ACTIVE</> : <><Icon name="circle" size={12} /> OFF</>}</span>
                 <span style={{ color: 'var(--text-muted)' }}>Environments:</span><span>{selectedFlag.environments.length > 0 ? selectedFlag.environments.join(', ') : 'All'}</span>
                 <span style={{ color: 'var(--text-muted)' }}>Variants:</span><span>{selectedFlag.variants.length || 'None'}</span>
               </div>
@@ -193,7 +194,7 @@ export function FeatureFlagPanel(): React.JSX.Element {
             </>
           ) : (
             <div className="empty-state">
-              <div className="empty-state-icon">🚩</div>
+              <div className="empty-state-icon"><Icon name="flag" size={32} color="var(--text-muted)" /></div>
               <div className="empty-state-title">Select a feature flag</div>
             </div>
           )}

@@ -34,16 +34,16 @@ This document synthesizes the research from individual analyses into a single co
 
 | Capability | OpenAPI | MCP | Cursor Rules | CLAUDE.md | Cline | Roo Code | Codex | Aider | **ALP** |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Machine-readable format | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ⚠️ | ✅ |
-| Formal schema/grammar | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Project lifecycle tracking | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Dependency graphs | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Verification / quality gates | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Persistent memory | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Multi-agent orchestration | ❌ | ❌ | ❌ | ❌ | ❌ | ⚠️ | ❌ | ❌ | ✅ |
-| Tool-agnostic / portable | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| State persistence across sessions | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| Plugin / extension system | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Machine-readable format | Yes | Yes | No | No | No | No | No | Partial | Yes |
+| Formal schema/grammar | Yes | Yes | No | No | No | No | No | No | Yes |
+| Project lifecycle tracking | No | No | No | No | No | No | No | No | Yes |
+| Dependency graphs | No | No | No | No | No | No | No | No | Yes |
+| Verification / quality gates | No | No | No | No | No | No | No | No | Yes |
+| Persistent memory | No | No | No | No | No | No | No | No | Yes |
+| Multi-agent orchestration | No | No | No | No | No | Partial | No | No | Yes |
+| Tool-agnostic / portable | Yes | Yes | No | No | No | No | No | No | Yes |
+| State persistence across sessions | No | No | No | No | No | No | No | No | Yes |
+| Plugin / extension system | Yes | Yes | No | No | No | No | No | No | Yes |
 
 ---
 
