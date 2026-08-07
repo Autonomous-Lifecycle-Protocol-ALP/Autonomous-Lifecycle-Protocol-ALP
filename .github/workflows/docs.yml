@@ -36,7 +36,7 @@ jobs:
 
       - name: Install Linux native bindings
         working-directory: .
-        run: npm install @rollup/rollup-linux-x64-gnu @rolldown/binding-linux-x64-gnu --no-save
+        run: npm install @rollup/rollup-linux-x64-gnu @rolldown/binding-linux-x64-gnu lightningcss-linux-x64-gnu --no-save
 
       - name: Build VitePress site
         working-directory: docs-site
