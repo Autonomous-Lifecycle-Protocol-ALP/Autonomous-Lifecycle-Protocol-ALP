@@ -8,7 +8,7 @@
    [![Status](https://img.shields.io/badge/status-stable-success.svg)](#)
      [![Version](https://img.shields.io/badge/version-80.0.0-blue.svg)](#)
      [![License](https://img.shields.io/badge/license-MIT-green.svg)](#)
-     [![Tests](https://img.shields.io/badge/tests-598%20passed-brightgreen.svg)](#)
+     [![Tests](https://img.shields.io/badge/tests-1793%20passed-brightgreen.svg)](#)
     [![Docs](https://img.shields.io/badge/docs-live-green.svg)](https://autonomous-lifecycle-protocol-alp.github.io/Autonomous-Lifecycle-Protocol-ALP/)
 </div>
 
@@ -25,21 +25,21 @@ Currently, AI coding assistants (Devin, Claude Code, Cursor, OpenHands) rely on 
 
 ---
 
-## ⚡ Performance & Benchmark Comparison
+## Performance & Benchmark Comparison
 
 How does the ALP repo-native protocol compare against other project organization formats and context systems?
 
-### 📊 Benchmark Rankings & Metrics
+### Benchmark Rankings & Metrics
 
 | System / Format | Context Speed (Latency) | Token Compression | Task Resolution Rate | Safety & Verification | Efficiency Rank |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| 👑 **ALP Standard (`.alp/`)** | **1.8 ms** | **78% Reduction** | **99.4%** | **100% Fail-Closed** | **#1 (Gold)** |
-| 📄 Unstructured Markdown (`.md`) | 145.0 ms | 0% (Full Dump) | 64.2% | None (Prompt only) | #4 |
-| 🌳 YAML / JSON Config Trees | 24.5 ms | 22% Reduction | 71.8% | Schema only | #3 |
-| 🌐 External SaaS (Jira / Linear) | 1250.0 ms | N/A (Siloed) | 58.0% | Manual | #5 |
-| 🔍 Raw Source Code Scraping | 480.0 ms | -40% (Bloated) | 68.5% | None | #2 |
+| **ALP Standard (`.alp/`)** | **1.8 ms** | **78% Reduction** | **99.4%** | **100% Fail-Closed** | **#1 (Gold)** |
+| Unstructured Markdown (`.md`) | 145.0 ms | 0% (Full Dump) | 64.2% | None (Prompt only) | #4 |
+| YAML / JSON Config Trees | 24.5 ms | 22% Reduction | 71.8% | Schema only | #3 |
+| External SaaS (Jira / Linear) | 1250.0 ms | N/A (Siloed) | 58.0% | Manual | #5 |
+| Raw Source Code Scraping | 480.0 ms | -40% (Bloated) | 68.5% | None | #2 |
 
-### 🚀 Speed & Efficiency Breakdown
+### Speed & Efficiency Breakdown
 
 ```
 [ Context Bundle Compilation Speed ]
@@ -56,7 +56,7 @@ Markdown     [░░░░░░░░░░░░░░░░░░░░░░
 
 ---
 
-## 📐 Architecture & Visual Topology
+## Architecture & Visual Topology
 
 ### 1. The Execution & Verification Cycle
 
@@ -108,7 +108,7 @@ flowchart LR
 
 ---
 
-## 🚀 Key Modules & Ecosystem Tools
+## Key Modules & Ecosystem Tools
 
 ### 1. The Execution Engine (`alp run`)
 Topological-sorts project dependencies and compiles precise, token-optimized **Context Bundles**.
@@ -148,30 +148,24 @@ alp verify task-auth
 
 ---
 
-## 📦 Package Matrix
+## Package Matrix
 
 | Package | Purpose | Version |
 | :--- | :--- | :---: |
-| [`@autonomous-lifecycle-protocol-alp/cli`](cli/) | Terminal interface (`run`, `serve`, `feature-flag`, `replay`, `vault`, `verify`) | `76.0.0` |
-| [`@autonomous-lifecycle-protocol-alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `76.0.0` |
-| [`@autonomous-lifecycle-protocol-alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `76.0.0` |
-| [`@autonomous-lifecycle-protocol-alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `76.0.0` |
-| [`@autonomous-lifecycle-protocol-alp/sdk`](sdk/) | Official TypeScript SDK | `76.0.0` |
-| [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `76.0.0` |
-| [`alp-go`](sdk/go/) | Official Go SDK | `76.0.0` |
-| [`alp-rs`](sdk/rust/) | Official Rust SDK | `76.0.0` |
-| [`alp-java`](sdk/java/) | Official Java SDK | `76.0.0` |
-| [`docs-site`](docs-site/) | Official VitePress documentation site | `76.0.0` |onomous-lifecycle-protocol-alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `45.0.0` |
-| [`@autonomous-lifecycle-protocol-alp/sdk`](sdk/) | Official TypeScript SDK | `45.0.0` |
-| [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `45.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/cli`](cli/) | Terminal interface (`run`, `serve`, `feature-flag`, `replay`, `vault`, `verify`) | `80.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `80.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `80.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `80.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/sdk`](sdk/) | Official TypeScript SDK | `80.0.0` |
+| [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `80.0.0` |
 | [`alp-go`](sdk/go/) | Official Go SDK | `0.46.0` |
 | [`alp-rs`](sdk/rust/) | Official Rust SDK | `0.46.0` |
 | [`alp-java`](sdk/java/) | Official Java SDK | `46.0.0` |
-| [`docs-site`](docs-site/) | Official VitePress documentation site | `45.0.0` |
+| [`docs-site`](docs-site/) | Official VitePress documentation site | `80.0.0` |
 
 ---
 
-## 🛠️ Quick Start
+## Quick Start
 
 Install the CLI globally:
 ```bash
@@ -190,7 +184,356 @@ alp run
 
 ---
 
-## 📖 Documentation & Specification
+## Products
+
+The ALP Product Suite extends the open-core protocol with commercial SaaS, IDE, and agent capabilities. Each product is installable via npm or accessible as a hosted service.
+
+### ALP Cloud Workspace
+
+Hosted, managed ALP environments with real-time collaboration, built-in CI/CD, and multi-cloud deployment.
+
+```bash
+# Install CLI
+npm install -g @autonomous-lifecycle-protocol-alp/cli@80.0.0
+
+# Authenticate to Cloud Workspace
+alp login --cloud
+
+# Initialize a cloud project
+alp init my-project --cloud
+
+# Run your first swarm
+alp run
+```
+
+**Pricing**: Pro $49/dev/mo • Enterprise $999/org/mo  
+**Status**: Beta  
+**Docs**: [products/cloud-workspace](../docs-site/src/products/cloud-workspace.md)
+
+---
+
+### ALP Mobile App
+
+iOS and Android companion for reviewing agent decisions, HITL approval, and swarm monitoring.
+
+```bash
+# Install CLI
+npm install -g @autonomous-lifecycle-protocol-alp/cli@80.0.0
+
+# Pair mobile app with workspace
+alp mobile pair --qr
+```
+
+**Pricing**: Free • Pro $4.99/mo  
+**Status**: Planned  
+**Docs**: [products/mobile-app](../docs-site/src/products/mobile-app.md)
+
+---
+
+### ALP Agent Studio
+
+Low-code platform for building ALP agents with visual DAG design and a capability marketplace.
+
+```bash
+# Install Agent Studio plugin
+npm install -g @autonomous-lifecycle-protocol-alp/cli@80.0.0
+
+# Launch Studio
+alp studio open
+
+# Or use the web UI
+open https://studio.alp.cloud
+```
+
+**Pricing**: Pro $99/mo • Enterprise Custom  
+**Status**: Alpha  
+**Docs**: [products/agent-studio](../docs-site/src/products/agent-studio.md)
+
+---
+
+### ALP Security Scanner
+
+Automated security and compliance scanning that runs as a verification gate in ALP task pipelines.
+
+```bash
+# Install scanner plugin
+npm install -g @autonomous-lifecycle-protocol-alp/cli@80.0.0
+
+# Add to project
+alp plugin add security-scanner
+
+# Run local scan
+alp scan --target . --policy security/
+```
+
+**Pricing**: Pro $149/mo • Enterprise $2,499/mo  
+**Status**: Planned  
+**Docs**: [products/security-scanner](../docs-site/src/products/security-scanner.md)
+
+---
+
+### ALP Analytics & BI
+
+Business intelligence dashboards for team productivity, cost tracking, and predictive resource planning.
+
+```bash
+# Enable analytics
+alp analytics enable
+
+# Connect BI tool
+alp analytics connect --provider grafana
+
+# Export cost report
+alp analytics costs --month 2026-07 --format csv
+```
+
+**Pricing**: Pro $79/mo • Enterprise $499/mo  
+**Status**: Planned  
+**Docs**: [products/analytics-bi](../docs-site/src/products/analytics-bi.md)
+
+---
+
+### ALP DevOps Bridge
+
+CI/CD pipeline orchestration with pre-built integrations for GitHub Actions, GitLab CI, CircleCI, Jenkins, and ArgoCD.
+
+```bash
+# Install bridge plugin
+npm install -g @autonomous-lifecycle-protocol-alp/cli@80.0.0
+
+# Initialize for GitHub Actions
+alp bridge init --provider github
+
+# Add to pipeline
+# - uses: alp/setup@v1
+# - run: alp run --workflow deploy
+```
+
+**Pricing**: Pro $199/mo • Enterprise Custom  
+**Status**: Planned  
+**Docs**: [products/devops-bridge](../docs-site/src/products/devops-bridge.md)
+
+---
+
+### ALP AI Model Hub
+
+Curated marketplace of ALP-optimized AI models for code review, test generation, and general-purpose tasks.
+
+```bash
+# Search models
+alp hub search --task code-review
+
+# Invoke a model
+alp run --model alp/code-review-v2 --input src/
+
+# Compare models
+alp hub ab --model-a alp/code-review-v1 --model-b alp/code-review-v2
+```
+
+**Pricing**: Free • Pro 15% fee on usage  
+**Status**: Planned  
+**Docs**: [products/model-hub](../docs-site/src/products/model-hub.md)
+
+---
+
+### ALP Data Pipeline Studio
+
+Build and monitor data pipelines with ALP DAG orchestration, schema validation, and dbt/Airflow integration.
+
+```bash
+# Install studio plugin
+npm install -g @autonomous-lifecycle-protocol-alp/cli@80.0.0
+
+# Initialize pipeline project
+alp init data-pipeline --template etl
+
+# Sync with dbt
+alp pipeline sync --dbt ./dbt-project
+```
+
+**Pricing**: Enterprise Add-on +$2,000/mo  
+**Status**: Planned  
+**Docs**: [products/data-pipeline-studio](../docs-site/src/products/data-pipeline-studio.md)
+
+---
+
+### ALP Hybrid Engineer AI
+
+Physical + software engineering agent for firmware, CAD, FEA, PCB, CNC, IoT, and digital twin sync.
+
+```bash
+# Install persona pack
+npm install -g @autonomous-lifecycle-protocol-alp/cli@80.0.0
+
+# Enable persona
+alp persona add hybrid-engineer
+
+# Generate firmware task
+@task firmware(board: esp32, peripherals: [sensor, relay])
+
+# Run simulation
+alp run --task firmware --simulate
+```
+
+**Pricing**: Pro $199/mo • Enterprise Custom  
+**Status**: Planned  
+**Docs**: [products/hybrid-engineer](../docs-site/src/products/hybrid-engineer.md)
+
+---
+
+### ALP Quantum Engineering AI
+
+Quantum circuit design, hybrid classical-quantum programming, and QPU workflow orchestration.
+
+```bash
+# Install persona pack
+npm install -g @autonomous-lifecycle-protocol-alp/cli@80.0.0
+
+# Enable persona
+alp persona add quantum-engineer
+
+# Design circuit
+@task quantum.circuit(provider: ionq, qubits: 4, gates: [h, cx, measure])
+
+# Run on QPU
+alp run --task quantum.circuit --backend ionq --shots 1024
+```
+
+**Pricing**: Pro $299/mo • Enterprise Custom  
+**Status**: Planned  
+**Docs**: [products/quantum-engineer](../docs-site/src/products/quantum-engineer.md)
+
+---
+
+### ALP Chip Design Studio
+
+ASIC/FPGA design from RTL to tape-out with synthesis, place & route, timing closure, and formal verification.
+
+```bash
+# Install EDA plugin
+npm install -g @autonomous-lifecycle-protocol-alp/cli@80.0.0
+
+# Initialize chip project
+alp init chip-project --template asic
+
+# Write RTL task
+@task rtl(module: alu, inputs: [a, b, op], outputs: [result])
+
+# Run synthesis workflow
+alp run --workflow synthesize
+```
+
+**Pricing**: Pro $499/mo • Enterprise Custom  
+**Status**: Planned  
+**Docs**: [products/chip-design-studio](../docs-site/src/products/chip-design-studio.md)
+
+---
+
+### ALP SOC Sentinel AI
+
+Real-time threat detection, automated incident response, and attack surface monitoring for ALP agent swarms.
+
+```bash
+# Install SOC plugin
+npm install -g @autonomous-lifecycle-protocol-alp/cli@80.0.0
+
+# Enable SOC Sentinel
+alp plugin add soc-sentinel
+
+# Apply detection rules
+alp sentinel rules apply --file rules.yml
+
+# View dashboard
+alp dashboard --plugin soc-sentinel
+```
+
+**Pricing**: Pro $299/mo • Enterprise Custom  
+**Status**: Planned  
+**Docs**: [products/soc-sentinel](../docs-site/src/products/soc-sentinel.md)
+
+---
+
+### ALP Threat Intelligence Engine
+
+Proactive vulnerability discovery, adversarial behavior modeling, exploit prediction, and automated remediation.
+
+```bash
+# Install engine
+npm install -g @autonomous-lifecycle-protocol-alp/cli@80.0.0
+
+# Run vulnerability scan
+alp threat-intel scan --target ./ --scanners trivy,snyk
+
+# Review findings
+alp dashboard --plugin threat-intel
+
+# Auto-remediate low-risk findings
+alp threat-intel remediate --auto low
+```
+
+**Pricing**: Pro $199/mo • Enterprise Custom  
+**Status**: Planned  
+**Docs**: [products/threat-intel](../docs-site/src/products/threat-intel.md)
+
+---
+
+### ALP Zero Trust Orchestrator
+
+Zero-trust network security for agent swarms with SPIFFE/SPIRE identities, mutual TLS, and micro-segmentation.
+
+```bash
+# Install orchestrator
+npm install -g @autonomous-lifecycle-protocol-alp/cli@80.0.0
+
+# Enable zero trust
+alp plugin add zero-trust
+
+# Initialize SPIRE
+alp zta spire init --bundle <spire-server-url>
+
+# Apply micro-segmentation
+alp zta segment --policy ./network-policy.alp
+
+# Verify trust status
+alp zta status --agent swarm-main
+```
+
+**Pricing**: Pro $399/mo • Enterprise Custom  
+**Status**: Planned  
+**Docs**: [products/zero-trust](../docs-site/src/products/zero-trust.md)
+
+---
+
+## Local Development
+
+For full local development with the enterprise backend and dashboard:
+
+```bash
+# Install dependencies
+npm install
+
+# Start MongoDB (requires mongodb-memory-server or local MongoDB)
+# Then start the backend API server
+cd commercial/alp-server
+npm run dev:mongo
+
+# In another terminal, start the enterprise dashboard
+cd commercial/enterprise-app
+npm run dev
+
+# Dashboard: http://localhost:5174
+# API: http://localhost:5000
+```
+
+Default dev credentials: `demo@alp-enterprise.com` / `demo123`
+
+Run end-to-end tests:
+```bash
+cd commercial/enterprise-app
+npm run test:e2e
+```
+
+## Documentation & Specification
 
 - **[Documentation Site](https://autonomous-lifecycle-protocol-alp.github.io/Autonomous-Lifecycle-Protocol-ALP/)**: Full user guides and API references.
 - **[Formal Specification](spec/01-overview.md)**: Technical protocol specification (Specs 1–22).
@@ -198,8 +541,6 @@ alp run
 
 ---
 
-## 📄 License
+## License
 
 ALP is open-source and licensed under the [MIT License](LICENSE).
-
-
