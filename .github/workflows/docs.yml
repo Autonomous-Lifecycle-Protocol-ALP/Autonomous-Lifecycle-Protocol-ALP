@@ -30,7 +30,7 @@ jobs:
 
       - name: Install docs dependencies
         working-directory: docs-site
-        run: npm install
+        run: npm install --no-optional
 
       - name: Build VitePress site
         working-directory: docs-site
