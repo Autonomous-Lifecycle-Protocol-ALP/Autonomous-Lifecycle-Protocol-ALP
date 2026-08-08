@@ -37,7 +37,11 @@ ALP spans networked swarms, cross-repo orchestration, registry trust, and autono
 - **Registry trust & verification:** pin maintainer keys in `.alprc` `trustedKeys` (or via `node cli/dist/index.js keys trust add <ns|*> <fingerprint|file>`); installs are verified automatically. Audit any package — local or remote — with `node cli/dist/index.js registry verify <name>[@version]` and `node cli/dist/index.js registry verify <name>[@version] --url <host>` without installing.
 - **Live observability:** `node cli/dist/index.js serve` runs a dashboard (HTTP + SSE) of task status, claims, and analytics.
 
-## 6. Syntax Strictness
+## 6. Reasoning Core & Self-Reflection (V82.0.0)
+- Before committing changes to `.alp` files, run self-reflection critique: `node cli/dist/index.js reason critique <file> --refine`.
+- Verify SHA-256 Merkle reasoning traces: `node cli/dist/index.js reason verify <chainId>`.
+
+## 7. Syntax Strictness
 - `.alp` files use indentation to represent nesting.
 - Block markers like `@project` or `@task` must be at 0 indentation.
 - Properties must be indented with exactly 2 spaces.

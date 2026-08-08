@@ -5,8 +5,8 @@ import {
   copilotApplyFix,
 } from '../shared/alp-client.js';
 import type { CopilotSuggestion, ALPDiagnostic } from '../shared/types.js';
+import { AgentCopilot } from '@autonomous-lifecycle-protocol-alp/parser';
 
-// v62.0.0: Intent types from AgentCopilot
 type CopilotIntent = 'CODE_GEN' | 'REFACTOR' | 'DEBUG' | 'EXPLAIN' | 'PLAN' | 'DELEGATE';
 
 interface PlanStep {
@@ -34,51 +34,6 @@ const INTENT_ICONS: Record<CopilotIntent, string> = {
   DELEGATE: 'userPlus',
 };
 
-function classifyIntent(prompt: string): CopilotIntent {
-  const lower = prompt.toLowerCase();
-  if (lower.includes('generate') || lower.includes('create') || lower.includes('write')) return 'CODE_GEN';
-  if (lower.includes('refactor') || lower.includes('improve') || lower.includes('clean')) return 'REFACTOR';
-  if (lower.includes('debug') || lower.includes('fix') || lower.includes('error') || lower.includes('bug')) return 'DEBUG';
-  if (lower.includes('explain') || lower.includes('what does') || lower.includes('how does')) return 'EXPLAIN';
-  if (lower.includes('delegate') || lower.includes('assign') || lower.includes('route')) return 'DELEGATE';
-  return 'PLAN';
-}
-
-function buildPlan(intent: CopilotIntent): PlanStep[] {
-  const plans: Record<CopilotIntent, PlanStep[]> = {
-    CODE_GEN: [
-      { stepIndex: 0, action: 'Analyze workspace context', agentRole: 'Context Analyzer', rationale: 'Understand existing patterns' },
-      { stepIndex: 1, action: 'Scaffold code structure', agentRole: 'Code Generator', rationale: 'Create type-safe skeleton' },
-      { stepIndex: 2, action: 'Implement business logic', agentRole: 'Code Generator', rationale: 'Fill implementation' },
-      { stepIndex: 3, action: 'Generate unit tests', agentRole: 'Test Synthesizer', rationale: 'Ensure correctness' },
-    ],
-    REFACTOR: [
-      { stepIndex: 0, action: 'Identify code smells', agentRole: 'Linter Agent', rationale: 'Spot improvement areas' },
-      { stepIndex: 1, action: 'Apply refactoring patterns', agentRole: 'Refactor Agent', rationale: 'Improve quality' },
-      { stepIndex: 2, action: 'Verify behavior parity', agentRole: 'Test Runner', rationale: 'No regressions' },
-    ],
-    DEBUG: [
-      { stepIndex: 0, action: 'Capture error context', agentRole: 'Debug Collector', rationale: 'Gather stack trace' },
-      { stepIndex: 1, action: 'Identify root cause', agentRole: 'Debug Analyst', rationale: 'Trace failure path' },
-      { stepIndex: 2, action: 'Propose targeted fix', agentRole: 'Code Patcher', rationale: 'Generate patch' },
-    ],
-    EXPLAIN: [
-      { stepIndex: 0, action: 'Parse code structure', agentRole: 'AST Analyzer', rationale: 'Understand topology' },
-      { stepIndex: 1, action: 'Generate explanation', agentRole: 'Documentation Agent', rationale: 'Clear language' },
-    ],
-    PLAN: [
-      { stepIndex: 0, action: 'Decompose task', agentRole: 'Task Planner', rationale: 'Break into steps' },
-      { stepIndex: 1, action: 'Assign agents', agentRole: 'Orchestrator', rationale: 'Route to specialists' },
-      { stepIndex: 2, action: 'Monitor execution', agentRole: 'Monitor Agent', rationale: 'Track and adapt' },
-    ],
-    DELEGATE: [
-      { stepIndex: 0, action: 'Classify delegation target', agentRole: 'Router', rationale: 'Best-fit agent' },
-      { stepIndex: 1, action: 'Dispatch task', agentRole: 'Orchestrator', rationale: 'Route with priority' },
-    ],
-  };
-  return plans[intent];
-}
-
 interface CopilotPanelProps {
   suggestions: CopilotSuggestion[];
   output: string[];
@@ -94,22 +49,46 @@ export function CopilotPanel({
   onUpdateSuggestions,
   onAppendOutput,
 }: CopilotPanelProps): React.JSX.Element {
+  const [copilot] = useState(() => new AgentCopilot());
   const [content, setContent] = useState('');
   const [prompt, setPrompt] = useState('');
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<'all' | 'fix' | 'completion' | 'tip'>('all');
   const [intent, setIntent] = useState<CopilotIntent | null>(null);
   const [planSteps, setPlanSteps] = useState<PlanStep[]>([]);
-  const [activeTab, setActiveTab] = useState<'chat' | 'plan' | 'suggestions'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'plan' | 'query' | 'suggestions'>('chat');
+  const [queryInput, setQueryInput] = useState('');
+  const [queryResults, setQueryResults] = useState<any[]>([]);
+  const [generatedPolicy, setGeneratedPolicy] = useState<string | null>(null);
+
+  const sampleObjects = [
+    { _type: 'task', id: 'task-build-ui', status: '[x]', description: 'Build React UI layout' },
+    { _type: 'task', id: 'task-auth-bft', status: '[!]', description: 'Waiting for BFT consensus quorum' },
+    { _type: 'policy', id: 'policy-no-raw-sql', enforcement: 'deny', deny_types: ['raw_sql'] },
+    { _type: 'agent', id: 'agent-qa-validator', model: 'gpt-4' },
+  ];
 
   const handlePromptSubmit = useCallback(() => {
     if (!prompt.trim()) return;
-    const detected = classifyIntent(prompt);
-    setIntent(detected);
-    setPlanSteps(buildPlan(detected));
+    const plan = copilot.generatePlan(prompt);
+    setIntent(plan.intent as CopilotIntent);
+    setPlanSteps(plan.steps);
     setActiveTab('plan');
-    onAppendOutput([`[Copilot] Intent: ${detected}`, `[Copilot] Plan generated with ${buildPlan(detected).length} steps`]);
-  }, [prompt, onAppendOutput]);
+    onAppendOutput([`[Copilot] Intent: ${plan.intent}`, `[Copilot] Plan generated with ${plan.steps.length} steps`]);
+  }, [prompt, copilot, onAppendOutput]);
+
+  const handleRunQuery = () => {
+    if (!queryInput.trim()) return;
+    const results = copilot.queryWorkspace(queryInput, sampleObjects);
+    setQueryResults(results);
+    onAppendOutput([`[Copilot Query] Matched ${results.length} objects for query: "${queryInput}"`]);
+  };
+
+  const handleGeneratePolicy = () => {
+    const spec = copilot.generatePolicyFromUsage('policy-auto-sandbox', ['raw_exec', 'untrusted_plugin']);
+    setGeneratedPolicy(spec);
+    onAppendOutput(['[Copilot] Auto-generated sandbox governance policy']);
+  };
 
   const handleSuggest = useCallback(() => {
     if (!content.trim()) return;
@@ -148,9 +127,9 @@ export function CopilotPanel({
       </div>
 
       <div className="tab-nav">
-        {(['chat', 'plan', 'suggestions'] as const).map(tab => (
+        {(['chat', 'plan', 'query', 'suggestions'] as const).map(tab => (
           <button key={tab} style={styles.tab(activeTab === tab)} onClick={() => setActiveTab(tab)}>
-            {tab === 'chat' ? <><Icon name="messageCircle" size={14} /> Chat</> : tab === 'plan' ? <><Icon name="map" size={14} /> Plan</> : <><Icon name="star" size={14} /> Suggestions</>}
+            {tab === 'chat' ? <><Icon name="messageCircle" size={14} /> Chat</> : tab === 'plan' ? <><Icon name="map" size={14} /> Plan</> : tab === 'query' ? <><Icon name="search" size={14} /> NL Query</> : <><Icon name="star" size={14} /> Suggestions</>}
           </button>
         ))}
       </div>
@@ -219,6 +198,49 @@ export function CopilotPanel({
                 <div className="empty-state-icon"><Icon name="messageCircle" size={32} color="var(--text-muted)" /></div>
                 <div className="empty-state-title">No plan generated</div>
                 <div className="empty-state-desc">Enter a prompt in the Chat tab to generate a plan.</div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'query' && (
+          <div className="card-container">
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Natural Language Workspace Query:</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input
+                placeholder='e.g. "show all blocked tasks" or "find policies"'
+                value={queryInput}
+                onChange={e => setQueryInput(e.target.value)}
+                style={{ ...styles.input, flex: 1 }}
+              />
+              <button style={styles.btn('var(--accent)')} onClick={handleRunQuery}>
+                Search
+              </button>
+            </div>
+
+            <div style={{ marginTop: 12 }}>
+              <button style={styles.btn('var(--accent-green)')} onClick={handleGeneratePolicy}>
+                Auto-Generate Governance Policy
+              </button>
+            </div>
+
+            {generatedPolicy && (
+              <div style={{ marginTop: 12, background: 'var(--bg-secondary)', padding: 10, borderRadius: 6, border: '1px solid var(--accent-green)' }}>
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent-green)', fontWeight: 700, marginBottom: 4 }}>Auto-Generated Policy Spec:</div>
+                <pre style={{ margin: 0, fontSize: 11, fontFamily: 'monospace' }}>{generatedPolicy}</pre>
+              </div>
+            )}
+
+            {queryResults.length > 0 && (
+              <div style={{ marginTop: 16 }}>
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 8 }}>Query Results ({queryResults.length}):</div>
+                {queryResults.map((obj, idx) => (
+                  <div key={idx} className="card" style={{ marginBottom: 6 }}>
+                    <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 700, color: 'var(--accent-blue)' }}>{obj._type || obj.type}</div>
+                    <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600 }}>{obj.id}</div>
+                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{obj.description}</div>
+                  </div>
+                ))}
               </div>
             )}
           </div>

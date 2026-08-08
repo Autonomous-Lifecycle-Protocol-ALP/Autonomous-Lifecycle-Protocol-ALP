@@ -5,6 +5,8 @@ export interface WorkflowStep {
   config: Record<string, unknown>;
   dependencies?: string[];
   retries?: number;
+  backoffFactor?: number;
+  maxRetryDelayMs?: number;
   timeoutMs?: number;
 }
 
@@ -16,12 +18,21 @@ export interface WorkflowDefinition {
   triggers: string[];
 }
 
+export interface WorkflowStepEvent {
+  stepId: string;
+  timestamp: string;
+  event: "start" | "success" | "failure" | "retry";
+  attempt?: number;
+  error?: string;
+}
+
 export interface WorkflowRun {
   runId: string;
   workflowId: string;
   status: "pending" | "running" | "completed" | "failed" | "cancelled";
   currentStep?: string;
   results: Record<string, unknown>;
+  stepEvents?: WorkflowStepEvent[];
   startedAt?: string;
   completedAt?: string;
   error?: string;
@@ -82,6 +93,7 @@ export class WorkflowEngine {
       workflowId,
       status: "running",
       results: { ...initialContext },
+      stepEvents: [],
       startedAt: new Date().toISOString(),
     };
 
@@ -100,6 +112,7 @@ export class WorkflowEngine {
 
     if (persisted.status !== "running") return persisted;
 
+    if (!persisted.stepEvents) persisted.stepEvents = [];
     this.runs.set(runId, persisted);
     return persisted;
   }
@@ -120,11 +133,19 @@ export class WorkflowEngine {
     }
 
     run.currentStep = nextStep.id;
+    if (!run.stepEvents) run.stepEvents = [];
+
     const executor = this.executors.get(nextStep.type);
     if (!executor) {
       run.status = "failed";
       run.error = `No executor registered for step type '${nextStep.type}'`;
       run.completedAt = new Date().toISOString();
+      run.stepEvents.push({
+        stepId: nextStep.id,
+        timestamp: new Date().toISOString(),
+        event: "failure",
+        error: run.error,
+      });
       this.pendingTimeouts.delete(runId);
       this.persistRun(run);
       return run;
@@ -136,6 +157,12 @@ export class WorkflowEngine {
         run.status = "failed";
         run.error = `Step '${nextStep.id}' timed out after ${timeout}ms`;
         run.completedAt = new Date().toISOString();
+        run.stepEvents?.push({
+          stepId: nextStep.id,
+          timestamp: new Date().toISOString(),
+          event: "failure",
+          error: run.error,
+        });
         this.pendingTimeouts.delete(runId);
         this.persistRun(run);
       }
@@ -144,12 +171,28 @@ export class WorkflowEngine {
 
     try {
       const retries = nextStep.retries ?? 0;
+      const backoffFactor = nextStep.backoffFactor ?? 2;
+      const maxRetryDelayMs = nextStep.maxRetryDelayMs ?? 10000;
       let attempt = 0;
       let lastError: unknown;
+
+      run.stepEvents.push({
+        stepId: nextStep.id,
+        timestamp: new Date().toISOString(),
+        event: "start",
+        attempt: 0,
+      });
+
       while (attempt <= retries) {
         try {
           const result = await executor(nextStep, run.results);
           run.results[nextStep.id] = result;
+          run.stepEvents.push({
+            stepId: nextStep.id,
+            timestamp: new Date().toISOString(),
+            event: "success",
+            attempt,
+          });
           break;
         } catch (error) {
           lastError = error;
@@ -158,9 +201,28 @@ export class WorkflowEngine {
             run.status = "failed";
             run.error = `Step '${nextStep.id}' failed after ${retries} retries: ${lastError instanceof Error ? lastError.message : String(lastError)}`;
             run.completedAt = new Date().toISOString();
+            run.stepEvents.push({
+              stepId: nextStep.id,
+              timestamp: new Date().toISOString(),
+              event: "failure",
+              attempt,
+              error: run.error,
+            });
             this.pendingTimeouts.delete(runId);
             this.persistRun(run);
             return run;
+          } else {
+            const delayMs = Math.min(10 * Math.pow(backoffFactor, attempt - 1), maxRetryDelayMs);
+            run.stepEvents.push({
+              stepId: nextStep.id,
+              timestamp: new Date().toISOString(),
+              event: "retry",
+              attempt,
+              error: lastError instanceof Error ? lastError.message : String(lastError),
+            });
+            if (delayMs > 0) {
+              await new Promise((resolve) => setTimeout(resolve, delayMs));
+            }
           }
         }
       }

@@ -14,6 +14,7 @@ export default defineConfig({
       'sham/tests/**/*.test.ts',
       'commercial/alp-platform/tests/**/*.test.ts',
       'commercial/alp-server/tests/**/*.test.js',
+      'vscode/**/*.test.ts',
     ],
     environment: 'node',
     testTimeout: 60000,

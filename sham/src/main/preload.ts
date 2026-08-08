@@ -70,4 +70,10 @@ contextBridge.exposeInMainWorld('shamAPI', {
   cloudSyncPush: (payload: { data: unknown }) =>
     ipcRenderer.invoke('cloud-sync-push', payload),
   cloudSyncPull: () => ipcRenderer.invoke('cloud-sync-pull'),
+  workspaceListTemplates: () => ipcRenderer.invoke('workspace-list-templates'),
+  workspaceScaffoldTemplate: (payload: { templateId: string; targetDir: string }) =>
+    ipcRenderer.invoke('workspace-scaffold-template', payload),
+  workspaceLintAll: (payload: { workspaceDir: string }) =>
+    ipcRenderer.invoke('workspace-lint-all', payload),
+  dialogOpenFolder: () => ipcRenderer.invoke('dialog-open-folder'),
 });

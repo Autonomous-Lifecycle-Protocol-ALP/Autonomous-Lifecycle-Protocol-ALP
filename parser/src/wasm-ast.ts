@@ -7,7 +7,7 @@
 
 export interface ASTNode {
   id: string;
-  kind: 'POLICY' | 'TASK' | 'AGENT' | 'CONTRACT' | 'VAULT' | 'MACRO';
+  kind: string;
   name: string;
   line: number;
   column: number;
@@ -40,23 +40,29 @@ export class WasmAstEvaluator {
 
     const lines = content.split('\n');
 
+    let currentBlock: ASTNode | null = null;
+
     lines.forEach((lineText, idx) => {
       const lineNum = idx + 1;
       const trimmed = lineText.trim();
 
-      if (trimmed.startsWith('@policy')) {
-        nodes.push({
-          id: `ast-policy-${lineNum}`,
-          kind: 'POLICY',
-          name: this._extractName(trimmed) || 'default-policy',
+      // Check for block header: @block_name
+      const blockMatch = trimmed.match(/^@([a-zA-Z_][a-zA-Z0-9_-]*)/);
+      if (blockMatch) {
+        const rawKind = blockMatch[1].toUpperCase();
+        const name = this._extractName(trimmed);
+        currentBlock = {
+          id: `ast-${rawKind.toLowerCase()}-${lineNum}`,
+          kind: rawKind,
+          name: name || (rawKind === 'TASK' ? 'unnamed-task' : `${rawKind.toLowerCase()}-${lineNum}`),
           line: lineNum,
           column: 1,
           attributes: { raw: trimmed },
           children: [],
-        });
-      } else if (trimmed.startsWith('@task')) {
-        const name = this._extractName(trimmed);
-        if (!name) {
+        };
+        nodes.push(currentBlock);
+
+        if (rawKind === 'TASK' && !name) {
           diagnostics.push({
             ruleId: 'wasm-syntax-task-id',
             severity: 'ERROR',
@@ -64,25 +70,41 @@ export class WasmAstEvaluator {
             line: lineNum,
           });
         }
-        nodes.push({
-          id: `ast-task-${lineNum}`,
-          kind: 'TASK',
-          name: name || 'unnamed-task',
-          line: lineNum,
-          column: 1,
-          attributes: { raw: trimmed },
-          children: [],
-        });
-      } else if (trimmed.startsWith('@agent')) {
-        nodes.push({
-          id: `ast-agent-${lineNum}`,
-          kind: 'AGENT',
-          name: this._extractName(trimmed) || 'agent-default',
-          line: lineNum,
-          column: 1,
-          attributes: { raw: trimmed },
-          children: [],
-        });
+        return;
+      }
+
+      // If inside a block, scan properties & directives
+      if (currentBlock && trimmed) {
+        if (trimmed.startsWith('id:')) {
+          const idVal = trimmed.replace(/^id:\s*/, '').trim();
+          if (idVal) currentBlock.name = idVal;
+        }
+
+        if (trimmed.startsWith('!deprecated:')) {
+          diagnostics.push({
+            ruleId: 'wasm-deprecated-directive',
+            severity: 'WARNING',
+            message: `Deprecated directive: ${trimmed.replace(/^!deprecated:\s*/, '')}`,
+            line: lineNum,
+          });
+        }
+
+        if (trimmed.match(/\[!\](?!\s+\S)/)) {
+          diagnostics.push({
+            ruleId: 'wasm-blocked-status-reason',
+            severity: 'ERROR',
+            message: "Status marker '[!]' requires a reason",
+            line: lineNum,
+          });
+        }
+
+        const refMatch = trimmed.match(/->\s+([a-zA-Z0-9_-]+)/);
+        if (refMatch) {
+          currentBlock.attributes.references = [
+            ...((currentBlock.attributes.references as string[]) || []),
+            refMatch[1],
+          ];
+        }
       }
     });
 
@@ -100,8 +122,9 @@ export class WasmAstEvaluator {
   /**
    * Query AST nodes by kind.
    */
-  public queryASTNodes(ast: ASTNode[], kind: ASTNode['kind']): ASTNode[] {
-    return ast.filter(n => n.kind === kind);
+  public queryASTNodes(ast: ASTNode[], kind: string): ASTNode[] {
+    const targetKind = kind.toUpperCase();
+    return ast.filter(n => n.kind === targetKind);
   }
 
   private _extractName(line: string): string {

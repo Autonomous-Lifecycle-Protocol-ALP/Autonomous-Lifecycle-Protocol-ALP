@@ -140,6 +140,41 @@ export class AgentCopilot {
     };
   }
 
+  /**
+   * Perform natural language querying over workspace objects.
+   */
+  public queryWorkspace(prompt: string, workspaceObjects: any[]): any[] {
+    const q = prompt.toLowerCase();
+    if (q.includes('blocked')) {
+      return workspaceObjects.filter(o => o.status === '[!]' || o.status === 'blocked');
+    }
+    if (q.includes('policy') || q.includes('policies')) {
+      return workspaceObjects.filter(o => (o._type || o.type) === 'policy');
+    }
+    if (q.includes('task') || q.includes('tasks')) {
+      return workspaceObjects.filter(o => (o._type || o.type) === 'task');
+    }
+    if (q.includes('agent') || q.includes('agents')) {
+      return workspaceObjects.filter(o => (o._type || o.type) === 'agent');
+    }
+    return workspaceObjects.filter(o =>
+      (o.id && o.id.toLowerCase().includes(q)) ||
+      (o.description && o.description.toLowerCase().includes(q))
+    );
+  }
+
+  /**
+   * Auto-generate an ALP policy spec from workspace usage patterns.
+   */
+  public generatePolicyFromUsage(policyName: string, denyTypes: string[]): string {
+    return `@policy
+  id: ${policyName}
+  description: "Auto-generated governance policy based on workspace usage patterns"
+  enforcement: deny
+  deny_types: [${denyTypes.map(t => `"${t}"`).join(', ')}]
+`;
+  }
+
   private _buildSteps(intent: CopilotIntent, prompt: string): CopilotPlanStep[] {
     const baseSteps: Record<CopilotIntent, CopilotPlanStep[]> = {
       CODE_GEN: [

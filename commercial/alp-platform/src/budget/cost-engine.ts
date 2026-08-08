@@ -7,6 +7,10 @@ export interface CostBudget {
   usedCostUsd: number;
   provider: string;
   modelTier: string;
+  department?: string;
+  team?: string;
+  thresholdAlerts?: number[];
+  triggeredAlerts?: number[];
   createdAt: string;
 }
 
@@ -54,6 +58,7 @@ export class CostBudgetEngine {
     maxCostUsd: number,
     provider = "openai",
     modelTier = "standard",
+    options?: { department?: string; team?: string; thresholdAlerts?: number[] },
   ): CostBudget {
     const budget: CostBudget = {
       id: `budget-${taskId}`,
@@ -64,6 +69,10 @@ export class CostBudgetEngine {
       usedCostUsd: 0,
       provider,
       modelTier,
+      department: options?.department,
+      team: options?.team,
+      thresholdAlerts: options?.thresholdAlerts ?? [50, 80, 100],
+      triggeredAlerts: [],
       createdAt: new Date().toISOString(),
     };
 
@@ -75,10 +84,11 @@ export class CostBudgetEngine {
     remainingCostUsd: number;
     remainingTokens: number;
     isExceeded: boolean;
+    alertsTriggered: number[];
   } {
     const budget = this.budgets.get(budgetId);
     if (!budget) {
-      return { remainingCostUsd: 0, remainingTokens: 0, isExceeded: true };
+      return { remainingCostUsd: 0, remainingTokens: 0, isExceeded: true, alertsTriggered: [] };
     }
 
     budget.usedTokens += tokensUsed;
@@ -88,7 +98,51 @@ export class CostBudgetEngine {
     const remainingTokens = Math.max(0, budget.maxTokens - budget.usedTokens);
     const isExceeded = budget.usedCostUsd > budget.maxCostUsd || budget.usedTokens > budget.maxTokens;
 
-    return { remainingCostUsd: remainingCost, remainingTokens: remainingTokens, isExceeded };
+    const percentageUsed = Math.min(100, Math.floor((budget.usedCostUsd / budget.maxCostUsd) * 100));
+    const newAlerts: number[] = [];
+
+    if (budget.thresholdAlerts) {
+      for (const threshold of budget.thresholdAlerts) {
+        if (percentageUsed >= threshold && !budget.triggeredAlerts?.includes(threshold)) {
+          if (!budget.triggeredAlerts) budget.triggeredAlerts = [];
+          budget.triggeredAlerts.push(threshold);
+          newAlerts.push(threshold);
+        }
+      }
+    }
+
+    return {
+      remainingCostUsd: remainingCost,
+      remainingTokens: remainingTokens,
+      isExceeded,
+      alertsTriggered: newAlerts,
+    };
+  }
+
+  calculateBurnRate(budgetId: string): {
+    tokensPerMinute: number;
+    costPerMinuteUsd: number;
+    estimatedMinutesRemaining: number;
+  } {
+    const budget = this.budgets.get(budgetId);
+    if (!budget) {
+      return { tokensPerMinute: 0, costPerMinuteUsd: 0, estimatedMinutesRemaining: 0 };
+    }
+
+    const elapsedMs = Math.max(1000, Date.now() - new Date(budget.createdAt).getTime());
+    const elapsedMinutes = elapsedMs / 60000;
+
+    const tokensPerMinute = budget.usedTokens / elapsedMinutes;
+    const costPerMinuteUsd = budget.usedCostUsd / elapsedMinutes;
+
+    const remainingCost = Math.max(0, budget.maxCostUsd - budget.usedCostUsd);
+    const estimatedMinutesRemaining = costPerMinuteUsd > 0 ? remainingCost / costPerMinuteUsd : Infinity;
+
+    return {
+      tokensPerMinute: Math.round(tokensPerMinute * 100) / 100,
+      costPerMinuteUsd: Math.round(costPerMinuteUsd * 10000) / 10000,
+      estimatedMinutesRemaining: Math.round(estimatedMinutesRemaining * 10) / 10,
+    };
   }
 
   selectOptimalModel(
@@ -141,6 +195,18 @@ export class CostBudgetEngine {
 
   getBudgetsByProvider(provider: string): CostBudget[] {
     return Array.from(this.budgets.values()).filter((b) => b.provider === provider);
+  }
+
+  getSpendByDepartment(department: string): { totalCostUsd: number; totalTokens: number } {
+    let totalCost = 0;
+    let totalTokens = 0;
+    for (const budget of this.budgets.values()) {
+      if (budget.department === department) {
+        totalCost += budget.usedCostUsd;
+        totalTokens += budget.usedTokens;
+      }
+    }
+    return { totalCostUsd: totalCost, totalTokens };
   }
 
   getTotalSpend(): { totalCostUsd: number; totalTokens: number } {

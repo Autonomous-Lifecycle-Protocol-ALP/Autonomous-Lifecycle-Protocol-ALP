@@ -95,6 +95,7 @@ export * from './telemetry-inspector';
 export * from './chaos-engine';
 export * from './feature-flags';
 export * from './local-storage-container';
+export * from './reasoning-core';
 
 
 export { AlpObject, AlpReader };
@@ -124,3 +125,18 @@ export class AlpParser {
     return objects;
   }
 }
+
+/**
+ * Convenience function: parse ALP content and return a result object.
+ * Used by SHAM IDE bridge and other consumers that expect a single-call API.
+ */
+export function parseALP(content: string): { objects: AlpObject[]; errors: string[] } {
+  const reader = new AlpReader();
+  try {
+    const objects = reader.parse(content);
+    return { objects, errors: reader.warnings ?? [] };
+  } catch (err) {
+    return { objects: [], errors: [err instanceof Error ? err.message : String(err)] };
+  }
+}
+

@@ -271,3 +271,54 @@ class GovernanceEngine:
 def _now_iso() -> str:
     from datetime import datetime, timezone
     return datetime.now(timezone.utc).isoformat()
+
+
+class PolicyEnforcer:
+    """Enforces organizational policy rules against ALP documents and workspaces."""
+
+    def __init__(self, rules: Optional[Dict[str, Any]] = None):
+        self.rules = rules or {}
+
+    def enforce(self, document: Dict[str, Any]) -> bool:
+        """Validate a document dictionary against configured policy rules."""
+        if not isinstance(document, dict):
+            return False
+        
+        # Check required fields if rule demands
+        required_fields = self.rules.get("required_fields", [])
+        for field in required_fields:
+            if field not in document:
+                return False
+
+        # Deny list checking
+        deny_types = self.rules.get("deny_types", [])
+        doc_type = document.get("_type") or document.get("type")
+        if doc_type and doc_type in deny_types:
+            return False
+
+        return True
+
+    def govern(self, workspace: str) -> Dict[str, Any]:
+        """Run policy governance check across workspace directory."""
+        if not os.path.exists(workspace):
+            return {"status": "error", "error": f"Workspace directory not found: {workspace}", "compliant": False}
+
+        from .reader import load_workspace
+        try:
+            objects = load_workspace(workspace)
+            violations = []
+            for obj in objects:
+                doc_dict = getattr(obj, "to_dict", lambda: {"_type": getattr(obj, "_type", "unknown")})()
+                if not self.enforce(doc_dict):
+                    violations.append(str(getattr(obj, "id", getattr(obj, "properties", {}).get("id", "unknown"))))
+
+            is_compliant = len(violations) == 0
+            return {
+                "status": "compliant" if is_compliant else "non_compliant",
+                "compliant": is_compliant,
+                "objects_scanned": len(objects),
+                "violations": violations,
+            }
+        except Exception as err:
+            return {"status": "error", "error": str(err), "compliant": False}
+

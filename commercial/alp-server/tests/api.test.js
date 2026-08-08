@@ -412,3 +412,36 @@ describe('Zero Trust API', () => {
     expect(res.body.lastAuthenticatedAt).toBeTruthy();
   });
 });
+
+describe('Cloud Workspace Snapshots & Rollback API', () => {
+  test('creates a cloud workspace, creates a snapshot, lists snapshots, and rolls back', async () => {
+    const createRes = await request(app)
+      .post('/api/cloud/workspaces')
+      .set(getAuthHeaders())
+      .send({ name: 'Snap Test Workspace', runtime: 'node', region: 'us-west-2' });
+    expect(createRes.status).toBe(201);
+    const wsId = createRes.body._id;
+
+    const snapRes = await request(app)
+      .post(`/api/cloud/workspaces/${wsId}/snapshots`)
+      .set(getAuthHeaders())
+      .send({ label: 'Initial Release v1.0', sizeBytes: 20480 });
+    expect(snapRes.status).toBe(201);
+    expect(snapRes.body.snapshotId).toBeTruthy();
+    const snapshotId = snapRes.body.snapshotId;
+
+    const listRes = await request(app)
+      .get(`/api/cloud/workspaces/${wsId}/snapshots`)
+      .set(getAuthHeaders());
+    expect(listRes.status).toBe(200);
+    expect(Array.isArray(listRes.body)).toBe(true);
+    expect(listRes.body.length).toBeGreaterThan(0);
+
+    const rollbackRes = await request(app)
+      .post(`/api/cloud/workspaces/${wsId}/snapshots/${snapshotId}/rollback`)
+      .set(getAuthHeaders());
+    expect(rollbackRes.status).toBe(200);
+    expect(rollbackRes.body.ok).toBe(true);
+    expect(rollbackRes.body.rolledBackTo).toBe(snapshotId);
+  });
+});

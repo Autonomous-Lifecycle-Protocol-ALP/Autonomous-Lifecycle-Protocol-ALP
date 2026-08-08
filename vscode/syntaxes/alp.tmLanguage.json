@@ -10,6 +10,7 @@
     { "include": "#integrity-directive" },
     { "include": "#comments" },
     { "include": "#separator" },
+    { "include": "#block-marker-known" },
     { "include": "#block-marker" },
     { "include": "#reference" },
     { "include": "#status" },
@@ -17,7 +18,8 @@
     { "include": "#property-directive" },
     { "include": "#property" },
     { "include": "#list-item" },
-    { "include": "#numbers" }
+    { "include": "#numbers" },
+    { "include": "#booleans" }
   ],
   "repository": {
     "version-directive": {
@@ -37,7 +39,7 @@
     "deprecated-directive": {
       "match": "^\\s+(!deprecated):\\s*(.*)$",
       "captures": {
-        "1": { "name": "keyword.control.deprecated.alp" },
+        "1": { "name": "keyword.deprecated.alp" },
         "2": { "name": "string.unquoted.alp" }
       }
     },
@@ -69,6 +71,12 @@
     "separator": {
       "match": "^---$",
       "name": "punctuation.separator.alp"
+    },
+    "block-marker-known": {
+      "match": "^@(project|task|feature|workflow|agent|memory|state|artifact|decision|constraint|verification|dependency|resource|event|goal|context|rule|plugin|policy|timeline|contract|vault|type|macro|repo|swarm|package|plan|lesson|offer|trace|migration|workspace|agent_state|agent_override|swarm_marketplace|arch_decomposer|edge_model|cost_optimizer|identity|negotiate|vector_store|sandbox_env|crdt_sync|self_healing|formal_verification|asset_context|cost_budget|tenant_mesh|zk_proof|anomaly|prompt_optimizer|code_index|code_transform|consensus_vote|eval_suite|event_mesh|memory_mesh|collaboration|bridge|did_identity|p2p|tenant|governance|domain_trust|resilience|test)\\b",
+      "captures": {
+        "0": { "name": "entity.name.type.block.alp" }
+      }
     },
     "block-marker": {
       "match": "^(@[a-zA-Z_][a-zA-Z0-9_-]*)\\b",
@@ -108,6 +116,10 @@
         {
           "match": "\\[\\?\\]",
           "name": "comment.question.status.human-gate.alp"
+        },
+        {
+          "match": "\\[\\*\\]",
+          "name": "markup.bold.status.starred.alp"
         }
       ]
     },
@@ -139,6 +151,10 @@
     "numbers": {
       "match": "\\b[0-9]+(\\.[0-9]+)?\\b",
       "name": "constant.numeric.alp"
+    },
+    "booleans": {
+      "match": "\\b(true|false|yes|no)\\b",
+      "name": "constant.language.boolean.alp"
     }
   },
   "scopeName": "source.alp"

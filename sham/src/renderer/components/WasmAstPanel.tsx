@@ -1,19 +1,6 @@
 import React, { useState } from 'react';
 import { Icon } from './Icon.js';
-
-interface ASTNode {
-  id: string;
-  kind: 'POLICY' | 'TASK' | 'AGENT' | 'CONTRACT' | 'VAULT';
-  name: string;
-  line: number;
-}
-
-interface ASTDiagnostic {
-  ruleId: string;
-  severity: 'ERROR' | 'WARNING' | 'INFO';
-  message: string;
-  line: number;
-}
+import { WasmAstEvaluator, ASTNode, ASTDiagnostic } from '@autonomous-lifecycle-protocol-alp/parser';
 
 const KIND_COLORS: Record<string, string> = {
   POLICY: '#aed581',
@@ -21,53 +8,34 @@ const KIND_COLORS: Record<string, string> = {
   AGENT: '#ff8a65',
   CONTRACT: '#ce93d8',
   VAULT: '#ffd54f',
+  MACRO: '#80deea',
+  WORKFLOW: '#b388ff',
 };
 
 export function WasmAstPanel(): React.JSX.Element {
+  const [evaluator] = useState(() => new WasmAstEvaluator());
   const [content, setContent] = useState<string>(
-    `@policy name: "security-gate" { allow: ["/api/*"] }\n@task id: "build-workspace", status: "TODO"\n@agent name: "validator-1"`
+    `@policy name: "security-gate" { allow: ["/api/*"] }\n!deprecated: "Use security-gate-v2 instead"\n@task id: "build-workspace", status: "TODO"\n  depends_on: -> security-gate\n@agent name: "validator-1"`
   );
 
   const [astNodes, setAstNodes] = useState<ASTNode[]>([
-    { id: 'node-1', kind: 'POLICY', name: 'security-gate', line: 1 },
-    { id: 'node-2', kind: 'TASK', name: 'build-workspace', line: 2 },
-    { id: 'node-3', kind: 'AGENT', name: 'validator-1', line: 3 },
+    { id: 'ast-policy-1', kind: 'POLICY', name: 'security-gate', line: 1, column: 1, attributes: {}, children: [] },
+    { id: 'ast-task-3', kind: 'TASK', name: 'build-workspace', line: 3, column: 1, attributes: { references: ['security-gate'] }, children: [] },
+    { id: 'ast-agent-5', kind: 'AGENT', name: 'validator-1', line: 5, column: 1, attributes: {}, children: [] },
   ]);
 
-  const [diagnostics, setDiagnostics] = useState<ASTDiagnostic[]>([]);
-  const [parseLatencyMs, setParseLatencyMs] = useState<number>(0.84);
+  const [diagnostics, setDiagnostics] = useState<ASTDiagnostic[]>([
+    { ruleId: 'wasm-deprecated-directive', severity: 'WARNING', message: 'Deprecated directive: Use security-gate-v2 instead', line: 2 },
+  ]);
+  const [parseLatencyMs, setParseLatencyMs] = useState<number>(0.42);
   const [offlineValid, setOfflineValid] = useState<boolean>(true);
 
   const handleEvaluate = () => {
-    const start = performance.now();
-    const nodes: ASTNode[] = [];
-    const diags: ASTDiagnostic[] = [];
-
-    const lines = content.split('\n');
-    lines.forEach((lineText, idx) => {
-      const lineNum = idx + 1;
-      const trimmed = lineText.trim();
-
-      if (trimmed.startsWith('@policy')) {
-        const nameMatch = trimmed.match(/name:\s*["']?([^"',}\s]+)["']?/i);
-        nodes.push({ id: `n-${lineNum}`, kind: 'POLICY', name: nameMatch ? nameMatch[1] : 'policy', line: lineNum });
-      } else if (trimmed.startsWith('@task')) {
-        const idMatch = trimmed.match(/id:\s*["']?([^"',}\s]+)["']?/i);
-        if (!idMatch) {
-          diags.push({ ruleId: 'wasm-syntax-task-id', severity: 'ERROR', message: 'Missing task id identifier', line: lineNum });
-        }
-        nodes.push({ id: `n-${lineNum}`, kind: 'TASK', name: idMatch ? idMatch[1] : 'unnamed-task', line: lineNum });
-      } else if (trimmed.startsWith('@agent')) {
-        const nameMatch = trimmed.match(/name:\s*["']?([^"',}\s]+)["']?/i);
-        nodes.push({ id: `n-${lineNum}`, kind: 'AGENT', name: nameMatch ? nameMatch[1] : 'agent', line: lineNum });
-      }
-    });
-
-    const elapsed = Math.round((performance.now() - start) * 100) / 100;
-    setParseLatencyMs(Math.max(0.12, elapsed));
-    setAstNodes(nodes);
-    setDiagnostics(diags);
-    setOfflineValid(!diags.some(d => d.severity === 'ERROR'));
+    const res = evaluator.parseAST(content);
+    setParseLatencyMs(res.parseLatencyMs);
+    setAstNodes(res.ast);
+    setDiagnostics(res.diagnostics);
+    setOfflineValid(res.offlineValid);
   };
 
   const styles = {
@@ -78,8 +46,6 @@ export function WasmAstPanel(): React.JSX.Element {
     astPane: { flex: 1, padding: 'var(--spacing-sm)', overflowY: 'auto' as const, display: 'flex', flexDirection: 'column' as const, gap: 'clamp(6px, 1.5vw, 12px)', boxSizing: 'border-box' },
     textarea: { width: '100%', flex: 1, background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', color: 'var(--text-primary)', padding: 'clamp(6px, 1.5vw, 12px)', fontSize: 'var(--font-size-sm)', fontFamily: 'monospace', resize: 'none' as const, boxSizing: 'border-box' },
     btn: { background: 'var(--accent)', border: 'none', borderRadius: 'var(--radius-sm)', color: 'var(--bg-primary)', padding: 'clamp(4px, 1vw, 8px) clamp(10px, 2vw, 16px)', cursor: 'pointer', fontSize: 'var(--font-size-sm)', fontWeight: 600 },
-    badge: (color: string) => ({ padding: '3px 10px', borderRadius: 12, background: color + '22', color, fontSize: 'var(--font-size-xs)', fontWeight: 600, border: `1px solid ${color}44` }),
-    card: { background: 'var(--bg-secondary)', borderRadius: 'var(--radius)', padding: 'clamp(6px, 1.5vw, 12px)', border: '1px solid var(--border)', boxSizing: 'border-box' },
   };
 
   return (
@@ -119,15 +85,20 @@ export function WasmAstPanel(): React.JSX.Element {
                 <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Line {node.line}</span>
               </div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{node.name}</div>
+              {Array.isArray(node.attributes?.references) && (
+                <div style={{ fontSize: 'var(--font-size-xs)', color: '#ce93d8', marginTop: 4 }}>
+                  References: {(node.attributes.references as string[]).join(', ')}
+                </div>
+              )}
             </div>
           ))}
 
           {diagnostics.length > 0 && (
             <div style={{ marginTop: 'clamp(6px, 1.5vw, 12px)' }}>
-              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent-orange)', fontWeight: 600, marginBottom: 8 }}>Offline Diagnostics:</div>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent-orange)', fontWeight: 600, marginBottom: 8 }}>Offline Diagnostics ({diagnostics.length}):</div>
               {diagnostics.map((diag, i) => (
-                <div key={i} className="card" style={{ border: '1px solid var(--accent-orange)', boxSizing: 'border-box' }}>
-                  <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent-orange)', fontWeight: 600 }}>[Line {diag.line}] {diag.message}</div>
+                <div key={i} className="card" style={{ border: `1px solid ${diag.severity === 'ERROR' ? 'var(--accent-red)' : 'var(--accent-orange)'}`, boxSizing: 'border-box' }}>
+                  <div style={{ fontSize: 'var(--font-size-sm)', color: diag.severity === 'ERROR' ? 'var(--accent-red)' : 'var(--accent-orange)', fontWeight: 600 }}>[Line {diag.line}] {diag.message}</div>
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 2 }}>Rule: {diag.ruleId}</div>
                 </div>
               ))}

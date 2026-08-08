@@ -63,8 +63,19 @@ describe('mcp-server delegation tools', () => {
         title: 'Write integration tests for auth',
         agent: 'agent-qa',
         parent: 'task-login-ui',
+        priority: 'high',
+        tags: ['security', 'testing'],
+        skills: ['pytest', 'vitest'],
+        dueDate: '2026-09-01',
+        context: 'Focus on OAuth2 flow verification',
       });
       expect(delegated.result.content[0].text).toContain('write-integration-tests-for-auth');
+
+      const taskContent = fs.readFileSync(path.join(tmp, '.alp/tasks/write-integration-tests-for-auth.alp'), 'utf8');
+      expect(taskContent).toContain('priority: high');
+      expect(taskContent).toContain('tags: ["security", "testing"]');
+      expect(taskContent).toContain('skills: ["pytest", "vitest"]');
+      expect(taskContent).toContain('due_date: "2026-09-01"');
 
       const decomposed = await callTool(proc, pending, 'alp_decompose', {
         taskId: 'task-login-ui',

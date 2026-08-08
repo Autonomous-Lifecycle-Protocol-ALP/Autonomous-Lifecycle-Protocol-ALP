@@ -277,3 +277,37 @@ export async function autonomyMutate(workflowId: string) {
 export async function autonomyDecisions() {
   return (api?.autonomyDecisions?.() ?? { success: false, decisions: [] }) as { success: boolean; decisions: AutonomyDecision[]; error?: string };
 }
+
+export async function workspaceListTemplates() {
+  return (api?.workspaceListTemplates?.() ?? { success: true, templates: [] }) as {
+    success: boolean;
+    templates: Array<{ id: string; name: string; description: string; files: Record<string, string> }>;
+    error?: string;
+  };
+}
+
+export async function workspaceScaffoldTemplate(payload: { templateId: string; targetDir: string }) {
+  return (api?.workspaceScaffoldTemplate?.(payload) ?? { success: false, createdFiles: [] }) as {
+    success: boolean;
+    createdFiles: string[];
+    error?: string;
+  };
+}
+
+export async function workspaceLintAll(payload: { workspaceDir: string }) {
+  return (api?.workspaceLintAll?.(payload) ?? { success: false, scannedCount: 0, diagnostics: [] }) as {
+    success: boolean;
+    scannedCount: number;
+    diagnostics: Array<{ filePath: string; errors: string[] }>;
+    error?: string;
+  };
+}
+
+export async function dialogOpenFolder() {
+  return (api?.dialogOpenFolder?.() ?? { success: false, canceled: true }) as {
+    success: boolean;
+    folderPath?: string;
+    canceled?: boolean;
+    error?: string;
+  };
+}

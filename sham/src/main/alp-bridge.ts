@@ -1,4 +1,4 @@
-import { ipcMain, app } from 'electron';
+import { ipcMain, app, dialog } from 'electron';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
@@ -525,6 +525,124 @@ export function setupALPBridge() {
 
   ipcMain.handle('collab-broadcast-presence', async (_event, payload: { peerId: string; displayName: string; color: string; cursor?: { line: number; column: number }; selection?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) => {
     return { success: true, received: true };
+  });
+
+  ipcMain.handle('workspace-list-templates', async () => {
+    return {
+      success: true,
+      templates: [
+        {
+          id: 'swarm-agent-template',
+          name: 'Swarm Agent Mesh Template',
+          description: 'Multi-node swarm agent cluster with event mesh capabilities.',
+          files: {
+            'agent.alp': '@agent swarm-coordinator\n  description: Autonomous swarm node coordinator\n  model: gpt-4o\n  tools: [pubsub, claims]\n',
+            'policy.alp': '@policy swarm-security\n  description: Fail-closed verification rule for swarm claims\n  enforce: strict\n',
+          },
+        },
+        {
+          id: 'policy-governance-template',
+          name: 'Policy & Governance Template',
+          description: 'Enterprise compliance rules and contract verification workspace.',
+          files: {
+            'governance.alp': '@contract compliance-v1\n  description: Mandatory audit trail contract\n  policy: strict-audit\n',
+            'rules.alp': '@rule no-raw-sql\n  description: Ban unparameterized SQL queries\n  action: deny\n',
+          },
+        },
+        {
+          id: 'mcp-microservice-template',
+          name: 'MCP Microservice Agent',
+          description: 'Model Context Protocol server integration project.',
+          files: {
+            'mcp-agent.alp': '@agent mcp-bridge\n  description: Model Context Protocol tools orchestrator\n  mcpServer: stdio\n',
+          },
+        },
+      ],
+    };
+  });
+
+  ipcMain.handle('workspace-scaffold-template', async (_event, { templateId, targetDir }: { templateId: string; targetDir: string }) => {
+    try {
+      const templatesResponse = await (ipcMain as unknown as { handleMap?: Map<string, Function> }).handleMap?.get('workspace-list-templates')?.();
+      const templates = [
+        {
+          id: 'swarm-agent-template',
+          files: {
+            'agent.alp': '@agent swarm-coordinator\n  description: Autonomous swarm node coordinator\n  model: gpt-4o\n  tools: [pubsub, claims]\n',
+            'policy.alp': '@policy swarm-security\n  description: Fail-closed verification rule for swarm claims\n  enforce: strict\n',
+          },
+        },
+        {
+          id: 'policy-governance-template',
+          files: {
+            'governance.alp': '@contract compliance-v1\n  description: Mandatory audit trail contract\n  policy: strict-audit\n',
+            'rules.alp': '@rule no-raw-sql\n  description: Ban unparameterized SQL queries\n  action: deny\n',
+          },
+        },
+        {
+          id: 'mcp-microservice-template',
+          files: {
+            'mcp-agent.alp': '@agent mcp-bridge\n  description: Model Context Protocol tools orchestrator\n  mcpServer: stdio\n',
+          },
+        },
+      ];
+      const match = templates.find((t) => t.id === templateId);
+      if (!match) {
+        return { success: false, error: `Template '${templateId}' not found` };
+      }
+
+      const { writeFile, mkdir } = await import('fs/promises');
+      await mkdir(targetDir, { recursive: true });
+
+      const createdFiles: string[] = [];
+      for (const [filename, content] of Object.entries(match.files)) {
+        const filePath = join(targetDir, filename);
+        await writeFile(filePath, content, 'utf-8');
+        createdFiles.push(filePath);
+      }
+
+      return { success: true, createdFiles };
+    } catch (error) {
+      return { success: false, createdFiles: [], error: error instanceof Error ? error.message : String(error) };
+    }
+  });
+
+  ipcMain.handle('workspace-lint-all', async (_event, { workspaceDir }: { workspaceDir: string }) => {
+    try {
+      const parser = await loadParser();
+      const files = await readdir(workspaceDir).catch(() => []);
+      const alpFiles = files.filter((f) => f.endsWith('.alp'));
+      const diagnostics: Array<{ filePath: string; errors: string[] }> = [];
+
+      for (const file of alpFiles) {
+        const fullPath = join(workspaceDir, file);
+        const content = await readFile(fullPath, 'utf-8').catch(() => '');
+        try {
+          const doc = parser.parseALP(content);
+          diagnostics.push({ filePath: fullPath, errors: doc.errors ?? [] });
+        } catch (err) {
+          diagnostics.push({ filePath: fullPath, errors: [err instanceof Error ? err.message : String(err)] });
+        }
+      }
+
+      return { success: true, scannedCount: alpFiles.length, diagnostics };
+    } catch (error) {
+      return { success: false, scannedCount: 0, diagnostics: [], error: error instanceof Error ? error.message : String(error) };
+    }
+  });
+
+  ipcMain.handle('dialog-open-folder', async () => {
+    try {
+      const result = await dialog.showOpenDialog({
+        properties: ['openDirectory'],
+      });
+      if (result.canceled || result.filePaths.length === 0) {
+        return { success: false, canceled: true };
+      }
+      return { success: true, folderPath: result.filePaths[0] };
+    } catch (error) {
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
+    }
   });
 }
 

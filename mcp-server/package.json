@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
-    "@autonomous-lifecycle-protocol-alp/parser": "*"
+    "@autonomous-lifecycle-protocol-alp/parser": "*",
+    "@autonomous-lifecycle-protocol-alp/sdk": "*"
   },
   "devDependencies": {
     "typescript": "^5.0.0",

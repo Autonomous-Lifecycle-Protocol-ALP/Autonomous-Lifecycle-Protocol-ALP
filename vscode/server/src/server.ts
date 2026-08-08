@@ -33,6 +33,7 @@ import {
 
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { AlpParser, AlpObject, ValidationError } from '@autonomous-lifecycle-protocol-alp/parser';
+import { DocumentValidator, PolicyEnforcer } from '@autonomous-lifecycle-protocol-alp/sdk';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -237,7 +238,20 @@ function validateDocument(doc: TextDocument) {
 
   try {
     const parser = new AlpParser();
-    parser.parse(text);
+    const parsedObjects = parser.parse(text);
+    const validator = new DocumentValidator();
+    for (const obj of parsedObjects) {
+      try {
+        validator.validate({ _type: obj._type, id: obj.id || 'unnamed', properties: obj });
+      } catch (valErr: any) {
+        diagnostics.push({
+          severity: DiagnosticSeverity.Warning,
+          range: Range.create(0, 0, 0, Number.MAX_SAFE_INTEGER),
+          message: `Document Validation: ${valErr.message}`,
+          source: 'ALP-SDK',
+        });
+      }
+    }
   } catch (err: any) {
     const message = err.message || 'Unknown ALP error';
     let line = 0;
@@ -259,6 +273,28 @@ function validateDocument(doc: TextDocument) {
     });
   }
 
+  // ─── PolicyEnforcer Governance Audit ──────────────────────────────
+  try {
+    const parser2 = new AlpParser();
+    const allObjects = parser2.parse(text);
+    if (allObjects.length > 0) {
+      const enforcer = new PolicyEnforcer({ requiredFields: ['id', '_type'] });
+      const govResult = enforcer.govern({ objects: allObjects } as any);
+      if (!govResult.compliant && govResult.violations.length > 0) {
+        for (const violationId of govResult.violations) {
+          diagnostics.push({
+            severity: DiagnosticSeverity.Warning,
+            range: Range.create(0, 0, 0, Number.MAX_SAFE_INTEGER),
+            message: `Policy violation: object '${violationId}' does not satisfy governance requirements.`,
+            source: 'ALP-Governance',
+          });
+        }
+      }
+    }
+  } catch (_govErr) {
+    // Governance audit is non-blocking; silently skip if parsing fails
+  }
+
   // Check for unresolved references
   const lines = text.split('\n');
   for (let i = 0; i < lines.length; i++) {
@@ -274,6 +310,18 @@ function validateDocument(doc: TextDocument) {
           source: 'ALP',
         });
       }
+    }
+
+    // Check for !deprecated directive warnings
+    const deprecatedMatch = lines[i].match(/^\s+(!deprecated):\s*(.*)$/);
+    if (deprecatedMatch && deprecatedMatch.index !== undefined) {
+      const col = lines[i].indexOf('!deprecated');
+      diagnostics.push({
+        severity: DiagnosticSeverity.Hint,
+        range: Range.create(i, col, i, col + '!deprecated'.length),
+        message: `Deprecated: ${deprecatedMatch[2] || 'This object is marked as deprecated.'}`,
+        source: 'ALP',
+      });
     }
 
     // Check for status markers missing reasons (V9+)

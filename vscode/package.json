@@ -110,6 +110,21 @@
         "command": "alp.showAgents",
         "title": "ALP: Show Agents",
         "category": "ALP"
+      },
+      {
+        "command": "alp.validateWorkspace",
+        "title": "ALP: Validate Workspace Governance & Structure",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.runLinter",
+        "title": "ALP: Run Diagnostics & Linter",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.formatDocument",
+        "title": "ALP: Format Document",
+        "category": "ALP"
       }
     ]
   },
@@ -127,6 +142,7 @@
   },
   "dependencies": {
     "@autonomous-lifecycle-protocol-alp/parser": "*",
+    "@autonomous-lifecycle-protocol-alp/sdk": "*",
     "vscode-languageclient": "^9.0.1",
     "vscode-languageserver": "^9.0.1",
     "vscode-languageserver-textdocument": "^1.0.12"

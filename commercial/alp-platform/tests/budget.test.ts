@@ -43,7 +43,7 @@ describe("CostBudgetEngine", () => {
     const engine = new CostBudgetEngine();
 
     const result = engine.trackUsage("unknown", 100, 0.01);
-    expect(result).toEqual({ remainingCostUsd: 0, remainingTokens: 0, isExceeded: true });
+    expect(result).toEqual({ remainingCostUsd: 0, remainingTokens: 0, isExceeded: true, alertsTriggered: [] });
   });
 
   it("selects frontier model for high complexity and high budget", () => {

@@ -60,6 +60,7 @@ import { gitCommand } from './commands/git';
 import { archiveCommand } from './commands/archive';
 import { deduplicateCommand } from './commands/deduplicate';
 import { promoteCommand } from './commands/promote';
+import { registerReasonCommand } from './commands/reason';
 const program = new Command();
 
 program
@@ -445,6 +446,201 @@ program
   .action((opts) => searchCommand(opts));
 
 program
+  .option('--executable <cmd>', 'External parser executable: takes a .alp path, prints AST JSON to stdout, non-zero on failure')
+  .option('--suite <dir>', 'Path to the compliance suite directory (default ./tests/compliance)')
+  .action((opts) => testHarnessCommand(opts));
+
+program
+  .command('replay')
+  .description('Replay the immutable event log of workspace mutations (v10.1.0 Event Sourcing)')
+  .option('--from <iso>', 'Replay events at or after this ISO timestamp')
+  .option('--to <iso>', 'Replay events at or before this ISO timestamp')
+  .option('--type <types>', 'Comma-separated event types to include (e.g. status_changed,object_created)')
+  .option('--object-id <id>', 'Only events whose payload references this object id')
+  .action((opts) => replayCommand(opts));
+
+program
+  .command('visualize')
+  .description('Generate a diagram from @workflow objects (v10.2.0 Workflow Visualization)')
+  .argument('[id]', 'Workflow id to visualize (all workflows if omitted)')
+  .option('--format <format>', 'Output format: mermaid, dot, json (default mermaid)')
+  .option('--out <file>', 'Write output to a file instead of stdout')
+  .action((id, opts) => visualizeCommand(id, opts));
+
+program
+  .command('export')
+  .description('Export the ALP workspace to a unified JSON or YAML file')
+  .option('--format <format>', 'Export format: json or yaml', 'json')
+  .option('--out <file>', 'Output file path (prints to stdout if omitted)')
+  .option('--minified', 'Minify JSON output (only applies to json format)')
+  .action(exportCommand);
+
+program
+  .command('backup')
+  .description('Backup, restore, and list workspace snapshots')
+  .argument('<action>', 'Action: create, restore, or list')
+  .argument('[name]', 'Backup name for create/restore')
+  .action((action, name) => backupCommand(action, name));
+
+program
+  .command('diff')
+  .description('Diff two workspace snapshots by object id')
+  .argument('<snapshot-a>', 'Older snapshot name')
+  .argument('<snapshot-b>', 'Newer snapshot name')
+  .action((a, b) => diffCommand(a, b));
+
+program
+  .command('rename')
+  .description('Rename an ALP object id across all workspace files')
+  .argument('<old-id>', 'Current object id')
+  .argument('<new-id>', 'New object id')
+  .action((oldId, newId) => renameCommand(oldId, newId));
+
+program
+  .command('copy')
+  .description('Copy an ALP object to a new id across all workspace files')
+  .argument('<source-id>', 'Source object id to copy')
+  .argument('<target-id>', 'New object id')
+  .option('--update-refs', 'Update reference fields (depends_on, references, links, parent, child) to the new id')
+  .action((sourceId, targetId, opts) => copyCommand(sourceId, targetId, opts.updateRefs));
+
+program
+  .command('stats')
+  .description('Show workspace statistics: object counts by type and file')
+  .action(() => statsCommand());
+
+program
+  .command('template')
+  .description('Create a new ALP object from a built-in template')
+  .argument('<type>', 'Template type: task, agent, workflow, policy, test')
+  .argument('<id>', 'Object id for the new template')
+  .action((type, id) => templateCommand(type, id));
+
+program
+  .command('move')
+  .description('Move an ALP object from one file to another')
+  .argument('<id>', 'Object id to move')
+  .argument('<target-file>', 'Target .alp file (e.g. tasks.alp)')
+  .action((id, targetFile) => moveCommand(id, targetFile));
+
+program
+  .command('depends')
+  .description('Show dependencies for an ALP object')
+  .argument('<id>', 'Object id to inspect')
+  .action((id) => dependsCommand(id));
+
+program
+  .command('inspect')
+  .description('Inspect an ALP object and show its properties')
+  .argument('<id>', 'Object id to inspect')
+  .option('--file <path>', 'Optional specific file to inspect')
+  .action((id, opts) => inspectCommand(id, opts));
+
+program
+  .command('delete')
+  .description('Delete an ALP object from a workspace file')
+  .argument('<id>', 'Object id to delete')
+  .option('--file <path>', 'Optional specific file to delete from')
+  .action((id, opts) => deleteCommand(id, opts));
+
+program
+  .command('archive')
+  .description('Archive objects with a given status')
+  .argument('<status>', 'Status to archive (e.g. done)')
+  .action((status) => archiveCommand(status));
+
+program
+  .command('deduplicate')
+  .description('Remove duplicate objects across workspace files')
+  .action(() => deduplicateCommand());
+
+program
+  .command('promote')
+  .description('Promote an object to a new type')
+  .argument('<id>', 'Object id to promote')
+  .argument('<type>', 'New type for the object')
+  .action((id, type) => promoteCommand(id, type));
+
+program
+  .command('cost')
+  .description('Show token usage and compute cost for a task (v10.7.0 Resource Metering)')
+  .argument('[task-id]', 'Task ID to inspect (defaults to latest metered task)')
+  .option('--workflow <id>', 'Optimize a workflow and show cost savings (v16.0.0)')
+  .action((taskId, opts) => costCommand(taskId, opts));
+
+program
+  .command('debug')
+  .description('Time-travel debug a run via snapshots (v10.8.0)')
+  .argument('<run-id>', 'Run identifier')
+  .option('--step <n>', 'Step forward (positive) or backward (negative) by N snapshots', parseInt)
+  .option('--to-stage <name>', 'Jump to the snapshot matching this engine stage')
+  .option('--diff <a> <b>', 'Diff two snapshot ids')
+  .action((runId, opts) => debugCommand(runId, opts));
+
+program
+  .command('bridge')
+  .description('Export/import ALP workflows to/from OpenAPI, GraphQL, gRPC, or AsyncAPI (v17.0.0)')
+  .argument('<format>', 'Target format: openapi, graphql, grpc, asyncapi')
+  .argument('[file]', 'Import from a JSON spec file instead of exporting the local workflow')
+  .action((format, file) => bridgeCommand(format, file));
+
+program
+  .command('domain-trust')
+  .description('Manage cross-domain trust relationships (v14)')
+  .argument('<subcommand>', 'create-domain | link | accept | list | revoke')
+  .argument('[args...]', 'Subcommand arguments')
+  .action((subcommand, args) => domainTrustCommand(subcommand, ...args));
+
+program
+  .command('governance')
+  .description('Autonomous governance ballots (v14)')
+  .argument('<subcommand>', 'propose | vote | close | list')
+  .argument('[args...]', 'Subcommand arguments')
+  .action((subcommand, args) => governanceCommand(subcommand, ...args));
+
+program
+  .command('tenant')
+  .description('Multi-tenant isolation (v14)')
+  .argument('<subcommand>', 'create | list | vault | delete')
+  .argument('[args...]', 'Subcommand arguments')
+  .action((subcommand, args) => tenantCommand(subcommand, ...args));
+
+program
+  .command('healing')
+  .description('Self-healing workflow history (v12)')
+  .argument('<subcommand>', 'history | report')
+  .argument('[args...]', 'Subcommand arguments')
+  .action((subcommand, args) => healingCommand(subcommand, ...args));
+
+program
+  .command('resilience')
+  .description('Swarm resilience and agent status (v12)')
+  .argument('<subcommand>', 'agents | report')
+  .argument('[args...]', 'Subcommand arguments')
+  .action((subcommand, args) => resilienceCommand(subcommand, ...args));
+
+program
+  .command('tui')
+  .description('Launch the interactive terminal UI dashboard (v16.0.0)')
+  .action(tuiCommand);
+
+program
+  .command('settings')
+  .description('Read and write workspace settings (v41.0.0 IDE Productivity)')
+  .option('--list', 'List all settings')
+  .option('--get <key>', 'Get a specific setting value')
+  .option('--set <key> <value>', 'Set a setting value')
+  .action((opts) => settingsCommand(opts));
+
+program
+  .command('search')
+  .description('Global workspace search with regex and file-type filters (v41.0.0)')
+  .option('--query <text>', 'Search query text')
+  .option('--type <type>', 'Filter by object type (e.g. task, agent)')
+  .option('--regex', 'Treat query as a regular expression')
+  .action((opts) => searchCommand(opts));
+
+program
   .command('git')
   .description('Built-in git status, diff, and commit panel (v41.0.0)')
   .option('--status', 'Show git status (default)')
@@ -459,6 +655,7 @@ registerDIDCommand(program);
 registerCRDTSyncCommand(program);
 registerHealCommand(program);
 registerFormalVerifyCommand(program);
+registerReasonCommand(program);
 // Duplicate command registrations removed (see ADR-001: CLI deduplication)
 // All commands are registered once above. Subcommand-registration helpers
 // (registerTraceCommand, registerZKCommand, etc.) are called once at lines 493-498.
