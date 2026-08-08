@@ -62,6 +62,13 @@ export const SearchIcon = wrap(Lu.LuSearch);
 export const FilterIcon = wrap(Lu.LuFilter);
 export const PlayIcon = wrap(Lu.LuPlay);
 export const SlidersIcon = wrap(Lu.LuSlidersHorizontal);
+export const DownloadIcon = wrap(Lu.LuDownload);
+export const DownloadCloudIcon = wrap(Lu.LuCloudDownload);
+export const PackageIcon = wrap(Lu.LuPackage);
+export const MonitorIcon = wrap(Lu.LuMonitor);
+export const SmartphoneIcon = wrap(Lu.LuSmartphone);
+export const HardDriveIcon = wrap(Lu.LuHardDrive);
+export const ExternalLinkIcon = wrap(Lu.LuExternalLink);
 
 
 

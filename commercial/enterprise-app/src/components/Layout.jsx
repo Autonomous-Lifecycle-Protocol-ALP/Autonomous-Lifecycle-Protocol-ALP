@@ -18,6 +18,8 @@ import {
   MenuIcon,
   CloseIcon,
   LayersIcon,
+  ShieldIcon,
+  DownloadIcon,
 } from "./Icons.jsx";
 import { LuChevronDown } from "react-icons/lu";
 
@@ -31,6 +33,7 @@ const PRIMARY_NAV = [
 ];
 
 const SECONDARY_NAV = [
+  { path: "/downloads", label: "Downloads", icon: DownloadIcon },
   { path: "/federation-studio", label: "Swarm Federation", icon: LayersIcon },
   { path: "/zk-proofs", label: "ZK Policy Proofs", icon: ShieldIcon },
   { path: "/hybrid-engineer", label: "Hybrid Engineer AI", icon: HybridEngineerIcon },

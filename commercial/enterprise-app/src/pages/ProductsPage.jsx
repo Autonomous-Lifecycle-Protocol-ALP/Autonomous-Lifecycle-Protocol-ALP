@@ -11,7 +11,8 @@ import {
   LayersIcon,
   ArrowRightIcon,
   CheckCircleIcon,
-  ZapIcon
+  ZapIcon,
+  DownloadIcon,
 } from "../components/Icons.jsx";
 import { trackCatalogView, trackProductClick } from "../utils/analytics.js";
 
@@ -236,6 +237,16 @@ export default function ProductsPage() {
             ))}
           </div>
         </div>
+
+        {/* Quick Download Link */}
+        <div className="pt-2">
+          <Link
+            to="/downloads"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900/80 border border-slate-800 rounded-xl text-xs text-slate-300 hover:text-sky-400 hover:border-sky-500/40 transition-smooth font-semibold"
+          >
+            <DownloadIcon size="sm" /> Downloads Center
+          </Link>
+        </div>
       </div>
 
       {/* Open Source Foundation Cards */}
@@ -345,9 +356,18 @@ export default function ProductsPage() {
 
                 <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
                   <span className="text-slate-400 font-medium">{product.tier}</span>
-                  <span className="text-sky-400 font-semibold group-hover:translate-x-1 transition-smooth flex items-center gap-1">
-                    View Details &amp; Sandbox <ArrowRightIcon size="sm" />
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <Link
+                      to="/downloads"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-slate-400 hover:text-emerald-400 font-semibold flex items-center gap-1 transition-smooth"
+                    >
+                      <DownloadIcon size="sm" /> Download
+                    </Link>
+                    <span className="text-sky-400 font-semibold group-hover:translate-x-1 transition-smooth flex items-center gap-1">
+                      View Details &amp; Sandbox <ArrowRightIcon size="sm" />
+                    </span>
+                  </div>
                 </div>
               </Link>
             ))}

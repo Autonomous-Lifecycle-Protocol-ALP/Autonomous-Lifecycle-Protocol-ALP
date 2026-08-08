@@ -10,7 +10,8 @@ import {
   LayersIcon,
   ArrowRightIcon,
   ShieldIcon,
-  ZapIcon
+  ZapIcon,
+  DownloadIcon,
 } from "../components/Icons.jsx";
 
 const SDK_LIST = [
@@ -196,6 +197,12 @@ export default function EcosystemPage() {
           <button className="bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 text-xs font-semibold px-5 py-2.5 rounded-xl transition flex items-center gap-2">
             Windows MSI
           </button>
+          <Link
+            to="/downloads"
+            className="bg-slate-900 hover:bg-slate-800 text-sky-400 border border-sky-500/30 text-xs font-semibold px-5 py-2.5 rounded-xl transition flex items-center gap-2 hover:border-sky-500/60"
+          >
+            <DownloadIcon size="sm" /> All Downloads
+          </Link>
         </div>
       </div>
     </div>

@@ -40,7 +40,7 @@ export default function AnalyticsDashboard() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h1 className="text-2xl font-bold text-gray-100">Analytics Dashboard</h1>
         <div className="flex items-center gap-2 text-sm text-gray-400">
-          <LuActivity className="text-sky-400" size="sm" />
+          <LuActivity className="text-sky-400" size={14} />
           <span>{totalEvents} total events</span>
         </div>
       </div>
@@ -51,10 +51,10 @@ export default function AnalyticsDashboard() {
             <div className="flex items-center justify-between mb-3">
               <p className="text-gray-400 text-sm capitalize">{item._id.replace(/_/g, " ")}</p>
               <div className="p-1.5 bg-gray-800/40 rounded-lg">
-              {item._id === "product_view" && <Eye className="text-sky-400" size="sm" />}
-              {item._id === "product_click" && <MousePointerClick className="text-green-400" size="sm" />}
-              {item._id === "catalog_view" && <LuChartColumnBig className="text-purple-400" size="sm" />}
-              {item._id === "cta_click" && <LuActivity className="text-amber-400" size="sm" />}
+              {item._id === "product_view" && <LuEye className="text-sky-400" size={14} />}
+              {item._id === "product_click" && <LuMousePointerClick className="text-green-400" size={14} />}
+              {item._id === "catalog_view" && <LuChartColumnBig className="text-purple-400" size={14} />}
+              {item._id === "cta_click" && <LuActivity className="text-amber-400" size={14} />}
               </div>
             </div>
             <p className="text-3xl font-bold text-gray-100">{item.count.toLocaleString()}</p>

@@ -43,8 +43,12 @@ export function AuthProvider({ children }) {
           setUser(data.user);
         })
         .catch(() => {
+          // Token invalid or user no longer exists (e.g. after server restart with in-memory DB)
           localStorage.removeItem("token");
           setUser(null);
+          if (window.location.pathname !== "/login") {
+            window.location.href = "/login";
+          }
         })
         .finally(() => setLoading(false));
     } else {
