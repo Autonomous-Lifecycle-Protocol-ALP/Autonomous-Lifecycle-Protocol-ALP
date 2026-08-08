@@ -25,6 +25,7 @@ const quantumEngineerRoutes = require('./routes/quantum-engineer');
 const chipDesignRoutes = require('./routes/chip-design');
 const socSentinelRoutes = require('./routes/soc-sentinel');
 const threatIntelRoutes = require('./routes/threat-intel');
+const zeroTrustRoutes = require('./routes/zero-trust');
 const reasoningRoutes = require('./routes/reasoning');
 const telemetryRoutes = require('./routes/telemetry');
 
