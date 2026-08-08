@@ -110,6 +110,17 @@ export default function ReasoningStudioPage() {
     setTimeout(() => setCopiedHash(null), 2000);
   };
 
+  const handleExportJSON = () => {
+    if (!traceResult) return;
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(traceResult, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `reasoning-trace-${chainId}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
+
   const updateBidSlider = (index, field, val) => {
     const updated = [...agentBids];
     updated[index][field] = parseFloat(val);
@@ -377,6 +388,14 @@ export default function ReasoningStudioPage() {
                 <ShieldIcon size="sm" />
                 {traceLoading ? "Verifying..." : "Verify Trace Integrity"}
               </button>
+              {traceResult && (
+                <button
+                  onClick={handleExportJSON}
+                  className="bg-slate-900 hover:bg-slate-800 text-sky-300 border border-slate-800 text-xs font-semibold px-3 py-2 rounded-xl transition flex items-center gap-1.5"
+                >
+                  <CopyIcon size="sm" /> Export Trace JSON
+                </button>
+              )}
             </div>
           </div>
 

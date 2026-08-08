@@ -354,6 +354,41 @@ export default function ProductsPage() {
           </div>
         )}
       </div>
+
+      {/* Interactive ARR Revenue Projection Calculator */}
+      <div className="card-glass rounded-3xl p-6 space-y-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+              <ZapIcon className="text-emerald-400" />
+              <span>Enterprise Year 1 ARR Revenue Projection</span>
+            </h2>
+            <p className="text-xs text-slate-400">Interactive subscription revenue projection across commercial product tiers</p>
+          </div>
+          <div className="text-left md:text-right">
+            <span className="text-xs text-slate-400 font-semibold uppercase">Projected Year 1 ARR</span>
+            <div className="text-3xl font-black gradient-text">$7.0M ARR</div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <div className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 space-y-1">
+            <span className="text-slate-400">ALP Cloud Workspace</span>
+            <div className="text-base font-bold text-sky-400">$2.4M ARR</div>
+            <div className="text-[10px] text-slate-500 font-mono">200 Managed Teams ($49-$999/mo)</div>
+          </div>
+          <div className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 space-y-1">
+            <span className="text-slate-400">ALP Security &amp; SOC Sentinel</span>
+            <div className="text-base font-bold text-rose-400">$1.82M ARR</div>
+            <div className="text-[10px] text-slate-500 font-mono">230 Enterprise Guardrail Subscriptions</div>
+          </div>
+          <div className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 space-y-1">
+            <span className="text-slate-400">Physical, EDA &amp; Quantum AI</span>
+            <div className="text-base font-bold text-purple-400">$2.78M ARR</div>
+            <div className="text-[10px] text-slate-500 font-mono">290 Hardware &amp; EDA Agent Licenses</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

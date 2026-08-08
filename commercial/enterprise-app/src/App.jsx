@@ -32,6 +32,7 @@ const ThreatIntelPage = lazy(() => import("./pages/ThreatIntelPage.jsx"));
 const ZeroTrustPage = lazy(() => import("./pages/ZeroTrustPage.jsx"));
 const ReasoningStudioPage = lazy(() => import("./pages/ReasoningStudioPage.jsx"));
 const DocsPage = lazy(() => import("./pages/DocsPage.jsx"));
+const EcosystemPage = lazy(() => import("./pages/EcosystemPage.jsx"));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center text-gray-300">Loading...</div>
@@ -72,6 +73,7 @@ export default function App() {
             <Route path="products/zero-trust" element={<Suspense fallback={<PageLoader />}><ZeroTrustPage /></Suspense>} />
             <Route path="products/reasoning-studio" element={<Suspense fallback={<PageLoader />}><ReasoningStudioPage /></Suspense>} />
             <Route path="reasoning-studio" element={<Suspense fallback={<PageLoader />}><ReasoningStudioPage /></Suspense>} />
+            <Route path="ecosystem" element={<Suspense fallback={<PageLoader />}><EcosystemPage /></Suspense>} />
             <Route path="products/:id" element={<Suspense fallback={<PageLoader />}><ProductDetailPage /></Suspense>} />
             <Route path="docs" element={<Suspense fallback={<PageLoader />}><DocsPage /></Suspense>} />
             <Route path="hybrid-engineer" element={<Suspense fallback={<PageLoader />}><HybridEngineerPage /></Suspense>} />

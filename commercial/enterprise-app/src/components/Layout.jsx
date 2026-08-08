@@ -26,6 +26,7 @@ const PRIMARY_NAV = [
   { path: "/workspaces", label: "Workspaces", icon: WorkspaceIcon },
   { path: "/reasoning-studio", label: "Reasoning Studio", icon: ReasoningIcon },
   { path: "/products", label: "Products", icon: ProductsIcon },
+  { path: "/ecosystem", label: "Ecosystem Hub", icon: LayersIcon },
   { path: "/docs", label: "Docs", icon: DocsIcon },
 ];
 
