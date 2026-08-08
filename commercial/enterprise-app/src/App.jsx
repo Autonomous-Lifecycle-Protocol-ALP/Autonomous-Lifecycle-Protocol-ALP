@@ -30,6 +30,7 @@ const ChipDesignStudioPage = lazy(() => import("./pages/ChipDesignStudioPage.jsx
 const SocSentinelPage = lazy(() => import("./pages/SocSentinelPage.jsx"));
 const ThreatIntelPage = lazy(() => import("./pages/ThreatIntelPage.jsx"));
 const ZeroTrustPage = lazy(() => import("./pages/ZeroTrustPage.jsx"));
+const ReasoningStudioPage = lazy(() => import("./pages/ReasoningStudioPage.jsx"));
 const DocsPage = lazy(() => import("./pages/DocsPage.jsx"));
 
 const PageLoader = () => (
@@ -69,6 +70,8 @@ export default function App() {
             <Route path="products/soc-sentinel" element={<Suspense fallback={<PageLoader />}><SocSentinelPage /></Suspense>} />
             <Route path="products/threat-intel" element={<Suspense fallback={<PageLoader />}><ThreatIntelPage /></Suspense>} />
             <Route path="products/zero-trust" element={<Suspense fallback={<PageLoader />}><ZeroTrustPage /></Suspense>} />
+            <Route path="products/reasoning-studio" element={<Suspense fallback={<PageLoader />}><ReasoningStudioPage /></Suspense>} />
+            <Route path="reasoning-studio" element={<Suspense fallback={<PageLoader />}><ReasoningStudioPage /></Suspense>} />
             <Route path="products/:id" element={<Suspense fallback={<PageLoader />}><ProductDetailPage /></Suspense>} />
             <Route path="docs" element={<Suspense fallback={<PageLoader />}><DocsPage /></Suspense>} />
             <Route path="hybrid-engineer" element={<Suspense fallback={<PageLoader />}><HybridEngineerPage /></Suspense>} />

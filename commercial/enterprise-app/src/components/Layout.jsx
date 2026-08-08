@@ -19,6 +19,7 @@ import {
 const NAV_ITEMS = [
   { path: "/", label: "Dashboard", icon: DashboardIcon },
   { path: "/workspaces", label: "Workspaces", icon: WorkspaceIcon },
+  { path: "/reasoning-studio", label: "Reasoning Studio", icon: HybridEngineerIcon },
   { path: "/hybrid-engineer", label: "Hybrid Engineer AI", icon: HybridEngineerIcon },
   { path: "/products", label: "Products", icon: ProductsIcon },
   { path: "/analytics", label: "Analytics", icon: AnalyticsIcon },
