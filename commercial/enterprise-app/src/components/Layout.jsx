@@ -8,6 +8,8 @@ import {
   ProductsIcon,
   AnalyticsIcon,
   HybridEngineerIcon,
+  ReasoningIcon,
+  LogoIcon,
   DocsIcon,
   SavingsIcon,
   BillingIcon,
@@ -19,7 +21,7 @@ import {
 const NAV_ITEMS = [
   { path: "/", label: "Dashboard", icon: DashboardIcon },
   { path: "/workspaces", label: "Workspaces", icon: WorkspaceIcon },
-  { path: "/reasoning-studio", label: "Reasoning Studio", icon: HybridEngineerIcon },
+  { path: "/reasoning-studio", label: "Reasoning Studio", icon: ReasoningIcon },
   { path: "/hybrid-engineer", label: "Hybrid Engineer AI", icon: HybridEngineerIcon },
   { path: "/products", label: "Products", icon: ProductsIcon },
   { path: "/analytics", label: "Analytics", icon: AnalyticsIcon },
@@ -59,12 +61,17 @@ export default function Layout() {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <div className="flex-shrink-0 flex items-center">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-gradient-to-br from-sky-400 to-indigo-500 rounded-lg flex items-center justify-center">
-                    <span className="text-white font-bold text-sm">ALP</span>
+                <Link to="/" className="flex items-center space-x-3 group">
+                  <div className="w-9 h-9 bg-gradient-to-br from-sky-400 via-indigo-500 to-emerald-400 rounded-xl p-0.5 shadow-lg shadow-sky-500/20 group-hover:shadow-sky-500/40 transition-smooth">
+                    <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center text-sky-400">
+                      <LogoIcon size="md" />
+                    </div>
                   </div>
-                  <span className="text-xl font-bold text-gray-100 hidden sm:block">Enterprise</span>
-                </div>
+                  <div className="flex flex-col">
+                    <span className="text-lg font-black gradient-text tracking-tight leading-none">ALP Enterprise</span>
+                    <span className="text-[10px] text-slate-400 font-mono tracking-wider uppercase mt-0.5">Protocol v82.0</span>
+                  </div>
+                </Link>
               </div>
 
               <div className="hidden lg:ml-10 lg:flex lg:items-center lg:space-x-1">

@@ -1,5 +1,20 @@
 import { useState, useEffect } from "react";
 import { critiqueSpec, verifyReasoningTrace, negotiateTasks } from "../services/reasoningApi.js";
+import {
+  ReasoningIcon,
+  SparklesIcon,
+  ShieldIcon,
+  UsersIcon,
+  CodeIcon,
+  AnalyticsIcon,
+  CheckIcon,
+  AlertIcon,
+  LightbulbIcon,
+  CopyIcon,
+  RefreshIcon,
+  TerminalIcon,
+  ZapIcon
+} from "../components/Icons.jsx";
 
 const PRESET_TEMPLATES = {
   security: `@policy name: "auth-security-gate"
@@ -114,6 +129,9 @@ export default function ReasoningStudioPage() {
       <div className="card-glass p-6 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative overflow-hidden">
         <div className="space-y-1 z-10">
           <div className="flex items-center gap-3">
+            <div className="p-2.5 bg-gradient-to-br from-sky-500/20 to-indigo-500/20 rounded-xl border border-sky-500/30 text-sky-400">
+              <ReasoningIcon size="xl" />
+            </div>
             <h1 className="text-3xl font-extrabold gradient-text tracking-tight">
               Autonomous Reasoning Studio
             </h1>
@@ -136,7 +154,8 @@ export default function ReasoningStudioPage() {
                 : "text-slate-400 hover:text-white hover:bg-slate-900/60"
             }`}
           >
-            <span>✨</span> Self-Reflection Critique
+            <SparklesIcon size="sm" />
+            <span>Self-Reflection Critique</span>
           </button>
           <button
             onClick={() => setActiveTab("trace")}
@@ -146,7 +165,8 @@ export default function ReasoningStudioPage() {
                 : "text-slate-400 hover:text-white hover:bg-slate-900/60"
             }`}
           >
-            <span>🛡️</span> Merkle Trace Inspector
+            <ShieldIcon size="sm" />
+            <span>Merkle Trace Inspector</span>
           </button>
           <button
             onClick={() => setActiveTab("negotiation")}
@@ -156,7 +176,8 @@ export default function ReasoningStudioPage() {
                 : "text-slate-400 hover:text-white hover:bg-slate-900/60"
             }`}
           >
-            <span>🤝</span> Agent Bidding Simulator
+            <UsersIcon size="sm" />
+            <span>Agent Bidding Simulator</span>
           </button>
         </div>
       </div>
@@ -169,7 +190,8 @@ export default function ReasoningStudioPage() {
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
-                  <span>📝</span> Specification Code Editor
+                  <CodeIcon className="text-sky-400" />
+                  <span>Specification Code Editor</span>
                 </h2>
                 {/* Template Preset Selector */}
                 <div className="flex items-center gap-2">
@@ -223,11 +245,11 @@ export default function ReasoningStudioPage() {
               >
                 {critiqueLoading ? (
                   <>
-                    <span className="animate-spin text-sm">🔄</span> Analyzing...
+                    <RefreshIcon className="animate-spin text-sm" /> Analyzing...
                   </>
                 ) : (
                   <>
-                    <span>⚡</span> Run Self-Reflection Critique
+                    <ZapIcon /> Run Self-Reflection Critique
                   </>
                 )}
               </button>
@@ -237,7 +259,8 @@ export default function ReasoningStudioPage() {
           {/* Diagnostics & Score Panel */}
           <div className="card-glass rounded-2xl p-6 space-y-6">
             <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
-              <span>📊</span> Self-Reflection Scorecard & Diagnostics
+              <AnalyticsIcon className="text-indigo-400" />
+              <span>Self-Reflection Scorecard & Diagnostics</span>
             </h2>
 
             {critiqueResult ? (
@@ -277,12 +300,13 @@ export default function ReasoningStudioPage() {
                   </h3>
                   {critiqueResult.report.defects.length === 0 ? (
                     <div className="text-xs text-emerald-400 bg-emerald-950/30 border border-emerald-800/40 p-3 rounded-xl flex items-center gap-2">
-                      <span>✅</span> Zero defects detected. Specification meets protocol standards.
+                      <CheckIcon className="text-emerald-400" />
+                      <span>Zero defects detected. Specification meets protocol standards.</span>
                     </div>
                   ) : (
                     critiqueResult.report.defects.map((d, idx) => (
                       <div key={idx} className="bg-rose-950/40 border border-rose-800/60 text-rose-300 text-xs p-3 rounded-xl flex items-start gap-2.5">
-                        <span className="text-rose-400">⚠️</span>
+                        <AlertIcon className="text-rose-400 flex-shrink-0 mt-0.5" />
                         <span>{d}</span>
                       </div>
                     ))
@@ -293,7 +317,7 @@ export default function ReasoningStudioPage() {
                   </h3>
                   {critiqueResult.report.refinementSuggestions.map((s, idx) => (
                     <div key={idx} className="bg-indigo-950/40 border border-indigo-800/60 text-indigo-300 text-xs p-3 rounded-xl flex items-start gap-2.5">
-                      <span className="text-indigo-400">💡</span>
+                      <LightbulbIcon className="text-indigo-400 flex-shrink-0 mt-0.5" />
                       <span>{s}</span>
                     </div>
                   ))}
@@ -310,7 +334,8 @@ export default function ReasoningStudioPage() {
                         onClick={handleCopyRefined}
                         className="text-xs bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 px-3 py-1 rounded-lg font-medium transition flex items-center gap-1.5"
                       >
-                        <span>{copied ? "✓ Copied!" : "📋 Copy Refined Spec"}</span>
+                        {copied ? <CheckIcon className="text-emerald-400" /> : <CopyIcon />}
+                        <span>{copied ? "Copied!" : "Copy Refined Spec"}</span>
                       </button>
                     </div>
                     <pre className="bg-slate-950 text-emerald-300 text-xs p-4 rounded-xl border border-slate-800 font-mono custom-scrollbar overflow-x-auto max-h-40">
@@ -332,7 +357,8 @@ export default function ReasoningStudioPage() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
               <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-                <span>🛡️</span> Cryptographic Reasoning Chain Inspector
+                <ShieldIcon className="text-sky-400" />
+                <span>Cryptographic Reasoning Chain Inspector</span>
               </h2>
               <p className="text-xs text-slate-400">SHA-256 Merkle tree verification over autonomous reasoning step hashes</p>
             </div>
@@ -346,8 +372,9 @@ export default function ReasoningStudioPage() {
               <button
                 onClick={handleVerifyTrace}
                 disabled={traceLoading}
-                className="bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition shadow-lg shadow-sky-500/20"
+                className="bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition shadow-lg shadow-sky-500/20 flex items-center gap-2"
               >
+                <ShieldIcon size="sm" />
                 {traceLoading ? "Verifying..." : "Verify Trace Integrity"}
               </button>
             </div>
@@ -407,9 +434,10 @@ export default function ReasoningStudioPage() {
                       <span className="font-mono text-slate-500">{step.hash.substring(0, 14)}...</span>
                       <button
                         onClick={() => handleCopyHash(step.hash, step.stepId)}
-                        className="text-xs text-slate-400 hover:text-sky-300 font-mono transition"
+                        className="text-xs text-slate-400 hover:text-sky-300 font-mono transition flex items-center gap-1"
                       >
-                        {copiedHash === step.stepId ? "✓ Copied" : "Copy Hash"}
+                        {copiedHash === step.stepId ? <CheckIcon className="text-emerald-400" /> : <CopyIcon />}
+                        {copiedHash === step.stepId ? "Copied" : "Copy Hash"}
                       </button>
                     </div>
                   </div>
@@ -426,15 +454,17 @@ export default function ReasoningStudioPage() {
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-                <span>🤝</span> Multi-Agent Task Bidding & Negotiation
+                <UsersIcon className="text-indigo-400" />
+                <span>Multi-Agent Task Bidding & Negotiation</span>
               </h2>
               <p className="text-xs text-slate-400">Simulate agent bidding with live Capability (50%), Cost (30%), and Risk (20%) sliders</p>
             </div>
             <button
               onClick={() => handleRunNegotiation(agentBids)}
               disabled={negotiationLoading}
-              className="bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition shadow-lg shadow-sky-500/20"
+              className="bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-xs font-semibold px-4 py-2 rounded-xl transition shadow-lg shadow-sky-500/20 flex items-center gap-2"
             >
+              <RefreshIcon size="sm" />
               {negotiationLoading ? "Calculating..." : "Re-Calculate Bids"}
             </button>
           </div>
@@ -515,8 +545,9 @@ export default function ReasoningStudioPage() {
                   <div key={assignment.nodeId} className="bg-slate-950 border border-sky-500/30 p-4 rounded-xl flex justify-between items-center">
                     <div>
                       <div className="text-xs font-mono text-slate-400">Node: {assignment.nodeId}</div>
-                      <div className="text-sm font-extrabold text-emerald-400 mt-0.5">
-                        Winner: {assignment.winningAgentId}
+                      <div className="text-sm font-extrabold text-emerald-400 mt-0.5 flex items-center gap-1.5">
+                        <CheckIcon className="text-emerald-400" />
+                        <span>Winner: {assignment.winningAgentId}</span>
                       </div>
                     </div>
                     <div className="text-right">
