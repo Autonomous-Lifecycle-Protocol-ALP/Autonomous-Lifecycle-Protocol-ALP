@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import InteractiveLionSvg from "../components/InteractiveLionSvg.jsx";
 import {
   ReasoningIcon,
   ZapIcon,
@@ -393,173 +394,16 @@ export default function HomePage() {
         <section className="relative overflow-hidden">
           {/* Background effects */}
           <div className="absolute inset-0">
-            {/* ── Lion face SVG background ── */}
-            <svg
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[45%] w-[700px] h-[700px] sm:w-[900px] sm:h-[900px] lg:w-[1100px] lg:h-[1100px] opacity-[0.06] pointer-events-none select-none"
-              viewBox="0 0 800 800"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <defs>
-                <linearGradient id="lion-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#38bdf8" />
-                  <stop offset="50%" stopColor="#6366f1" />
-                  <stop offset="100%" stopColor="#34d399" />
-                </linearGradient>
-                <linearGradient id="lion-grad-2" x1="100%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#818cf8" />
-                  <stop offset="50%" stopColor="#38bdf8" />
-                  <stop offset="100%" stopColor="#6366f1" />
-                </linearGradient>
-                <linearGradient id="lion-grad-3" x1="50%" y1="0%" x2="50%" y2="100%">
-                  <stop offset="0%" stopColor="#34d399" />
-                  <stop offset="100%" stopColor="#38bdf8" />
-                </linearGradient>
-                <radialGradient id="lion-glow" cx="50%" cy="45%" r="50%">
-                  <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.15" />
-                  <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-                </radialGradient>
-              </defs>
-
-              {/* Ambient glow behind lion */}
-              <circle cx="400" cy="380" r="320" fill="url(#lion-glow)" />
-
-              {/* ── Mane (outer flowing strands) ── */}
-              {/* Top mane */}
-              <path d="M 400 80 C 340 60, 260 80, 200 140 C 160 180, 130 240, 120 300" stroke="url(#lion-grad-1)" strokeWidth="3" strokeLinecap="round" opacity="0.8" />
-              <path d="M 400 80 C 460 60, 540 80, 600 140 C 640 180, 670 240, 680 300" stroke="url(#lion-grad-1)" strokeWidth="3" strokeLinecap="round" opacity="0.8" />
-              <path d="M 400 70 C 320 40, 220 70, 160 160 C 120 220, 100 300, 105 360" stroke="url(#lion-grad-2)" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" />
-              <path d="M 400 70 C 480 40, 580 70, 640 160 C 680 220, 700 300, 695 360" stroke="url(#lion-grad-2)" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" />
-
-              {/* Upper mane strands */}
-              <path d="M 350 90 C 280 75, 200 110, 155 190 C 130 240, 115 310, 118 370" stroke="url(#lion-grad-1)" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
-              <path d="M 450 90 C 520 75, 600 110, 645 190 C 670 240, 685 310, 682 370" stroke="url(#lion-grad-1)" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
-              <path d="M 320 100 C 250 100, 180 150, 140 230 C 115 285, 105 340, 110 400" stroke="url(#lion-grad-3)" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
-              <path d="M 480 100 C 550 100, 620 150, 660 230 C 685 285, 695 340, 690 400" stroke="url(#lion-grad-3)" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
-
-              {/* Side mane strands */}
-              <path d="M 120 300 C 95 360, 85 420, 100 480 C 115 530, 150 570, 200 590" stroke="url(#lion-grad-2)" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
-              <path d="M 680 300 C 705 360, 715 420, 700 480 C 685 530, 650 570, 600 590" stroke="url(#lion-grad-2)" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
-              <path d="M 105 360 C 80 430, 80 490, 110 540 C 140 580, 185 610, 240 620" stroke="url(#lion-grad-1)" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
-              <path d="M 695 360 C 720 430, 720 490, 690 540 C 660 580, 615 610, 560 620" stroke="url(#lion-grad-1)" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
-
-              {/* Lower mane */}
-              <path d="M 200 590 C 250 620, 320 640, 400 645 C 480 640, 550 620, 600 590" stroke="url(#lion-grad-3)" strokeWidth="2.5" strokeLinecap="round" opacity="0.6" />
-              <path d="M 240 620 C 290 650, 350 665, 400 668 C 450 665, 510 650, 560 620" stroke="url(#lion-grad-1)" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
-
-              {/* Extra flowing mane wisps */}
-              <path d="M 370 85 C 300 55, 190 90, 135 200" stroke="url(#lion-grad-1)" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-              <path d="M 430 85 C 500 55, 610 90, 665 200" stroke="url(#lion-grad-1)" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-              <path d="M 110 420 C 90 470, 95 530, 130 570" stroke="url(#lion-grad-2)" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-              <path d="M 690 420 C 710 470, 705 530, 670 570" stroke="url(#lion-grad-2)" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-
-              {/* ── Face outline ── */}
-              <path
-                d="M 400 140 C 310 140, 220 200, 190 290 C 165 365, 175 440, 210 510 C 245 575, 310 620, 400 625 C 490 620, 555 575, 590 510 C 625 440, 635 365, 610 290 C 580 200, 490 140, 400 140 Z"
-                stroke="url(#lion-grad-1)"
-                strokeWidth="3.5"
-                strokeLinecap="round"
-                opacity="0.9"
-              />
-
-              {/* Inner face contour */}
-              <path
-                d="M 400 170 C 325 170, 250 220, 225 300 C 205 365, 210 430, 240 490 C 270 545, 325 580, 400 583 C 475 580, 530 545, 560 490 C 590 430, 595 365, 575 300 C 550 220, 475 170, 400 170 Z"
-                stroke="url(#lion-grad-2)"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                opacity="0.35"
-              />
-
-              {/* ── Eyes ── */}
-              {/* Left eye */}
-              <ellipse cx="310" cy="320" rx="42" ry="28" stroke="url(#lion-grad-1)" strokeWidth="3" opacity="0.9" />
-              <ellipse cx="310" cy="320" rx="18" ry="18" stroke="url(#lion-grad-2)" strokeWidth="2.5" opacity="0.8" />
-              <circle cx="310" cy="318" r="8" fill="url(#lion-grad-1)" opacity="0.6" />
-              {/* Left eye shine */}
-              <circle cx="316" cy="314" r="3" fill="#38bdf8" opacity="0.8" />
-
-              {/* Right eye */}
-              <ellipse cx="490" cy="320" rx="42" ry="28" stroke="url(#lion-grad-1)" strokeWidth="3" opacity="0.9" />
-              <ellipse cx="490" cy="320" rx="18" ry="18" stroke="url(#lion-grad-2)" strokeWidth="2.5" opacity="0.8" />
-              <circle cx="490" cy="318" r="8" fill="url(#lion-grad-1)" opacity="0.6" />
-              {/* Right eye shine */}
-              <circle cx="496" cy="314" r="3" fill="#38bdf8" opacity="0.8" />
-
-              {/* Eyebrows */}
-              <path d="M 260 280 C 275 260, 310 250, 350 258" stroke="url(#lion-grad-1)" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
-              <path d="M 540 280 C 525 260, 490 250, 450 258" stroke="url(#lion-grad-1)" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
-
-              {/* ── Nose ── */}
-              <path
-                d="M 380 400 C 380 385, 390 375, 400 375 C 410 375, 420 385, 420 400 C 420 415, 410 425, 400 425 C 390 425, 380 415, 380 400 Z"
-                stroke="url(#lion-grad-1)"
-                strokeWidth="3"
-                opacity="0.9"
-              />
-              {/* Nose bridge */}
-              <path d="M 400 350 L 400 375" stroke="url(#lion-grad-2)" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
-
-              {/* ── Mouth / Muzzle ── */}
-              {/* Upper lip lines */}
-              <path d="M 400 425 L 400 445" stroke="url(#lion-grad-1)" strokeWidth="2" strokeLinecap="round" opacity="0.7" />
-              <path d="M 400 445 C 370 450, 340 440, 320 430" stroke="url(#lion-grad-1)" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
-              <path d="M 400 445 C 430 450, 460 440, 480 430" stroke="url(#lion-grad-1)" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
-
-              {/* Lower jaw / chin */}
-              <path d="M 320 430 C 310 460, 330 500, 400 520 C 470 500, 490 460, 480 430" stroke="url(#lion-grad-2)" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
-
-              {/* Chin */}
-              <path d="M 370 520 C 380 540, 400 548, 400 548 C 400 548, 420 540, 430 520" stroke="url(#lion-grad-3)" strokeWidth="2" strokeLinecap="round" opacity="0.4" />
-
-              {/* ── Whisker dots & whiskers ── */}
-              {/* Left whisker pad */}
-              <circle cx="330" cy="420" r="2" fill="#38bdf8" opacity="0.5" />
-              <circle cx="320" cy="430" r="2" fill="#38bdf8" opacity="0.5" />
-              <circle cx="335" cy="435" r="2" fill="#38bdf8" opacity="0.5" />
-              <circle cx="325" cy="415" r="2" fill="#38bdf8" opacity="0.4" />
-              {/* Left whiskers */}
-              <path d="M 310 415 C 250 405, 190 400, 150 395" stroke="url(#lion-grad-2)" strokeWidth="1.5" strokeLinecap="round" opacity="0.35" />
-              <path d="M 310 430 C 250 430, 190 435, 145 440" stroke="url(#lion-grad-2)" strokeWidth="1.5" strokeLinecap="round" opacity="0.35" />
-              <path d="M 315 445 C 260 455, 200 468, 155 478" stroke="url(#lion-grad-2)" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-
-              {/* Right whisker pad */}
-              <circle cx="470" cy="420" r="2" fill="#38bdf8" opacity="0.5" />
-              <circle cx="480" cy="430" r="2" fill="#38bdf8" opacity="0.5" />
-              <circle cx="465" cy="435" r="2" fill="#38bdf8" opacity="0.5" />
-              <circle cx="475" cy="415" r="2" fill="#38bdf8" opacity="0.4" />
-              {/* Right whiskers */}
-              <path d="M 490 415 C 550 405, 610 400, 650 395" stroke="url(#lion-grad-2)" strokeWidth="1.5" strokeLinecap="round" opacity="0.35" />
-              <path d="M 490 430 C 550 430, 610 435, 655 440" stroke="url(#lion-grad-2)" strokeWidth="1.5" strokeLinecap="round" opacity="0.35" />
-              <path d="M 485 445 C 540 455, 600 468, 645 478" stroke="url(#lion-grad-2)" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-
-              {/* ── Ears ── */}
-              {/* Left ear */}
-              <path d="M 230 210 C 210 160, 230 110, 270 100 C 300 92, 320 110, 310 160 C 300 190, 270 220, 240 240" stroke="url(#lion-grad-1)" strokeWidth="3" strokeLinecap="round" opacity="0.8" />
-              <path d="M 250 190 C 245 160, 255 130, 275 120" stroke="url(#lion-grad-2)" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
-
-              {/* Right ear */}
-              <path d="M 570 210 C 590 160, 570 110, 530 100 C 500 92, 480 110, 490 160 C 500 190, 530 220, 560 240" stroke="url(#lion-grad-1)" strokeWidth="3" strokeLinecap="round" opacity="0.8" />
-              <path d="M 550 190 C 555 160, 545 130, 525 120" stroke="url(#lion-grad-2)" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
-
-              {/* ── Forehead details ── */}
-              <path d="M 350 200 C 370 190, 400 185, 400 185 C 400 185, 430 190, 450 200" stroke="url(#lion-grad-2)" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-              <path d="M 360 220 C 380 212, 400 210, 400 210 C 400 210, 420 212, 440 220" stroke="url(#lion-grad-2)" strokeWidth="1" strokeLinecap="round" opacity="0.25" />
-
-              {/* ── Cheek fur lines ── */}
-              <path d="M 210 380 C 230 390, 250 395, 270 390" stroke="url(#lion-grad-3)" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-              <path d="M 215 410 C 235 415, 255 420, 275 415" stroke="url(#lion-grad-3)" strokeWidth="1.5" strokeLinecap="round" opacity="0.25" />
-              <path d="M 590 380 C 570 390, 550 395, 530 390" stroke="url(#lion-grad-3)" strokeWidth="1.5" strokeLinecap="round" opacity="0.3" />
-              <path d="M 585 410 C 565 415, 545 420, 525 415" stroke="url(#lion-grad-3)" strokeWidth="1.5" strokeLinecap="round" opacity="0.25" />
-            </svg>
+            {/* ── Interactive Lion SVG Background (tracks cursor & mouse movement) ── */}
+            <InteractiveLionSvg />
 
             {/* Existing ambient glow orbs */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-sky-500/8 via-indigo-500/4 to-transparent rounded-full blur-3xl" />
-            <div className="absolute top-40 left-20 w-72 h-72 bg-violet-500/5 rounded-full blur-3xl animate-pulse-slow" />
-            <div className="absolute top-60 right-20 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl animate-pulse-slower" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-sky-500/8 via-indigo-500/4 to-transparent rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute top-40 left-20 w-72 h-72 bg-violet-500/5 rounded-full blur-3xl animate-pulse-slow pointer-events-none" />
+            <div className="absolute top-60 right-20 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl animate-pulse-slower pointer-events-none" />
             {/* Grid pattern */}
             <div
-              className="absolute inset-0 opacity-[0.03]"
+              className="absolute inset-0 opacity-[0.03] pointer-events-none"
               style={{
                 backgroundImage: `linear-gradient(rgba(148,163,184,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.3) 1px, transparent 1px)`,
                 backgroundSize: "60px 60px",
