@@ -17,6 +17,13 @@ ALP versioning tracks two independent axes:
 
 ## Toolchain
 
+### 86.0.0 — Swarm Neuromorphic Reasoning Mesh & Adaptive Synapse Optimizer
+
+- **`NeuromorphicSpikeMesh`**: Spike-timing-dependent plasticity (STDP) neural graph orchestration.
+- **Express API**: Mounted `/api/neuromorphic` REST endpoints for spike propagation and synapse tuning.
+- **Studio Interface**: Built interactive `NeuromorphicStudioPage.jsx` (`/neuromorphic-studio`).
+- **Unit Testing**: Vitest test suite `parser/tests/neuromorphic-engine.test.ts` passing 100%.
+
 ### 85.0.0 — Physical Digital Twin & Quantum Compiler Engine
 
 - **Digital Twin Sync Engine** (`DigitalTwinSyncEngine`): Real-time IoT telemetry synchronization with firmware state machines and anomaly threshold detection.

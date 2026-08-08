@@ -31,6 +31,7 @@ const telemetryRoutes = require('./routes/telemetry');
 const federationRoutes = require('./routes/federation');
 const zkProofsRoutes = require('./routes/zk-proofs');
 const digitalTwinRoutes = require('./routes/digital-twin');
+const neuromorphicRoutes = require('./routes/neuromorphic');
 
 const app = express();
 const server = http.createServer(app);
@@ -86,6 +87,7 @@ app.use('/api/telemetry', telemetryRoutes);
 app.use('/api/federation', federationRoutes);
 app.use('/api/zk-proofs', zkProofsRoutes);
 app.use('/api/digital-twin', digitalTwinRoutes);
+app.use('/api/neuromorphic', neuromorphicRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

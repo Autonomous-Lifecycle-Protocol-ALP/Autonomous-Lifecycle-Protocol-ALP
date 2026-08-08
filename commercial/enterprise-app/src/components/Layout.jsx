@@ -38,6 +38,7 @@ const PRIMARY_NAV = [
 ];
 
 const SECONDARY_NAV = [
+  { path: "/neuromorphic-studio", label: "Swarm Neuromorphic Mesh", icon: SparklesIcon },
   { path: "/marketplace", label: "Swarm Marketplace", icon: SparklesIcon },
   { path: "/api-explorer", label: "API Explorer", icon: CodeIcon },
   { path: "/status", label: "System Status", icon: ActivityIcon },

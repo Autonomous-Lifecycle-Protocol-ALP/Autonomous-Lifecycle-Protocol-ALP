@@ -41,6 +41,7 @@ const TeamPage = lazy(() => import("./pages/TeamPage.jsx"));
 const ApiExplorerPage = lazy(() => import("./pages/ApiExplorerPage.jsx"));
 const MarketplacePage = lazy(() => import("./pages/MarketplacePage.jsx"));
 const StatusPage = lazy(() => import("./pages/StatusPage.jsx"));
+const NeuromorphicStudioPage = lazy(() => import("./pages/NeuromorphicStudioPage.jsx"));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center text-gray-300">Loading...</div>
@@ -90,6 +91,7 @@ export default function App() {
             <Route path="api-explorer" element={<Suspense fallback={<PageLoader />}><ApiExplorerPage /></Suspense>} />
             <Route path="marketplace" element={<Suspense fallback={<PageLoader />}><MarketplacePage /></Suspense>} />
             <Route path="status" element={<Suspense fallback={<PageLoader />}><StatusPage /></Suspense>} />
+            <Route path="neuromorphic-studio" element={<Suspense fallback={<PageLoader />}><NeuromorphicStudioPage /></Suspense>} />
             <Route path="products/:id" element={<Suspense fallback={<PageLoader />}><ProductDetailPage /></Suspense>} />
             <Route path="docs" element={<Suspense fallback={<PageLoader />}><DocsPage /></Suspense>} />
             <Route path="hybrid-engineer" element={<Suspense fallback={<PageLoader />}><HybridEngineerPage /></Suspense>} />
