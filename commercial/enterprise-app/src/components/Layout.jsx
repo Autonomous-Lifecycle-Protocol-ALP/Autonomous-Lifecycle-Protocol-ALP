@@ -20,6 +20,11 @@ import {
   LayersIcon,
   ShieldIcon,
   DownloadIcon,
+  SettingsIcon,
+  UsersIcon,
+  CodeIcon,
+  SparklesIcon,
+  ActivityIcon,
 } from "./Icons.jsx";
 import { LuChevronDown } from "react-icons/lu";
 
@@ -33,6 +38,11 @@ const PRIMARY_NAV = [
 ];
 
 const SECONDARY_NAV = [
+  { path: "/marketplace", label: "Swarm Marketplace", icon: SparklesIcon },
+  { path: "/api-explorer", label: "API Explorer", icon: CodeIcon },
+  { path: "/status", label: "System Status", icon: ActivityIcon },
+  { path: "/team", label: "Team & Governance", icon: UsersIcon },
+  { path: "/settings", label: "Settings", icon: SettingsIcon },
   { path: "/downloads", label: "Downloads", icon: DownloadIcon },
   { path: "/federation-studio", label: "Swarm Federation", icon: LayersIcon },
   { path: "/zk-proofs", label: "ZK Policy Proofs", icon: ShieldIcon },

@@ -69,6 +69,17 @@ export const MonitorIcon = wrap(Lu.LuMonitor);
 export const SmartphoneIcon = wrap(Lu.LuSmartphone);
 export const HardDriveIcon = wrap(Lu.LuHardDrive);
 export const ExternalLinkIcon = wrap(Lu.LuExternalLink);
-
-
-
+export const SettingsIcon = wrap(Lu.LuSettings);
+export const KeyIcon = wrap(Lu.LuKey);
+export const UserIcon = wrap(Lu.LuUser);
+export const SendIcon = wrap(Lu.LuSend);
+export const PlusIcon = wrap(Lu.LuPlus);
+export const TrashIcon = wrap(Lu.LuTrash2);
+export const GlobeIcon = wrap(Lu.LuGlobe);
+export const CpuIcon = wrap(Lu.LuCpu);
+export const DatabaseIcon = wrap(Lu.LuDatabase);
+export const RadioIcon = wrap(Lu.LuRadio);
+export const StarIcon = wrap(Lu.LuStar);
+export const UploadIcon = wrap(Lu.LuUpload);
+export const FolderIcon = wrap(Lu.LuFolder);
+export const FileCodeIcon = wrap(Lu.LuFileCode);

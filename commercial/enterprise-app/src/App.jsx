@@ -36,6 +36,11 @@ const EcosystemPage = lazy(() => import("./pages/EcosystemPage.jsx"));
 const FederationStudioPage = lazy(() => import("./pages/FederationStudioPage.jsx"));
 const ZKProofStudioPage = lazy(() => import("./pages/ZKProofStudioPage.jsx"));
 const DownloadsPage = lazy(() => import("./pages/DownloadsPage.jsx"));
+const SettingsPage = lazy(() => import("./pages/SettingsPage.jsx"));
+const TeamPage = lazy(() => import("./pages/TeamPage.jsx"));
+const ApiExplorerPage = lazy(() => import("./pages/ApiExplorerPage.jsx"));
+const MarketplacePage = lazy(() => import("./pages/MarketplacePage.jsx"));
+const StatusPage = lazy(() => import("./pages/StatusPage.jsx"));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center text-gray-300">Loading...</div>
@@ -80,6 +85,11 @@ export default function App() {
             <Route path="federation-studio" element={<Suspense fallback={<PageLoader />}><FederationStudioPage /></Suspense>} />
             <Route path="zk-proofs" element={<Suspense fallback={<PageLoader />}><ZKProofStudioPage /></Suspense>} />
             <Route path="downloads" element={<Suspense fallback={<PageLoader />}><DownloadsPage /></Suspense>} />
+            <Route path="settings" element={<Suspense fallback={<PageLoader />}><SettingsPage /></Suspense>} />
+            <Route path="team" element={<Suspense fallback={<PageLoader />}><TeamPage /></Suspense>} />
+            <Route path="api-explorer" element={<Suspense fallback={<PageLoader />}><ApiExplorerPage /></Suspense>} />
+            <Route path="marketplace" element={<Suspense fallback={<PageLoader />}><MarketplacePage /></Suspense>} />
+            <Route path="status" element={<Suspense fallback={<PageLoader />}><StatusPage /></Suspense>} />
             <Route path="products/:id" element={<Suspense fallback={<PageLoader />}><ProductDetailPage /></Suspense>} />
             <Route path="docs" element={<Suspense fallback={<PageLoader />}><DocsPage /></Suspense>} />
             <Route path="hybrid-engineer" element={<Suspense fallback={<PageLoader />}><HybridEngineerPage /></Suspense>} />
