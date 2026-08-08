@@ -1,6 +1,18 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useEffect } from "react";
-import { DashboardIcon, ServerIcon, SecurityIcon, ProductsIcon } from "../components/Icons.jsx";
+import {
+  DashboardIcon,
+  ServerIcon,
+  SecurityIcon,
+  ProductsIcon,
+  SearchIcon,
+  FilterIcon,
+  SparklesIcon,
+  LayersIcon,
+  ArrowRightIcon,
+  CheckCircleIcon,
+  ZapIcon
+} from "../components/Icons.jsx";
 import { trackCatalogView, trackProductClick } from "../utils/analytics.js";
 
 const PRODUCTS = [
@@ -160,169 +172,188 @@ const PRODUCTS = [
   },
 ];
 
+const CATEGORIES = ["All", "SaaS", "Platform", "Security", "DevOps", "Analytics", "Agent Persona", "EDA Platform"];
+
 export { PRODUCTS };
+
 export default function ProductsPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
   useEffect(() => {
     trackCatalogView();
   }, []);
 
+  const filteredProducts = PRODUCTS.filter((p) => {
+    const matchesSearch =
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.tagline.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || p.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-100">ALP Product Suite</h1>
-        <p className="text-gray-400 mt-2">The complete ecosystem for autonomous software, quantum, and physical engineering</p>
-      </div>
+    <div className="space-y-8 max-w-7xl mx-auto text-slate-100">
+      {/* Hero Header */}
+      <div className="card-glass p-8 rounded-3xl text-center space-y-4 relative overflow-hidden">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-mono font-medium badge-glow">
+          <SparklesIcon size="sm" /> 14 Commercial Enterprise Studios
+        </div>
+        <h1 className="text-4xl font-extrabold gradient-text tracking-tight">
+          ALP Autonomous Product Ecosystem
+        </h1>
+        <p className="text-slate-400 text-sm max-w-2xl mx-auto">
+          Open-core autonomous engineering platform for software, quantum, hardware, and physical systems.
+        </p>
 
-      <div className="glass-dark rounded-xl shadow-lg border border-gray-700 p-6">
-        <h2 className="text-lg font-semibold mb-4 text-gray-200">Existing Products</h2>
-        <div className="grid md:grid-cols-2 gap-4 text-sm">
-          <div className="border border-gray-700 rounded-lg p-3 flex items-start gap-3 glass-dark">
-            <DashboardIcon size="md" className="text-sky-400 flex-shrink-0 mt-0.5" />
-            <div>
-              <span className="font-medium text-sky-300">ALP CLI &amp; Parser</span>
-              <span className="float-right text-gray-500">Open Source</span>
-              <p className="text-xs text-gray-500 mt-1">Core protocol engine — parsing, DAG topological sort, CLI interface</p>
-            </div>
+        {/* Search & Category Filter Controls */}
+        <div className="pt-4 flex flex-col md:flex-row justify-center items-center gap-4 max-w-3xl mx-auto">
+          <div className="relative w-full md:w-96">
+            <SearchIcon className="absolute left-3.5 top-3 text-slate-400" size="sm" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search products, technologies, or integrations..."
+              className="w-full bg-slate-950/90 text-slate-200 text-xs pl-10 pr-4 py-2.5 rounded-xl border border-slate-800 focus:border-sky-500 focus:outline-none custom-scrollbar shadow-inner"
+            />
           </div>
-          <div className="border border-gray-700 rounded-lg p-3 flex items-start gap-3 glass-dark">
-            <ServerIcon size="md" className="text-sky-400 flex-shrink-0 mt-0.5" />
-            <div>
-              <span className="font-medium text-sky-300">ALP SDKs (TS, Python, Go, Rust, Java)</span>
-              <span className="float-right text-gray-500">Open Source</span>
-              <p className="text-xs text-gray-500 mt-1">Multi-language SDK parity with full graph, workspace, and event mesh APIs</p>
-            </div>
-          </div>
-          <div className="border border-gray-700 rounded-lg p-3 flex items-start gap-3 glass-dark">
-            <ServerIcon size="md" className="text-purple-400 flex-shrink-0 mt-0.5" />
-            <div>
-              <span className="font-medium text-sky-300">SHAM IDE</span>
-              <span className="float-right text-purple-400">Pro/Enterprise</span>
-              <p className="text-xs text-gray-500 mt-1">Cross-platform desktop IDE — Monaco editor, agent manager, MCP browser</p>
-            </div>
-          </div>
-          <div className="border border-gray-700 rounded-lg p-3 flex items-start gap-3 glass-dark">
-            <ProductsIcon size="md" className="text-purple-400 flex-shrink-0 mt-0.5" />
-            <div>
-              <span className="font-medium text-sky-300">Swarm Marketplace</span>
-              <span className="float-right text-purple-400">Pro/Enterprise</span>
-              <p className="text-xs text-gray-500 mt-1">Autonomous agent skill registration, discovery, invocation, and metering</p>
-            </div>
-          </div>
-          <div className="border border-gray-700 rounded-lg p-3 flex items-start gap-3 glass-dark">
-            <ServerIcon size="md" className="text-sky-400 flex-shrink-0 mt-0.5" />
-            <div>
-              <span className="font-medium text-sky-300">ALP MCP Server</span>
-              <span className="float-right text-gray-500">Open Source</span>
-              <p className="text-xs text-gray-500 mt-1">52 MCP tools for Claude Desktop, Cursor, Windsurf integration</p>
-            </div>
-          </div>
-          <div className="border border-gray-700 rounded-lg p-3 flex items-start gap-3 glass-dark">
-            <DashboardIcon size="md" className="text-sky-400 flex-shrink-0 mt-0.5" />
-            <div>
-              <span className="font-medium text-sky-300">alp-vscode Extension</span>
-              <span className="float-right text-gray-500">Open Source</span>
-              <p className="text-xs text-gray-500 mt-1">Language server with IntelliSense, DAG visualizer, diagnostics</p>
-            </div>
+
+          <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1 custom-scrollbar">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-xl transition-smooth whitespace-nowrap ${
+                  selectedCategory === cat
+                    ? "bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-lg shadow-sky-500/20"
+                    : "bg-slate-900/80 text-slate-400 hover:text-slate-200 border border-slate-800"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
-      <div className="glass-dark rounded-xl shadow-lg border border-gray-700 p-6">
-        <h2 className="text-lg font-semibold mb-4 text-gray-200">Planned Products</h2>
-        <p className="text-sm text-gray-400 mb-4">Products under development — building on the ALP open-core foundation</p>
+      {/* Open Source Foundation Cards */}
+      <div className="card-glass rounded-2xl p-6 space-y-4">
+        <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
+          <DashboardIcon className="text-sky-400" />
+          <span>Open-Core Protocol Foundation (Free &amp; Open Source)</span>
+        </h2>
+        <div className="grid md:grid-cols-3 gap-4 text-xs">
+          <div className="bg-slate-950/80 border border-slate-800/80 p-4 rounded-xl space-y-1 hover:border-sky-500/40 transition">
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-sky-300">ALP CLI &amp; Core Engine</span>
+              <span className="text-[10px] text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2 py-0.5 rounded font-mono">Open Source</span>
+            </div>
+            <p className="text-slate-400 text-[11px]">Topological DAG sorting, Merkle reasoning verification, multi-language parser</p>
+          </div>
 
-        <div className="space-y-4">
-          {PRODUCTS.map((product) => (
-            <Link key={product.id} to={`/products/${product.id}`} className="block border border-gray-700 rounded-lg p-5 glass-dark hover:border-gray-500 transition-colors" onClick={() => trackProductClick(product.id, product.name, 'catalog_card')}>
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-start gap-3">
-                  <div className="p-2 bg-gray-800/40 rounded-lg flex-shrink-0 mt-0.5">
-                    {product.category === "Agent Persona" || product.category === "AI Agent" ? (
-                      <SecurityIcon size="md" className="text-sky-400" />
-                    ) : product.category === "Marketplace" ? (
-                      <ProductsIcon size="md" className="text-purple-400" />
-                    ) : (
-                      <DashboardIcon size="md" className="text-indigo-400" />
-                    )}
+          <div className="bg-slate-950/80 border border-slate-800/80 p-4 rounded-xl space-y-1 hover:border-sky-500/40 transition">
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-sky-300">Polyglot SDKs (TS, Go, Py, Rust, Java)</span>
+              <span className="text-[10px] text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2 py-0.5 rounded font-mono">Open Source</span>
+            </div>
+            <p className="text-slate-400 text-[11px]">100% feature-parity graph execution, event mesh, and policy gate APIs</p>
+          </div>
+
+          <div className="bg-slate-950/80 border border-slate-800/80 p-4 rounded-xl space-y-1 hover:border-sky-500/40 transition">
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-indigo-300">SHAM Desktop IDE</span>
+              <span className="text-[10px] text-indigo-400 bg-indigo-950/40 border border-indigo-800/40 px-2 py-0.5 rounded font-mono">Pro / Enterprise</span>
+            </div>
+            <p className="text-slate-400 text-[11px]">Cross-platform desktop packaging (macOS DMG, Linux AppImage, Windows MSI)</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Product Catalog Grid */}
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+            <ProductsIcon className="text-indigo-400" />
+            <span>Commercial Enterprise Product Suite ({filteredProducts.length})</span>
+          </h2>
+          {searchQuery && (
+            <span className="text-xs text-slate-400">
+              Showing results for &ldquo;<span className="text-sky-300 font-semibold">{searchQuery}</span>&rdquo;
+            </span>
+          )}
+        </div>
+
+        {filteredProducts.length === 0 ? (
+          <div className="card-glass text-center py-12 rounded-2xl text-slate-400 text-sm">
+            No products found matching your search query.
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {filteredProducts.map((product) => (
+              <Link
+                key={product.id}
+                to={`/products/${product.id}`}
+                onClick={() => trackProductClick(product.id, product.name, "catalog_card")}
+                className="card-glass rounded-2xl p-6 space-y-4 hover:border-sky-500/50 group transition-smooth flex flex-col justify-between"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 text-sky-400 group-hover:border-sky-500/40 transition">
+                        {product.category === "Security" ? (
+                          <SecurityIcon size="md" />
+                        ) : product.category === "SaaS" ? (
+                          <ServerIcon size="md" />
+                        ) : (
+                          <LayersIcon size="md" />
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-extrabold text-slate-100 group-hover:text-sky-300 transition">
+                          {product.name}
+                        </h3>
+                        <p className="text-xs text-slate-400">{product.tagline}</p>
+                      </div>
+                    </div>
+                    <span
+                      className={`text-[10px] font-mono font-semibold px-2.5 py-1 rounded-full border ${
+                        product.status === "Beta"
+                          ? "bg-sky-950/50 text-sky-300 border-sky-800/60"
+                          : product.status === "Alpha"
+                          ? "bg-purple-950/50 text-purple-300 border-purple-800/60"
+                          : "bg-slate-900/60 text-slate-400 border-slate-800"
+                      }`}
+                    >
+                      {product.status}
+                    </span>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-gray-100">{product.name}</h3>
-                    <p className="text-sm text-gray-400">{product.tagline}</p>
+
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    {product.description}
+                  </p>
+
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {product.features.map((f) => (
+                      <span key={f} className="text-[11px] bg-slate-950/90 text-slate-300 border border-slate-800 px-2.5 py-0.5 rounded-lg">
+                        {f}
+                      </span>
+                    ))}
                   </div>
                 </div>
-                <span className={`px-2 py-1 text-xs rounded ${
-                  product.status === "Beta" ? "bg-blue-900/30 text-blue-300" :
-                  product.status === "Alpha" ? "bg-purple-900/30 text-purple-300" :
-                  "bg-gray-700/40 text-gray-400"
-                }`}>
-                  {product.status}
-                </span>
-              </div>
 
-              <div className="grid md:grid-cols-3 gap-4 text-sm mb-4">
-                <div>
-                  <span className="text-gray-500">Category</span>
-                  <span className="font-medium block text-gray-300">{product.category}</span>
-                </div>
-                <div>
-                  <span className="text-gray-500">Pricing</span>
-                  <span className="font-medium block text-gray-300">{product.tier}</span>
-                </div>
-                <div>
-                  <span className="text-gray-500">ALP Integration</span>
-                  <span className="font-medium block text-xs text-gray-400">{product.integration}</span>
-                </div>
-              </div>
-
-              <p className="text-sm text-gray-300 mb-3">{product.description}</p>
-
-              <div className="flex flex-wrap gap-2">
-                {product.features.map((f) => (
-                  <span key={f} className="px-2 py-1 text-xs bg-gray-800/40 text-gray-300 rounded">
-                    {f}
+                <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
+                  <span className="text-slate-400 font-medium">{product.tier}</span>
+                  <span className="text-sky-400 font-semibold group-hover:translate-x-1 transition-smooth flex items-center gap-1">
+                    View Details &amp; Sandbox <ArrowRightIcon size="sm" />
                   </span>
-                ))}
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      <div className="glass-dark rounded-xl shadow-lg border border-gray-700 p-6">
-        <h2 className="text-lg font-semibold mb-4 text-gray-200">Revenue Impact Projection</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-700">
-                <th className="text-left pb-2 text-gray-300">Product</th>
-                <th className="text-left pb-2 text-gray-300">Price</th>
-                <th className="text-left pb-2 text-gray-300">Est. Customers (Year 1)</th>
-                <th className="text-right pb-2 text-gray-300">Year 1 Revenue</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-gray-700"><td className="py-2 text-gray-300">ALP Cloud Workspace</td><td>$49–$999/mo</td><td>200 teams</td><td className="text-right">$2.4M</td></tr>
-              <tr className="border-b border-gray-700"><td className="py-2 text-gray-300">ALP Mobile App</td><td>$4.99/mo</td><td>5,000 users</td><td className="text-right">$300K</td></tr>
-              <tr className="border-b border-gray-700"><td className="py-2 text-gray-300">ALP Agent Studio</td><td>$99/mo</td><td>150 teams</td><td className="text-right">$180K</td></tr>
-              <tr className="border-b border-gray-700"><td className="py-2 text-gray-300">ALP Security Scanner</td><td>$149–$2,499/mo</td><td>80 teams</td><td className="text-right">$800K</td></tr>
-              <tr className="border-b border-gray-700"><td className="py-2 text-gray-300">ALP Analytics &amp; BI</td><td>$79–$499/mo</td><td>300 teams</td><td className="text-right">$600K</td></tr>
-              <tr className="border-b border-gray-700"><td className="py-2 text-gray-300">ALP DevOps Bridge</td><td>$199/mo</td><td>100 teams</td><td className="text-right">$240K</td></tr>
-              <tr className="border-b border-gray-700"><td className="py-2 text-gray-300">ALP AI Model Hub</td><td>15% fee</td><td>2% of $5M usage</td><td className="text-right">$75K</td></tr>
-              <tr className="border-b border-gray-700"><td className="py-2 text-gray-300">ALP Data Pipeline Studio</td><td>+$2,000/mo</td><td>10 teams</td><td className="text-right">$240K</td></tr>
-              <tr className="border-b border-gray-700"><td className="py-2 text-gray-300">ALP Hybrid Engineer AI</td><td>$199/mo</td><td>200 teams</td><td className="text-right">$480K</td></tr>
-              <tr className="border-b border-gray-700"><td className="py-2 text-gray-300">ALP Quantum Engineering AI</td><td>$299/mo</td><td>50 teams</td><td className="text-right">$180K</td></tr>
-              <tr className="border-b border-gray-700"><td className="py-2 text-gray-300">ALP Chip Design Studio</td><td>$499/mo</td><td>30 teams</td><td className="text-right">$180K</td></tr>
-              <tr className="border-b border-gray-700"><td className="py-2 text-gray-300">ALP SOC Sentinel AI</td><td>$299/mo</td><td>150 teams</td><td className="text-right">$540K</td></tr>
-              <tr className="border-b border-gray-700"><td className="py-2 text-gray-300">ALP Threat Intel Engine</td><td>$199/mo</td><td>250 teams</td><td className="text-right">$500K</td></tr>
-              <tr><td className="py-2 text-gray-300">ALP Zero Trust Orchestrator</td><td>$399/mo</td><td>100 teams</td><td className="text-right">$480K</td></tr>
-            </tbody>
-          </table>
-          <div className="border-t border-gray-700 pt-3 mt-3 text-right">
-            <span className="font-bold text-lg text-sky-300">Total Year 1: $7.0M ARR</span>
+                </div>
+              </Link>
+            ))}
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
 }
-

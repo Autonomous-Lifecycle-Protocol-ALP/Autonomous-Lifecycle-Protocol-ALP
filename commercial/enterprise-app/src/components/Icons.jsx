@@ -58,5 +58,10 @@ export const BellIcon = wrap(Lu.LuBell);
 export const ActivityIcon = wrap(Lu.LuActivity);
 export const ArrowRightIcon = wrap(Lu.LuArrowRight);
 export const CheckCircleIcon = wrap(Lu.LuCircleCheck);
+export const SearchIcon = wrap(Lu.LuSearch);
+export const FilterIcon = wrap(Lu.LuFilter);
+export const PlayIcon = wrap(Lu.LuPlay);
+export const SlidersIcon = wrap(Lu.LuSlidersHorizontal);
+
 
 
