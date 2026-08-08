@@ -145,7 +145,7 @@ func (cb *CircuitBreaker) IsOpen(taskID string) bool {
 		return false
 	}
 	last := cb.lastFailureTS[taskID]
-	if time.Since(last) > cb.RecoveryTimeout {
+	if cb.RecoveryTimeout > 0 && time.Since(last) > cb.RecoveryTimeout {
 		delete(cb.failures, taskID)
 		delete(cb.lastFailureTS, taskID)
 		return false

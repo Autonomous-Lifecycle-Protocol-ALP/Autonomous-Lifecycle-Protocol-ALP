@@ -19,7 +19,7 @@ export default defineConfig({
   ],
   webServer: [
     {
-      command: 'node tests\\e2e\\start-for-tests.mjs',
+      command: 'node tests/e2e/start-for-tests.mjs',
       url: 'http://localhost:5174',
       reuseExistingServer: true,
       timeout: 180 * 1000,

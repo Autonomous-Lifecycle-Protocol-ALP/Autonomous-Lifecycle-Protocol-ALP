@@ -119,11 +119,14 @@ impl ProtocolBridge {
 
         let steps = get_array(&wf, "steps");
         for step_raw in steps {
-            let step: HashMap<String, serde_json::Value> = step_raw.as_object()
+            let step: HashMap<String, serde_json::Value> = step_raw
+                .as_object()
                 .map(|o| o.iter().map(|(k, v)| (k.clone(), v.clone())).collect())
                 .unwrap_or_default();
-            let step_name = get_str_map(&serde_json::Value::Object(step.clone().into_iter().collect()))
-                .unwrap_or_else(|| format!("step-{}", step_idx));
+            let step_name = get_str_map(&serde_json::Value::Object(
+                step.clone().into_iter().collect(),
+            ))
+            .unwrap_or_else(|| format!("step-{}", step_idx));
             let path = format!("/{}", step_name);
             step_idx += 1;
             let request_body = serde_json::json!({
@@ -186,8 +189,10 @@ impl ProtocolBridge {
     ) -> (HashMap<String, serde_json::Value>, Vec<String>) {
         let mut warnings = Vec::new();
         let info = get_object(spec, "info");
-        let title = get_str_map(&serde_json::Value::Object(info.clone().into_iter().collect()))
-            .unwrap_or_else(|| "imported-workflow".to_string());
+        let title = get_str_map(&serde_json::Value::Object(
+            info.clone().into_iter().collect(),
+        ))
+        .unwrap_or_else(|| "imported-workflow".to_string());
         let wf_id = title.replace(" ", "-").to_lowercase();
         let mut steps = Vec::new();
 
@@ -198,9 +203,14 @@ impl ProtocolBridge {
                 for (_, details_raw) in methods {
                     let details = details_raw.as_object();
                     if let Some(details) = details {
-                        let details_map: HashMap<String, serde_json::Value> = details.iter().map(|(k, v)| (k.clone(), v.clone())).collect();
-                        let op_id = get_str_map(&serde_json::Value::Object(details_map.into_iter().collect()))
-                            .unwrap_or_else(|| path.trim_start_matches('/').to_string());
+                        let details_map: HashMap<String, serde_json::Value> = details
+                            .iter()
+                            .map(|(k, v)| (k.clone(), v.clone()))
+                            .collect();
+                        let op_id = get_str_map(&serde_json::Value::Object(
+                            details_map.into_iter().collect(),
+                        ))
+                        .unwrap_or_else(|| path.trim_start_matches('/').to_string());
                         steps.push(serde_json::json!({"id": op_id, "name": op_id, "type": "step"}));
                         break;
                     }
@@ -240,12 +250,15 @@ impl ProtocolBridge {
         let mut lines = vec![format!("type {} {{", type_name)];
         let steps = get_array(&wf, "steps");
         for step_raw in steps {
-            let step: HashMap<String, serde_json::Value> = step_raw.as_object()
+            let step: HashMap<String, serde_json::Value> = step_raw
+                .as_object()
                 .map(|o| o.iter().map(|(k, v)| (k.clone(), v.clone())).collect())
                 .unwrap_or_default();
-            let name = get_str_map(&serde_json::Value::Object(step.clone().into_iter().collect()))
-                .unwrap_or_else(|| "step".to_string())
-                .replace("-", "_");
+            let name = get_str_map(&serde_json::Value::Object(
+                step.clone().into_iter().collect(),
+            ))
+            .unwrap_or_else(|| "step".to_string())
+            .replace("-", "_");
             lines.push(format!("  {}: String", name));
         }
         lines.push("}".to_string());
@@ -330,12 +343,15 @@ impl ProtocolBridge {
         ];
         let steps = get_array(&wf, "steps");
         for step_raw in &steps {
-            let step: HashMap<String, serde_json::Value> = step_raw.as_object()
+            let step: HashMap<String, serde_json::Value> = step_raw
+                .as_object()
                 .map(|o| o.iter().map(|(k, v)| (k.clone(), v.clone())).collect())
                 .unwrap_or_default();
-            let name = get_str_map(&serde_json::Value::Object(step.clone().into_iter().collect()))
-                .unwrap_or_else(|| "step".to_string())
-                .replace("-", "_");
+            let name = get_str_map(&serde_json::Value::Object(
+                step.clone().into_iter().collect(),
+            ))
+            .unwrap_or_else(|| "step".to_string())
+            .replace("-", "_");
             lines.push(format!(
                 "  rpc {}({}Request) returns ({}Response);",
                 name, name, name
@@ -344,12 +360,15 @@ impl ProtocolBridge {
         lines.push("}".to_string());
         lines.push("".to_string());
         for step_raw in &steps {
-            let step: HashMap<String, serde_json::Value> = step_raw.as_object()
+            let step: HashMap<String, serde_json::Value> = step_raw
+                .as_object()
                 .map(|o| o.iter().map(|(k, v)| (k.clone(), v.clone())).collect())
                 .unwrap_or_default();
-            let name = get_str_map(&serde_json::Value::Object(step.clone().into_iter().collect()))
-                .unwrap_or_else(|| "step".to_string())
-                .replace("-", "_");
+            let name = get_str_map(&serde_json::Value::Object(
+                step.clone().into_iter().collect(),
+            ))
+            .unwrap_or_else(|| "step".to_string())
+            .replace("-", "_");
             lines.push(format!("message {}Request {{", name));
             lines.push("  string input = 1;".to_string());
             lines.push("}".to_string());
@@ -424,11 +443,14 @@ impl ProtocolBridge {
         let mut channels = HashMap::new();
         let steps = get_array(&wf, "steps");
         for step_raw in steps {
-            let step: HashMap<String, serde_json::Value> = step_raw.as_object()
+            let step: HashMap<String, serde_json::Value> = step_raw
+                .as_object()
                 .map(|o| o.iter().map(|(k, v)| (k.clone(), v.clone())).collect())
                 .unwrap_or_default();
-            let name = get_str_map(&serde_json::Value::Object(step.clone().into_iter().collect()))
-                .unwrap_or_else(|| "step".to_string());
+            let name = get_str_map(&serde_json::Value::Object(
+                step.clone().into_iter().collect(),
+            ))
+            .unwrap_or_else(|| "step".to_string());
             let channel_name = format!("{}/{}", wf_id, name);
             channels.insert(channel_name, serde_json::json!({
                 "publish": {
@@ -462,8 +484,10 @@ impl ProtocolBridge {
     ) -> (HashMap<String, serde_json::Value>, Vec<String>) {
         let mut warnings = Vec::new();
         let info = get_object(spec, "info");
-        let title = get_str_map(&serde_json::Value::Object(info.clone().into_iter().collect()))
-            .unwrap_or_else(|| "imported-asyncapi-workflow".to_string());
+        let title = get_str_map(&serde_json::Value::Object(
+            info.clone().into_iter().collect(),
+        ))
+        .unwrap_or_else(|| "imported-asyncapi-workflow".to_string());
         let wf_id = title.replace(" ", "-").to_lowercase();
         let mut steps = Vec::new();
 
@@ -471,16 +495,20 @@ impl ProtocolBridge {
         for channel_raw in channels.values() {
             let channel = channel_raw.as_object();
             if let Some(channel) = channel {
-                let pub_msg: HashMap<String, serde_json::Value> = channel.get("publish")
+                let pub_msg: HashMap<String, serde_json::Value> = channel
+                    .get("publish")
                     .and_then(|v| v.as_object())
                     .map(|o| o.iter().map(|(k, v)| (k.clone(), v.clone())).collect())
                     .unwrap_or_default();
-                let msg: HashMap<String, serde_json::Value> = pub_msg.get("message")
+                let msg: HashMap<String, serde_json::Value> = pub_msg
+                    .get("message")
                     .and_then(|v| v.as_object())
                     .map(|o| o.iter().map(|(k, v)| (k.clone(), v.clone())).collect())
                     .unwrap_or_default();
-                let name = get_str_map(&serde_json::Value::Object(msg.clone().into_iter().collect()))
-                    .unwrap_or_else(|| "step".to_string());
+                let name = get_str_map(&serde_json::Value::Object(
+                    msg.clone().into_iter().collect(),
+                ))
+                .unwrap_or_else(|| "step".to_string());
                 steps.push(serde_json::json!({"id": name, "name": name, "type": "step"}));
             }
         }
@@ -510,9 +538,8 @@ impl ProtocolBridge {
     ) -> (serde_json::Value, Vec<String>) {
         let wf = serde_json::Value::Object(workflow.clone().into_iter().collect());
         let warnings = Vec::new();
-        let wf_id = get_str(&wf, "id").unwrap_or_else(|| {
-            get_str(&wf, "name").unwrap_or_else(|| "alp-workflow".to_string())
-        });
+        let wf_id = get_str(&wf, "id")
+            .unwrap_or_else(|| get_str(&wf, "name").unwrap_or_else(|| "alp-workflow".to_string()));
         let mut agent_card = HashMap::new();
         agent_card.insert(
             "@context".to_string(),
@@ -542,13 +569,18 @@ impl ProtocolBridge {
 
         let steps = get_array(&wf, "steps");
         for (idx, step_raw) in steps.iter().enumerate() {
-            let step: HashMap<String, serde_json::Value> = step_raw.as_object()
+            let step: HashMap<String, serde_json::Value> = step_raw
+                .as_object()
                 .map(|o| o.iter().map(|(k, v)| (k.clone(), v.clone())).collect())
                 .unwrap_or_default();
-            let skill_id = get_str_map(&serde_json::Value::Object(step.clone().into_iter().collect()))
-                .unwrap_or_else(|| format!("skill-{:x}", idx));
-            let skill_name = get_str_map(&serde_json::Value::Object(step.clone().into_iter().collect()))
-                .unwrap_or_else(|| "Unknown Skill".to_string());
+            let skill_id = get_str_map(&serde_json::Value::Object(
+                step.clone().into_iter().collect(),
+            ))
+            .unwrap_or_else(|| format!("skill-{:x}", idx));
+            let skill_name = get_str_map(&serde_json::Value::Object(
+                step.clone().into_iter().collect(),
+            ))
+            .unwrap_or_else(|| "Unknown Skill".to_string());
             let skills = agent_card
                 .get_mut("skills")
                 .unwrap()
@@ -561,7 +593,10 @@ impl ProtocolBridge {
                     .unwrap_or_else(|| format!("Step from {}", wf_id))
             }));
         }
-        (serde_json::Value::Object(agent_card.into_iter().collect()), warnings)
+        (
+            serde_json::Value::Object(agent_card.into_iter().collect()),
+            warnings,
+        )
     }
 
     fn import_a2a(
@@ -569,21 +604,32 @@ impl ProtocolBridge {
         spec: &serde_json::Value,
     ) -> (HashMap<String, serde_json::Value>, Vec<String>) {
         let mut warnings = Vec::new();
-        let obj: HashMap<String, serde_json::Value> = spec.as_object()
+        let obj: HashMap<String, serde_json::Value> = spec
+            .as_object()
             .map(|o| o.iter().map(|(k, v)| (k.clone(), v.clone())).collect())
             .unwrap_or_default();
-        let agent_id = get_str_map(&serde_json::Value::Object(obj.clone().into_iter().collect()))
-            .unwrap_or_else(|| "imported-a2a-agent".to_string());
-        let skills = get_array_from_obj(&serde_json::Value::Object(obj.clone().into_iter().collect()), "skills");
+        let agent_id = get_str_map(&serde_json::Value::Object(
+            obj.clone().into_iter().collect(),
+        ))
+        .unwrap_or_else(|| "imported-a2a-agent".to_string());
+        let skills = get_array_from_obj(
+            &serde_json::Value::Object(obj.clone().into_iter().collect()),
+            "skills",
+        );
         let mut steps = Vec::new();
         for (idx, skill_raw) in skills.iter().enumerate() {
-            let skill: HashMap<String, serde_json::Value> = skill_raw.as_object()
+            let skill: HashMap<String, serde_json::Value> = skill_raw
+                .as_object()
                 .map(|o| o.iter().map(|(k, v)| (k.clone(), v.clone())).collect())
                 .unwrap_or_default();
-            let step_id = get_str_map(&serde_json::Value::Object(skill.clone().into_iter().collect()))
-                .unwrap_or_else(|| format!("step-{:x}", idx));
-            let step_name = get_str_map(&serde_json::Value::Object(skill.clone().into_iter().collect()))
-                .unwrap_or_else(|| "Imported Step".to_string());
+            let step_id = get_str_map(&serde_json::Value::Object(
+                skill.clone().into_iter().collect(),
+            ))
+            .unwrap_or_else(|| format!("step-{:x}", idx));
+            let step_name = get_str_map(&serde_json::Value::Object(
+                skill.clone().into_iter().collect(),
+            ))
+            .unwrap_or_else(|| "Imported Step".to_string());
             steps.push(serde_json::json!({
                 "id": step_id,
                 "name": step_name,
@@ -599,8 +645,10 @@ impl ProtocolBridge {
         );
         workflow.insert(
             "name".to_string(),
-            serde_json::Value::String(get_str_map(&serde_json::Value::Object(obj.into_iter().collect()))
-                .unwrap_or_else(|| agent_id)),
+            serde_json::Value::String(
+                get_str_map(&serde_json::Value::Object(obj.into_iter().collect()))
+                    .unwrap_or_else(|| agent_id),
+            ),
         );
         workflow.insert(
             "source_format".to_string(),
