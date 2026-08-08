@@ -9,7 +9,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const alpServerDir = path.resolve(__dirname, '../../alp-server');
 const enterpriseAppDir = __dirname;
 const isWindows = os.platform() === 'win32';
-const shellOption = isWindows ? 'powershell.exe' : true;
+const npmCmd = isWindows ? 'npm.cmd' : 'npm';
+const shellOption = isWindows;
 
 function isPortInUse(port) {
   return new Promise((resolve) => {
@@ -27,7 +28,7 @@ async function startServers() {
   const alpServerRunning = await isPortInUse(5000);
   
   if (!alpServerRunning) {
-    const alpServer = spawn('npm', ['run', 'dev:mongo'], {
+    const alpServer = spawn(npmCmd, ['run', 'dev:mongo'], {
       cwd: alpServerDir,
       shell: shellOption,
       stdio: 'inherit',
@@ -43,7 +44,7 @@ async function startServers() {
     console.log('ALP server already running on port 5000');
   }
 
-  const enterpriseApp = spawn('npm', ['run', 'dev'], {
+  const enterpriseApp = spawn(npmCmd, ['run', 'dev'], {
     cwd: enterpriseAppDir,
     shell: shellOption,
     stdio: 'inherit',

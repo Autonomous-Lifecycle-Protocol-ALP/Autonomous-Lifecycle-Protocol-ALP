@@ -22,6 +22,7 @@ pub struct MemoryEdge {
     pub relation: String,
 }
 
+#[derive(Default)]
 pub struct SemanticGraph {
     nodes: HashMap<String, MemoryNode>,
     edges: Vec<MemoryEdge>,

@@ -94,7 +94,7 @@ pub struct PredictivePolicyEngine {
 }
 
 #[derive(Debug, Clone)]
-pub(crate) struct HistoryEntry {
+pub struct HistoryEntry {
     query: crate::policy::PolicyQuery,
     decision: crate::policy::PolicyDecision,
 }
@@ -259,7 +259,7 @@ impl PredictivePolicyEngine {
 
         for (key, count) in counts {
             let parts: Vec<&str> = key.splitn(2, ':').collect();
-            let kind = parts.get(0).map(|s| s.to_string()).unwrap_or_default();
+            let kind = parts.first().map(|s| s.to_string()).unwrap_or_default();
             let value = parts.get(1).map(|s| s.to_string()).unwrap_or_default();
             let freqs = samples.get(&key).cloned().unwrap_or_default();
             let mean_freq = avg(&freqs);
@@ -291,11 +291,7 @@ impl PredictivePolicyEngine {
         let mut factors = Vec::new();
         let mut score_components: Vec<f64> = Vec::new();
 
-        if profile.is_none() || profile.map(|p| p.sample_count).unwrap_or(0) < self.min_samples {
-            factors.push("insufficient_history".to_string());
-            score_components.push(0.3);
-        } else {
-            let p = profile.unwrap();
+        if let Some(p) = profile.filter(|p| p.sample_count >= self.min_samples) {
             if p.failure_rate > 0.3 {
                 factors.push("high_failure_rate".to_string());
                 score_components.push(p.failure_rate.min(1.0));
@@ -304,6 +300,9 @@ impl PredictivePolicyEngine {
                 factors.push("high_frequency_variance".to_string());
                 score_components.push(0.5);
             }
+        } else {
+            factors.push("insufficient_history".to_string());
+            score_components.push(0.3);
         }
 
         let recent = self

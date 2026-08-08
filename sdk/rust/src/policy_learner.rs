@@ -8,6 +8,7 @@ pub struct PolicyContext {
     pub tags: Vec<String>,
 }
 
+#[derive(Default)]
 pub struct PolicyLearner {
     history: Vec<PolicyContext>,
 }

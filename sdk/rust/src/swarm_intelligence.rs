@@ -22,6 +22,7 @@ pub struct SwarmDecision {
 }
 
 pub struct EmergentBehaviorDetector {
+    #[allow(dead_code)]
     threshold: f64,
 }
 
@@ -71,6 +72,7 @@ impl EmergentBehaviorDetector {
     }
 }
 
+#[derive(Default)]
 pub struct RoleSpecializer;
 
 impl RoleSpecializer {
@@ -121,11 +123,8 @@ impl CollectiveDecisionMaker {
                 participants.push(voter.agent_id.clone());
             }
         }
-        let mut ranked: Vec<_> = votes
-            .into_iter()
-            .map(|(proposal, count)| (proposal, count))
-            .collect();
-        ranked.sort_by(|a, b| b.1.cmp(&a.1));
+        let mut ranked: Vec<_> = votes.into_iter().collect();
+        ranked.sort_by_key(|b| std::cmp::Reverse(b.1));
         if let Some((proposal, vote_count)) = ranked.first() {
             Some(SwarmDecision {
                 decision_id: format!("decision-{}", participants.len()),

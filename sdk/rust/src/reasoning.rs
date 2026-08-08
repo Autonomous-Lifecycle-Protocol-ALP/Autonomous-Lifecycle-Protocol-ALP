@@ -24,6 +24,7 @@ pub struct ReasoningChain {
     pub result: Option<String>,
 }
 
+#[derive(Default)]
 pub struct ReasoningTracer {
     chains: HashMap<String, ReasoningChain>,
     step_counter: usize,

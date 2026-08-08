@@ -115,10 +115,8 @@ impl ProtocolBridge {
             .unwrap_or_else(|| get_str(&wf, "name").unwrap_or_else(|| "_unknown".to_string()));
         let mut paths = HashMap::new();
         let mut schemas = HashMap::new();
-        let mut step_idx = 0;
-
         let steps = get_array(&wf, "steps");
-        for step_raw in steps {
+        for (step_idx, step_raw) in steps.into_iter().enumerate() {
             let step: HashMap<String, serde_json::Value> = step_raw
                 .as_object()
                 .map(|o| o.iter().map(|(k, v)| (k.clone(), v.clone())).collect())
@@ -128,7 +126,6 @@ impl ProtocolBridge {
             ))
             .unwrap_or_else(|| format!("step-{}", step_idx));
             let path = format!("/{}", step_name);
-            step_idx += 1;
             let request_body = serde_json::json!({
                 "content": {
                     "application/json": {
@@ -635,7 +632,7 @@ impl ProtocolBridge {
                 "name": step_name,
                 "type": "step",
                 "description": get_str_map(&serde_json::Value::Object(skill.clone().into_iter().collect()))
-                    .unwrap_or_else(|| "".to_string())
+                    .unwrap_or_default()
             }));
         }
         let mut workflow = HashMap::new();
@@ -647,7 +644,7 @@ impl ProtocolBridge {
             "name".to_string(),
             serde_json::Value::String(
                 get_str_map(&serde_json::Value::Object(obj.into_iter().collect()))
-                    .unwrap_or_else(|| agent_id),
+                    .unwrap_or(agent_id),
             ),
         );
         workflow.insert(
@@ -685,7 +682,7 @@ fn get_object(map: &serde_json::Value, key: &str) -> HashMap<String, serde_json:
 fn get_array(map: &serde_json::Value, key: &str) -> Vec<serde_json::Value> {
     map.get(key)
         .and_then(|v| v.as_array())
-        .map(|a| a.clone())
+        .cloned()
         .unwrap_or_default()
 }
 
