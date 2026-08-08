@@ -1,3 +1,4 @@
+import { ShieldIcon, LogoIcon } from "../components/Icons.jsx";
 import { useState } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -141,7 +142,7 @@ export default function SecurityScannerPage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-200">Key Benefits</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🛡️</div>
+            <div className="text-2xl mb-2 text-rose-400"><ShieldIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Shift-Left Security</h3>
             <p className="text-sm text-gray-400 mt-1">Catch vulnerabilities before they reach production with integrated SAST/DAST.</p>
           </div>
@@ -151,7 +152,7 @@ export default function SecurityScannerPage() {
             <p className="text-sm text-gray-400 mt-1">SOC2, ISO27001, GDPR, HIPAA reports generated automatically.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🤖</div>
+            <div className="text-2xl mb-2 text-sky-400"><LogoIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">AI Remediation</h3>
             <p className="text-sm text-gray-400 mt-1">Automated fix suggestions and pull request generation for common vulnerabilities.</p>
           </div>

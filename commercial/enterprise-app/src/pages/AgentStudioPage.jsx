@@ -1,3 +1,4 @@
+import { AnalyticsIcon, SparklesIcon } from "../components/Icons.jsx";
 import { useState } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -111,7 +112,7 @@ export default function AgentStudioPage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-200">Key Benefits</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🎨</div>
+            <div className="text-2xl mb-2 text-purple-400"><SparklesIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Visual Design</h3>
             <p className="text-sm text-gray-400 mt-1">Drag-and-drop DAG builder with live validation and real-time preview.</p>
           </div>
@@ -121,7 +122,7 @@ export default function AgentStudioPage() {
             <p className="text-sm text-gray-400 mt-1">Test agents in isolation before production with full state replay.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">📊</div>
+            <div className="text-2xl mb-2 text-blue-400"><AnalyticsIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">A/B Testing</h3>
             <p className="text-sm text-gray-400 mt-1">Compare agent versions side-by-side with statistical significance testing.</p>
           </div>

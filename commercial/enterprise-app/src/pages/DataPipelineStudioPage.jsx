@@ -1,3 +1,4 @@
+import { ProductsIcon } from "../components/Icons.jsx";
 import { useState } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -140,7 +141,7 @@ export default function DataPipelineStudioPage() {
             <p className="text-sm text-gray-400 mt-1">ML experiment tracking with model registry and versioning.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">📦</div>
+            <div className="text-2xl mb-2 text-indigo-400"><ProductsIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Schema Evolution</h3>
             <p className="text-sm text-gray-400 mt-1">ALP @contract enforced schema registry with migration automation.</p>
           </div>

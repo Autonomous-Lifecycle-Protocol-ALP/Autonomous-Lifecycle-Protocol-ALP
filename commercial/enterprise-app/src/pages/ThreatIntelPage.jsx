@@ -1,3 +1,4 @@
+import { ReasoningIcon, CheckCircleIcon, ManufacturingIcon } from "../components/Icons.jsx";
 import { useState, useEffect } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -123,17 +124,17 @@ export default function ThreatIntelPage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-200">Key Benefits</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🎯</div>
+            <div className="text-2xl mb-2 text-sky-400"><CheckCircleIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Proactive Hunting</h3>
             <p className="text-sm text-gray-400 mt-1">Find threats before they impact production with continuous scanning.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🧠</div>
+            <div className="text-2xl mb-2 text-sky-400"><ReasoningIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Adversarial Modeling</h3>
             <p className="text-sm text-gray-400 mt-1">Predict likely attack vectors with ML-powered threat actor profiling.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🔧</div>
+            <div className="text-2xl mb-2 text-orange-400"><ManufacturingIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Automated Remediation</h3>
             <p className="text-sm text-gray-400 mt-1">Generate ALP @task objects for vulnerability remediation with priority scoring.</p>
           </div>

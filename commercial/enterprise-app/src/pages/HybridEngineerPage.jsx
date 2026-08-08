@@ -231,12 +231,12 @@ export default function HybridEngineerPage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-200">Key Benefits</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">⚡</div>
+            <div className="text-2xl mb-2 text-amber-400"><ZapIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Cross-Domain Synthesis</h3>
             <p className="text-sm text-gray-400 mt-1">Firmware, CAD, simulation, and manufacturing tasks coordinate through ALP DAGs — no manual handoffs.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🛡️</div>
+            <div className="text-2xl mb-2 text-rose-400"><ShieldIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Safety-Critical Enforcement</h3>
             <p className="text-sm text-gray-400 mt-1">@policy blocks dangerous operations until simulation, verification, and human approval gates pass.</p>
           </div>

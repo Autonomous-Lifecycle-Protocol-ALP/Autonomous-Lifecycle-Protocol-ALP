@@ -1,3 +1,4 @@
+import { SavingsIcon } from "../components/Icons.jsx";
 import { useState, useEffect } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -158,7 +159,7 @@ export default function AnalyticsBiPage() {
             <p className="text-sm text-gray-400 mt-1">Forecast completion dates and resource needs before they impact delivery.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">💰</div>
+            <div className="text-2xl mb-2 text-emerald-400"><SavingsIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Cost Optimization</h3>
             <p className="text-sm text-gray-400 mt-1">Identify overspending and get actionable recommendations to reduce API spend.</p>
           </div>

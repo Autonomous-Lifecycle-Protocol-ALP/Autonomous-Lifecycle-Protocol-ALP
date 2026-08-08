@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ReasoningIcon, ZapIcon, ShieldIcon } from "../components/Icons.jsx";
 
 export default function HomePage() {
   return (
@@ -43,17 +44,17 @@ export default function HomePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="glass-dark p-6 rounded-xl border border-gray-800">
-                <div className="w-10 h-10 rounded-lg bg-sky-900/50 flex items-center justify-center mb-4 text-sky-300">🧠</div>
+                <div className="w-10 h-10 rounded-lg bg-sky-900/50 flex items-center justify-center mb-4 text-sky-300"><ReasoningIcon size="lg" /></div>
                 <h3 className="text-lg font-semibold text-gray-100 mb-2">Predictive Policy</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">Proactive guardrails that predict drift before it happens. Enforce standards across code, config, and runtime behavior.</p>
               </div>
               <div className="glass-dark p-6 rounded-xl border border-gray-800">
-                <div className="w-10 h-10 rounded-lg bg-indigo-900/50 flex items-center justify-center mb-4 text-indigo-300">⚡</div>
+                <div className="w-10 h-10 rounded-lg bg-indigo-900/50 flex items-center justify-center mb-4 text-indigo-300"><ZapIcon size="lg" /></div>
                 <h3 className="text-lg font-semibold text-gray-100 mb-2">Autonomous Operations</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">Self-healing systems that detect, diagnose, and resolve issues with minimal human intervention.</p>
               </div>
               <div className="glass-dark p-6 rounded-xl border border-gray-800">
-                <div className="w-10 h-10 rounded-lg bg-emerald-900/50 flex items-center justify-center mb-4 text-emerald-300">🛡️</div>
+                <div className="w-10 h-10 rounded-lg bg-emerald-900/50 flex items-center justify-center mb-4 text-emerald-300"><ShieldIcon size="lg" /></div>
                 <h3 className="text-lg font-semibold text-gray-100 mb-2">Enterprise Security</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">SOC2-ready audit trails, role-based access, and end-to-end encryption for regulated environments.</p>
               </div>

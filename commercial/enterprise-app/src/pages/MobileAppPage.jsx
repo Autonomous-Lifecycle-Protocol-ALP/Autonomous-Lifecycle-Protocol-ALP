@@ -1,3 +1,4 @@
+import { ZapIcon, BellIcon } from "../components/Icons.jsx";
 import { useState, useEffect } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -7,8 +8,8 @@ const product = PRODUCTS.find((p) => p.id === "mobile-app");
 
 const MOBILE_FEATURES = [
   { title: "HITL Checkpoint Approval", desc: "Review and approve human-in-the-loop checkpoints directly from your phone", icon: "✓" },
-  { title: "Push Notifications", desc: "Real-time alerts for task completions, failures, and swarm events", icon: "🔔" },
-  { title: "Swarm Activity Feed", desc: "Scrollable timeline of agent decisions, task transitions, and policy events", icon: "📊" },
+  { title: "Push Notifications", desc: "Real-time alerts for task completions, failures, and swarm events", icon: "BellIcon" },
+  { title: "Swarm Activity Feed", desc: "Scrollable timeline of agent decisions, task transitions, and policy events", icon: "AnalyticsIcon" },
   { title: "Agent Performance", desc: "Per-agent and per-team productivity metrics at a glance", icon: "📈" },
   { title: "Offline Mode", desc: "Queue actions offline and sync when connectivity resumes", icon: "📴" },
 ];
@@ -117,7 +118,7 @@ export default function MobileAppPage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-200">Key Benefits</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🔔</div>
+            <div className="text-2xl mb-2 text-amber-400"><BellIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Smart Notifications</h3>
             <p className="text-sm text-gray-400 mt-1">Intelligent alert grouping with quiet hours and priority-based delivery.</p>
           </div>
@@ -127,7 +128,7 @@ export default function MobileAppPage() {
             <p className="text-sm text-gray-400 mt-1">Review task history, approve checkpoints, and queue actions without connectivity.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">⚡</div>
+            <div className="text-2xl mb-2 text-amber-400"><ZapIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Quick Actions</h3>
             <p className="text-sm text-gray-400 mt-1">One-tap commands: /fix, /deploy, /pause for common agent operations.</p>
           </div>

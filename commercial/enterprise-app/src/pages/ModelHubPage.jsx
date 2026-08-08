@@ -1,3 +1,4 @@
+import { ZapIcon, AnalyticsIcon, CheckCircleIcon } from "../components/Icons.jsx";
 import { useState, useEffect } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -104,17 +105,17 @@ export default function ModelHubPage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-200">Key Benefits</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">⚡</div>
+            <div className="text-2xl mb-2 text-amber-400"><ZapIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Cost Savings</h3>
             <p className="text-sm text-gray-400 mt-1">Automatic routing reduces costs by up to 20% vs manual model selection.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🎯</div>
+            <div className="text-2xl mb-2 text-sky-400"><CheckCircleIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Task Optimization</h3>
             <p className="text-sm text-gray-400 mt-1">ALP-optimized models tuned for code review, testing, and documentation.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">📊</div>
+            <div className="text-2xl mb-2 text-blue-400"><AnalyticsIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Performance Tracking</h3>
             <p className="text-sm text-gray-400 mt-1">Model leaderboards with user feedback loops and continuous improvement.</p>
           </div>

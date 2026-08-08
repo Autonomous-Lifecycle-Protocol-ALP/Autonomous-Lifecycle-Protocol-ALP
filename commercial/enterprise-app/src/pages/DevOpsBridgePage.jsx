@@ -1,3 +1,4 @@
+import { AnalyticsIcon, LayersIcon } from "../components/Icons.jsx";
 import { useState, useEffect } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -172,12 +173,12 @@ export default function DevOpsBridgePage() {
             <p className="text-sm text-gray-400 mt-1">Instant rollback on failed quality gates with zero-downtime deployments.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🌐</div>
+            <div className="text-2xl mb-2 text-emerald-400"><LayersIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Multi-Cloud</h3>
             <p className="text-sm text-gray-400 mt-1">Deploy to AWS, GCP, Azure, and Kubernetes with unified tooling.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">📊</div>
+            <div className="text-2xl mb-2 text-blue-400"><AnalyticsIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Deployment Visibility</h3>
             <p className="text-sm text-gray-400 mt-1">Visual deployment timeline with audit trail and compliance reporting.</p>
           </div>
