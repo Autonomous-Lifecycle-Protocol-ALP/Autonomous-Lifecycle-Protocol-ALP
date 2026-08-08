@@ -119,3 +119,44 @@ def verify_workspace(dir_path: str, cwd: str = None) -> Dict[str, Any]:
         })
 
     return {"passed": all_passed, "tasks": results}
+
+
+class DocumentValidator:
+    """Validates ALP document structure and content against schema and custom rules."""
+
+    VALID_BLOCK_TYPES = frozenset([
+        "agent", "skill", "macro", "event", "memory", "contract",
+        "vault", "swarm", "workflow", "task", "decision", "rule", "policy",
+    ])
+
+    def __init__(self, strict: bool = False):
+        self.strict = strict
+
+    def validate(self, document: Dict[str, Any]) -> bool:
+        """Validate a document dictionary has required structure.
+
+        Returns True if valid, raises ValueError if invalid.
+        """
+        if not isinstance(document, dict):
+            raise ValueError("Document must be a dictionary")
+
+        doc_type = document.get("_type") or document.get("type")
+        if not doc_type:
+            raise ValueError("Document must have a '_type' or 'type' field")
+
+        if self.strict and doc_type not in self.VALID_BLOCK_TYPES:
+            raise ValueError(f"Unknown block type: @{doc_type}")
+
+        doc_id = document.get("id") or document.get("properties", {}).get("id")
+        if not doc_id:
+            raise ValueError("Document must have an 'id' field")
+
+        return True
+
+    def validate_schema(self, obj_type: str, data: Dict[str, Any]) -> bool:
+        """Validate data against the JSON schema for the given object type.
+
+        Delegates to the module-level ``validate_object`` function.
+        """
+        return validate_object(obj_type, data)
+

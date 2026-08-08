@@ -30,6 +30,33 @@ export interface ParseResult {
   filePath: string;
 }
 
+export interface IntelligenceSuggestion {
+  id: string;
+  type: 'object' | 'task' | 'feature' | 'agent';
+  title: string;
+  description: string;
+  confidence: number;
+}
+
+export interface IntelligenceState {
+  suggestions: IntelligenceSuggestion[];
+  output: string[];
+}
+
+export interface AutonomyDecision {
+  id: string;
+  workflowId: string;
+  type: 'retry' | 'skip' | 'rollback' | 'escalate';
+  rationale: string;
+  confidence: number;
+  timestamp: string;
+}
+
+export interface AutonomyState {
+  decisions: AutonomyDecision[];
+  output: string[];
+}
+
 export interface SHAMState {
   activeFile: string | null;
   openFiles: string[];
@@ -47,6 +74,8 @@ export interface SHAMState {
   refactor: RefactorState;
   debug: DebugState;
   testRunner: TestRunnerState;
+  intelligence: IntelligenceState;
+  autonomy: AutonomyState;
 }
 
 export interface LicenseInfo {

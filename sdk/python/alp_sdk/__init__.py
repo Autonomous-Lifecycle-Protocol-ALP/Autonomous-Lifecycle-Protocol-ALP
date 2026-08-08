@@ -7,12 +7,12 @@ from .error import AlpError, SyntaxError, IndentationError, ValidationError, Dir
 from .reader import load_workspace, AlpReader, AlpParser
 from .validator import validate_object, verify_workspace
 from .analytics import compute_analytics, PredictiveEstimator
-from .planner import GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson
+from .planner import GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, ReasoningTracer, ReasoningChain, ReasoningStep, CollabPlanner, AgentContribution, CollabPlanResult, ImprovementProposal
 from .negotiate import Negotiator, ReputationStore, TeamComposer, Offer, ContractDraft, NegotiationResult, Capability
 from .provenance import TraceSigner, ProvenanceStore, AuditLedger, VerifiableCredential
 from .trace import TraceEntry, TraceStore, MerkleTree, verify_trace_integrity
 from .graph import AlpGraph, GraphNode, GraphEdge
-from .memory import MemoryStore, MemoryEntry, MemoryQuery
+from .memory import MemoryStore, MemoryEntry, MemoryQuery, MemoryGraph, MemoryConsolidator, MemoryConsolidation
 from .policy import (
     PolicyEngine,
     PolicyDecision,
@@ -27,6 +27,8 @@ from .policy import (
     glob_to_regexp,
     normalize_objects,
     parse_inline_object,
+    PolicyLearner,
+    PolicyContext,
 )
 from .predictive_policy import (
     PredictivePolicyEngine,
@@ -45,6 +47,7 @@ from .self_healing import SelfHealingEngine, ASTDiagnosis
 from .formal_verification import FormalVerificationEngine, Transition
 from .asset_context import AssetContextEngine, AssetBundle
 from .cost_budget import CostBudgetEngine, CostBudget
+from .execution_quota import ExecutionQuotaEngine, ExecutionQuota
 from .sandbox_env import SandboxEnvEngine, SandboxInstance
 from .tenant_mesh import TenantMeshEngine, TenantMesh
 from .arch_decomposer import ArchDecomposerEngine, MicroservicePlan
@@ -56,6 +59,16 @@ from .consensus_vote import ConsensusVoteEngine, ConsensusVoteConfig
 from .code_transform import CodeTransformEngine, CodeTransformConfig
 from .event_mesh import EventMeshEngine, EventMeshConfig
 from .swarm_marketplace import SwarmMarketplaceEngine, SkillListing
+from .swarm_intelligence import (
+    SwarmSignal,
+    EmergentPattern,
+    AgentSpecialization,
+    EmergentBehaviorDetector,
+    RoleSpecializer,
+    CollectiveVote,
+    CollectiveDecision,
+    CollectiveDecisionMaker,
+)
 from .alpel import (
     AlpelError,
     build_context,
@@ -195,6 +208,7 @@ from .policy_federation import (
     FederatedDecision,
     FederatedTrustRoot,
 )
+from .anomaly import AnomalyDetector
 from .event_store import Event, EventStore, EVENT_SCHEMA_VERSION
 from .visualize import (
     WorkflowVisualizer,
@@ -269,6 +283,7 @@ from .promote_engine import PromoteEngine
 from .status_engine import StatusEngine
 from .test_engine import TestEngine, TestSuiteResult
 from .visualize_engine import VisualizeEngine
+from .wasm_ast import WasmAstEvaluator, ASTNode, ASTDiagnostic, ASTEvaluationResult
 from .intelligence import (
     IntelligenceEngine,
     SmartSuggestion,
@@ -556,6 +571,10 @@ __all__ = [
     "TestEngine",
     "TestSuiteResult",
     "VisualizeEngine",
+    "WasmAstEvaluator",
+    "ASTNode",
+    "ASTDiagnostic",
+    "ASTEvaluationResult",
     "IntelligenceEngine",
     "SmartSuggestion",
     "DiagnosisResult",

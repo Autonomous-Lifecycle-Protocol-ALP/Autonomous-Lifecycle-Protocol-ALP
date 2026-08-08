@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 import { SwarmSelfHealingMesh, SwarmNodeHealth, SelfHealingPlan } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export const SelfHealingMeshPanel: React.FC = () => {
@@ -37,49 +38,46 @@ export const SelfHealingMeshPanel: React.FC = () => {
   const failures = mesh.detectFailures();
 
   return (
-    <div style={{ padding: '24px', color: '#e6e6f0', fontFamily: 'Inter, sans-serif', maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="panel-container" style={{ padding: 'var(--spacing-sm)', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', boxSizing: 'border-box' }}>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', borderBottom: '1px solid #2a2a3a', paddingBottom: '16px' }}>
+      <div className="flex-between" style={{ marginBottom: '24px', borderBottom: '1px solid ' + 'var(--border)', paddingBottom: '16px' }}>
         <div>
-          <h2 style={{ margin: 0, color: '#00f0ff', fontSize: '1.5rem', fontWeight: 700, letterSpacing: '0.5px' }}>
-            🛡️ Autonomous Swarm Self-Healing Mesh (v80.0.0)
-          </h2>
-          <p style={{ margin: '4px 0 0', color: '#9e9eb0', fontSize: '0.875rem' }}>
+          <h2 style={{ margin: 0, color: 'var(--accent)', fontSize: 'var(--font-size-lg)', fontWeight: 700, letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="shield" size={20} /> Autonomous Swarm Self-Healing Mesh (v80.0.0)</h2>
+          <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
             Automated node health telemetry, failure detection, peer rerouting, and adaptive load redistribution
           </p>
         </div>
         <button
           onClick={handleGenerateSelfHealingPlan}
-          style={{ padding: '10px 20px', background: 'linear-gradient(135deg, #00ff9d, #0066ff)', color: '#000', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}
+          className="btn btn-lg"
+          style={{ background: 'linear-gradient(135deg, var(--accent-green), var(--accent-blue))', color: 'var(--bg-primary)', fontWeight: 700 }}
         >
-          ⚡ Synthesize Healing Plan
+          <Icon name="zap" size={16} /> Synthesize Healing Plan
         </button>
       </div>
 
       {/* Roster & Node Registration Form */}
-      <div style={{ background: '#0d0d14', padding: '16px', borderRadius: '10px', border: '1px solid #2a2a3a', marginBottom: '24px' }}>
-        <h4 style={{ margin: '0 0 12px', color: '#e6e6f0', fontSize: '0.9rem', fontWeight: 600 }}>
-          + Register Swarm Node Telemetry
-        </h4>
-        <div style={{ display: 'flex', gap: '8px' }}>
+      <div className="section-card">
+        <h4 className="section-card-title">+ Register Swarm Node Telemetry</h4>
+        <div className="flex-wrap-gap">
           <input
             type="text"
             placeholder="Node ID..."
             value={newNodeId}
             onChange={(e) => setNewNodeId(e.target.value)}
-            style={{ width: '180px', padding: '8px 12px', background: '#161622', border: '1px solid #2a2a3a', color: '#fff', borderRadius: '6px', fontSize: '0.85rem' }}
+            className="input-field input-responsive"
           />
           <input
             type="text"
             placeholder="Region..."
             value={newRegion}
             onChange={(e) => setNewRegion(e.target.value)}
-            style={{ width: '140px', padding: '8px 12px', background: '#161622', border: '1px solid #2a2a3a', color: '#fff', borderRadius: '6px', fontSize: '0.85rem' }}
+            className="input-field input-responsive"
           />
           <select
             value={nodeStatus}
             onChange={(e) => setNodeStatus(e.target.value as 'HEALTHY' | 'DEGRADED' | 'FAILED')}
-            style={{ padding: '8px 12px', background: '#161622', border: '1px solid #2a2a3a', color: '#fff', borderRadius: '6px', fontSize: '0.85rem' }}
+            className="input-field input-responsive"
           >
             <option value="HEALTHY">HEALTHY</option>
             <option value="DEGRADED">DEGRADED</option>
@@ -87,7 +85,8 @@ export const SelfHealingMeshPanel: React.FC = () => {
           </select>
           <button
             onClick={handleRegisterNode}
-            style={{ padding: '8px 20px', background: '#00f0ff', color: '#000', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}
+            className="btn btn-responsive btn-primary"
+            style={{ background: 'var(--accent-blue)', color: 'var(--bg-primary)', fontWeight: 700 }}
           >
             Register Node
           </button>
@@ -95,13 +94,11 @@ export const SelfHealingMeshPanel: React.FC = () => {
       </div>
 
       {/* Main Grid Layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+      <div className="grid-responsive">
         {/* Roster List */}
-        <div style={{ background: '#0d0d14', borderRadius: '10px', border: '1px solid #2a2a3a', padding: '16px' }}>
-          <h3 style={{ margin: '0 0 16px', color: '#e6e6f0', fontSize: '1rem', fontWeight: 600 }}>
-            🌐 Swarm Node Roster & Telemetry
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div className="section-card">
+          <h3 className="section-card-title"><Icon name="globe" size={16} /> Swarm Node Roster & Telemetry</h3>
+          <div className="card-container">
             {['node-us-east-1', 'node-eu-central-1', 'node-ap-south-1', newNodeId].filter(id => mesh.getNode(id)).map((id) => {
               const node = mesh.getNode(id)!;
               const isHealthy = node.status === 'HEALTHY';
@@ -109,37 +106,33 @@ export const SelfHealingMeshPanel: React.FC = () => {
               return (
                 <div
                   key={node.nodeId}
+                  className="card"
                   style={{
-                    padding: '12px 16px',
-                    borderRadius: '8px',
-                    background: '#12121c',
-                    border: `1px solid ${isHealthy ? '#00ff9d' : isFailed ? '#ff3366' : '#ffcc00'}`,
+                    border: `1px solid ${isHealthy ? 'var(--accent-green)' : isFailed ? 'var(--accent-red)' : 'var(--accent-yellow)'}`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                    boxSizing: 'border-box',
                   }}
                 >
                   <div>
-                    <div style={{ fontWeight: 700, color: '#fff', fontSize: '0.9rem' }}>{node.nodeId}</div>
-                    <div style={{ color: '#9e9eb0', fontSize: '0.78rem', marginTop: '2px' }}>
-                      Region: <span style={{ color: '#00f0ff' }}>{node.region}</span> | Active Tasks: {node.activeTasks.length}
+                    <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>{node.nodeId}</div>
+                    <div style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
+                      Region: <span style={{ color: 'var(--accent-blue)' }}>{node.region}</span> | Active Tasks: {node.activeTasks.length}
                     </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{
-                      padding: '4px 8px',
-                      borderRadius: '4px',
-                      fontSize: '0.75rem',
-                      fontWeight: 700,
+                  <div className="flex-wrap-gap">
+                    <span className="badge badge-responsive" style={{
                       background: isHealthy ? 'rgba(0, 255, 157, 0.1)' : isFailed ? 'rgba(255, 51, 102, 0.1)' : 'rgba(255, 204, 0, 0.1)',
-                      color: isHealthy ? '#00ff9d' : isFailed ? '#ff3366' : '#ffcc00',
+                      color: isHealthy ? 'var(--accent-green)' : isFailed ? 'var(--accent-red)' : 'var(--accent-yellow)',
                     }}>
                       {node.status}
                     </span>
                     {!isFailed && (
                       <button
                         onClick={() => handleSimulateFailure(node.nodeId)}
-                        style={{ padding: '4px 8px', background: 'rgba(255, 51, 102, 0.2)', color: '#ff3366', border: '1px solid rgba(255, 51, 102, 0.4)', borderRadius: '4px', cursor: 'pointer', fontSize: '0.72rem' }}
+                        className="btn btn-xs badge badge-responsive"
+                        style={{ background: 'rgba(255, 51, 102, 0.2)', color: 'var(--accent-red)', border: '1px solid rgba(255, 51, 102, 0.4)' }}
                       >
                         Fail
                       </button>
@@ -152,29 +145,31 @@ export const SelfHealingMeshPanel: React.FC = () => {
         </div>
 
         {/* Healing Plan & Reroute Matrix */}
-        <div style={{ background: '#0d0d14', borderRadius: '10px', border: '1px solid #2a2a3a', padding: '16px' }}>
-          <h3 style={{ margin: '0 0 16px', color: '#00ff9d', fontSize: '1rem', fontWeight: 600 }}>
-            🩺 Automated Healing Plan & Task Reroutes
-          </h3>
+        <div className="section-card">
+          <h3 className="section-card-title"><Icon name="heart" size={16} /> Automated Healing Plan & Task Reroutes</h3>
           {activePlan ? (
             <div>
-              <div style={{ color: '#9e9eb0', fontSize: '0.8rem', marginBottom: '12px' }}>
-                Plan ID: <span style={{ color: '#00f0ff', fontFamily: 'monospace' }}>{activePlan.planId}</span>
+              <div style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginBottom: '12px' }}>
+                Plan ID: <span style={{ color: 'var(--accent-blue)', fontFamily: 'monospace' }}>{activePlan.planId}</span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div className="card-container">
                 {activePlan.taskReroutes.map((r, i) => (
-                  <div key={i} style={{ padding: '10px 12px', background: '#161622', borderRadius: '6px', border: '1px solid #2a2a3a' }}>
-                    <div style={{ fontWeight: 600, color: '#ffcc00', fontSize: '0.85rem' }}>{r.taskId}</div>
-                    <div style={{ color: '#9e9eb0', fontSize: '0.78rem', marginTop: '2px' }}>
-                      <span style={{ color: '#ff3366' }}>{r.fromNode}</span> ➔ <span style={{ color: '#00ff9d' }}>{r.toNode}</span>
+                  <div key={i} className="card">
+                    <div style={{ fontWeight: 600, color: 'var(--accent-yellow)', fontSize: 'var(--font-size-sm)' }}>{r.taskId}</div>
+                    <div style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>
+                      <span style={{ color: 'var(--accent-red)' }}>{r.fromNode}</span> → <span style={{ color: 'var(--accent-green)' }}>{r.toNode}</span>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            <div style={{ padding: '40px', textAlign: 'center', color: '#6c6c80', fontStyle: 'italic', fontSize: '0.85rem' }}>
-              {failures.length > 0 ? `${failures.length} degraded/failed node(s) detected. Click 'Synthesize Healing Plan' to failover.` : 'All swarm nodes healthy. No healing plan needed.'}
+            <div className="empty-state">
+              <div className="empty-state-icon"><Icon name="heart" size={32} color="var(--text-muted)" /></div>
+              <div className="empty-state-title">No healing plan</div>
+              <div className="empty-state-desc">
+                {failures.length > 0 ? `${failures.length} degraded/failed node(s) detected. Click 'Synthesize Healing Plan' to failover.` : 'All swarm nodes healthy. No healing plan needed.'}
+              </div>
             </div>
           )}
         </div>

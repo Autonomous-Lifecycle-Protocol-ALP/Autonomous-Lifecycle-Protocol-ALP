@@ -401,8 +401,8 @@ alp replay --from 2026-07-20T00:00:00Z --to 2026-07-20T23:59:59Z
 Output:
 
 ```text
-📼 ALP Event Replay
-===================
+ALP Event Replay
+==============================
 Total events:    42
 Replayed:        12
 Skipped:         30
@@ -452,8 +452,8 @@ alp cost --workflow wf-standard
 Output:
 
 ```text
-🔍 Cost Optimization for Workflow: wf-standard
-==========================================
+Cost Optimization for Workflow: wf-standard
+=========================================
   Current cost:      $0.036000
   Optimized cost:    $0.018000
   Savings:           $0.018000 (50.0%)

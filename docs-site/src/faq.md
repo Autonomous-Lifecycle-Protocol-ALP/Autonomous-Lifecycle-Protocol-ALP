@@ -316,8 +316,8 @@ Yes. All contributors must follow the [Contributor Covenant Code of Conduct](htt
 
 ## Further Questions
 
-- 📖 [CLI Guide](/guide/cli) — Complete command reference
-- 📐 [Specification](/spec/01-overview) — Protocol deep dive
-- 🛠️ [SDKs](/guide/sdk) — Programmatic access
-- 💬 [GitHub Discussions](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/discussions) — Community Q&A
-- 🐛 [GitHub Issues](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/issues) — Bug reports and feature requests
+- <Icon name="book" /> [CLI Guide](/guide/cli) — Complete command reference
+- <Icon name="code" /> [Specification](/spec/01-overview) — Protocol deep dive
+- <Icon name="code" /> [SDKs](/guide/sdk) — Programmatic access
+- <Icon name="message-circle" /> [GitHub Discussions](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/discussions) — Community Q&A
+- <Icon name="bug" /> [GitHub Issues](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/issues) — Bug reports and feature requests

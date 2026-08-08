@@ -23,9 +23,18 @@ export interface CanvasNode {
   version: number;
 }
 
+export interface CanvasEdge {
+  edgeId: string;
+  fromNodeId: string;
+  toNodeId: string;
+  label?: string;
+  type: 'DEPENDS_ON' | 'GOVERNED_BY' | 'ASSIGNED_TO' | 'LINKS';
+}
+
 export interface CanvasSnapshot {
   canvasId: string;
   nodes: CanvasNode[];
+  edges: CanvasEdge[];
   peers: PeerPresence[];
   updatedAt: string;
 }
@@ -33,6 +42,7 @@ export interface CanvasSnapshot {
 export class CRDTCanvasEngine {
   private peers: Map<string, PeerPresence> = new Map();
   private nodes: Map<string, CanvasNode> = new Map();
+  private edges: Map<string, CanvasEdge> = new Map();
   private canvasId: string;
 
   constructor(canvasId: string = 'canvas-main') {
@@ -94,6 +104,41 @@ export class CRDTCanvasEngine {
   }
 
   /**
+   * Add a connection edge between two canvas nodes.
+   */
+  public addEdge(
+    fromNodeId: string,
+    toNodeId: string,
+    type: CanvasEdge['type'] = 'DEPENDS_ON',
+    label?: string
+  ): CanvasEdge {
+    const edgeId = `edge-${fromNodeId}-${toNodeId}`;
+    const edge: CanvasEdge = {
+      edgeId,
+      fromNodeId,
+      toNodeId,
+      type,
+      label,
+    };
+    this.edges.set(edgeId, edge);
+    return edge;
+  }
+
+  /**
+   * Remove a connection edge.
+   */
+  public removeEdge(edgeId: string): boolean {
+    return this.edges.delete(edgeId);
+  }
+
+  /**
+   * Get all registered edges.
+   */
+  public getEdges(): CanvasEdge[] {
+    return Array.from(this.edges.values());
+  }
+
+  /**
    * Get active peer roster.
    */
   public getPeers(): PeerPresence[] {
@@ -107,6 +152,7 @@ export class CRDTCanvasEngine {
     return {
       canvasId: this.canvasId,
       nodes: Array.from(this.nodes.values()),
+      edges: Array.from(this.edges.values()),
       peers: Array.from(this.peers.values()),
       updatedAt: new Date().toISOString(),
     };

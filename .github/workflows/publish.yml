@@ -11,6 +11,9 @@ jobs:
   publish:
     name: Publish @autonomous-lifecycle-protocol-alp/* packages to GitHub Packages
     runs-on: ubuntu-latest
+    env:
+      ROLLUP_DISABLE_NATIVE: "1"
+      ROLLDOWN_DISABLE_NATIVE: "1"
     permissions:
       contents: read
       packages: write
@@ -27,7 +30,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "npm"
 
       - name: Write npm auth and registry config
         run: |
@@ -35,7 +37,10 @@ jobs:
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-optional
+
+      - name: Install Linux native bindings
+        run: npm install @rollup/rollup-linux-x64-gnu @rolldown/binding-linux-x64-gnu lightningcss-linux-x64-gnu --no-save
 
       - name: Build workspaces
         run: npm run build

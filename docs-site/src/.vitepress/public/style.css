@@ -2,15 +2,56 @@
    ALP Docs — Cyberpunk Dark + Clean Light Theme
    ────────────────────────────────────────────── */
 
+/* ── Icon System (no-emoji policy) ── */
+
+.icon {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: -0.15em;
+  margin-right: 0.3em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon-lg {
+  width: 1.5em;
+  height: 1.5em;
+}
+
+/* ── Vue Icon Component (SVG icons replacing emojis) ── */
+.alp-icon {
+  display: inline-block;
+  width: 1.3em;
+  height: 1.3em;
+  vertical-align: -0.15em;
+  margin-right: 0.35em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.alp-icon.alp-icon-zap { opacity: 0.8; }
+.alp-icon.alp-icon-lock { opacity: 0.8; }
+.alp-icon.alp-icon-search { opacity: 0.8; }
+.alp-icon.alp-icon-shopping-cart { opacity: 0.8; }
+.alp-icon.alp-icon-book { opacity: 0.7; }
+.alp-icon.alp-icon-bug { opacity: 0.7; }
+
 /* ── Light Mode (default) ── */
 :root {
   --vp-c-bg: #f8f9fb;
   --vp-c-bg-soft: #ffffff;
   --vp-c-bg-mute: #eef0f4;
   --vp-c-bg-elv: #e2e5eb;
-  --vp-c-text-1: #1a1a2e;
-  --vp-c-text-2: #4a4a5a;
-  --vp-c-text-3: #7a7a8a;
+  --vp-c-text-1: #0f172a;
+  --vp-c-text-2: #334155;
+  --vp-c-text-3: #475569;
   --vp-c-border: #d0d3da;
   --vp-c-brand-1: #0066ff;
   --vp-c-brand-2: #0052cc;
@@ -51,15 +92,20 @@ html.dark {
 }
 
 html {
-  background: var(--vp-c-bg);
+  background: transparent;
   transition: background 0.3s ease;
 }
 
 body {
-  background: transparent;
+  background: var(--vp-c-bg);
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(0, 102, 255, 0.06) 0%, transparent 55%);
   color: var(--vp-c-text-1);
   font-family: var(--vp-font-family-base);
   transition: color 0.3s ease;
+}
+
+html.dark body {
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(0, 240, 255, 0.06) 0%, transparent 55%);
 }
 
 /* ── Shooting Stars Background (dark mode only) ── */
@@ -160,6 +206,10 @@ html.dark .stars-container::before {
 
 /* ── VitePress Overrides ── */
 
+.VPApp {
+  background: transparent !important;
+}
+
 .VPSidebar,
 .VPNav,
 .VPFooter {
@@ -179,7 +229,7 @@ html.dark .stars-container::before {
 
 /* Navbar */
 .VPNav {
-  background: rgba(248, 249, 251, 0.85) !important;
+  background: rgba(248, 249, 251, 0.55) !important;
   backdrop-filter: blur(12px) saturate(140%);
   border-bottom: 1px solid var(--vp-c-border);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
@@ -187,7 +237,7 @@ html.dark .stars-container::before {
 }
 
 html.dark .VPNav {
-  background: rgba(6, 6, 11, 0.85) !important;
+  background: rgba(6, 6, 11, 0.55) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
@@ -218,7 +268,7 @@ html.dark .VPNavBarTitle .title {
 
 /* Sidebar */
 .VPSidebar {
-  background: rgba(248, 249, 251, 0.8) !important;
+  background: rgba(248, 249, 251, 0.5) !important;
   backdrop-filter: blur(10px) saturate(140%);
   border-right: 1px solid var(--vp-c-border);
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.04);
@@ -226,7 +276,7 @@ html.dark .VPNavBarTitle .title {
 }
 
 html.dark .VPSidebar {
-  background: rgba(13, 13, 20, 0.8) !important;
+  background: rgba(13, 13, 20, 0.5) !important;
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
 }
 
@@ -257,10 +307,10 @@ html.dark .VPSidebarItem .link.active {
 }
 
 .VPDocContent {
-  background: var(--vp-c-bg-soft);
+  background: rgba(255, 255, 255, 0.55);
   border: 1px solid var(--vp-c-border);
   border-radius: 12px;
-  backdrop-filter: blur(8px) saturate(140%);
+  backdrop-filter: blur(10px) saturate(140%);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.06),
     inset 0 1px 0 rgba(255, 255, 255, 0.5);
@@ -269,6 +319,7 @@ html.dark .VPSidebarItem .link.active {
 }
 
 html.dark .VPDocContent {
+  background: rgba(13, 13, 14, 0.55);
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
@@ -501,6 +552,39 @@ html.dark .VPSidebarItem .link.active {
   box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
 }
 
+/* ── Focus States (Accessibility) ── */
+
+:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+a:focus-visible,
+button:focus-visible,
+.VPSidebarItem .link:focus-visible,
+.VPNavBarMenuLink:focus-visible {
+  outline: 2px solid var(--vp-c-brand-1);
+  outline-offset: 2px;
+}
+
+/* ── Reduced Motion ── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .stars-container {
+    display: none;
+  }
+}
+
 /* ── Light Mode Enhancements ── */
 
 :root .VPNavBarTitle .title {
@@ -521,4 +605,120 @@ html.dark .VPSidebarItem .link.active {
 
 :root a:hover {
   text-shadow: 0 0 8px rgba(0, 102, 255, 0.3);
+}
+
+/* ── Eco Cards (Homepage) ── */
+
+.alp-eco {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 1.5em 0;
+}
+
+.alp-eco-card {
+  display: block;
+  padding: 20px 24px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--vp-c-text-1);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.alp-eco-card:hover {
+  border-color: var(--vp-c-brand-1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+html.dark .alp-eco-card:hover {
+  box-shadow: 0 4px 20px rgba(0, 240, 255, 0.1);
+}
+
+.alp-eco-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--vp-c-brand-1);
+}
+
+.alp-eco-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--vp-c-text-2);
+}
+
+/* ── Stats (Homepage) ── */
+
+.alp-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin: 1.5em 0;
+  padding: 20px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 10px;
+}
+
+.alp-stat {
+  text-align: center;
+}
+
+.alp-stat-num {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--vp-c-brand-1);
+  line-height: 1.2;
+}
+
+.alp-stat-label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--vp-c-text-3);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ── Hero Stats ── */
+
+.VPHero .VPImage {
+  max-width: 180px;
+}
+
+/* ── Responsive Improvements ── */
+
+@media (max-width: 768px) {
+  .VPDocContent {
+    padding: 16px;
+    border-radius: 8px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  .alp-eco {
+    grid-template-columns: 1fr;
+  }
+
+  .alp-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 375px) {
+  .alp-stats {
+    grid-template-columns: 1fr;
+  }
 }

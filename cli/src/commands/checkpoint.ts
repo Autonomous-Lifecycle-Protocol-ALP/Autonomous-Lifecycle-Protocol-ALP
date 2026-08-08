@@ -20,7 +20,7 @@ export function checkpointCommand(
   const alpDir = path.join(cwd, '.alp');
 
   if (!fs.existsSync(alpDir)) {
-    console.error('Error: .alp directory not found.');
+    console.error('Error: .alp directory not found. Run `alp init` first.');
     process.exit(1);
   }
 

@@ -1,12 +1,13 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { createWindow } from './window.js';
-import { setupALPBridge } from './alp-bridge.js';
+import { setupALPBridge, loadEngineState, saveEngineState } from './alp-bridge.js';
 import { setupProFeatures } from './pro.js';
 
 let mainWindow: BrowserWindow | null = null;
 
 app.whenReady().then(() => {
+  loadEngineState();
   mainWindow = createWindow();
   setupALPBridge();
   setupProFeatures();
@@ -32,6 +33,10 @@ app.on('activate', () => {
     setupALPBridge();
     setupProFeatures();
   }
+});
+
+app.on('before-quit', () => {
+  saveEngineState();
 });
 
 ipcMain.handle('get-app-version', async () => {

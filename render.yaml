@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: alp-enterprise-api
+    env: node
+    plan: starter
+    buildCommand: cd commercial/alp-server && npm install
+    startCommand: cd commercial/alp-server && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        fromDatabase:
+          name: alp-enterprise-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://alp-enterprise-frontend.onrender.com
+      - key: PORT
+        value: 5000
+      - key: CORS_ORIGIN
+        value: https://alp-enterprise-frontend.onrender.com
+
+  - type: web
+    name: alp-enterprise-frontend
+    env: static
+    buildCommand: cd commercial/enterprise-app && npm install && npm run build
+    staticPublishPath: commercial/enterprise-app/dist
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+
+databases:
+  - name: alp-enterprise-db
+    plan: starter
+    databaseName: alp_enterprise
+    user: alp_user

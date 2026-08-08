@@ -4,7 +4,7 @@ This document outlines the architectural roadmap for the Autonomous Lifecycle Pr
 
 ---
 
-## 🗺️ Roadmap Overview
+## Roadmap Overview
 
 ```mermaid
 timeline
@@ -18,9 +18,9 @@ timeline
 
 ---
 
-## 🚀 Version Breakdown & Technical Specifications
+## Version Breakdown & Technical Specifications
 
-### 🔹 V46.0.0 — Zero-Knowledge Verification & Edge Models
+### V46.0.0 — Zero-Knowledge Verification & Edge Models
 **Release Target:** Q4 2026
 
 * **Zero-Knowledge Proof Gates (`alp prove` / `alp verify-proof`)**:
@@ -32,7 +32,7 @@ timeline
 
 ---
 
-### 🔹 V48.0.0 — Decentralized Peer-to-Peer Swarm Mesh
+### V48.0.0 — Decentralized Peer-to-Peer Swarm Mesh
 **Release Target:** Q1 2027
 
 * **Decentralized Kademlia DHT Agent Discovery**:
@@ -44,7 +44,7 @@ timeline
 
 ---
 
-### 🔹 V50.0.0 — Distributed Multi-Region Execution & Global CRDT Sync
+### V50.0.0 — Distributed Multi-Region Execution & Global CRDT Sync
 **Release Target:** Q2 2027
 
 * **Multi-Region DAG Partitioning**:
@@ -56,7 +56,7 @@ timeline
 
 ---
 
-### 🔹 V55.0.0 — Self-Evolving Protocol & Formal Safety Invariants
+### V55.0.0 — Self-Evolving Protocol & Formal Safety Invariants
 **Release Target:** Q4 2027
 
 * **TLA+ Formal Verification Engine**:
@@ -68,7 +68,7 @@ timeline
 
 ---
 
-### 🔹 V60.0.0 — The Autonomous Software Factory (Full Automation Era)
+### V60.0.0 — The Autonomous Software Factory (Full Automation Era)
 **Release Target:** Q2 2028
 
 * **Zero-Human-In-The-Loop Delivery Pipelines**:
@@ -80,7 +80,7 @@ timeline
 
 ---
 
-## 📊 Summary Matrix (v46 – v60)
+## Summary Matrix (v46 – v60)
 
 | Version | Focus Area | Key Architectural Innovation |
 | :--- | :--- | :--- |

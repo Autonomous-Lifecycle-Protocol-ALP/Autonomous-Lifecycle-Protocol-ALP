@@ -212,7 +212,7 @@ graph TD
     R3 -->|Fail + Required| FAIL
     R4 -->|Yes| REPORT["Generate Verification Report"]
     REPORT --> RESULT{"All required passed?"}
-    RESULT -->|Yes| PASS["Verification PASSED ✓<br/>Task status → [x]"]
+    RESULT -->|Yes| PASS["Verification PASSED [+]<br/>Task status → [x]"]
     RESULT -->|No| FAIL
     FAIL --> BACK["Task status → [~]<br/>Return to implement"]
 ```

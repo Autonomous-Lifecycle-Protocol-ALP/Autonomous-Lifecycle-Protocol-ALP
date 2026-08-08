@@ -7,7 +7,7 @@ SDK_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if SDK_ROOT not in sys.path:
     sys.path.insert(0, SDK_ROOT)
 
-from alp_sdk import AlpObject, PolicyEngine, PolicyQuery, PolicyDecision
+from alp_sdk import AlpObject, PolicyEngine, PolicyQuery, PolicyDecision, PolicyLearner, PolicyContext
 from alp_sdk.policy import (
     TimeWindow,
     ApprovalRule,
@@ -216,6 +216,34 @@ class TestComplianceCertifier(unittest.TestCase):
         bundle = certifier.certify("run-4", "v40.0.0", results)
         bundle["passed"] = False
         self.assertFalse(certifier.verify_bundle(bundle))
+
+
+class TestPolicyLearner(unittest.TestCase):
+    def test_suggests_after_repeated_denials(self):
+        learner = PolicyLearner()
+        ctx = PolicyContext(environment="production", team_size=5, risk_profile="high", deployment_target="aws")
+        for _ in range(3):
+            learner.record_violation("pol-1", "deploy", False, ctx)
+        suggestions = learner.suggest()
+        self.assertGreaterEqual(len(suggestions), 1)
+        self.assertEqual(suggestions[0]["policy_id"], "pol-1")
+        self.assertEqual(suggestions[0]["action"], "review_allow_rules")
+
+    def test_no_suggest_after_few_violations(self):
+        learner = PolicyLearner()
+        ctx = PolicyContext(environment="development", team_size=2, risk_profile="low", deployment_target="local")
+        learner.record_violation("pol-1", "deploy", False, ctx)
+        self.assertEqual(learner.suggest(), [])
+
+    def test_reset_clears_violations(self):
+        learner = PolicyLearner()
+        ctx = PolicyContext(environment="staging", team_size=3, risk_profile="medium", deployment_target="gcp")
+        learner.record_violation("pol-1", "deploy", False, ctx)
+        learner.record_violation("pol-1", "deploy", False, ctx)
+        learner.record_violation("pol-1", "deploy", False, ctx)
+        self.assertGreaterEqual(len(learner.suggest()), 1)
+        learner.reset()
+        self.assertEqual(learner.suggest(), [])
 
 
 if __name__ == "__main__":

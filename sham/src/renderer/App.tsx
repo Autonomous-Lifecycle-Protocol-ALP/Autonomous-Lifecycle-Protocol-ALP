@@ -16,6 +16,7 @@ import { GitPanel } from './components/GitPanel.js';
 import { SearchPanel } from './components/SearchPanel.js';
 import { CommandPalette } from './components/CommandPalette.js';
 import { DebugPanel } from './components/DebugPanel.js';
+import { Icon } from './components/Icon.js';
 import { TestRunnerPanel } from './components/TestRunnerPanel.js';
 import { SwarmMarketplacePanel } from './components/SwarmMarketplacePanel.js';
 import { ZKProofPanel } from './components/ZKProofPanel.js';
@@ -29,6 +30,8 @@ import { FeatureFlagPanel } from './components/FeatureFlagPanel.js';
 import { WorkflowReplayPanel } from './components/WorkflowReplayPanel.js';
 import { LocalStoragePanel } from './components/LocalStoragePanel.js';
 import { SelfHealingMeshPanel } from './components/SelfHealingMeshPanel.js';
+import { IntelligencePanel } from './components/IntelligencePanel.js';
+import { AutonomyPanel } from './components/AutonomyPanel.js';
 import { fetchBlockTypes, runAgent, validateALPFile, onAppReady, collabCursorMove } from './shared/alp-client.js';
 import type { SHAMState } from './shared/types.js';
 import './styles/global.css';
@@ -51,9 +54,11 @@ const defaultState: SHAMState = {
   refactor: { renames: [], output: [] },
   debug: { session: null, output: [] },
   testRunner: { suites: [], output: [] },
+  intelligence: { suggestions: [], output: [] },
+  autonomy: { decisions: [], output: [] },
 };
 
-type PanelId = 'editor' | 'terminal' | 'agents' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'copilot' | 'refactor' | 'pro' | 'settings' | 'git' | 'search' | 'debugger' | 'test-runner' | 'marketplace' | 'zk' | 'partition' | 'crdtCanvas' | 'wasmAst' | 'edgeDebug' | 'telemetryInspector' | 'chaosEngine' | 'featureFlags' | 'workflowReplay' | 'localStorage' | 'selfHealingMesh';
+type PanelId = 'editor' | 'terminal' | 'agents' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'copilot' | 'refactor' | 'pro' | 'settings' | 'git' | 'search' | 'debugger' | 'test-runner' | 'marketplace' | 'zk' | 'partition' | 'crdtCanvas' | 'wasmAst' | 'edgeDebug' | 'telemetryInspector' | 'chaosEngine' | 'featureFlags' | 'workflowReplay' | 'localStorage' | 'selfHealingMesh' | 'intelligence' | 'autonomy';
 
 export function App(): React.JSX.Element {
   const [state, setState] = useState<SHAMState>(defaultState);
@@ -124,6 +129,8 @@ export function App(): React.JSX.Element {
     { id: 'terminal', label: 'Terminal' },
     { id: 'agents', label: 'Agents' },
     { id: 'mcp', label: 'MCP' },
+    { id: 'intelligence', label: 'Intelligence' },
+    { id: 'autonomy', label: 'Autonomy' },
     { id: 'collab', label: 'Collab' },
     { id: 'plugins', label: 'Plugins' },
     { id: 'profiler', label: 'Profiler' },
@@ -289,6 +296,22 @@ export function App(): React.JSX.Element {
         return <LocalStoragePanel />;
       case 'selfHealingMesh':
         return <SelfHealingMeshPanel />;
+      case 'intelligence':
+        return (
+          <IntelligencePanel
+            state={state.intelligence}
+            onUpdateState={(s) => setState((prev) => ({ ...prev, intelligence: s }))}
+            onAppendOutput={(lines) => setState((prev) => ({ ...prev, intelligence: { suggestions: prev.intelligence.suggestions, output: [...prev.intelligence.output, ...lines] } }))}
+          />
+        );
+      case 'autonomy':
+        return (
+          <AutonomyPanel
+            state={state.autonomy}
+            onUpdateState={(s) => setState((prev) => ({ ...prev, autonomy: s }))}
+            onAppendOutput={(lines) => setState((prev) => ({ ...prev, autonomy: { decisions: prev.autonomy.decisions, output: [...prev.autonomy.output, ...lines] } }))}
+          />
+        );
       default:
         return <ProPanel />;
     }
@@ -308,11 +331,11 @@ export function App(): React.JSX.Element {
           <div className="app-header-logo-icon">S</div>
           <span>SHAM</span>
         </div>
-        <span className="app-header-title">v40.0.0 — IDE Intelligence</span>
+        <span className="app-header-title">v80.0.0 — IDE Intelligence</span>
         <div className="app-header-spacer" />
         <div className="app-header-actions">
           <button className="header-btn" onClick={() => setShowCommandPalette(true)} title="Command Palette (Ctrl+Shift+P)">
-            <span>&#9776;</span> Commands
+            <Icon name="menu" size={16} /> Commands
           </button>
           {panels.map((panel) => (
             <button
@@ -390,7 +413,7 @@ export function App(): React.JSX.Element {
                   <div>
                     {state.diagnostics.length === 0 ? (
                       <div className="empty-state">
-                        <div className="empty-state-icon">&#10003;</div>
+                        <div className="empty-state-icon"><Icon name="check" size={48} color="var(--accent-green)" /></div>
                         <div className="empty-state-title">No problems detected</div>
                         <div className="empty-state-desc">Your workspace is clean. Keep up the good work!</div>
                       </div>
@@ -464,8 +487,8 @@ export function App(): React.JSX.Element {
             </span>
           )}
           <span className="status-bar-separator" />
-          <span className="status-bar-item">SHAM v0.1.0</span>
-          <span className="status-bar-item">ALP v40.0.0</span>
+          <span className="status-bar-item">SHAM v80.0.0</span>
+          <span className="status-bar-item">ALP v80.0.0</span>
         </div>
       </footer>
 

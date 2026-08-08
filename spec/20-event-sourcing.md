@@ -145,7 +145,7 @@ alp replay --type status_changed --object-id task-login-ui --from 2026-07-20T00:
 
 Output format:
 ```
-📼 ALP Event Replay
+ALP Event Replay
 ===================
 Total events:    42
 Replayed:        12

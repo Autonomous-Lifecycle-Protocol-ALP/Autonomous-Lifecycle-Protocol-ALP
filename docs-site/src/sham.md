@@ -29,8 +29,8 @@ SHAM consolidates every ALP capability into one native desktop application:
 | Integrated terminal | ALP CLI built-in, no external terminal needed | Separate terminal window |
 | MCP tools browser | Native MCP browser panel | Requires separate MCP client |
 | Cross-platform filesystem | Native Electron file dialogs + Node.js `path` | Editor-dependent |
-- Auto-updater | Native `electron-updater` | Manual extension/plugin updates
-- Licensing tiers | Built-in Pro/Enterprise license management | Not available
+| Auto-updater | Native `electron-updater` | Manual extension/plugin updates |
+| Licensing tiers | Built-in Pro/Enterprise license management | Not available |
 
 ## Why SHAM is Faster
 
@@ -194,13 +194,13 @@ npx vitest run
 
 ### v46.0.0 – v50.0.0 New IDE Panels
 
-#### 🛒 Swarm Skill Marketplace Panel
+#### Swarm Skill Marketplace Panel
 Browse, filter, invoke, and monitor autonomous agent skills with real-time cost metering and invocation telemetry.
 
-#### 🔒 Zero-Knowledge Proof Panel
+#### Zero-Knowledge Proof Panel
 Generate and verify zk-SNARK cryptographic compliance proofs directly from the IDE — without ever exposing secret values.
 
-#### 🌐 Multi-Region DAG Partition Panel
+#### Multi-Region DAG Partition Panel
 Partition workspace execution graphs across distributed cloud edge regions (`us-east`, `eu-west`, `ap-southeast`) with interactive node assignment and latency estimation.
 
 ### Next Version Roadmap

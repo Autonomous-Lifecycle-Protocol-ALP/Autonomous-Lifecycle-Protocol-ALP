@@ -30,7 +30,7 @@ coverage/
 
 # Cache
 .alp/.cache/
-*.lock
+.cache/
 
 # Logs
 *.log
@@ -69,3 +69,27 @@ sham/test-results/
 
 # Project-specific out-of-scope documents
 prd2.md
+
+# Kilo configuration and agent workspace
+.kilo/
+.kilocode/
+.kiloinfo
+.kilodone
+.kilostate
+.kilocache
+.kilotmp
+agent-workspace/
+
+# Credentials and secrets
+token.txt
+login.json
+
+# Downloaded toolchains and build artifacts
+maven/
+mingw64/
+
+# Browser automation artifacts
+.playwright-mcp/
+
+# Dashboard screenshots (generated artifacts)
+dashboard-*.png

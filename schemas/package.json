@@ -1,9 +1,10 @@
 {
   "name": "@autonomous-lifecycle-protocol-alp/schemas",
-  "version": "45.0.0",
+  "version": "80.0.0",
   "type": "module",
   "description": "JSON Schema definitions for the Autonomous Lifecycle Protocol (ALP)",
   "main": "index.js",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP.git"

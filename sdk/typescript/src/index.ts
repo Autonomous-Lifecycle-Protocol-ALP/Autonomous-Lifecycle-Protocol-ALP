@@ -181,3 +181,93 @@ export {
   FederatedTrustRoot,
 };
 
+// ── PolicyEnforcer ──────────────────────────────────────────────────────
+
+export interface PolicyEnforcerRules {
+  requiredFields?: string[];
+  denyTypes?: string[];
+}
+
+export class PolicyEnforcer {
+  private rules: PolicyEnforcerRules;
+
+  constructor(rules: PolicyEnforcerRules = {}) {
+    this.rules = rules;
+  }
+
+  /**
+   * Validate a document against configured policy rules.
+   */
+  enforce(document: Record<string, unknown>): boolean {
+    if (!document || typeof document !== 'object') return false;
+
+    const requiredFields = this.rules.requiredFields ?? [];
+    for (const field of requiredFields) {
+      if (!(field in document)) return false;
+    }
+
+    const denyTypes = this.rules.denyTypes ?? [];
+    const docType = (document._type ?? document.type) as string | undefined;
+    if (docType && denyTypes.includes(docType)) return false;
+
+    return true;
+  }
+
+  /**
+   * Govern a workspace by loading and enforcing all ALP objects.
+   */
+  govern(workspace: AlpWorkspace): { compliant: boolean; violations: string[]; objectsScanned: number } {
+    const violations: string[] = [];
+    for (const obj of workspace.objects) {
+      const doc: Record<string, unknown> = { _type: (obj as any).type ?? '', id: (obj as any).id ?? '', ...(obj as any).properties };
+      if (!this.enforce(doc)) {
+        violations.push((obj as any).id ?? 'unknown');
+      }
+    }
+    return {
+      compliant: violations.length === 0,
+      violations,
+      objectsScanned: workspace.objects.length,
+    };
+  }
+}
+
+// ── DocumentValidator ───────────────────────────────────────────────────
+
+const VALID_BLOCK_TYPES = new Set([
+  'agent', 'skill', 'macro', 'event', 'memory', 'contract',
+  'vault', 'swarm', 'workflow', 'task', 'decision', 'rule', 'policy',
+]);
+
+export class DocumentValidator {
+  private strict: boolean;
+
+  constructor(options: { strict?: boolean } = {}) {
+    this.strict = options.strict ?? false;
+  }
+
+  /**
+   * Validate a document has required structure. Returns true or throws.
+   */
+  validate(document: Record<string, unknown>): boolean {
+    if (!document || typeof document !== 'object') {
+      throw new Error('Document must be an object');
+    }
+
+    const docType = (document._type ?? document.type) as string | undefined;
+    if (!docType) {
+      throw new Error("Document must have a '_type' or 'type' field");
+    }
+
+    if (this.strict && !VALID_BLOCK_TYPES.has(docType)) {
+      throw new Error(`Unknown block type: @${docType}`);
+    }
+
+    const docId = document.id ?? (document.properties as Record<string, unknown> | undefined)?.id;
+    if (!docId) {
+      throw new Error("Document must have an 'id' field");
+    }
+
+    return true;
+  }
+}

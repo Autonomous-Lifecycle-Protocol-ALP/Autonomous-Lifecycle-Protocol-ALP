@@ -87,3 +87,84 @@ type: policy
 	assert.NotNil(t, graph.GetNode("task-1"))
 	assert.NotNil(t, graph.GetNode("policy-1"))
 }
+
+func TestIntegrationBridgeA2ARoundTrip(t *testing.T) {
+	bridge := alpgo.NewProtocolBridge()
+	wf := map[string]interface{}{
+		"id":   "wf-ai",
+		"name": "AI Pipeline",
+		"steps": []interface{}{
+			map[string]interface{}{"id": "s1", "name": "train"},
+			map[string]interface{}{"id": "s2", "name": "eval"},
+		},
+	}
+
+	exported, err := bridge.ExportWorkflow(wf, "a2a")
+	assert.NoError(t, err)
+	assert.Equal(t, "a2a", exported.Format)
+
+	card, ok := exported.Spec.(map[string]interface{})
+	assert.True(t, ok)
+	assert.Equal(t, "AgentCard", card["@type"])
+	skills, ok := card["skills"].([]interface{})
+	assert.True(t, ok)
+	assert.Len(t, skills, 2)
+
+	imported, err := bridge.ImportSpec(card, "a2a")
+	assert.NoError(t, err)
+	assert.Equal(t, "a2a", imported.Format)
+	steps, ok := imported.Workflow["steps"].([]map[string]interface{})
+	assert.True(t, ok)
+	assert.Len(t, steps, 2)
+	assert.Equal(t, "train", steps[0]["name"])
+}
+
+func TestIntegrationPredictivePolicyWithBaselines(t *testing.T) {
+	objects := []*alpgo.AlpObject{
+		alpgo.NewAlpObject("p-strict", "policy").WithProperty("allow_commands", []string{"run"}).WithProperty("deny_commands", []string{"rm"}).WithProperty("enforcement", "strict"),
+	}
+	engine := alpgo.NewPredictivePolicyEngine(objects)
+
+	events := []alpgo.EventEntry{
+		{"command", "run", "[x]", false, "2026-01-01T00:00:00Z"},
+		{"command", "run", "[x]", false, "2026-01-01T00:01:00Z"},
+		{"command", "run", "[!]", true, "2026-01-01T00:02:00Z"},
+		{"command", "run", "[x]", false, "2026-01-01T00:03:00Z"},
+		{"command", "run", "[x]", false, "2026-01-01T00:04:00Z"},
+	}
+	engine.LearnFromEvents(events)
+
+	query := alpgo.NewPolicyQuery("command", "run")
+	decision := engine.Evaluate(query)
+	assert.NotNil(t, decision)
+	assert.NotNil(t, decision.Audit)
+
+	anomaly, ok := decision.Audit["anomaly"].(map[string]interface{})
+	assert.True(t, ok)
+	score, ok := anomaly["score"].(float64)
+	assert.True(t, ok)
+	assert.True(t, score >= 0.0)
+
+	summary := engine.AnomaliesSummary(nil)
+	assert.Equal(t, 1, summary["total"])
+}
+
+func TestIntegrationBridgeExportFormats(t *testing.T) {
+	bridge := alpgo.NewProtocolBridge()
+	wf := map[string]interface{}{
+		"id":   "wf-multi",
+		"name": "Multi-Format",
+		"steps": []interface{}{
+			map[string]interface{}{"id": "s1", "name": "step-one"},
+		},
+	}
+
+	for _, format := range []string{"openapi", "graphql", "grpc", "asyncapi", "a2a"} {
+		result, err := bridge.ExportWorkflow(wf, format)
+		assert.NoError(t, err, format)
+		assert.Equal(t, format, result.Format)
+		assert.NotNil(t, result.Spec)
+		assert.Equal(t, "wf-multi", result.SourceWorkflowID)
+	}
+}
+

@@ -151,6 +151,26 @@ class Planner:
         return max(depths.values())
 
 
+class ImprovementProposal:
+    def __init__(self, proposal_id: str, lesson_id: str, action: str, detail: str, confidence: float, target_node_id: Optional[str] = None):
+        self.proposal_id = proposal_id
+        self.lesson_id = lesson_id
+        self.target_node_id = target_node_id
+        self.action = action
+        self.detail = detail
+        self.confidence = confidence
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "proposal_id": self.proposal_id,
+            "lesson_id": self.lesson_id,
+            "target_node_id": self.target_node_id,
+            "action": self.action,
+            "detail": self.detail,
+            "confidence": self.confidence,
+        }
+
+
 class Reflector:
     """Post-run self-critique that emits reusable lessons."""
 
@@ -215,3 +235,283 @@ class Reflector:
                 tags=["handoff"],
             ))
         return lessons
+
+    def improve_plan(self, plan: Plan, lessons: List[Lesson], constraints: Optional[Dict[str, int]] = None) -> Dict[str, Any]:
+        proposals: List[ImprovementProposal] = []
+        nodes = [PlanNode(n.node_id, n.kind, n.label, list(n.depends_on)) for n in plan.nodes]
+        seen = set()
+        for lesson in lessons:
+            if "failure" in lesson.tags and "failed" in lesson.insight:
+                target = None
+                match = __import__("re").search(r"Task '([^']+)'", lesson.insight)
+                if match:
+                    target = match.group(1)
+                proposals.append(ImprovementProposal(
+                    proposal_id=f"prop-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{__import__('random').random().hex()[2:6]}",
+                    lesson_id=lesson.lesson_id,
+                    target_node_id=target,
+                    action="add_dependency",
+                    detail=f"Add fallback or retry dependency for '{target or 'unknown'}' due to repeated failures.",
+                    confidence=0.75,
+                ))
+            if "efficiency" in lesson.tags and "claimed" in lesson.insight:
+                target = None
+                match = __import__("re").search(r"Task '([^']+)'", lesson.insight)
+                if match:
+                    target = match.group(1)
+                proposals.append(ImprovementProposal(
+                    proposal_id=f"prop-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{__import__('random').random().hex()[2:6]}",
+                    lesson_id=lesson.lesson_id,
+                    target_node_id=target,
+                    action="reassign",
+                    detail=f"Reassign '{target or 'unknown'}' to a more stable owner.",
+                    confidence=0.6,
+                ))
+            if "handoff" in lesson.tags:
+                proposals.append(ImprovementProposal(
+                    proposal_id=f"prop-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{__import__('random').random().hex()[2:6]}",
+                    lesson_id=lesson.lesson_id,
+                    action="add_node",
+                    detail="Add automation gate to reduce human handoff frequency.",
+                    confidence=0.5,
+                ))
+        max_nodes = constraints.get("max_nodes") if constraints and isinstance(constraints.get("max_nodes"), int) else None
+        for p in proposals:
+            if p.action == "add_node" and p.proposal_id not in seen:
+                if max_nodes is not None and len(nodes) >= max_nodes:
+                    continue
+                nodes.append(PlanNode(f"node-{p.proposal_id}", "task", p.detail, []))
+                seen.add(p.proposal_id)
+        improved = Plan(
+            plan_id=plan.plan_id,
+            goal=plan.goal,
+            nodes=nodes,
+            metadata={**plan.metadata, "improvements": [p.action for p in proposals]},
+        )
+        return {"plan": improved, "proposals": proposals}
+
+
+class ReasoningStep:
+    """A single chain-of-thought step across agent boundaries."""
+
+    def __init__(
+        self,
+        step_id: str,
+        agent_id: str,
+        thought: str,
+        action: str,
+        confidence: float,
+        dependencies: Optional[List[str]] = None,
+        observation: Optional[str] = None,
+        timestamp: Optional[str] = None,
+    ):
+        self.step_id = step_id
+        self.agent_id = agent_id
+        self.thought = thought
+        self.action = action
+        self.observation = observation
+        self.confidence = confidence
+        self.dependencies = dependencies or []
+        self.timestamp = timestamp or __import__("datetime").datetime.utcnow().isoformat() + "Z"
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "step_id": self.step_id,
+            "agent_id": self.agent_id,
+            "thought": self.thought,
+            "action": self.action,
+            "observation": self.observation,
+            "confidence": self.confidence,
+            "dependencies": self.dependencies,
+            "timestamp": self.timestamp,
+        }
+
+
+class ReasoningChain:
+    """Executable chain-of-thought trace with lifecycle state."""
+
+    def __init__(self, chain_id: str, goal: str):
+        self.chain_id = chain_id
+        self.goal = goal
+        self.steps: List[ReasoningStep] = []
+        self.created_at = __import__("datetime").datetime.utcnow().isoformat() + "Z"
+        self.status: str = "draft"
+        self.result: Optional[str] = None
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "chain_id": self.chain_id,
+            "goal": self.goal,
+            "steps": [s.to_dict() for s in self.steps],
+            "created_at": self.created_at,
+            "status": self.status,
+            "result": self.result,
+        }
+
+
+class ReasoningTracer:
+    """Creates and mutates ReasoningChain instances."""
+
+    def __init__(self):
+        self._chains: Dict[str, ReasoningChain] = {}
+        self._step_counter = 0
+
+    def create_chain(self, goal: str) -> ReasoningChain:
+        chain_id = f"chain-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{self._step_counter:04d}"
+        chain = ReasoningChain(chain_id=chain_id, goal=goal)
+        self._chains[chain_id] = chain
+        return chain
+
+    def add_step(self, chain_id: str, step: Dict[str, Any]) -> ReasoningStep:
+        chain = self._chains.get(chain_id)
+        if not chain:
+            raise ValueError(f"Reasoning chain '{chain_id}' not found.")
+        if chain.status != "executing":
+            chain.status = "executing"
+        self._step_counter += 1
+        created = ReasoningStep(
+            step_id=f"step-{chain_id}-{self._step_counter}",
+            agent_id=step["agent_id"],
+            thought=step["thought"],
+            action=step["action"],
+            confidence=float(step.get("confidence", 0.0)),
+            dependencies=list(step.get("dependencies", [])),
+            observation=step.get("observation"),
+        )
+        chain.steps.append(created)
+        return created
+
+    def complete_chain(self, chain_id: str, result: str) -> ReasoningChain:
+        chain = self._chains.get(chain_id)
+        if not chain:
+            raise ValueError(f"Reasoning chain '{chain_id}' not found.")
+        chain.status = "completed"
+        chain.result = result
+        return chain
+
+    def fail_chain(self, chain_id: str, reason: str) -> ReasoningChain:
+        chain = self._chains.get(chain_id)
+        if not chain:
+            raise ValueError(f"Reasoning chain '{chain_id}' not found.")
+        chain.status = "failed"
+        chain.result = reason
+        return chain
+
+    def get_chain(self, chain_id: str) -> Optional[ReasoningChain]:
+        return self._chains.get(chain_id)
+
+    def get_steps_by_agent(self, agent_id: str) -> List[ReasoningStep]:
+        steps = []
+        for chain in self._chains.values():
+            for step in chain.steps:
+                if step.agent_id == agent_id:
+                    steps.append(step)
+        return steps
+
+
+class AgentContribution:
+    def __init__(self, agent_id: str, nodes: List[Dict[str, Any]], resources: Optional[Dict[str, Any]] = None, rationale: str = ""):
+        self.agent_id = agent_id
+        self.nodes = [PlanNode(**n) if isinstance(n, dict) else n for n in nodes]
+        self.resources = resources or {}
+        self.rationale = rationale
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "agent_id": self.agent_id,
+            "nodes": [n.to_dict() for n in self.nodes],
+            "resources": self.resources,
+            "rationale": self.rationale,
+        }
+
+
+class CollabPlanResult:
+    def __init__(self, plan: Plan, contributions: List[AgentContribution], allocation: Dict[str, str], conflicts: List[str], negotiation: Optional[Dict[str, Any]] = None):
+        self.plan = plan
+        self.contributions = contributions
+        self.allocation = allocation
+        self.conflicts = conflicts
+        self.negotiation = negotiation
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "plan": self.plan.to_dict(),
+            "contributions": [c.to_dict() for c in self.contributions],
+            "allocation": self.allocation,
+            "conflicts": self.conflicts,
+            "negotiation": self.negotiation,
+        }
+
+
+class CollabPlanner:
+    def __init__(self, tracer: Optional[ReasoningTracer] = None):
+        self.tracer = tracer
+
+    def build(self, goal: str, contributions: List[AgentContribution], constraints: Optional[Dict[str, int]] = None) -> CollabPlanResult:
+        if not contributions:
+            raise ValueError("At least one agent contribution is required for collaborative planning.")
+        nodes: List[PlanNode] = []
+        allocation: Dict[str, str] = {}
+        conflicts: List[str] = []
+        seen = set()
+        by_agent: Dict[str, AgentContribution] = {}
+        for c in contributions:
+            if not c.agent_id:
+                continue
+            by_agent[c.agent_id] = c
+            for node in c.nodes:
+                key = node.node_id or node.label
+                if key in seen:
+                    conflicts.append(f"Duplicate node '{key}' from {c.agent_id}")
+                    continue
+                seen.add(key)
+                nodes.append(node)
+                allocation[node.node_id] = c.agent_id
+        total_resources: Dict[str, int] = {}
+        for c in contributions:
+            for resource, amount in (c.resources or {}).items():
+                total_resources[resource] = total_resources.get(resource, 0) + amount
+        limit = constraints or {}
+        overruns: List[str] = []
+        adjusted = False
+        for resource, total in total_resources.items():
+            max_allowed = limit.get(resource)
+            if isinstance(max_allowed, int) and total > max_allowed:
+                overruns.append(f"{resource}: {total} > {max_allowed}")
+                adjusted = True
+        plan = Plan(
+            plan_id=f"collab-{__import__('re').sub(r'[^a-z0-9_-]+', '-', goal.lower())[:30] or 'plan'}",
+            goal=goal,
+            nodes=nodes,
+            metadata={
+                "contributions": [{"agent_id": c.agent_id, "node_count": len(c.nodes)} for c in contributions],
+                "negotiation": {
+                    "total": total_resources,
+                    "limit": limit,
+                    "overruns": overruns,
+                    "adjusted": adjusted,
+                },
+            },
+        )
+        if self.tracer:
+            chain = self.tracer.create_chain(goal)
+            self.tracer.add_step(chain.chain_id, {
+                "agent_id": "collab-planner",
+                "thought": f"Synthesized {len(nodes)} nodes from {len(contributions)} contributions",
+                "action": "collab-plan",
+                "observation": f"Conflicts: {len(conflicts)}; allocation entries: {len(allocation)}; resource overruns: {len(overruns)}",
+                "confidence": 0.6 if conflicts or overruns else 0.95,
+                "dependencies": [],
+            })
+        return CollabPlanResult(
+            plan=plan,
+            contributions=contributions,
+            allocation=allocation,
+            conflicts=conflicts,
+            negotiation={
+                "total": total_resources,
+                "limit": limit,
+                "overruns": overruns,
+                "adjusted": adjusted,
+            },
+        )

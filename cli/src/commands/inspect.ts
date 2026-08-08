@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { AlpParser } from '@autonomous-lifecycle-protocol-alp/parser';
+import { findFileWithId } from '../utils';
 
 export interface InspectOptions {
   file?: string;
@@ -38,17 +39,4 @@ export function inspectCommand(objectId: string, options?: InspectOptions) {
     console.log(`    ${key}: ${display}`);
   }
   console.log('');
-}
-
-function findFileWithId(alpDir: string, objectId: string): string | null {
-  if (!fs.existsSync(alpDir)) return null;
-  const files = fs.readdirSync(alpDir).filter((f) => f.endsWith('.alp'));
-  for (const file of files) {
-    const fullPath = path.join(alpDir, file);
-    const content = fs.readFileSync(fullPath, 'utf8');
-    if (content.includes(`id: ${objectId}`)) {
-      return fullPath;
-    }
-  }
-  return null;
 }

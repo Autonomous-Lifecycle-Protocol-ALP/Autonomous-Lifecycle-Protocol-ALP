@@ -29,7 +29,7 @@ def _workflow():
 
 class TestProtocolBridgeBasics(unittest.TestCase):
     def test_supported_formats(self):
-        self.assertEqual(set(SUPPORTED_FORMATS), {"openapi", "graphql", "grpc", "asyncapi"})
+        self.assertEqual(set(SUPPORTED_FORMATS), {"openapi", "graphql", "grpc", "asyncapi", "a2a"})
 
     def test_export_unknown_format_raises(self):
         bridge = ProtocolBridge()
@@ -145,6 +145,36 @@ class TestAsyncAPIBridge(unittest.TestCase):
         self.assertEqual(result.format, "asyncapi")
         self.assertEqual(len(result.workflow["steps"]), 1)
         self.assertEqual(result.workflow["steps"][0]["id"], "OrderCreated")
+
+
+class TestA2ABridge(unittest.TestCase):
+    def setUp(self):
+        self.bridge = ProtocolBridge()
+
+    def test_export_returns_agent_card(self):
+        result = self.bridge.export_workflow(_workflow(), "a2a")
+        self.assertEqual(result.format, "a2a")
+        self.assertEqual(result.spec["@type"], "AgentCard")
+        self.assertEqual(len(result.spec["skills"]), 3)
+        self.assertEqual(result.spec["skills"][0]["name"], "implement")
+
+    def test_import_returns_workflow(self):
+        agent_card = {
+            "id": "agent-1",
+            "name": "Test Agent",
+            "skills": [
+                {"id": "skill-1", "name": "Analyze", "description": "Analyze data"},
+            ],
+        }
+        result = self.bridge.import_spec(agent_card, "a2a")
+        self.assertEqual(result.format, "a2a")
+        self.assertEqual(len(result.workflow["steps"]), 1)
+        self.assertEqual(result.workflow["steps"][0]["name"], "Analyze")
+
+    def test_import_empty_skills_warns(self):
+        result = self.bridge.import_spec({"id": "agent-empty", "skills": []}, "a2a")
+        self.assertEqual(result.format, "a2a")
+        self.assertIn("No skills found in A2A agent card.", result.warnings)
 
 
 if __name__ == "__main__":

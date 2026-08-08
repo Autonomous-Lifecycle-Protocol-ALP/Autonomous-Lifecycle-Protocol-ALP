@@ -42,6 +42,7 @@ import {
   ResourceUpdatedNotificationSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { AlpParser, AlpObject, AlpGraph, PolicyEngine, updateObjectStatus, MacroEngine, MacroDefinition, MemoryMeshEngine, MemoryQueryResult, CollaborationEngine, CollabSession, CollabOperation, PresenceInfo, CollabBranch, TeamPermission, Comment, ReviewThread, ActivityEvent, LiveShareSession, AuditEvent, IntelligenceEngine, SmartSuggestion, DiagnosisResult, PredictionResult, ReviewFinding } from '@autonomous-lifecycle-protocol-alp/parser';
+import { PolicyEnforcer, DocumentValidator } from '@autonomous-lifecycle-protocol-alp/sdk';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -211,7 +212,7 @@ function audit(
 
 // ─── MCP Server ───────────────────────────────────────────────────────────
 const server = new Server(
-  { name: 'alp-mcp-server', version: '45.0.0' },
+  { name: 'alp-mcp-server', version: '80.0.0' },
   { capabilities: { tools: {}, resources: { subscribe: true }, prompts: {} } }
 );
 
@@ -389,7 +390,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     },
     {
       name: 'alp_delegate',
-      description: 'Create a new task assigned to a specific role/agent (sub-agent delegation).',
+      description: 'Create a new task assigned to a specific role/agent (sub-agent delegation) with extended metadata.',
       inputSchema: {
         type: 'object' as const,
         properties: {
@@ -397,6 +398,11 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
           agent: { type: 'string', description: 'Agent/role to assign (e.g. agent-qa)' },
           description: { type: 'string', description: 'Optional task description' },
           parent: { type: 'string', description: 'Optional parent task id this delegates from' },
+          priority: { type: 'string', description: 'Priority level: high, medium, low (default medium)' },
+          tags: { type: 'array', items: { type: 'string' }, description: 'Optional tags' },
+          skills: { type: 'array', items: { type: 'string' }, description: 'Required agent skills' },
+          dueDate: { type: 'string', description: 'Optional due date (ISO format or YYYY-MM-DD)' },
+          context: { type: 'string', description: 'Additional context or instructions for the sub-agent' },
           cwd: { type: 'string' }
         },
         required: ['title']
@@ -1033,14 +1039,26 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       }
       const errors: string[] = [];
       validateDirectory(alpDir, errors);
+
+      // Validate objects using DocumentValidator
+      const objects = loadWorkspace(cwd);
+      const validator = new DocumentValidator();
+      for (const obj of objects) {
+        try {
+          validator.validate({ _type: obj._type, id: obj.id || 'unnamed', properties: obj });
+        } catch (err: any) {
+          errors.push(`⚠️ Document validation issue [${obj.id}]: ${err.message}`);
+        }
+      }
+
       if (errors.length === 0) {
         return {
-          content: [{ type: 'text', text: '✅ All ALP files are valid.' }],
+          content: [{ type: 'text', text: `✅ All ALP files and ${objects.length} objects are valid.` }],
         };
       }
       return {
         content: [{ type: 'text', text: errors.join('\n') }],
-        isError: true,
+        isError: errors.some(e => e.startsWith('❌')),
       };
     }
     
@@ -1236,11 +1254,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 
     case 'alp_delegate': {
-      // Create a new task assigned to a specific role/agent.
+      // Create a new task assigned to a specific role/agent with extended metadata.
       const title = args?.title as string;
       const agent = (args?.agent as string) || 'agent-developer';
       const description = (args?.description as string) || title || '';
       const parent = args?.parent as string | undefined;
+      const priority = (args?.priority as string) || 'medium';
+      const tags = (args?.tags as string[] | undefined) || [];
+      const skills = (args?.skills as string[] | undefined) || [];
+      const dueDate = args?.dueDate as string | undefined;
+      const context = args?.context as string | undefined;
+
       if (!title) {
         return { content: [{ type: 'text', text: 'Error: title is required.' }], isError: true };
       }
@@ -1256,8 +1280,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       // Capability scoping: the new file path must comply with policy.
       const delegateDenied = enforcePolicy(cwd, file, agent);
       if (delegateDenied) return delegateDenied;
+
       const ownerLine = `  owner: -> ${agent.replace(/^->\s*/, '')}\n`;
       const parentLine = parent ? `  depends_on:\n    - -> ${parent.replace(/^->\s*/, '')}\n` : '';
+      const priorityLine = `  priority: ${priority}\n`;
+      const tagsLine = tags.length ? `  tags: [${tags.map(t => `"${t}"`).join(', ')}]\n` : '';
+      const skillsLine = skills.length ? `  skills: [${skills.map(s => `"${s}"`).join(', ')}]\n` : '';
+      const dueLine = dueDate ? `  due_date: "${dueDate}"\n` : '';
+      const contextLine = context ? `  context: "${context.replace(/"/g, "'")}"\n` : '';
+
       const body =
         `!alp-version: 2.0.0\n\n` +
         `@task\n` +
@@ -1265,9 +1296,23 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         `  status: [ ]\n` +
         `  description: "${description.replace(/"/g, "'")}"\n` +
         ownerLine +
+        priorityLine +
+        tagsLine +
+        skillsLine +
+        dueLine +
+        contextLine +
         parentLine;
+
+      // Validate created task via DocumentValidator before saving
+      const validator = new DocumentValidator();
+      try {
+        validator.validate({ _type: 'task', id, status: '[ ]', description });
+      } catch (err: any) {
+        return { content: [{ type: 'text', text: `Validation Error: ${err.message}` }], isError: true };
+      }
+
       fs.writeFileSync(file, body, 'utf8');
-      audit(cwd, 'file_mutation', { action: 'delegate', task_id: id, agent });
+      audit(cwd, 'file_mutation', { action: 'delegate', task_id: id, agent, priority, tags, skills });
       return {
         content: [{ type: 'text', text: `Delegated task ${id} to ${agent}.` }],
       };
@@ -1277,19 +1322,30 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       const targetPath = args?.path as string | undefined;
       const targetCommand = args?.command as string | undefined;
       const targetAgent = args?.agent as string | undefined;
+      const govern = Boolean(args?.govern);
       const objects = loadWorkspace(cwd);
       const engine = new PolicyEngine(objects);
-      let decision = { allowed: true, blocked: false, reasons: ['No policy rules matched'], policies: [] as string[] };
+      let decision: any = { allowed: true, blocked: false, reasons: ['No policy rules matched'], policies: [] as string[] };
 
       if (targetPath) {
         decision = engine.evaluate({ kind: 'path', value: targetPath, agent: targetAgent });
       } else if (targetCommand) {
         decision = engine.evaluate({ kind: 'command', value: targetCommand, agent: targetAgent });
+      } else if (govern || (!targetPath && !targetCommand)) {
+        const enforcer = new PolicyEnforcer({ requiredFields: ['id', '_type'] });
+        const workspaceWrapper = { objects } as any;
+        const result = enforcer.govern(workspaceWrapper);
+        decision = {
+          governance: result,
+          allowed: result.compliant,
+          blocked: !result.compliant,
+          reasons: result.compliant ? ['Workspace is fully policy compliant'] : [`${result.violations.length} policy violations found`],
+        };
       }
 
       return {
         content: [{ type: 'text', text: JSON.stringify(decision, null, 2) }],
-        isError: decision.blocked,
+        isError: Boolean(decision.blocked),
       };
     }
 
@@ -2291,6 +2347,29 @@ server.setRequestHandler(ListPromptsRequestSchema, async () => ({
         { name: 'sprint', description: 'Sprint identifier or date range', required: false },
       ],
     },
+    {
+      name: 'alp_delegate_task',
+      description: 'Standardized prompt for delegating a task to a specialized sub-agent with context.',
+      arguments: [
+        { name: 'title', description: 'Task title', required: true },
+        { name: 'agent', description: 'Target sub-agent identifier', required: false },
+        { name: 'context', description: 'Execution context', required: false },
+      ],
+    },
+    {
+      name: 'alp_review_workspace',
+      description: 'Standardized prompt for running autonomous audit and code review over workspace objects.',
+      arguments: [
+        { name: 'cwd', description: 'Working directory', required: false },
+      ],
+    },
+    {
+      name: 'alp_diagnose_failure',
+      description: 'Standardized prompt for analyzing failed tasks and recommending self-healing actions.',
+      arguments: [
+        { name: 'taskId', description: 'Failed task ID', required: false },
+      ],
+    },
   ],
 }));
 
@@ -2429,6 +2508,50 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
       };
     }
 
+    case 'alp_delegate_task': {
+      const title = (args.title as string) || 'Untitled Task';
+      const agent = (args.agent as string) || 'agent-developer';
+      const context = (args.context as string) || 'No additional context provided.';
+      const promptText =
+        `# Delegate Task Prompt\n\n` +
+        `**Task Title:** ${title}\n` +
+        `**Assigned Agent:** ${agent}\n` +
+        `**Context:** ${context}\n\n` +
+        `Please create a corresponding @task ALP object, check policies, and execute sub-agent assignment.`;
+      return {
+        messages: [{ role: 'user', content: { type: 'text', text: promptText } }],
+      };
+    }
+
+    case 'alp_review_workspace': {
+      const enforcer = new PolicyEnforcer({ requiredFields: ['id', '_type'] });
+      const result = enforcer.govern({ objects } as any);
+      const promptText =
+        `# Workspace Review Prompt\n\n` +
+        `**Objects Scanned:** ${result.objectsScanned}\n` +
+        `**Compliant:** ${result.compliant}\n` +
+        `**Violations:** ${result.violations.join(', ') || 'None'}\n\n` +
+        `Review workspace architecture, topology, and policy compliance.`;
+      return {
+        messages: [{ role: 'user', content: { type: 'text', text: promptText } }],
+      };
+    }
+
+    case 'alp_diagnose_failure': {
+      const taskId = args.taskId as string | undefined;
+      const failed = objects.filter(o => o.status === '[!]');
+      const target = taskId ? objects.find(o => o.id === taskId) : failed[0];
+      const promptText =
+        `# Task Failure Diagnosis Prompt\n\n` +
+        `**Target Task:** ${target?.id || taskId || 'None specified'}\n` +
+        `**Status:** ${target?.status || 'Unknown'}\n` +
+        `**Description:** ${target?.description || 'N/A'}\n\n` +
+        `Diagnose root cause and recommend automated self-healing repair steps.`;
+      return {
+        messages: [{ role: 'user', content: { type: 'text', text: promptText } }],
+      };
+    }
+
     default:
       return {
         messages: [{ role: 'user', content: { type: 'text', text: `Prompt "${promptName}" not found.` } }],
@@ -2484,7 +2607,12 @@ function validateDirectory(dir: string, errors: string[]) {
 server.setRequestHandler(ListResourcesRequestSchema, async () => {
   const cwd = process.cwd();
   const alpDir = path.join(cwd, '.alp');
-  const resources: any[] = [];
+  const resources: any[] = [
+    { uri: 'alp://workspace', name: 'ALP Workspace Index', mimeType: 'application/json', description: 'Full list of workspace objects' },
+    { uri: 'alp://graph', name: 'ALP Dependency Graph', mimeType: 'application/json', description: 'Topological execution graph' },
+    { uri: 'alp://policies', name: 'ALP Governance Policies', mimeType: 'application/json', description: 'Policy rules and compliance audit' },
+    { uri: 'alp://events', name: 'ALP Runtime Event Log', mimeType: 'application/json', description: 'Real-time activity log stream' },
+  ];
   
   if (fs.existsSync(alpDir)) {
     const walk = (dir: string) => {
@@ -2509,6 +2637,34 @@ server.setRequestHandler(ListResourcesRequestSchema, async () => {
 
 server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
   const uri = request.params.uri;
+  const cwd = process.cwd();
+
+  if (uri === 'alp://workspace') {
+    const objects = loadWorkspace(cwd);
+    return { contents: [{ uri, mimeType: 'application/json', text: JSON.stringify(objects, null, 2) }] };
+  }
+
+  if (uri === 'alp://graph') {
+    const objects = loadWorkspace(cwd);
+    const graph = new AlpGraph();
+    graph.buildGraph(objects);
+    const order = graph.topologicalSort();
+    return { contents: [{ uri, mimeType: 'application/json', text: JSON.stringify(order, null, 2) }] };
+  }
+
+  if (uri === 'alp://policies') {
+    const objects = loadWorkspace(cwd);
+    const enforcer = new PolicyEnforcer({ requiredFields: ['id', '_type'] });
+    const auditResult = enforcer.govern({ objects } as any);
+    return { contents: [{ uri, mimeType: 'application/json', text: JSON.stringify(auditResult, null, 2) }] };
+  }
+
+  if (uri === 'alp://events') {
+    const logFile = path.join(cwd, '.alp', '.runtime', 'log.jsonl');
+    const content = fs.existsSync(logFile) ? fs.readFileSync(logFile, 'utf8') : '[]';
+    return { contents: [{ uri, mimeType: 'application/json', text: content }] };
+  }
+
   if (uri.startsWith('file://')) {
     const filePath = uri.substring(7);
     if (fs.existsSync(filePath)) {

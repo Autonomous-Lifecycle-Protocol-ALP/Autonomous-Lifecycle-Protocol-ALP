@@ -1,10 +1,10 @@
-# 📐 System Architecture & Visual Topology
+# System Architecture & Visual Topology
 
 This section provides a deep technical breakdown of the Autonomous Lifecycle Protocol (ALP) runtime architecture, topological dependency engine, distributed event mesh, and security governance layers.
 
 ---
 
-## ⚡ 1. The Topological Execution Loop
+## 1. The Topological Execution Loop
 
 ALP parses repository definitions (`.alp/`) into a Directed Acyclic Graph (DAG) using Kahn's algorithm for topological sorting. Agents receive precise context bundles compiled in real-time (< 2ms).
 
@@ -36,7 +36,7 @@ sequenceDiagram
 
 ---
 
-## 🌐 2. Autonomous Swarm & Pub/Sub Event Mesh Topology
+## 2. Autonomous Swarm & Pub/Sub Event Mesh Topology
 
 Distributed agent nodes coordinate asynchronously over a decoupled Pub/Sub Event Mesh. Topics handle telemetry, task claim broadcasts, and real-time skill marketplace invocations.
 
@@ -69,7 +69,7 @@ flowchart TB
 
 ---
 
-## 🔒 3. Governance, Vault, & Policy Boundary Layer
+## 3. Governance, Vault, & Policy Boundary Layer
 
 Security and governance policies are checked deterministically before any file system write or system action is permitted.
 
@@ -77,21 +77,21 @@ Security and governance policies are checked deterministically before any file s
 flowchart LR
     Agent["AI Agent Request"] --> CheckPolicy{"Check @policy Rules"}
     CheckPolicy -->|Time Window / Path Allowed| UnsealVault{"Check Secret Needed"}
-    CheckPolicy -->|Path Denied / Out of Window| Reject["❌ Reject Action (Exit 1)"]
+    CheckPolicy -->|Path Denied / Out of Window| Reject["Reject (Exit 1)"]
     
-    UnsealVault -->|Requires Key| Decrypt["🔓 Unseal X25519 Envelope"]
+    UnsealVault -->|Requires Key| Decrypt["Unseal X25519 Envelope"]
     UnsealVault -->|No Secret Needed| Direct["Execute Command"]
     
     Decrypt --> CheckContract{"Check @contract Boundary"}
     Direct --> CheckContract
     
-    CheckContract -->|Within API Boundary| Execute["✅ Permitted Execution"]
-    CheckContract -->|Boundary Violation| BlockContract["❌ Contract Violation"]
+    CheckContract -->|Within API Boundary| Execute["Permitted Execution"]
+    CheckContract -->|Boundary Violation| BlockContract["Contract Violation"]
 ```
 
 ---
 
-## 🛠️ System Module Map
+## System Module Map
 
 ```mermaid
 mindmap

@@ -37,7 +37,6 @@ import { keysCommand } from './commands/keys';
 import { testHarnessCommand } from './commands/test-harness';
 import { replayCommand } from './commands/replay';
 import { visualizeCommand } from './commands/visualize';
-import { pluginCommand } from './commands/plugin';
 import { costCommand } from './commands/cost';
 import { debugCommand } from './commands/debug';
 import { bridgeCommand } from './commands/bridge';
@@ -46,58 +45,22 @@ import { governanceCommand } from './commands/governance';
 import { tenantCommand } from './commands/tenant';
 import { healingCommand } from './commands/healing';
 import { resilienceCommand } from './commands/resilience';
-import { identityCommand } from './commands/identity';
-import { p2pCommand } from './commands/p2p';
 import { tuiCommand } from './commands/tui';
 import { registerTraceCommand } from './commands/trace';
 import { registerZKCommand } from './commands/zk';
-import { registerProveCommand } from './commands/prove';
-import { registerBundleCommand } from './commands/bundle';
-import { registerBFTVoteCommand } from './commands/bft-vote';
-import { registerPartitionCommand } from './commands/partition';
-import { registerEvolvePolicyCommand } from './commands/evolve-policy';
-import { registerPQSignCommand } from './commands/pq-sign';
-import { registerSettleSwarmCommand } from './commands/settle-swarm';
-import { registerReplayCommand } from './commands/replay';
-import { registerSelfHealSwarmCommand } from './commands/self-heal-swarm';
-import { registerCopilotCommand } from './commands/copilot';
-import { registerCRDTCanvasCommand } from './commands/crdt-canvas';
-import { registerWasmAstCommand } from './commands/wasm-ast';
-import { registerEdgeDebugCommand } from './commands/edge-debug';
-import { registerTelemetryInspectCommand } from './commands/telemetry-inspect';
-import { registerChaosCommand } from './commands/chaos';
-import { registerFeatureFlagCommand } from './commands/feature-flag';
-import { registerStorageCommand } from './commands/storage';
-import { archiveCommand } from './commands/archive';
-import { deduplicateCommand } from './commands/deduplicate';
-import { promoteCommand } from './commands/promote';
 import { registerVectorCommand } from './commands/vector';
 import { registerDIDCommand } from './commands/did';
 import { registerCRDTSyncCommand } from './commands/crdt-sync';
 import { registerHealCommand } from './commands/heal';
 import { registerFormalVerifyCommand } from './commands/formal-verify';
-import { registerAssetCommand } from './commands/asset';
-import { registerBudgetCommand } from './commands/budget';
-import { registerSandboxCommand } from './commands/sandbox';
-import { registerTenantMeshCommand } from './commands/tenant-mesh';
-import { registerDecomposeCommand } from './commands/decompose';
-import { registerEdgeCommand } from './commands/edge';
-import { registerCodeIndexCommand } from './commands/code-index';
-import { registerEvalSuiteCommand } from './commands/eval-suite';
-import { registerPromptOptimizerCommand } from './commands/prompt-optimizer';
-import { registerConsensusVoteCommand } from './commands/consensus-vote';
-import { registerCodeTransformCommand } from './commands/code-transform';
-import { registerEventMeshCommand } from './commands/event-mesh';
-import { registerSwarmMarketplaceCommand } from './commands/swarm-marketplace';
-import { registerMacroCommand } from './commands/macro';
-import { registerCollabCommand } from './commands/collab';
-import { registerMemoryMeshCommand } from './commands/memory-mesh';
-import { intelligenceCommand } from './commands/intelligence';
-import { autonomyCommand } from './commands/autonomy';
 import { settingsCommand } from './commands/settings';
 import { searchCommand } from './commands/search';
 import { inspectCommand } from './commands/inspect';
 import { gitCommand } from './commands/git';
+import { archiveCommand } from './commands/archive';
+import { deduplicateCommand } from './commands/deduplicate';
+import { promoteCommand } from './commands/promote';
+import { registerReasonCommand } from './commands/reason';
 const program = new Command();
 
 program
@@ -483,91 +446,6 @@ program
   .action((opts) => searchCommand(opts));
 
 program
-  .command('git')
-  .description('Built-in git status, diff, and commit panel (v41.0.0)')
-  .option('--status', 'Show git status (default)')
-  .option('--diff', 'Show git diff summary')
-  .option('--commit <message>', 'Stage all changes and commit')
-  .action((opts) => gitCommand(opts));
-
-registerTraceCommand(program);
-registerZKCommand(program);
-registerVectorCommand(program);
-registerDIDCommand(program);
-registerCRDTSyncCommand(program);
-registerHealCommand(program);
-registerFormalVerifyCommand(program);
-program
-  .command('schedule')
-  .description('List and evaluate @timeline schedules (v8.2.0)')
-  .option('--next', 'Show only timelines that are due at the current time')
-  .option('--enable <id>', 'Enable a disabled @timeline by id')
-  .option('--disable <id>', 'Disable an enabled @timeline by id')
-  .option('--at <iso>', 'Evaluate schedules as of a fixed ISO datetime (testing)')
-  .action((opts) => scheduleCommand(opts));
-
-program
-  .command('swarm')
-  .description('Manage membership in a networked swarm (v4 Pillar 1)')
-  .argument('[subcommand]', 'join | leave | roster (default roster)')
-  .argument('[swarm]', 'Swarm id (first @swarm in the workspace if omitted)')
-  .option('--coordinator <url>', 'Coordinator base URL (overrides @swarm coordinator)')
-  .option('--token <token>', 'Bearer token for the coordinator')
-  .option('--node <id>', 'This node id')
-  .action((sub, swarm, opts) => swarmCommand(sub, swarm, opts));
-
-program
-  .command('repo')
-  .description('Cross-repository orchestration: discover, fetch, and resolve external repos (v4 Pillar 2)')
-  .argument('[subcommand]', 'ls | fetch | resolve | graph (default resolve)')
-  .option('--fetch', 'Fetch/update Git-backed repos before resolving')
-  .action((sub, opts) => repoCommand(sub, opts));
-
-program
-  .command('registry')
-  .description('Hosted registry & marketplace: serve, publish, list, search, install (v4 Pillar 3)')
-  .argument('[subcommand]', 'serve | publish | list | search | install | verify (default list)')
-  .argument('[target]', 'Package dir (publish) or name[version] (install/search)')
-  .option('--url <url>', 'Registry base URL (overrides ALP_REGISTRY_URL)')
-  .option('--version <v>', 'Version for install')
-  .option('--token <token>', 'Bearer token for the registry (overrides .alprc / ALP_REGISTRY_TOKEN)')
-  .option('--key <file>', 'Trusted public key (PEM) — require + verify signed installs (v4.1)')
-  .option('--sign-key <file>', 'Ed25519 private key (PEM) to sign published versions (v4.1)')
-  .action((sub, target, opts) => registryCommand(sub, target, opts));
-
-program
-  .command('install')
-  .description('Install a community package from the ALP Registry')
-  .argument('<package>', 'Name of the package to install (e.g. @community/scrum-master)')
-  .option('--url <url>', 'Registry base URL (overrides ALP_REGISTRY_URL)')
-  .option('--version <v>', 'Version to install (default latest)')
-  .option('--key <file>', 'Trusted public key (PEM) — require + verify signed installs (v4.1)')
-  .action((pkg, opts) => installCommand(pkg, opts));
-
-program
-  .command('uninstall')
-  .description('Uninstall a package from the ALP Registry')
-  .argument('<package>', 'Name of the package to uninstall')
-  .action(uninstallCommand);
-
-program
-  .command('publish')
-  .description('Publish a local package to the ALP Registry (v4 Pillar 3)')
-  .argument('<directory>', 'Directory containing the package (must have alp-package.json)')
-  .option('--url <url>', 'Publish to a remote registry host (alp serve --registry) instead of the local store')
-  .option('--token <token>', 'Bearer token for the registry (overrides .alprc / ALP_REGISTRY_TOKEN)')
-  .option('--sign-key <file>', 'Ed25519 private key (PEM) to sign the published version (v4.1 trust)')
-  .action((dir, opts) => publishCommand(dir, opts));
-
-program
-  .command('keys')
-  .description('Manage registry package-signing keypairs & trust roots (v4.2/4.3)')
-  .argument('[args...]', 'generate | fingerprint <file> | trust add <ns|*> <fingerprint|file> | trust list')
-  .action((args: string[]) => keysCommand(args[0], args.slice(1)));
-
-program
-  .command('test-harness')
-  .description('Run the ALP compliance test suite against the bundled parser or an external one (v6.2.0)')
   .option('--executable <cmd>', 'External parser executable: takes a .alp path, prints AST JSON to stdout, non-zero on failure')
   .option('--suite <dir>', 'Path to the compliance suite directory (default ./tests/compliance)')
   .action((opts) => testHarnessCommand(opts));
@@ -596,6 +474,92 @@ program
   .option('--out <file>', 'Output file path (prints to stdout if omitted)')
   .option('--minified', 'Minify JSON output (only applies to json format)')
   .action(exportCommand);
+
+program
+  .command('backup')
+  .description('Backup, restore, and list workspace snapshots')
+  .argument('<action>', 'Action: create, restore, or list')
+  .argument('[name]', 'Backup name for create/restore')
+  .action((action, name) => backupCommand(action, name));
+
+program
+  .command('diff')
+  .description('Diff two workspace snapshots by object id')
+  .argument('<snapshot-a>', 'Older snapshot name')
+  .argument('<snapshot-b>', 'Newer snapshot name')
+  .action((a, b) => diffCommand(a, b));
+
+program
+  .command('rename')
+  .description('Rename an ALP object id across all workspace files')
+  .argument('<old-id>', 'Current object id')
+  .argument('<new-id>', 'New object id')
+  .action((oldId, newId) => renameCommand(oldId, newId));
+
+program
+  .command('copy')
+  .description('Copy an ALP object to a new id across all workspace files')
+  .argument('<source-id>', 'Source object id to copy')
+  .argument('<target-id>', 'New object id')
+  .option('--update-refs', 'Update reference fields (depends_on, references, links, parent, child) to the new id')
+  .action((sourceId, targetId, opts) => copyCommand(sourceId, targetId, opts.updateRefs));
+
+program
+  .command('stats')
+  .description('Show workspace statistics: object counts by type and file')
+  .action(() => statsCommand());
+
+program
+  .command('template')
+  .description('Create a new ALP object from a built-in template')
+  .argument('<type>', 'Template type: task, agent, workflow, policy, test')
+  .argument('<id>', 'Object id for the new template')
+  .action((type, id) => templateCommand(type, id));
+
+program
+  .command('move')
+  .description('Move an ALP object from one file to another')
+  .argument('<id>', 'Object id to move')
+  .argument('<target-file>', 'Target .alp file (e.g. tasks.alp)')
+  .action((id, targetFile) => moveCommand(id, targetFile));
+
+program
+  .command('depends')
+  .description('Show dependencies for an ALP object')
+  .argument('<id>', 'Object id to inspect')
+  .action((id) => dependsCommand(id));
+
+program
+  .command('inspect')
+  .description('Inspect an ALP object and show its properties')
+  .argument('<id>', 'Object id to inspect')
+  .option('--file <path>', 'Optional specific file to inspect')
+  .action((id, opts) => inspectCommand(id, opts));
+
+program
+  .command('delete')
+  .description('Delete an ALP object from a workspace file')
+  .argument('<id>', 'Object id to delete')
+  .option('--file <path>', 'Optional specific file to delete from')
+  .action((id, opts) => deleteCommand(id, opts));
+
+program
+  .command('archive')
+  .description('Archive objects with a given status')
+  .argument('<status>', 'Status to archive (e.g. done)')
+  .action((status) => archiveCommand(status));
+
+program
+  .command('deduplicate')
+  .description('Remove duplicate objects across workspace files')
+  .action(() => deduplicateCommand());
+
+program
+  .command('promote')
+  .description('Promote an object to a new type')
+  .argument('<id>', 'Object id to promote')
+  .argument('<type>', 'New type for the object')
+  .action((id, type) => promoteCommand(id, type));
 
 program
   .command('cost')
@@ -691,56 +655,9 @@ registerDIDCommand(program);
 registerCRDTSyncCommand(program);
 registerHealCommand(program);
 registerFormalVerifyCommand(program);
-registerAssetCommand(program);
-registerBudgetCommand(program);
-registerSandboxCommand(program);
-registerTenantMeshCommand(program);
-registerDecomposeCommand(program);
-registerEdgeCommand(program);
-registerCodeIndexCommand(program);
-registerEvalSuiteCommand(program);
-registerPromptOptimizerCommand(program);
-registerConsensusVoteCommand(program);
-registerCodeTransformCommand(program);
-registerEventMeshCommand(program);
-registerSwarmMarketplaceCommand(program);
-registerMacroCommand(program);
-registerCollabCommand(program);
-registerMemoryMeshCommand(program);
-registerProveCommand(program);
-registerBundleCommand(program);
-registerBFTVoteCommand(program);
-registerPartitionCommand(program);
-registerEvolvePolicyCommand(program);
-registerPQSignCommand(program);
-registerSettleSwarmCommand(program);
-registerReplayCommand(program);
-registerSelfHealSwarmCommand(program);
-registerCopilotCommand(program);
-registerCRDTCanvasCommand(program);
-registerWasmAstCommand(program);
-registerEdgeDebugCommand(program);
-registerTelemetryInspectCommand(program);
-registerChaosCommand(program);
-registerFeatureFlagCommand(program);
-registerStorageCommand(program);
-
-program
-   .command('intelligence')
-   .description('IDE Intelligence: suggestions, diagnostics, predictions, review (v45.0.0)')
-   .argument('<subcommand>', 'suggest | diagnose | predict | review')
-   .option('--error <text>', 'Error text to diagnose')
-   .option('--task-id <id>', 'Task ID for prediction')
-   .action((subcommand, opts) => intelligenceCommand(subcommand, opts));
-
-program
-   .command('autonomy')
-   .description('Autonomous Orchestration: run, heal, predict, observe, mutate (v45.0.0)')
-   .argument('<subcommand>', 'run | heal | predict | observe | mutate | decisions')
-   .option('--workflow <id>', 'Workflow ID for run/predict/mutate')
-   .option('--swarm <id>', 'Swarm ID for decisions')
-   .option('--signal <type>', 'Signal type for observe (latency, error_rate, throughput)')
-   .option('--cwd <dir>', 'Working directory')
-   .action((subcommand, opts) => autonomyCommand(subcommand, opts));
+registerReasonCommand(program);
+// Duplicate command registrations removed (see ADR-001: CLI deduplication)
+// All commands are registered once above. Subcommand-registration helpers
+// (registerTraceCommand, registerZKCommand, etc.) are called once at lines 493-498.
 
 program.parse(process.argv);

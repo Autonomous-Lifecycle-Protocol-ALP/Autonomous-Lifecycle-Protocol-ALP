@@ -1,0 +1,13 @@
+{
+  "name": "alp-workspace",
+  "version": "1.0.0",
+  "description": "ALP Enterprise workspace",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test/run.js"
+  },
+  "dependencies": {
+    "alp": "^81.0.0"
+  }
+}

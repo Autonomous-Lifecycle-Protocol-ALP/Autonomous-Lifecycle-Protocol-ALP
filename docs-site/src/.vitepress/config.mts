@@ -12,6 +12,7 @@ const starsContent = fs.existsSync(starsPath) ? fs.readFileSync(starsPath, 'utf-
 export default defineConfig({
   title: "ALP",
   description: "Autonomous Lifecycle Protocol",
+  theme: 'src/.vitepress/theme/index.ts',
   base: '/Autonomous-Lifecycle-Protocol-ALP/',
   markdown: {
     languageAlias: {
@@ -28,6 +29,7 @@ export default defineConfig({
     const head: Array<[string, Record<string, string>, string]> = []
     if (styleContent) head.push(['style', {}, styleContent])
     if (starsContent) head.push(['script', {}, starsContent])
+    head.push(['link', { rel: 'icon', href: '/favicon.ico' }])
     return head
   },
   themeConfig: {
@@ -48,6 +50,15 @@ export default defineConfig({
           { text: 'Tutorial', link: '/tutorial' },
           { text: 'Examples', link: '/examples' },
           { text: 'CLI Guide', link: '/guide/cli' },
+          { text: 'Best Practices', link: '/best-practices' },
+          { text: 'FAQ', link: '/faq' },
+          { text: 'Contributing', link: '/contributing' }
+        ]
+      },
+      {
+        text: 'SDKs',
+        items: [
+          { text: 'SDK Overview', link: '/guide/sdk' },
           { text: 'Python SDK Snapshots', link: '/python-sdk-snapshot' },
           { text: 'Python SDK Diff', link: '/python-sdk-diff' },
           { text: 'Python SDK Refactor', link: '/python-sdk-refactor' },
@@ -57,10 +68,7 @@ export default defineConfig({
           { text: 'Python SDK Copy', link: '/python-sdk-copy' },
           { text: 'Python SDK Stats', link: '/python-sdk-stats' },
           { text: 'Python SDK Templates', link: '/python-sdk-templates' },
-          { text: 'Python SDK Move', link: '/python-sdk-move' },
-          { text: 'Best Practices', link: '/best-practices' },
-          { text: 'FAQ', link: '/faq' },
-          { text: 'Contributing', link: '/contributing' }
+          { text: 'Python SDK Move', link: '/python-sdk-move' }
         ]
       },
       {
@@ -70,7 +78,27 @@ export default defineConfig({
           { text: 'CLI Tools Reference', link: '/cli-tools' },
           { text: 'MCP Server', link: '/mcp-server' },
           { text: 'VS Code Extension', link: '/vscode-extension' },
-          { text: 'SHAM IDE', link: '/sham' }
+          { text: 'SHAM IDE', link: '/sham' },
+          {
+            text: 'Products',
+            items: [
+              { text: 'Product Overview', link: '/products' },
+              { text: 'ALP Cloud Workspace', link: '/products/cloud-workspace' },
+              { text: 'ALP Mobile App', link: '/products/mobile-app' },
+              { text: 'ALP Agent Studio', link: '/products/agent-studio' },
+              { text: 'ALP Security Scanner', link: '/products/security-scanner' },
+              { text: 'ALP Analytics & BI', link: '/products/analytics-bi' },
+              { text: 'ALP DevOps Bridge', link: '/products/devops-bridge' },
+              { text: 'ALP AI Model Hub', link: '/products/model-hub' },
+              { text: 'ALP Data Pipeline Studio', link: '/products/data-pipeline-studio' },
+              { text: 'ALP Hybrid Engineer AI', link: '/products/hybrid-engineer' },
+              { text: 'ALP Quantum Engineering AI', link: '/products/quantum-engineer' },
+              { text: 'ALP Chip Design Studio', link: '/products/chip-design-studio' },
+              { text: 'ALP SOC Sentinel AI', link: '/products/soc-sentinel' },
+              { text: 'ALP Threat Intelligence Engine', link: '/products/threat-intel' },
+              { text: 'ALP Zero Trust Orchestrator', link: '/products/zero-trust' }
+            ]
+          }
         ]
       },
       { text: 'Specification', link: '/spec/01-overview' }
@@ -86,17 +114,27 @@ export default defineConfig({
           { text: 'Tutorial', link: '/tutorial' },
           { text: 'Examples', link: '/examples' },
           { text: 'CLI Usage', link: '/guide/cli' },
-          { text: 'Python SDK Snapshots', link: '/python-sdk-snapshot' },
-          { text: 'Python SDK Diff', link: '/python-sdk-diff' },
-          { text: 'Python SDK Refactor', link: '/python-sdk-refactor' },
-          { text: 'Python SDK Search', link: '/python-sdk-search' },
-          { text: 'Python SDK Inspect', link: '/python-sdk-inspect' },
-          { text: 'Python SDK Delete', link: '/python-sdk-delete' },
+          { text: 'SDKs', link: '/guide/sdk' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' },
           { text: 'Roadmap', link: '/roadmap' },
-          { text: 'SDKs', link: '/guide/sdk' }
+          { text: 'Releases', link: '/releases' }
+        ]
+      },
+      {
+        text: 'Python SDK',
+        items: [
+          { text: 'Snapshots', link: '/python-sdk-snapshot' },
+          { text: 'Diff', link: '/python-sdk-diff' },
+          { text: 'Refactor', link: '/python-sdk-refactor' },
+          { text: 'Search', link: '/python-sdk-search' },
+          { text: 'Inspect', link: '/python-sdk-inspect' },
+          { text: 'Delete', link: '/python-sdk-delete' },
+          { text: 'Copy', link: '/python-sdk-copy' },
+          { text: 'Stats', link: '/python-sdk-stats' },
+          { text: 'Templates', link: '/python-sdk-templates' },
+          { text: 'Move', link: '/python-sdk-move' }
         ]
       },
       {
@@ -104,9 +142,30 @@ export default defineConfig({
         items: [
           { text: 'Execution Engine', link: '/execution-engine' },
           { text: 'CLI Tools Reference', link: '/cli-tools' },
+          { text: 'Reasoning Core', link: '/reasoning-core' },
           { text: 'MCP Server', link: '/mcp-server' },
           { text: 'VS Code Extension', link: '/vscode-extension' },
-          { text: 'SHAM IDE', link: '/sham' }
+          { text: 'SHAM IDE', link: '/sham' },
+          {
+            text: 'Products',
+            items: [
+              { text: 'Product Overview', link: '/products' },
+              { text: 'ALP Cloud Workspace', link: '/products/cloud-workspace' },
+              { text: 'ALP Mobile App', link: '/products/mobile-app' },
+              { text: 'ALP Agent Studio', link: '/products/agent-studio' },
+              { text: 'ALP Security Scanner', link: '/products/security-scanner' },
+              { text: 'ALP Analytics & BI', link: '/products/analytics-bi' },
+              { text: 'ALP DevOps Bridge', link: '/products/devops-bridge' },
+              { text: 'ALP AI Model Hub', link: '/products/model-hub' },
+              { text: 'ALP Data Pipeline Studio', link: '/products/data-pipeline-studio' },
+              { text: 'ALP Hybrid Engineer AI', link: '/products/hybrid-engineer' },
+              { text: 'ALP Quantum Engineering AI', link: '/products/quantum-engineer' },
+              { text: 'ALP Chip Design Studio', link: '/products/chip-design-studio' },
+              { text: 'ALP SOC Sentinel AI', link: '/products/soc-sentinel' },
+              { text: 'ALP Threat Intelligence Engine', link: '/products/threat-intel' },
+              { text: 'ALP Zero Trust Orchestrator', link: '/products/zero-trust' }
+            ]
+          }
         ]
       },
       {

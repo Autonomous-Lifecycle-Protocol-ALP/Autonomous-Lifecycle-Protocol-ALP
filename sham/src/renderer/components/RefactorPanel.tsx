@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Icon } from './Icon.js';
 import {
   refactorFindSymbols,
   refactorRename,
@@ -141,7 +142,7 @@ export function RefactorPanel({
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {renames.length === 0 ? (
           <div className="empty-state" style={{ height: 'auto', padding: 24 }}>
-            <div className="empty-state-icon">&#10070;</div>
+            <div className="empty-state-icon"><Icon name="code" size={32} color="var(--text-muted)" /></div>
             <div className="empty-state-title">{loading ? 'Scanning workspace...' : 'No renames yet'}</div>
             <div className="empty-state-desc">{loading ? '' : 'Enter a workspace path to discover symbols, or run a rename preview.'}</div>
           </div>

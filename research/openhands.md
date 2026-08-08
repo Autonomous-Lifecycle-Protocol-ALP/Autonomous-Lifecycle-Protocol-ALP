@@ -69,15 +69,15 @@ Each tool invents its own solution:
 
 | Tool | Context File | Format | Portable? |
 | --- | --- | --- | --- |
-| Cursor | `.cursorrules` | Markdown | ❌ |
-| Claude Code | `CLAUDE.md` | Markdown | ❌ |
-| Cline | `.clinerules` | Markdown | ❌ |
-| Roo Code | `.roo/rules-*` | Markdown | ❌ |
-| Codex | `AGENTS.md` | Markdown | ❌ |
-| Continue | `.continue/config.json` | JSON | ❌ |
-| Devin | (internal) | Proprietary | ❌ |
+| Cursor | `.cursorrules` | Markdown | No |
+| Claude Code | `CLAUDE.md` | Markdown | No |
+| Cline | `.clinerules` | Markdown | No |
+| Roo Code | `.roo/rules-*` | Markdown | No |
+| Codex | `AGENTS.md` | Markdown | No |
+| Continue | `.continue/config.json` | JSON | No |
+| Devin | (internal) | Proprietary | No |
 | OpenHands | (none) | N/A | N/A |
-| Aider | (repo map) | Auto-generated | ❌ |
+| Aider | (repo map) | Auto-generated | No |
 
 **None of them are interoperable.** Writing `.cursorrules` doesn't help if you switch to Claude Code. Training Devin's internal model doesn't help if you switch to OpenHands.
 

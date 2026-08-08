@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { AlpParser, AlpError } from '@autonomous-lifecycle-protocol-alp/parser';
+import { escapeRegex } from '../utils';
 
 export function copyCommand(sourceId: string, targetId: string, updateRefs = false) {
   const targetDir = path.join(process.cwd(), '.alp');
@@ -45,8 +45,4 @@ function copyInContent(content: string, sourceId: string, targetId: string, upda
   }
 
   return updated;
-}
-
-function escapeRegex(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { AlpParser, AlpObject } from '@autonomous-lifecycle-protocol-alp/parser';
+import { loadAlpDir } from '../utils';
 import { readEvents } from '../runtime';
 
 /**
@@ -35,7 +36,7 @@ export function tuiCommand() {
     // Read objects
     const parser = new AlpParser();
     const objects: AlpObject[] = [];
-    loadAllObjects(alpDir, parser, objects);
+    loadAlpDir(alpDir, parser, objects);
 
     const project = objects.find((o) => o._type === 'project')?.id ?? 'default';
     const tasks = objects.filter((o) => o._type === 'task');
@@ -126,26 +127,5 @@ export function tuiCommand() {
   process.on('SIGTERM', cleanup);
 }
 
-function loadAllObjects(dir: string, parser: AlpParser, out: AlpObject[]) {
-  try {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
-    for (const entry of entries) {
-      const full = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        if (entry.name === '.runtime' || entry.name === '.cache') continue;
-        loadAllObjects(full, parser, out);
-      } else if (entry.name.endsWith('.alp')) {
-        try {
-          const content = fs.readFileSync(full, 'utf-8');
-          out.push(...parser.parse(content));
-        } catch {
-          /* ignore */
-        }
-      }
-    }
-  } catch {
-    /* ignore */
-  }
-}
 
 

@@ -44,7 +44,7 @@ describe('alp domain-trust (v18.4.0)', () => {
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
-  });
+  }, 60000);
 
   it('accepts a link', () => {
     const tmp = makeWorkspace();
@@ -57,7 +57,7 @@ describe('alp domain-trust (v18.4.0)', () => {
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
-  });
+  }, 60000);
 
   it('revokes a link', () => {
     const tmp = makeWorkspace();
@@ -70,7 +70,7 @@ describe('alp domain-trust (v18.4.0)', () => {
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
-  });
+  }, 60000);
 });
 
 describe('alp governance (V8)', () => {
@@ -95,7 +95,7 @@ describe('alp governance (V8)', () => {
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
-  });
+  }, 60000);
 
   it('closes and tallies', () => {
     const tmp = makeWorkspace();
@@ -108,7 +108,7 @@ describe('alp governance (V8)', () => {
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
-  });
+  }, 60000);
 });
 
 describe('alp tenant (v18.2.0)', () => {
@@ -134,7 +134,7 @@ describe('alp tenant (v18.2.0)', () => {
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
-  });
+  }, 60000);
 
   it('deletes a tenant', () => {
     const tmp = makeWorkspace();

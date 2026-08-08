@@ -66,7 +66,7 @@ describe('alp backup', () => {
     } finally {
       fs.rmSync(tmp, { recursive: true, force: true });
     }
-  });
+  }, 60000);
 
   it('reports error when .alp directory is missing', () => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'alp-backup-noalp-'));

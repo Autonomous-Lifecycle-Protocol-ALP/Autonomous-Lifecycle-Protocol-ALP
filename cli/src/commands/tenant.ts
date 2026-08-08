@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { TenantManager, TenantVault, TenantIsolationError, create_tenant_key } from '@autonomous-lifecycle-protocol-alp/parser';
+import { TenantManager, create_tenant_key } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function tenantCommand(subcommand: string, ...args: string[]) {
   const cwd = process.cwd();

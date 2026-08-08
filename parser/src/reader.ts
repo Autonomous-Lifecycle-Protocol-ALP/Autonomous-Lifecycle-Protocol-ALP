@@ -1,5 +1,5 @@
 import { SyntaxError, IndentationError, DirectiveError } from './error';
-import { evaluateBool, interpolate, buildContext, AlpelValue } from './alpel';
+import { evaluateBool, interpolate, buildContext } from './alpel';
 
 export interface AlpObject {
   _type: string;

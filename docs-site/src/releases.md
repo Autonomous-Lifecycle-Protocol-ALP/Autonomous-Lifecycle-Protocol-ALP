@@ -11,11 +11,29 @@ ALP versioning tracks two independent axes:
 - **Specification** (`spec/01-overview`) — the protocol grammar. Locked at **2.0.0 (Stable)**; strict semantic-versioning guarantees apply to implementations.
 - **Toolchain** (`@autonomous-lifecycle-protocol-alp/cli`, `@autonomous-lifecycle-protocol-alp/sdk`, docs-site, integrations) — the implementation and packaging, released on its own cadence.
 
-> 🔮 **Looking Ahead**: See [ROADMAP_V17_V43.md](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/raw/main/docs/ROADMAP_V17_V43.md) for the strategic architecture roadmap spanning v17.0.0 (OpenTelemetry) to v43.0.0 (IDE Collaboration).
+> **Looking Ahead**: See [ROADMAP_V17_V43.md](https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP/raw/main/docs/ROADMAP_V17_V43.md) for the strategic architecture roadmap spanning v17.0.0 (OpenTelemetry) to v43.0.0 (IDE Collaboration).
 
 ---
 
 ## Toolchain
+
+### 82.0.0 — Autonomous Reasoning Core
+
+- **Verifiable Reasoning Tree** (`VerifiableReasoningTree`): Cryptographically verified chain-of-thought Merkle trees with SHA-256 step hashes and node provenance.
+- **Self-Reflection & Critique Engine** (`CritiqueEngine`): Automated critique loops scoring correctness, security, and performance with automated spec refinements.
+- **Cross-Agent Task Negotiation** (`CrossAgentPlanner`): Multi-agent task allocation engine using composite capability, cost, and risk scores.
+- **CLI & Tools**: `alp reason critique <file>` and `alp reason verify <chainId>` subcommands.
+
+### 81.0.0 — SHAM IDE & Parser Enhancements
+
+- **Real-Time Multiplayer CRDT Canvas**: Connected node relations (`CanvasEdge`), SVG dependency edges, and live CRDT JSON snapshot exports.
+- **Wasm-Compiled AST Evaluator**: Offline-first parsing covering all 50+ block types with sub-5ms latency and diagnostic rules.
+- **Autonomous Agent Copilot**: Natural language workspace querying (`queryWorkspace`) and policy auto-generation (`generatePolicyFromUsage`).
+
+### 80.0.0 — MCP Server & VS Code Extension Enhancements
+
+- **MCP Server**: Integrated `PolicyEnforcer` & `DocumentValidator`, enriched `alp_delegate` tool schema (`priority`, `tags`, `skills`, `dueDate`, `context`), added MCP Prompts (`alp_delegate_task`, `alp_review_workspace`, `alp_diagnose_failure`), and virtual MCP Resources (`alp://workspace`, `alp://graph`, `alp://policies`, `alp://events`).
+- **VS Code Extension**: `PolicyEnforcer` governance audits, `!deprecated` hint diagnostics, expanded TextMate block marker grammar (50+ types), and real-time workspace health status bar.
 
 ### 80.0.0 — Autonomous Orchestration
 

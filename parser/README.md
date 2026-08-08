@@ -20,7 +20,7 @@ The reference parser implementation for the `.alp` file format.
 
 ## Status
 
-✅ **Stable** — reference parser for the ALP `.alp` format, part of the
+[Stable] — reference parser for the ALP `.alp` format, part of the
 current v45.0.0 toolchain. Supports the full spectrum of ALP eras from V2
 (Execution Engine) through V44 (IDE Intelligence), including governance
 objects (`@policy`, `@contract`, `@vault`, `@timeline`), distributed runtime

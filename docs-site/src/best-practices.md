@@ -342,7 +342,7 @@ alp event-mesh publish topic-code-events '{
 
 ## Common Pitfalls
 
-### ❌ Don't: Use Tabs for Indentation
+### Don't: Use Tabs for Indentation
 
 ```alp
 # Bad - tabs cause IndentationError
@@ -350,7 +350,7 @@ alp event-mesh publish topic-code-events '{
 	id: task-bad
 ```
 
-### ❌ Don't: Skip `!alp-version`
+### Don't: Skip `!alp-version`
 
 ```alp
 # Bad - parser assumes latest version
@@ -358,7 +358,7 @@ alp event-mesh publish topic-code-events '{
   id: my-project
 ```
 
-### ❌ Don't: Mark Tasks Done Without Verification
+### Don't: Mark Tasks Done Without Verification
 
 ```alp
 # Bad - no verify block
@@ -367,7 +367,7 @@ alp event-mesh publish topic-code-events '{
   status: [x]
 ```
 
-### ❌ Don't: Use Unannotated `[!]` or `[?]`
+### Don't: Use Unannotated `[!]` or `[?]`
 
 ```alp
 # Bad - parse error in v9+

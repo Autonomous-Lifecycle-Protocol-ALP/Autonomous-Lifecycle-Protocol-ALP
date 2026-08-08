@@ -1,6 +1,6 @@
 {
   "name": "@autonomous-lifecycle-protocol-alp/mcp-server",
-  "version": "45.0.0",
+  "version": "80.0.0",
   "description": "ALP Model Context Protocol Server — Connect any AI agent to your ALP workspace",
   "main": "dist/index.js",
   "bin": {
@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
-    "@autonomous-lifecycle-protocol-alp/parser": "*"
+    "@autonomous-lifecycle-protocol-alp/parser": "*",
+    "@autonomous-lifecycle-protocol-alp/sdk": "*"
   },
   "devDependencies": {
     "typescript": "^5.0.0",

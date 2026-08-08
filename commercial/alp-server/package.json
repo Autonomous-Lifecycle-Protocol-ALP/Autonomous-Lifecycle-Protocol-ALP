@@ -1,0 +1,29 @@
+{
+  "name": "alp-enterprise",
+  "version": "1.0.0",
+  "description": "ALP Enterprise - Autonomous Lifecycle Protocol commercial platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon scripts/start-dev.js",
+    "dev:mongo": "node scripts/start-dev.js",
+    "seed": "node scripts/seed.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@autonomous-lifecycle-protocol-alp/platform": "*",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb-memory-server": "^9.5.0",
+    "mongoose": "^8.5.0",
+    "socket.io": "^4.7.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4",
+    "supertest": "^6.3.4",
+    "vitest": "^4.1.10"
+  }
+}

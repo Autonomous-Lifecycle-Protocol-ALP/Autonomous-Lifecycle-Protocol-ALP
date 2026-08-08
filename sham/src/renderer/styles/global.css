@@ -28,7 +28,36 @@
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
   --font-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
   --transition: 0.15s ease;
+
+  /* Fluid spacing variables for responsive layout */
+  --spacing-xs: clamp(4px, 1vw, 8px);
+  --spacing-sm: clamp(8px, 1.5vw, 12px);
+  --spacing-md: clamp(12px, 2vw, 16px);
+  --spacing-lg: clamp(16px, 2.5vw, 24px);
+
+  /* Fluid font sizes */
+  --font-size-xs: clamp(10px, 1.8vw, 11px);
+  --font-size-sm: clamp(11px, 2vw, 12px);
+  --font-size-base: clamp(12px, 2.2vw, 13px);
+  --font-size-md: clamp(13px, 2.5vw, 14px);
+  --font-size-lg: clamp(14px, 3vw, 16px);
+
+  /* Responsive dimension ranges */
+  --sidebar-width: clamp(200px, 20vw, 280px);
+  --sidebar-width-collapsed: 44px;
+  --header-height: clamp(32px, 6vw, 38px);
+  --bottom-panel-min-height: clamp(100px, 15vw, 120px);
+  --bottom-panel-height: clamp(160px, 20vw, 200px);
+  --modal-max-width: min(560px, 90vw);
+  --modal-max-height: min(70vh, 90vh);
 }
+
+/* Breakpoint tokens */
+@media (max-width: 640px) { :root { --breakpoint: 'xs'; } }
+@media (min-width: 641px) and (max-width: 768px) { :root { --breakpoint: 'sm'; } }
+@media (min-width: 769px) and (max-width: 1024px) { :root { --breakpoint: 'md'; } }
+@media (min-width: 1025px) and (max-width: 1280px) { :root { --breakpoint: 'lg'; } }
+@media (min-width: 1281px) { :root { --breakpoint: 'xl'; } }
 
 * {
   margin: 0;
@@ -36,11 +65,11 @@
   box-sizing: border-box;
 }
 
-html, body, #app {
+html, body, #root {
   height: 100%;
   overflow: hidden;
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: var(--font-size-base);
   color: var(--text-primary);
   background: var(--bg-primary);
   -webkit-font-smoothing: antialiased;

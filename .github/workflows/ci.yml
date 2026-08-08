@@ -10,6 +10,9 @@ jobs:
   typescript:
     name: TypeScript (build + test)
     runs-on: ubuntu-latest
+    env:
+      ROLLUP_DISABLE_NATIVE: "1"
+      ROLLDOWN_DISABLE_NATIVE: "1"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,10 +21,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-optional
+
+      - name: Install Linux native bindings
+        run: npm install @rollup/rollup-linux-x64-gnu @rolldown/binding-linux-x64-gnu lightningcss-linux-x64-gnu --no-save
 
       - name: Build workspaces
         run: npm run build
@@ -47,7 +52,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install jsonschema referencing pytest
-          npm ci
+          npm ci --no-optional
           npm run build --workspace @autonomous-lifecycle-protocol-alp/parser --workspace @autonomous-lifecycle-protocol-alp/cli
 
       - name: Run Python SDK tests
@@ -56,6 +61,9 @@ jobs:
   validate:
     name: Validate Example Workspace
     runs-on: ubuntu-latest
+    env:
+      ROLLUP_DISABLE_NATIVE: "1"
+      ROLLDOWN_DISABLE_NATIVE: "1"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -64,10 +72,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-optional
 
       - name: Build CLI
         run: npm run build --workspace @autonomous-lifecycle-protocol-alp/parser --workspace @autonomous-lifecycle-protocol-alp/cli
@@ -87,6 +94,9 @@ jobs:
   compliance:
     name: ALP Compliance Suite
     runs-on: ubuntu-latest
+    env:
+      ROLLUP_DISABLE_NATIVE: "1"
+      ROLLDOWN_DISABLE_NATIVE: "1"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -95,10 +105,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "npm"
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --no-optional
 
       - name: Build CLI
         run: npm run build --workspace @autonomous-lifecycle-protocol-alp/parser --workspace @autonomous-lifecycle-protocol-alp/cli

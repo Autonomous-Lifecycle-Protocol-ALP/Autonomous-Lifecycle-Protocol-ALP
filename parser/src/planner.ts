@@ -32,6 +32,90 @@ export class Lesson {
   ) {}
 }
 
+export interface ReasoningStep {
+  step_id: string;
+  agent_id: string;
+  thought: string;
+  action: string;
+  observation?: string;
+  confidence: number;
+  dependencies: string[];
+  timestamp: string;
+}
+
+export interface ReasoningChain {
+  chain_id: string;
+  goal: string;
+  steps: ReasoningStep[];
+  created_at: string;
+  status: 'draft' | 'executing' | 'completed' | 'failed';
+  result?: string;
+}
+
+export class ReasoningTracer {
+  private chains: Map<string, ReasoningChain> = new Map();
+  private stepCounter = 0;
+
+  createChain(goal: string): ReasoningChain {
+    const chain: ReasoningChain = {
+      chain_id: `chain-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+      goal,
+      steps: [],
+      created_at: new Date().toISOString(),
+      status: 'draft',
+    };
+    this.chains.set(chain.chain_id, chain);
+    return chain;
+  }
+
+  addStep(chainId: string, input: Omit<ReasoningStep, 'step_id' | 'timestamp'>): ReasoningStep {
+    const chain = this.chains.get(chainId);
+    if (!chain) throw new Error(`Reasoning chain '${chainId}' not found.`);
+    if (chain.status !== 'executing') {
+      chain.status = 'executing';
+    }
+    const step: ReasoningStep = {
+      step_id: `step-${chainId}-${++this.stepCounter}`,
+      timestamp: new Date().toISOString(),
+      ...input,
+    };
+    chain.steps.push(step);
+    return step;
+  }
+
+  completeChain(chainId: string, result: string): ReasoningChain {
+    const chain = this.chains.get(chainId);
+    if (!chain) throw new Error(`Reasoning chain '${chainId}' not found.`);
+    chain.status = 'completed';
+    chain.result = result;
+    return chain;
+  }
+
+  failChain(chainId: string, reason: string): ReasoningChain {
+    const chain = this.chains.get(chainId);
+    if (!chain) throw new Error(`Reasoning chain '${chainId}' not found.`);
+    chain.status = 'failed';
+    chain.result = reason;
+    return chain;
+  }
+
+  getChain(chainId: string): ReasoningChain | undefined {
+    return this.chains.get(chainId);
+  }
+
+  getStepsByAgent(agentId: string): ReasoningStep[] {
+    const steps: ReasoningStep[] = [];
+    for (const chain of this.chains.values()) {
+      for (const step of chain.steps) {
+        if (step.agent_id === agentId) {
+          steps.push(step);
+        }
+      }
+    }
+    return steps;
+  }
+}
+
 export class GoalDecomposer {
   decompose(goal: string, constraints?: Record<string, any>): Plan {
     const trimmed = goal.trim();
@@ -120,6 +204,117 @@ export class Planner {
   }
 }
 
+export interface AgentContribution {
+  agent_id: string;
+  nodes: PlanNode[];
+  resources: Record<string, number>;
+  rationale: string;
+}
+
+export interface CollabPlanResult {
+  plan: Plan;
+  contributions: AgentContribution[];
+  allocation: Record<string, string>;
+  conflicts: string[];
+  negotiation?: {
+    total: Record<string, number>;
+    limit: Record<string, number>;
+    overruns: string[];
+    adjusted: boolean;
+  };
+}
+
+export class CollabPlanner {
+  constructor(private tracer?: ReasoningTracer) {}
+
+  build(goal: string, contributions: AgentContribution[], constraints?: Record<string, number>): CollabPlanResult {
+    if (!contributions.length) {
+      throw new Error('At least one agent contribution is required for collaborative planning.');
+    }
+    const nodes: PlanNode[] = [];
+    const allocation: Record<string, string> = {};
+    const conflicts: string[] = [];
+    const seen = new Set<string>();
+    const byAgent: Record<string, AgentContribution> = {};
+    for (const c of contributions) {
+      if (!c.agent_id) continue;
+      byAgent[c.agent_id] = c;
+      for (const node of c.nodes) {
+        const key = node.id || node.label;
+        if (seen.has(key)) {
+          conflicts.push(`Duplicate node '${key}' from ${c.agent_id}`);
+          continue;
+        }
+        seen.add(key);
+        nodes.push(node);
+        allocation[node.id] = c.agent_id;
+      }
+    }
+    const totalResources: Record<string, number> = {};
+    for (const c of contributions) {
+      for (const [resource, amount] of Object.entries(c.resources)) {
+        totalResources[resource] = (totalResources[resource] || 0) + amount;
+      }
+    }
+    const limit = constraints ?? {};
+    const overruns: string[] = [];
+    let adjusted = false;
+    for (const [resource, total] of Object.entries(totalResources)) {
+      const max = limit[resource];
+      if (typeof max === 'number' && total > max) {
+        overruns.push(`${resource}: ${total} > ${max}`);
+        adjusted = true;
+      }
+    }
+    const plan = new Plan(
+      `collab-${goal.toLowerCase().replace(/[^a-z0-9_-]+/g, '-').slice(0, 30) || 'plan'}`,
+      goal,
+      nodes,
+      {
+        contributions: contributions.map((c) => ({ agent_id: c.agent_id, node_count: c.nodes.length })),
+        negotiation: {
+          total: totalResources,
+          limit,
+          overruns,
+          adjusted,
+        },
+      },
+    );
+    if (this.tracer) {
+      const chain = this.tracer.createChain(goal);
+      this.tracer.addStep(chain.chain_id, {
+        agent_id: 'collab-planner',
+        thought: `Synthesized ${nodes.length} nodes from ${contributions.length} contributions`,
+        action: 'collab-plan',
+        observation: `Conflicts: ${conflicts.length}; allocation entries: ${Object.keys(allocation).length}; resource overruns: ${overruns.length}`,
+        confidence: conflicts.length || overruns.length ? 0.6 : 0.95,
+        dependencies: [],
+      });
+    }
+    return {
+      plan,
+      contributions,
+      allocation,
+      conflicts,
+      negotiation: {
+        total: totalResources,
+        limit,
+        overruns,
+        adjusted,
+      },
+    };
+  }
+}
+
+export interface ImprovementProposal {
+  proposal_id: string;
+  lesson_id: string;
+  target_node_id?: string;
+  action: 'add_node' | 'remove_node' | 'reassign' | 'add_dependency';
+  detail: string;
+  confidence: number;
+}
+
 export class Reflector {
   constructor(private events: any[] = []) {}
 
@@ -129,6 +324,58 @@ export class Reflector {
     lessons.push(...this.detectInefficiencies(runId));
     lessons.push(...this.detectHandoffPatterns(runId));
     return lessons;
+  }
+
+  improvePlan(plan: Plan, lessons: Lesson[], constraints?: Record<string, number>): { plan: Plan; proposals: ImprovementProposal[] } {
+    const proposals: ImprovementProposal[] = [];
+    const nodes = plan.nodes.map((n) => ({ ...n }));
+    const seen = new Set<string>();
+    const totalNodes = nodes.length;
+    for (const lesson of lessons) {
+      if (lesson.tags.includes('failure') && lesson.insight.includes('failed')) {
+        const match = lesson.insight.match(/Task '([^']+)'/);
+        const targetId = match ? match[1] : undefined;
+        proposals.push({
+          proposal_id: `prop-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+          lesson_id: lesson.lesson_id,
+          target_node_id: targetId,
+          action: 'add_dependency',
+          detail: `Add fallback or retry dependency for '${targetId ?? 'unknown'}' due to repeated failures.`,
+          confidence: 0.75,
+        });
+      }
+      if (lesson.tags.includes('efficiency') && lesson.insight.includes('claimed')) {
+        const match = lesson.insight.match(/Task '([^']+)'/);
+        const targetId = match ? match[1] : undefined;
+        proposals.push({
+          proposal_id: `prop-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+          lesson_id: lesson.lesson_id,
+          target_node_id: targetId,
+          action: 'reassign',
+          detail: `Reassign '${targetId ?? 'unknown'}' to a more stable owner.`,
+          confidence: 0.6,
+        });
+      }
+      if (lesson.tags.includes('handoff')) {
+        proposals.push({
+          proposal_id: `prop-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+          lesson_id: lesson.lesson_id,
+          action: 'add_node',
+          detail: 'Add automation gate to reduce human handoff frequency.',
+          confidence: 0.5,
+        });
+      }
+    }
+    const maxNodes = typeof constraints?.max_nodes === 'number' ? constraints.max_nodes : Infinity;
+    for (const p of proposals) {
+      if (p.action === 'add_node' && !seen.has(p.proposal_id) && totalNodes + seen.size < maxNodes) {
+        const newNode = new PlanNode(`node-${p.proposal_id}`, 'task', p.detail, []);
+        nodes.push(newNode);
+        seen.add(p.proposal_id);
+      }
+    }
+    const improved = new Plan(plan.plan_id, plan.goal, nodes, { ...plan.metadata, improvements: proposals.map((p) => p.action) });
+    return { plan: improved, proposals };
   }
 
   private detectFailurePatterns(runId: string): Lesson[] {

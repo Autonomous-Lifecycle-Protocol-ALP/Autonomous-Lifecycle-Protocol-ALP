@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { execFileSync } from 'node:child_process';
 import { AlpParser, AlpObject } from './index';
+import { requireChildProcess } from './node-utils';
 
 /**
  * Cross-Repository Orchestration (v4 — The Federation Era, Pillar 2)
@@ -94,6 +95,7 @@ export class ExternalResolver {
 
   /** Fetch (or update) a Git-backed repo into the cache, pinned if specified. */
   fetch(repo: RepoDeclaration): void {
+    requireChildProcess();
     if (!repo.fetched) return;
     const url = repo.src;
     if (fs.existsSync(repo.localPath)) {

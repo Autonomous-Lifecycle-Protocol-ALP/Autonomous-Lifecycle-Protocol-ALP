@@ -38,4 +38,13 @@ describe('ALP Bridge', () => {
     setupALPBridge({} as any);
     expect(mockIpcHandle).toHaveBeenCalledWith('alp-run-agent', expect.any(Function));
   });
+
+  it('should register workspace template and dialog handlers', async () => {
+    const { setupALPBridge } = await import('../src/main/alp-bridge.js');
+    setupALPBridge({} as any);
+    expect(mockIpcHandle).toHaveBeenCalledWith('workspace-list-templates', expect.any(Function));
+    expect(mockIpcHandle).toHaveBeenCalledWith('workspace-scaffold-template', expect.any(Function));
+    expect(mockIpcHandle).toHaveBeenCalledWith('workspace-lint-all', expect.any(Function));
+    expect(mockIpcHandle).toHaveBeenCalledWith('dialog-open-folder', expect.any(Function));
+  });
 });

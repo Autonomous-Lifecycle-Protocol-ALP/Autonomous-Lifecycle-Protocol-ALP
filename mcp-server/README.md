@@ -15,7 +15,7 @@ npm start
 
 ## Available Tools
 
-Once connected via MCP, the server exposes the following tools to the LLM agent:
+Once connected via MCP, the server exposes the following tools (52 total) to the LLM agent:
 
 ### Workspace & Graph
 
@@ -24,6 +24,8 @@ Once connected via MCP, the server exposes the following tools to the LLM agent:
 - **`alp_get_graph`**: Full dependency graph as sorted execution order.
 - **`alp_get_status`**: Project status summary with task counts by state.
 - **`alp_get_impact`**: Downstream nodes affected by a change.
+- **`alp_get_settings`**: Read workspace-level IDE settings.
+- **`alp_set_settings`**: Write workspace-level IDE settings.
 
 ### Search & Mutation
 
@@ -40,6 +42,7 @@ Once connected via MCP, the server exposes the following tools to the LLM agent:
 
 - **`alp_get_events`**: Read recent runtime events with filtering.
 - **`alp_get_analytics`**: Analytics summary from state store or event log.
+- **`alp_audit_log`**: Tail the workspace audit event log.
 
 ### Governance & Registry
 
@@ -69,14 +72,34 @@ Once connected via MCP, the server exposes the following tools to the LLM agent:
 - **`alp_memory_query`**: Query the memory mesh for relevant memories by keyword, agent, or tag.
 - **`alp_memory_stats`**: Return memory mesh statistics (node count, decay scores, top tags).
 
-### IDE Intelligence (v45.0.0)
+### IDE Intelligence (v80.0.0)
 
 - **`alp_intelligence_suggest`**: Get AI-powered suggestions for next ALP objects based on workspace gaps.
 - **`alp_intelligence_diagnose`**: Diagnose errors with likely causes and fix suggestions.
 - **`alp_intelligence_predict`**: Predict task outcomes based on dependency state and risk factors.
 - **`alp_intelligence_review`**: Automated code review findings for `.alp` specs.
 
-### Autonomous Orchestration (v45.0.0)
+### IDE Quality (v80.0.0)
+
+- **`alp_test`**: Run the ALP test harness against workspace specs.
+- **`alp_lint`**: Lint `.alp` files for style and best practice violations.
+- **`alp_format`**: Format `.alp` files with consistent indentation.
+
+### IDE Collaboration (v80.0.0)
+
+- **`alp_collab_start`**: Start a live share / collaboration session.
+- **`alp_collab_join`**: Join an active collaboration session.
+- **`alp_collab_presence`**: Get presence info for a collaboration session.
+- **`alp_collab_comment`**: Add an inline comment to an object.
+- **`alp_collab_comments`**: List inline comments on an object.
+- **`alp_collab_thread`**: Get a specific review thread.
+- **`alp_collab_threads`**: List all review threads on an object.
+- **`alp_collab_activity`**: Get activity feed for a collaboration session.
+- **`alp_collab_permissions`**: List session permissions and participants.
+- **`alp_collab_share`**: Start a live share session.
+- **`alp_collab_shares`**: List active collaboration sessions.
+
+### Autonomous Orchestration (v80.0.0)
 
 - **`alp_autonomy_run`**: Start an autonomous swarm run for a workflow.
 - **`alp_autonomy_heal`**: Run self-healing diagnostics and auto-patch ALP workspace.

@@ -1,6 +1,7 @@
 import { AlpReader, AlpObject } from './reader';
 import { AlpValidator } from './validator';
 
+// ── Core ──────────────────────────────────────────────────────────────────────
 export * from './error';
 export * from './graph';
 export * from './loop';
@@ -14,6 +15,9 @@ export * from './state-store';
 export * from './debug';
 export * from './swarm-client';
 export * from './repo-resolver';
+export * from './node-utils';
+
+// ── Parsing & Lifecycle ───────────────────────────────────────────────────────
 export * from './status';
 export * from './schedule';
 export * from './contract';
@@ -33,6 +37,8 @@ export * from './cost-optimizer';
 export * from './bridge';
 export * from './identity';
 export * from './p2p';
+
+// ── Governance & Security ─────────────────────────────────────────────────────
 export * from './healing';
 export * from './resilience';
 export * from './tenant';
@@ -45,8 +51,11 @@ export * from './did-identity';
 export * from './crdt-sync';
 export * from './self-healing';
 export * from './formal-verification';
+
+// ── Resource & Asset Management ───────────────────────────────────────────────
 export * from './asset-context';
 export * from './cost-budget';
+export * from './execution-quota';
 export * from './sandbox-env';
 export * from './tenant-mesh';
 export * from './arch-decomposer';
@@ -58,6 +67,8 @@ export * from './consensus-vote';
 export * from './code-transform';
 export * from './event-mesh';
 export * from './swarm-marketplace';
+
+// ── IDE & Editor Extensions ───────────────────────────────────────────────────
 export * from './macro';
 export * from './collaboration';
 export * from './memory-mesh';
@@ -75,6 +86,7 @@ export * from './pq-crypto';
 export * from './swarm-settlement';
 export * from './workflow-replay';
 export * from './swarm-self-healing-mesh';
+export * from './swarm-intelligence';
 export * from './agent-copilot';
 export * from './crdt-canvas';
 export * from './wasm-ast';
@@ -83,6 +95,7 @@ export * from './telemetry-inspector';
 export * from './chaos-engine';
 export * from './feature-flags';
 export * from './local-storage-container';
+export * from './reasoning-core';
 
 
 export { AlpObject, AlpReader };
@@ -112,3 +125,18 @@ export class AlpParser {
     return objects;
   }
 }
+
+/**
+ * Convenience function: parse ALP content and return a result object.
+ * Used by SHAM IDE bridge and other consumers that expect a single-call API.
+ */
+export function parseALP(content: string): { objects: AlpObject[]; errors: string[] } {
+  const reader = new AlpReader();
+  try {
+    const objects = reader.parse(content);
+    return { objects, errors: reader.warnings ?? [] };
+  } catch (err) {
+    return { objects: [], errors: [err instanceof Error ? err.message : String(err)] };
+  }
+}
+

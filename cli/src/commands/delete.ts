@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { findFileWithId } from '../utils';
 
 export interface DeleteOptions {
   file?: string;
@@ -40,17 +41,4 @@ export function deleteCommand(objectId: string, options?: DeleteOptions) {
   const updated = lines.slice(0, blockStart).concat(lines.slice(blockEnd)).filter((l) => l.trim()).join('\n');
   fs.writeFileSync(targetFile, updated, 'utf-8');
   console.log(`✅ Deleted '${objectId}' from ${targetFile}`);
-}
-
-function findFileWithId(alpDir: string, objectId: string): string | null {
-  if (!fs.existsSync(alpDir)) return null;
-  const files = fs.readdirSync(alpDir).filter((f) => f.endsWith('.alp'));
-  for (const file of files) {
-    const fullPath = path.join(alpDir, file);
-    const content = fs.readFileSync(fullPath, 'utf8');
-    if (content.includes(`id: ${objectId}`)) {
-      return fullPath;
-    }
-  }
-  return null;
 }

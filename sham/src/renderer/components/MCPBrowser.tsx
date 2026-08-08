@@ -1,5 +1,6 @@
 import React from 'react';
 import type { ALPMCPTool } from '../shared/types.js';
+import { Icon } from './Icon.js';
 
 interface MCPBrowserProps {
   tools: ALPMCPTool[];
@@ -11,7 +12,7 @@ export function MCPBrowser({ tools }: MCPBrowserProps): React.JSX.Element {
       <div className="panel-title" style={{ padding: 0, marginBottom: 12 }}>MCP Tools</div>
       {tools.length === 0 ? (
         <div className="empty-state" style={{ height: 'auto', padding: 32 }}>
-          <div className="empty-state-icon">&#128230;</div>
+          <div className="empty-state-icon"><Icon name="cpu" size={32} color="var(--text-muted)" /></div>
           <div className="empty-state-title">No MCP tools loaded</div>
           <div className="empty-state-desc">Connect an MCP server to browse available tools.</div>
         </div>

@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { PluginResolver, PluginInfo } from '@autonomous-lifecycle-protocol-alp/parser';
+import { PluginResolver } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export interface PluginCommandOptions {
   url?: string;

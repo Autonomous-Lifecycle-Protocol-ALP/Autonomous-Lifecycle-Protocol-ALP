@@ -2,19 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { RegistryStore } from '../registry-store';
 import { RegistryClient, loadAlprc } from '../registry';
-
-/**
- * Resolve a signing key from a `--sign-key <file>` option or the
- * `ALP_REGISTRY_SIGN_KEY` environment variable. Both are treated as a file
- * path; an inline PEM (containing a `-----BEGIN` header) is accepted verbatim.
- */
-function resolveSignerKey(signKey?: string): string | undefined {
-  const raw = signKey || process.env.ALP_REGISTRY_SIGN_KEY;
-  if (!raw) return undefined;
-  if (raw.includes('-----BEGIN')) return raw;
-  if (fs.existsSync(raw)) return fs.readFileSync(path.resolve(raw), 'utf-8');
-  throw new Error(`Signing key not found: ${raw} (pass --sign-key <file> or set ALP_REGISTRY_SIGN_KEY to a PEM or existing file)`);
-}
+import { resolveSignerKey } from '../utils';
 
 export async function registryCommand(sub: string | undefined, target: string | undefined, options?: { url?: string; version?: string; token?: string; key?: string; signKey?: string }) {
   const cwd = process.cwd();

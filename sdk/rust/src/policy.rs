@@ -72,6 +72,7 @@ impl PolicyEngine {
             reasons,
             policies: matched_policies,
             requires_approval,
+            audit: std::collections::HashMap::new(),
         }
     }
 }
@@ -98,6 +99,7 @@ fn matches(query: &PolicyQuery, policy_kind: &str, policy_value: &str) -> bool {
     query_value == policy_value || query_value.starts_with(policy_value)
 }
 
+#[derive(Debug, Clone)]
 pub struct PolicyQuery {
     pub kind: String,
     pub value: Option<String>,
@@ -119,10 +121,12 @@ impl PolicyQuery {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct PolicyDecision {
     pub allowed: bool,
     pub blocked: bool,
     pub reasons: Vec<String>,
     pub policies: Vec<String>,
     pub requires_approval: bool,
+    pub audit: std::collections::HashMap<String, serde_json::Value>,
 }

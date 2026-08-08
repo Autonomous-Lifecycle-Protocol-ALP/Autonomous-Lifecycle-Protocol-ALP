@@ -10,17 +10,16 @@ export function SettingsPanel(): React.JSX.Element {
   const [telemetry, setTelemetry] = useState(false);
 
   return (
-    <div style={{ padding: 16, overflowY: 'auto', height: '100%' }}>
+    <div className="detail-panel">
       <div className="panel-title">Settings</div>
 
       <div className="section-card">
         <div className="section-card-title">Appearance</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <label style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Theme</label>
+        <div className="form-row">
+          <div className="form-row-inline">
+            <label style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>Theme</label>
             <select
               className="input-field"
-              style={{ width: 200 }}
               value={theme}
               onChange={(e) => setTheme(e.target.value)}
             >
@@ -31,8 +30,8 @@ export function SettingsPanel(): React.JSX.Element {
               <option value="github-dark">GitHub Dark</option>
             </select>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <label style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Font Size</label>
+          <div className="form-row-inline">
+            <label style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>Font Size</label>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <input
                 type="range"
@@ -40,16 +39,17 @@ export function SettingsPanel(): React.JSX.Element {
                 max="24"
                 value={fontSize}
                 onChange={(e) => setFontSize(Number(e.target.value))}
-                style={{ width: 120 }}
+                className="input-fluid"
+                style={{ maxWidth: 200 }}
               />
-              <span style={{ fontSize: 12, color: 'var(--text-muted)', width: 24 }}>{fontSize}</span>
+              <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', width: 40 }}>{fontSize}</span>
             </div>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <label style={{ fontSize: 12, color: 'var(--text-secondary)' }}>Tab Size</label>
+          <div className="form-row-inline">
+            <label style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>Tab Size</label>
             <select
               className="input-field"
-              style={{ width: 80 }}
+              style={{ width: 100 }}
               value={tabSize}
               onChange={(e) => setTabSize(Number(e.target.value))}
             >
@@ -63,15 +63,15 @@ export function SettingsPanel(): React.JSX.Element {
 
       <div className="section-card">
         <div className="section-card-title">Editor</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div className="form-row">
           {[
             { label: 'Word Wrap', value: wordWrap, onChange: setWordWrap },
             { label: 'Show Minimap', value: minimap, onChange: setMinimap },
             { label: 'Auto Save', value: autoSave, onChange: setAutoSave },
             { label: 'Send Telemetry', value: telemetry, onChange: setTelemetry },
           ].map((item) => (
-            <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <label style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{item.label}</label>
+            <div key={item.label} className="form-row-inline">
+              <label style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' }}>{item.label}</label>
               <button
                 className={`btn btn-sm ${item.value ? 'btn-primary' : 'btn-secondary'}`}
                 onClick={() => item.onChange(!item.value)}
@@ -85,35 +85,35 @@ export function SettingsPanel(): React.JSX.Element {
 
       <div className="section-card">
         <div className="section-card-title">ALP Configuration</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div className="form-row">
           <div>
-            <label style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'block', marginBottom: 4 }}>Default Agent Runtime</label>
-            <select className="input-field" defaultValue="local">
+            <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', display: 'block', marginBottom: 4 }}>Default Agent Runtime</label>
+            <select className="input-field input-fluid" defaultValue="local">
               <option value="local">Local (Docker)</option>
               <option value="remote">Remote (SSH)</option>
               <option value="cloud">Cloud (ALP Cloud)</option>
             </select>
           </div>
           <div>
-            <label style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'block', marginBottom: 4 }}>Parser Path</label>
-            <input className="input-field" defaultValue="@autonomous-lifecycle-protocol-alp/parser@40.0.0" readOnly />
+            <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', display: 'block', marginBottom: 4 }}>Parser Path</label>
+            <input className="input-field input-fluid" defaultValue="@autonomous-lifecycle-protocol-alp/parser@40.0.0" readOnly />
           </div>
           <div>
-            <label style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'block', marginBottom: 4 }}>SDK Path</label>
-            <input className="input-field" defaultValue="@autonomous-lifecycle-protocol-alp/sdk@40.0.0" readOnly />
+            <label style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', display: 'block', marginBottom: 4 }}>SDK Path</label>
+            <input className="input-field input-fluid" defaultValue="@autonomous-lifecycle-protocol-alp/sdk@40.0.0" readOnly />
           </div>
         </div>
       </div>
 
       <div className="section-card">
         <div className="section-card-title">About</div>
-        <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+        <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
           <div><strong style={{ color: 'var(--text-primary)' }}>SHAM IDE</strong> v0.1.0</div>
           <div>ALP Runtime v40.0.0</div>
           <div>Electron {process.versions.electron || 'latest'}</div>
-          <div style={{ marginTop: 8 }}>
-            <span className="badge badge-info">Catppuccin</span>
-            <span className="badge badge-muted" style={{ marginLeft: 6 }}>v40 IDE Intelligence</span>
+          <div style={{ marginTop: 8 }} className="flex-wrap-gap">
+            <span className="badge badge-info badge-responsive">Catppuccin</span>
+            <span className="badge badge-muted badge-responsive">v40 IDE Intelligence</span>
           </div>
         </div>
       </div>

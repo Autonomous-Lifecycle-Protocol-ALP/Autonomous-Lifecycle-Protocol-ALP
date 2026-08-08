@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { spawnSync } from 'child_process';
 
 export function backupCommand(action: string, target?: string) {
   const alpDir = path.join(process.cwd(), '.alp');

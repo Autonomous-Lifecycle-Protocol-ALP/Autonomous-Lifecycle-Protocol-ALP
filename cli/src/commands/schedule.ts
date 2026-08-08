@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { AlpParser, AlpObject, TimelineEngine } from '@autonomous-lifecycle-protocol-alp/parser';
+import { loadAlpDir } from '../utils';
 
 interface ScheduleOptions {
   next?: boolean;
@@ -26,7 +27,7 @@ export function scheduleCommand(options?: ScheduleOptions) {
 
   const parser = new AlpParser();
   const objects: AlpObject[] = [];
-  loadDir(alpDir, parser, objects);
+  loadAlpDir(alpDir, parser, objects);
 
   const engine = new TimelineEngine(objects);
 
@@ -75,22 +76,6 @@ export function scheduleCommand(options?: ScheduleOptions) {
     console.log(`  • ${t.id}  [${status}]  ${schedule}  →  ${t.task}`);
   }
   console.log('');
-}
-
-function loadDir(dir: string, parser: AlpParser, out: AlpObject[]) {
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      if (entry.name === '.runtime' || entry.name === '.cache') continue;
-      loadDir(full, parser, out);
-    } else if (entry.name.endsWith('.alp')) {
-      try {
-        out.push(...parser.parse(fs.readFileSync(full, 'utf-8')));
-      } catch {
-        // skip unparseable files
-      }
-    }
-  }
 }
 
 function persistEnabled(alpDir: string, timelineId: string, enabled: boolean): void {

@@ -6,7 +6,7 @@ SDK_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if SDK_ROOT not in sys.path:
     sys.path.insert(0, SDK_ROOT)
 
-from alp_sdk import GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, PredictiveEstimator
+from alp_sdk import GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, PredictiveEstimator, ReasoningTracer, ReasoningChain, ReasoningStep, CollabPlanner, AgentContribution, CollabPlanResult, ImprovementProposal
 
 
 class FakeEstimator:
@@ -93,3 +93,235 @@ class TestReflector(unittest.TestCase):
         self.assertEqual(d["lesson_id"], "l1")
         self.assertEqual(d["severity"], "warn")
         self.assertIn("tag1", d["tags"])
+
+    def test_improve_plan_generates_proposals(self):
+        ref = Reflector([
+            {"type": "task_status", "task_id": "t1", "status": "[!]", "timestamp": "2026-01-01T00:00:00Z"},
+            {"type": "task_status", "task_id": "t1", "status": "[!]", "timestamp": "2026-01-01T00:00:01Z"},
+            {"type": "task_claim", "task_id": "t1", "timestamp": "2026-01-01T00:00:02Z"},
+            {"type": "human_handoff", "task_id": "t1", "status": "[?]", "timestamp": "2026-01-01T00:00:03Z"},
+            {"type": "human_handoff", "task_id": "t2", "status": "[?]", "timestamp": "2026-01-01T00:00:04Z"},
+        ])
+        plan = Plan("p1", "Goal", [PlanNode("t1", "task", "A")])
+        result = ref.improve_plan(plan, ref.reflect("run-1"))
+        self.assertGreaterEqual(len(result["proposals"]), 2)
+        self.assertGreaterEqual(len(result["plan"].nodes), 1)
+        self.assertIn("improvements", result["plan"].metadata)
+
+    def test_improve_plan_adds_automation_node_for_handoffs(self):
+        ref = Reflector([
+            {"type": "human_handoff", "task_id": "t1", "status": "[?]", "timestamp": "2026-01-01T00:00:03Z"},
+            {"type": "human_handoff", "task_id": "t2", "status": "[?]", "timestamp": "2026-01-01T00:00:04Z"},
+        ])
+        plan = Plan("p1", "Goal", [])
+        result = ref.improve_plan(plan, ref.reflect("run-1"))
+        has_automation = any("automation" in n.label for n in result["plan"].nodes)
+        self.assertTrue(has_automation)
+
+    def test_improve_plan_respects_max_nodes_constraint(self):
+        ref = Reflector([
+            {"type": "human_handoff", "task_id": "t1", "status": "[?]", "timestamp": "2026-01-01T00:00:03Z"},
+            {"type": "human_handoff", "task_id": "t2", "status": "[?]", "timestamp": "2026-01-01T00:00:04Z"},
+        ])
+        plan = Plan("p1", "Goal", [PlanNode("existing", "task", "Existing")])
+        result = ref.improve_plan(plan, ref.reflect("run-1"), {"max_nodes": 1})
+        self.assertLessEqual(len(result["plan"].nodes), 1)
+
+
+class TestReasoningTracer(unittest.TestCase):
+    def test_create_chain(self):
+        tracer = ReasoningTracer()
+        chain = tracer.create_chain("Ship feature X")
+        self.assertTrue(chain.chain_id)
+        self.assertEqual(chain.status, "draft")
+        self.assertEqual(chain.steps, [])
+
+    def test_add_step_transitions_to_executing(self):
+        tracer = ReasoningTracer()
+        chain = tracer.create_chain("Ship feature X")
+        step = tracer.add_step(chain.chain_id, {
+            "agent_id": "agent-1",
+            "thought": "Need to build first",
+            "action": "build",
+            "confidence": 0.9,
+            "dependencies": [],
+        })
+        self.assertTrue(step.step_id)
+        self.assertTrue(step.timestamp)
+        reloaded = tracer.get_chain(chain.chain_id)
+        self.assertEqual(reloaded.status, "executing")
+        self.assertEqual(len(reloaded.steps), 1)
+        self.assertEqual(reloaded.steps[0].agent_id, "agent-1")
+
+    def test_link_steps_across_agents(self):
+        tracer = ReasoningTracer()
+        chain = tracer.create_chain("Ship feature X")
+        s1 = tracer.add_step(chain.chain_id, {
+            "agent_id": "agent-planner",
+            "thought": "Plan the build",
+            "action": "plan",
+            "confidence": 0.95,
+            "dependencies": [],
+        })
+        s2 = tracer.add_step(chain.chain_id, {
+            "agent_id": "agent-builder",
+            "thought": "Execute the build",
+            "action": "build",
+            "observation": "Build succeeded",
+            "confidence": 0.8,
+            "dependencies": [s1.step_id],
+        })
+        self.assertEqual(s2.dependencies, [s1.step_id])
+        reloaded = tracer.get_chain(chain.chain_id)
+        self.assertEqual(len(reloaded.steps), 2)
+        self.assertEqual(reloaded.steps[1].agent_id, "agent-builder")
+        self.assertEqual(reloaded.steps[1].observation, "Build succeeded")
+
+    def test_complete_and_fail_chain(self):
+        tracer = ReasoningTracer()
+        chain = tracer.create_chain("Ship feature X")
+        tracer.add_step(chain.chain_id, {
+            "agent_id": "agent-1",
+            "thought": "Try",
+            "action": "run",
+            "confidence": 0.5,
+            "dependencies": [],
+        })
+        completed = tracer.complete_chain(chain.chain_id, "Feature shipped")
+        self.assertEqual(completed.status, "completed")
+        self.assertEqual(completed.result, "Feature shipped")
+        failed = tracer.fail_chain(chain.chain_id, "Timeout")
+        self.assertEqual(failed.status, "failed")
+        self.assertEqual(failed.result, "Timeout")
+
+    def test_get_steps_by_agent(self):
+        tracer = ReasoningTracer()
+        chain = tracer.create_chain("Ship feature X")
+        tracer.add_step(chain.chain_id, {
+            "agent_id": "agent-planner",
+            "thought": "Plan",
+            "action": "plan",
+            "confidence": 0.9,
+            "dependencies": [],
+        })
+        tracer.add_step(chain.chain_id, {
+            "agent_id": "agent-builder",
+            "thought": "Build",
+            "action": "build",
+            "confidence": 0.8,
+            "dependencies": [],
+        })
+        planner_steps = tracer.get_steps_by_agent("agent-planner")
+        self.assertEqual(len(planner_steps), 1)
+        self.assertEqual(planner_steps[0].action, "plan")
+
+    def test_add_step_to_unknown_chain_raises(self):
+        tracer = ReasoningTracer()
+        with self.assertRaises(ValueError):
+            tracer.add_step("chain-unknown", {
+                "agent_id": "agent-1",
+                "thought": "No",
+                "action": "act",
+                "confidence": 0.1,
+                "dependencies": [],
+            })
+
+
+class TestCollabPlanner(unittest.TestCase):
+    def test_build_from_multiple_contributions(self):
+        planner = CollabPlanner()
+        contributions = [
+            AgentContribution(
+                agent_id="agent-planner",
+                nodes=[PlanNode("step-1", "task", "Design")],
+                resources={"cpu": 1},
+                rationale="Design the system",
+            ),
+            AgentContribution(
+                agent_id="agent-builder",
+                nodes=[PlanNode("step-2", "task", "Build", ["step-1"])],
+                resources={"cpu": 2},
+                rationale="Implement the design",
+            ),
+        ]
+        result = planner.build("Ship feature X", contributions)
+        self.assertEqual(len(result.plan.nodes), 2)
+        self.assertEqual(result.allocation["step-1"], "agent-planner")
+        self.assertEqual(result.allocation["step-2"], "agent-builder")
+        self.assertEqual(result.conflicts, [])
+
+    def test_detects_duplicate_nodes_as_conflicts(self):
+        planner = CollabPlanner()
+        contributions = [
+            AgentContribution(
+                agent_id="agent-a",
+                nodes=[PlanNode("step-1", "task", "Design")],
+                resources={},
+                rationale="A designs",
+            ),
+            AgentContribution(
+                agent_id="agent-b",
+                nodes=[PlanNode("step-1", "task", "Design")],
+                resources={},
+                rationale="B also designs",
+            ),
+        ]
+        result = planner.build("Ship feature X", contributions)
+        self.assertEqual(len(result.plan.nodes), 1)
+        self.assertTrue(any("Duplicate node 'step-1'" in c for c in result.conflicts))
+
+    def test_raises_without_contributions(self):
+        planner = CollabPlanner()
+        with self.assertRaises(ValueError):
+            planner.build("Ship feature X", [])
+
+    def test_records_collaboration_in_tracer(self):
+        tracer = ReasoningTracer()
+        planner = CollabPlanner(tracer)
+        contributions = [
+            AgentContribution(
+                agent_id="agent-planner",
+                nodes=[PlanNode("step-1", "task", "Design")],
+                resources={"cpu": 1},
+                rationale="Design",
+            ),
+        ]
+        planner.build("Ship feature X", contributions)
+        chains = list(tracer._chains.values())
+        self.assertEqual(len(chains), 1)
+        self.assertEqual(chains[0].steps[0].agent_id, "collab-planner")
+
+    def test_reports_resource_overruns_when_constraints_exceeded(self):
+        planner = CollabPlanner()
+        contributions = [
+            AgentContribution(
+                agent_id="agent-a",
+                nodes=[PlanNode("step-1", "task", "A")],
+                resources={"cpu": 3},
+                rationale="A",
+            ),
+            AgentContribution(
+                agent_id="agent-b",
+                nodes=[PlanNode("step-2", "task", "B")],
+                resources={"cpu": 2},
+                rationale="B",
+            ),
+        ]
+        result = planner.build("Ship feature X", contributions, {"cpu": 4})
+        self.assertIsNotNone(result.negotiation)
+        self.assertTrue(result.negotiation["adjusted"])
+        self.assertTrue(any("cpu" in o for o in result.negotiation["overruns"]))
+
+    def test_no_overruns_when_resources_within_constraints(self):
+        planner = CollabPlanner()
+        contributions = [
+            AgentContribution(
+                agent_id="agent-a",
+                nodes=[PlanNode("step-1", "task", "A")],
+                resources={"cpu": 2},
+                rationale="A",
+            ),
+        ]
+        result = planner.build("Ship feature X", contributions, {"cpu": 4})
+        self.assertFalse(result.negotiation["adjusted"])
+        self.assertEqual(result.negotiation["overruns"], [])

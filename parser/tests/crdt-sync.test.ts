@@ -32,4 +32,21 @@ describe('CRDTSyncEngine (v21.0.0)', () => {
     const data = engine.readState('doc-1');
     expect(data.temp_key).toBeUndefined();
   });
+
+  it('serializes and deserializes CRDT state', () => {
+    const engine = new CRDTSyncEngine();
+    engine.set('doc-1', 'peer-a', 'title', 'Hello', 100);
+    engine.set('doc-1', 'peer-b', 'body', 'World', 150);
+    engine.remove('doc-1', 'title', 200);
+
+    const json = engine.toJSON();
+    expect(json.states).toHaveLength(1);
+    expect(json.states[0].docId).toBe('doc-1');
+    expect(json.states[0].clock).toBeGreaterThan(0);
+
+    const restored = new CRDTSyncEngine();
+    restored.fromJSON(json);
+    expect(restored.readState('doc-1').body).toBe('World');
+    expect(restored.readState('doc-1').title).toBeUndefined();
+  });
 });

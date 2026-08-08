@@ -12,6 +12,8 @@ import {
   ProfilerState,
   CopilotSuggestion,
   RefactorRename,
+  IntelligenceSuggestion,
+  AutonomyDecision,
 } from './types.js';
 
 const api = (window as any).shamAPI;
@@ -43,14 +45,14 @@ export async function runAgent(agentId: string, config: Record<string, unknown>)
 }
 
 export async function getAppVersion() {
-  return api?.getAppVersion?.() ?? '0.1.0';
+  return api?.getAppVersion?.() ?? '81.0.0';
 }
 
 export function onAppReady(callback: (payload: unknown) => void) {
   if (api?.onAppReady) {
     api.onAppReady(callback);
   } else {
-    setTimeout(() => callback({ version: '0.1.0' }), 0);
+    setTimeout(() => callback({ version: '81.0.0' }), 0);
   }
 }
 
@@ -234,4 +236,78 @@ export async function cloudSyncPush(payload: { data: unknown }) {
 
 export async function cloudSyncPull() {
   return (api?.cloudSyncPull?.() ?? { success: false, data: null }) as { success: boolean; data: unknown; lastSyncAt?: string; error?: string };
+}
+
+export async function intelligenceSuggest() {
+  return (api?.intelligenceSuggest?.() ?? { success: false, suggestions: [] }) as { success: boolean; suggestions: IntelligenceSuggestion[]; error?: string };
+}
+
+export async function intelligenceDiagnose(error: string) {
+  return (api?.intelligenceDiagnose?.({ error }) ?? { success: false, causes: [], fixes: [] }) as { success: boolean; causes: string[]; fixes: string[]; error?: string };
+}
+
+export async function intelligencePredict(taskId: string) {
+  return (api?.intelligencePredict?.({ taskId }) ?? { success: false, outcome: 'unknown', confidence: 0 }) as { success: boolean; outcome: string; confidence: number; error?: string };
+}
+
+export async function intelligenceReview() {
+  return (api?.intelligenceReview?.() ?? { success: false, findings: [] }) as { success: boolean; findings: { id: string; severity: string; message: string }[]; error?: string };
+}
+
+export async function autonomyRun(workflowId?: string) {
+  return (api?.autonomyRun?.({ workflowId }) ?? { success: false }) as { success: boolean; error?: string };
+}
+
+export async function autonomyHeal() {
+  return (api?.autonomyHeal?.() ?? { success: false }) as { success: boolean; error?: string };
+}
+
+export async function autonomyPredict(workflowId: string) {
+  return (api?.autonomyPredict?.({ workflowId }) ?? { success: false, outcome: 'unknown', confidence: 0 }) as { success: boolean; outcome: string; confidence: number; error?: string };
+}
+
+export async function autonomyObserve(signal: string) {
+  return (api?.autonomyObserve?.({ signal }) ?? { success: false }) as { success: boolean; error?: string };
+}
+
+export async function autonomyMutate(workflowId: string) {
+  return (api?.autonomyMutate?.({ workflowId }) ?? { success: false }) as { success: boolean; mutations: unknown[]; error?: string };
+}
+
+export async function autonomyDecisions() {
+  return (api?.autonomyDecisions?.() ?? { success: false, decisions: [] }) as { success: boolean; decisions: AutonomyDecision[]; error?: string };
+}
+
+export async function workspaceListTemplates() {
+  return (api?.workspaceListTemplates?.() ?? { success: true, templates: [] }) as {
+    success: boolean;
+    templates: Array<{ id: string; name: string; description: string; files: Record<string, string> }>;
+    error?: string;
+  };
+}
+
+export async function workspaceScaffoldTemplate(payload: { templateId: string; targetDir: string }) {
+  return (api?.workspaceScaffoldTemplate?.(payload) ?? { success: false, createdFiles: [] }) as {
+    success: boolean;
+    createdFiles: string[];
+    error?: string;
+  };
+}
+
+export async function workspaceLintAll(payload: { workspaceDir: string }) {
+  return (api?.workspaceLintAll?.(payload) ?? { success: false, scannedCount: 0, diagnostics: [] }) as {
+    success: boolean;
+    scannedCount: number;
+    diagnostics: Array<{ filePath: string; errors: string[] }>;
+    error?: string;
+  };
+}
+
+export async function dialogOpenFolder() {
+  return (api?.dialogOpenFolder?.() ?? { success: false, canceled: true }) as {
+    success: boolean;
+    folderPath?: string;
+    canceled?: boolean;
+    error?: string;
+  };
 }

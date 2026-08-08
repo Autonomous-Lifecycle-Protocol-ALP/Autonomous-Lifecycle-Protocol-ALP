@@ -28,4 +28,4 @@ This directory will contain JSON Schema definitions for every ALP protocol objec
 
 ## Status
 
-🔜 **Phase 6** — Not yet started.
+[Not Started] — Phase 6

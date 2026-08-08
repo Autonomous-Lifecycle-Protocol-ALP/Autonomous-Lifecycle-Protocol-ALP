@@ -596,3 +596,51 @@ class PolicyRollback:
             "to_version": self.to_version,
             "rolled_back_at": self.rolled_back_at,
         }
+
+
+class PolicyContext:
+    def __init__(self, environment: str, team_size: int, risk_profile: str, deployment_target: str):
+        self.environment = environment
+        self.team_size = team_size
+        self.risk_profile = risk_profile
+        self.deployment_target = deployment_target
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "environment": self.environment,
+            "team_size": self.team_size,
+            "risk_profile": self.risk_profile,
+            "deployment_target": self.deployment_target,
+        }
+
+
+class PolicyLearner:
+    def __init__(self):
+        self.violations: List[Dict[str, Any]] = []
+
+    def record_violation(self, policy_id: str, action: str, allowed: bool, context: PolicyContext) -> None:
+        self.violations.append({
+            "policy_id": policy_id,
+            "action": action,
+            "allowed": allowed,
+            "context": context.to_dict(),
+        })
+
+    def suggest(self) -> List[Dict[str, Any]]:
+        by_policy: Dict[str, List[Dict[str, Any]]] = {}
+        for v in self.violations:
+            by_policy.setdefault(v["policy_id"], []).append(v)
+        suggestions = []
+        for policy_id, violations in by_policy.items():
+            denied = [v for v in violations if not v["allowed"]]
+            if len(denied) >= 3:
+                suggestions.append({
+                    "policy_id": policy_id,
+                    "action": "review_allow_rules",
+                    "suggestion": f"Policy '{policy_id}' blocked {len(denied)} actions; consider widening allow rules or adding environment-specific overrides.",
+                    "confidence": min(0.95, 0.5 + len(denied) * 0.1),
+                })
+        return suggestions
+
+    def reset(self) -> None:
+        self.violations = []

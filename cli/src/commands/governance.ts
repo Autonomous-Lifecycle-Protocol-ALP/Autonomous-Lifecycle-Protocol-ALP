@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { GovernanceEngine, PolicyBallot, VoteValue } from '@autonomous-lifecycle-protocol-alp/parser';
+import { GovernanceEngine, VoteValue } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function governanceCommand(subcommand: string, ...args: string[]) {
   const cwd = process.cwd();

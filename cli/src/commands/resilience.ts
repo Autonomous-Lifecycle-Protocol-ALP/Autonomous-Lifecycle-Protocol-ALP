@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { ResilientSwarm, AgentStatus } from '@autonomous-lifecycle-protocol-alp/parser';
+import { ResilientSwarm } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export function resilienceCommand(subcommand: string, ...args: string[]) {
   const cwd = process.cwd();

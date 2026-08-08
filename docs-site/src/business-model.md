@@ -1,10 +1,10 @@
-# 💼 Business Model & Enterprise Strategy
+# Business Model & Enterprise Strategy
 
 The Autonomous Lifecycle Protocol (ALP) operates on a sustainable **Open-Core & Autonomous Agent Marketplace** model. ALP provides a free, open-source foundation while offering cloud-managed event mesh infrastructure, enterprise governance security, and transaction-based monetization for autonomous agent skill execution.
 
 ---
 
-## 🚀 Monetization Pillars
+## Monetization Pillars
 
 ```mermaid
 flowchart TD
@@ -58,7 +58,7 @@ flowchart TD
 
 ---
 
-## 📊 Enterprise Pricing & Feature Tiering
+## Enterprise Pricing & Feature Tiering
 
 | Feature / Capability | Community (Free) | Developer Pro ($29/mo) | Enterprise ($499/mo + Usage) |
 | :--- | :---: | :---: | :---: |
@@ -73,7 +73,7 @@ flowchart TD
 
 ---
 
-## 📈 Financial & Efficiency ROI Metrics
+## Financial & Efficiency ROI Metrics
 
 ```mermaid
 gantt

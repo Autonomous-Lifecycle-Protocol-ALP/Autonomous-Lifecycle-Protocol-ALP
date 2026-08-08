@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 
 interface SearchResult {
   file: string;
@@ -26,7 +27,7 @@ export function SearchPanel({ onOpenFile }: { onOpenFile: (file: string) => void
         <div className="section-card-title">Search in Files</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           <div className="search-wrapper">
-            <span className="search-wrapper-icon">&#128269;</span>
+            <span className="search-wrapper-icon"><Icon name="search" size={14} /></span>
             <input
               className="search-input"
               value={query}
@@ -34,11 +35,11 @@ export function SearchPanel({ onOpenFile }: { onOpenFile: (file: string) => void
               placeholder="Search files, symbols, and references..."
             />
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
-            <span className="badge badge-info">*.ts</span>
-            <span className="badge badge-info">*.tsx</span>
-            <span className="badge badge-muted">*.js</span>
-            <span className="badge badge-muted">*.css</span>
+          <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+            <span className="badge badge-info badge-responsive">*.ts</span>
+            <span className="badge badge-info badge-responsive">*.tsx</span>
+            <span className="badge badge-muted badge-responsive">*.js</span>
+            <span className="badge badge-muted badge-responsive">*.css</span>
           </div>
         </div>
       </div>
@@ -54,7 +55,7 @@ export function SearchPanel({ onOpenFile }: { onOpenFile: (file: string) => void
         </div>
         {results.map((result, i) => (
           <div key={i} className="list-item" onClick={() => onOpenFile(result.file)}>
-            <span className="list-item-icon" style={{ color: 'var(--accent)', fontSize: 11 }}>&#128196;</span>
+            <span className="list-item-icon" style={{ color: 'var(--accent)', fontSize: 11 }}><Icon name="fileText" size={14} /></span>
             <div className="list-item-content">
               <div className="list-item-title">{result.file}</div>
               <div className="list-item-subtitle">

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Icon } from './Icon.js';
 import { listPlugins, togglePlugin, reloadPlugin } from '../shared/alp-client.js';
 import type { Plugin } from '../shared/types.js';
 
@@ -84,7 +85,7 @@ export function PluginPanel({ plugins, output, onUpdatePlugins, onAppendOutput }
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {plugins.length === 0 ? (
           <div className="empty-state" style={{ height: 'auto', padding: 24 }}>
-            <div className="empty-state-icon">&#128295;</div>
+            <div className="empty-state-icon"><Icon name="puzzle" size={32} color="var(--text-muted)" /></div>
             <div className="empty-state-title">No plugins found</div>
             <div className="empty-state-desc">Drop plugin folders into the bundled `plugins/` directory to extend SHAM.</div>
           </div>

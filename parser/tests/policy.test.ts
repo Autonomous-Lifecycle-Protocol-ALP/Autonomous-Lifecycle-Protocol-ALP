@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { AlpParser, PolicyEngine, globToRegExp, FederatedTrustRoot } from '../src/index';
+import { AlpParser, PolicyEngine, globToRegExp, FederatedTrustRoot, PolicyLearner, PolicyContext } from '../src/index';
 import { mkdtempSync, writeFileSync, rmSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
@@ -303,4 +303,40 @@ describe('PolicyEngine v10.6.0 Cross-Federation Trust', () => {
     expect(d.audit?.decision).toBe('block');
     expect(typeof d.audit?.timestamp).toBe('string');
   });
+});
+
+describe('PolicyLearner', () => {
+  const context: PolicyContext = {
+    environment: 'production',
+    team_size: 5,
+    risk_profile: 'high',
+    deployment_target: 'aws',
+  };
+
+  it('suggests review after repeated denials', () => {
+    const learner = new PolicyLearner()
+    for (let i = 0; i < 3; i++) {
+      learner.recordViolation('pol-1', 'deploy', false, context)
+    }
+    const suggestions = learner.suggest()
+    expect(suggestions.length).toBeGreaterThanOrEqual(1)
+    expect(suggestions[0].policy_id).toBe('pol-1')
+    expect(suggestions[0].action).toBe('review_allow_rules')
+  })
+
+  it('does not suggest after few violations', () => {
+    const learner = new PolicyLearner()
+    learner.recordViolation('pol-1', 'deploy', false, context)
+    expect(learner.suggest()).toHaveLength(0)
+  })
+
+  it('resets violations', () => {
+    const learner = new PolicyLearner()
+    learner.recordViolation('pol-1', 'deploy', false, context)
+    learner.recordViolation('pol-1', 'deploy', false, context)
+    learner.recordViolation('pol-1', 'deploy', false, context)
+    expect(learner.suggest().length).toBeGreaterThanOrEqual(1)
+    learner.reset()
+    expect(learner.suggest()).toHaveLength(0)
+  })
 });

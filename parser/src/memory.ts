@@ -44,6 +44,81 @@ export interface MemoryQuery {
   importance?: MemoryImportance;
 }
 
+export interface MemoryRelation {
+  source_id: string;
+  target_id: string;
+  relation: string;
+  weight: number;
+}
+
+export interface MemoryConsolidation {
+  source_ids: string[];
+  summary: string;
+  importance: MemoryImportance;
+  created: string;
+}
+
+export class MemoryGraph {
+  private nodes: Map<string, MemoryEntry> = new Map();
+  private relations: MemoryRelation[] = [];
+
+  addNode(entry: MemoryEntry): void {
+    this.nodes.set(entry.id, entry);
+  }
+
+  relate(source_id: string, target_id: string, relation: string, weight = 1.0): void {
+    if (!this.nodes.has(source_id) || !this.nodes.has(target_id)) {
+      throw new Error('Both source and target nodes must exist in the memory graph.');
+    }
+    this.relations.push({ source_id, target_id, relation, weight });
+  }
+
+  neighbors(id: string, relation?: string): MemoryEntry[] {
+    const related = this.relations
+      .filter((r) => r.source_id === id && (!relation || r.relation === relation))
+      .sort((a, b) => b.weight - a.weight);
+    return related.map((r) => this.nodes.get(r.target_id)).filter((e): e is MemoryEntry => !!e);
+  }
+
+  decay(now = Date.now()): void {
+    for (const entry of this.nodes.values()) {
+      if (entry.ttl) {
+        const age = now - new Date(entry.created).getTime();
+        const remaining = Math.max(0, 1 - age / entry.ttl);
+        entry.updated = new Date(now).toISOString();
+      }
+    }
+  }
+}
+
+export interface RAGResult {
+  entry: MemoryEntry;
+  score: number;
+  citation: string;
+}
+
+export class MemoryConsolidator {
+  consolidate(entries: MemoryEntry[]): MemoryConsolidation[] {
+    const byScope = new Map<string, MemoryEntry[]>();
+    for (const entry of entries) {
+      const scope = entry.scope || 'global';
+      byScope.set(scope, (byScope.get(scope) || []).concat(entry));
+    }
+    const results: MemoryConsolidation[] = [];
+    for (const [scope, scoped] of byScope.entries()) {
+      if (scoped.length < 2) continue;
+      const summary = scoped.map((e) => `[${e.type}] ${e.key}: ${e.value}`).join('; ');
+      results.push({
+        source_ids: scoped.map((e) => e.id),
+        summary,
+        importance: 'high',
+        created: new Date().toISOString(),
+      });
+    }
+    return results;
+  }
+}
+
 export class MemoryStore {
   private entries: Map<string, MemoryEntry> = new Map();
   private filePath: string;
@@ -177,6 +252,38 @@ export class MemoryStore {
     }
 
     return removed;
+  }
+
+  /**
+   * Retrieve entries most relevant to a query string.
+   */
+  public retrieveRAG(query: string, limit = 5): RAGResult[] {
+    const q = query.toLowerCase();
+    const scored = Array.from(this.entries.values()).map((entry) => {
+      const haystack = `${entry.key} ${entry.value} ${entry.type}`.toLowerCase();
+      const score = this.similarity(q, haystack);
+      const citation = `${entry.scope || 'global'}/${entry.type}/${entry.key}`;
+      return { entry, score, citation };
+    });
+    scored.sort((a, b) => b.score - a.score);
+    return scored.slice(0, limit).filter((r) => r.score > 0);
+  }
+
+  private similarity(query: string, text: string): number {
+    const terms = query.split(/\s+/).filter(Boolean);
+    let matches = 0;
+    for (const term of terms) {
+      if (text.includes(term)) matches++;
+    }
+    return terms.length ? matches / terms.length : 0;
+  }
+
+  /**
+   * Consolidate memories into summaries by scope.
+   */
+  public consolidate(): MemoryConsolidation[] {
+    const consolidator = new MemoryConsolidator();
+    return consolidator.consolidate(Array.from(this.entries.values()));
   }
 
   /**

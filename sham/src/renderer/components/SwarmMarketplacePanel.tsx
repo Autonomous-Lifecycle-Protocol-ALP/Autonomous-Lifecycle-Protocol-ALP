@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Icon } from './Icon.js';
 
 interface Skill {
   id: string;
@@ -32,27 +33,28 @@ export function SwarmMarketplacePanel(): React.JSX.Element {
   };
 
   return (
-    <div className="marketplace-panel" style={{ padding: '16px', color: '#e0e0e0', fontFamily: 'sans-serif' }}>
-      <h2 style={{ borderBottom: '1px solid #333', paddingBottom: '8px', marginTop: 0 }}>
-        🛒 Swarm Skill Marketplace (v45.0.0)
-      </h2>
-      <p style={{ color: '#aaa', fontSize: '13px' }}>
+    <div className="panel-container" style={{ padding: 'var(--spacing-sm)', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', boxSizing: 'border-box' }}>
+      <div className="panel-header">
+        <h2 style={{ borderBottom: '1px solid var(--border)', paddingBottom: '8px', marginTop: 0, fontSize: 'var(--font-size-lg)', fontWeight: 700, color: 'var(--accent)' }}>
+           <Icon name="shopping-cart" size={20} /> Swarm Skill Marketplace (v45.0.0)
+        </h2>
+      </div>
+      <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
         Discover, invoke, and monitor autonomous agent skills with micro-metered transaction billing.
       </p>
 
       {/* Category Filters */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+      <div className="flex-wrap-gap" style={{ marginBottom: '16px' }}>
         {['all', 'analysis', 'coding', 'testing', 'security'].map(cat => (
           <button
             key={cat}
             onClick={() => setFilterCategory(cat)}
+            className={`btn btn-sm badge-responsive ${filterCategory === cat ? 'btn-primary' : 'btn-secondary'}`}
             style={{
-              padding: '6px 12px',
               borderRadius: '4px',
-              border: '1px solid #444',
-              background: filterCategory === cat ? '#0066cc' : '#222',
-              color: '#fff',
-              cursor: 'pointer',
+              border: '1px solid var(--border)',
+              background: filterCategory === cat ? 'var(--accent)' : 'var(--bg-secondary)',
+              color: filterCategory === cat ? 'var(--bg-primary)' : 'var(--text-primary)',
               textTransform: 'capitalize',
             }}
           >
@@ -62,35 +64,39 @@ export function SwarmMarketplacePanel(): React.JSX.Element {
       </div>
 
       {/* Skill Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '12px', marginBottom: '20px' }}>
+      <div className="grid-auto-fit-lg" style={{ marginBottom: '20px' }}>
         {filteredSkills.map(skill => (
           <div
             key={skill.id}
             onClick={() => setSelectedSkill(skill)}
+            className="card"
             style={{
-              border: selectedSkill?.id === skill.id ? '1px solid #0066cc' : '1px solid #333',
-              borderRadius: '6px',
-              padding: '12px',
-              background: '#1e1e1e',
+              border: selectedSkill?.id === skill.id ? '1px solid var(--accent)' : '1px solid var(--border)',
+              borderRadius: 'var(--radius-sm)',
+              padding: 'var(--spacing-sm)',
+              background: 'var(--bg-secondary)',
               cursor: 'pointer',
+              boxSizing: 'border-box',
             }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
-              <span>{skill.name}</span>
-              <span style={{ color: '#ffd700' }}>★ {skill.rating}</span>
+            <div className="flex-between">
+              <span style={{ fontWeight: 'bold', fontSize: 'var(--font-size-sm)' }}>{skill.name}</span>
+              <span style={{ color: 'var(--accent-yellow)' }}><Icon name="star" size={14} /> {skill.rating}</span>
             </div>
-            <p style={{ color: '#888', fontSize: '12px', margin: '6px 0' }}>{skill.description}</p>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
-              <span style={{ fontSize: '12px', color: '#4caf50' }}>${skill.costPerCall.toFixed(2)} / call</span>
+            <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', margin: '6px 0' }}>{skill.description}</p>
+            <div className="flex-between" style={{ marginTop: '10px' }}>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent-green)' }}>${skill.costPerCall.toFixed(2)} / call</span>
               <button
                 onClick={(e) => { e.stopPropagation(); handleInvoke(skill); }}
+                className="btn btn-xs badge-responsive"
                 style={{
                   padding: '4px 10px',
-                  background: '#0066cc',
-                  color: '#fff',
+                  background: 'var(--accent)',
+                  color: 'var(--bg-primary)',
                   border: 'none',
                   borderRadius: '3px',
                   cursor: 'pointer',
+                  fontSize: 'var(--font-size-xs)',
                 }}
               >
                 Invoke
@@ -102,11 +108,11 @@ export function SwarmMarketplacePanel(): React.JSX.Element {
 
       {/* Invocation Telemetry Log */}
       {invocationLog.length > 0 && (
-        <div style={{ background: '#111', border: '1px solid #333', borderRadius: '6px', padding: '12px' }}>
-          <h4 style={{ margin: '0 0 8px 0', color: '#0066cc' }}>⚡ Live Invocation Telemetry</h4>
-          <div style={{ fontFamily: 'monospace', fontSize: '12px', maxHeight: '120px', overflowY: 'auto' }}>
+        <div className="card">
+          <h4 style={{ margin: '0 0 8px 0', color: 'var(--accent-blue)' }}><Icon name="zap" size={16} /> Live Invocation Telemetry</h4>
+          <div style={{ fontFamily: 'monospace', fontSize: 'var(--font-size-xs)', maxHeight: 'clamp(80px, 15vh, 120px)', overflowY: 'auto' }}>
             {invocationLog.map((log, index) => (
-              <div key={index} style={{ padding: '2px 0', color: '#4caf50' }}>{log}</div>
+              <div key={index} style={{ padding: '2px 0', color: 'var(--accent-green)' }}>{log}</div>
             ))}
           </div>
         </div>

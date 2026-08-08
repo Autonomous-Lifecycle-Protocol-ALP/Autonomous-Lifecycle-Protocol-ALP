@@ -1,9 +1,10 @@
-import { ipcMain } from 'electron';
+import { ipcMain, app, dialog } from 'electron';
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { existsSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { readdir, readFile } from 'fs/promises';
 import { join, extname } from 'path';
+import { CollaborationEngine, CRDTSyncEngine } from '@autonomous-lifecycle-protocol-alp/parser';
 
 interface PluginManifest {
   id: string;
@@ -48,6 +49,16 @@ interface RefactorRename {
 const execAsync = promisify(exec);
 const PLUGINS_DIR = join(process.resourcesPath || process.cwd(), 'plugins');
 const profileTraces: ProfileTrace[] = [];
+const collabEngine = new CollaborationEngine();
+const crdtEngine = new CRDTSyncEngine();
+
+function getStateDir(): string {
+  return join(app.getPath('userData'), 'alp-state');
+}
+
+function getStateFile(): string {
+  return join(getStateDir(), 'engines.json');
+}
 
 async function loadParser() {
   const parser = await import('@autonomous-lifecycle-protocol-alp/parser');
@@ -62,6 +73,40 @@ function safeExecError(error: unknown) {
     stderr: execError.stderr ?? '',
     error: execError.message ?? String(error),
   };
+}
+
+export function saveEngineState(): void {
+  try {
+    const stateFile = getStateFile();
+    if (!existsSync(getStateDir())) {
+      mkdirSync(getStateDir(), { recursive: true });
+    }
+    const payload = {
+      collaboration: collabEngine.toJSON(),
+      crdt: crdtEngine.toJSON(),
+      savedAt: new Date().toISOString(),
+    };
+    writeFileSync(stateFile, JSON.stringify(payload, null, 2), 'utf-8');
+  } catch {
+    // persistence is best-effort
+  }
+}
+
+export function loadEngineState(): void {
+  try {
+    const stateFile = getStateFile();
+    if (!existsSync(stateFile)) return;
+    const raw = readFileSync(stateFile, 'utf-8');
+    const payload = JSON.parse(raw);
+    if (payload.collaboration) {
+      collabEngine.fromJSON(payload.collaboration);
+    }
+    if (payload.crdt) {
+      crdtEngine.fromJSON(payload.crdt);
+    }
+  } catch {
+    // persistence is best-effort
+  }
 }
 
 async function loadPluginManifest(pluginDir: string): Promise<PluginManifest | null> {
@@ -158,73 +203,98 @@ export function setupALPBridge() {
 
   ipcMain.handle('collab-start', async (_event, { mode }: { mode: 'host' | 'peer' }) => {
     try {
-      const { stdout, stderr } = await execAsync(`alp collab start --mode ${mode}`, {
-        maxBuffer: 10 * 1024 * 1024,
-        timeout: 120000,
-      });
-      return { success: true, stdout, stderr };
+      const docId = mode === 'host' ? `live-share-${Date.now()}` : `session-${Date.now()}`;
+      const session = collabEngine.createSession(docId);
+      let liveShare = null;
+      if (mode === 'host') {
+        liveShare = collabEngine.startLiveShare(docId, 'local-user');
+      }
+      return { success: true, data: { docId, sessionId: liveShare?.sessionId ?? docId, mode, createdAt: session.createdAt, agents: session.agents.size, operations: session.operations.length } };
     } catch (error) {
-      return safeExecError(error);
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
   });
 
   ipcMain.handle('collab-join', async (_event, { sessionId }: { sessionId: string }) => {
     try {
-      const { stdout, stderr } = await execAsync(`alp collab join ${sessionId}`, {
-        maxBuffer: 10 * 1024 * 1024,
-        timeout: 120000,
-      });
-      return { success: true, stdout, stderr };
+      const liveShares = collabEngine.getLiveShares(sessionId);
+      const target = liveShares.length > 0 ? liveShares[0] : null;
+      if (!target) {
+        const session = collabEngine.getSession(sessionId);
+        if (!session) {
+          return { success: false, error: `Session '${sessionId}' not found` };
+        }
+        const presence = collabEngine.joinSession(sessionId, 'local-user');
+        return { success: true, data: { sessionId, joined: true, presence } };
+      }
+      const ok = collabEngine.joinLiveShare(target.sessionId, 'local-user');
+      return { success: ok, data: { sessionId: target.sessionId, docId: target.docId, joined: ok, guests: target.guests } };
     } catch (error) {
-      return safeExecError(error);
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
   });
 
   ipcMain.handle('collab-status', async () => {
     try {
-      const { stdout, stderr } = await execAsync('alp collab status', {
-        maxBuffer: 10 * 1024 * 1024,
-        timeout: 120000,
-      });
-      return { success: true, stdout, stderr };
+      const sessions = collabEngine.getLiveShares('');
+      const allSessions: Array<{ docId: string; sessionId: string; hostId: string; guests: string[]; status: string }> = [];
+      for (const [docId, session] of (collabEngine as any).sessions || new Map()) {
+        const shares = collabEngine.getLiveShares(docId);
+        for (const share of shares) {
+          allSessions.push({ docId, sessionId: share.sessionId, hostId: share.hostId, guests: share.guests, status: share.status });
+        }
+      }
+      return { success: true, data: { sessions: allSessions } };
     } catch (error) {
-      return safeExecError(error);
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
   });
 
   ipcMain.handle('collab-leave', async () => {
     try {
-      const { stdout, stderr } = await execAsync('alp collab leave', {
-        maxBuffer: 10 * 1024 * 1024,
-        timeout: 120000,
-      });
-      return { success: true, stdout, stderr };
+      const activeShares = collabEngine.getLiveShares('');
+      let left = false;
+      for (const share of activeShares) {
+        if (share.guests.includes('local-user') || share.hostId === 'local-user') {
+          collabEngine.endLiveShare(share.sessionId, 'local-user');
+          left = true;
+        }
+      }
+      return { success: true, left };
     } catch (error) {
-      return safeExecError(error);
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
   });
 
   ipcMain.handle('crdt-status', async () => {
     try {
-      const { stdout, stderr } = await execAsync('alp crdt-sync status', {
-        maxBuffer: 10 * 1024 * 1024,
-        timeout: 120000,
-      });
-      return { success: true, stdout, stderr };
+      const states: Record<string, any> = {};
+      const engineState = (crdtEngine as any).states as Map<string, any> | undefined;
+      if (engineState) {
+        for (const [docId] of engineState) {
+          states[docId] = crdtEngine.readState(docId);
+        }
+      }
+      return { success: true, data: { states } };
     } catch (error) {
-      return safeExecError(error);
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
   });
 
   ipcMain.handle('crdt-merge', async () => {
     try {
-      const { stdout, stderr } = await execAsync('alp crdt-sync merge', {
-        maxBuffer: 10 * 1024 * 1024,
-        timeout: 120000,
-      });
-      return { success: true, stdout, stderr };
+      const engineState = (crdtEngine as any).states as Map<string, any> | undefined;
+      if (!engineState || engineState.size < 2) {
+        return { success: true, data: { merged: false, reason: 'insufficient peers for merge' } };
+      }
+      const entries = Array.from(engineState.entries());
+      const [docIdA, local] = entries[0];
+      const [docIdB, remote] = entries[1];
+      const merged = crdtEngine.merge(local, remote);
+      const converged = crdtEngine.readState(docIdA);
+      return { success: true, data: { docId: merged.docId, clock: merged.clock, converged } };
     } catch (error) {
-      return safeExecError(error);
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
     }
   });
 
@@ -455,6 +525,124 @@ export function setupALPBridge() {
 
   ipcMain.handle('collab-broadcast-presence', async (_event, payload: { peerId: string; displayName: string; color: string; cursor?: { line: number; column: number }; selection?: { startLineNumber: number; startColumn: number; endLineNumber: number; endColumn: number } }) => {
     return { success: true, received: true };
+  });
+
+  ipcMain.handle('workspace-list-templates', async () => {
+    return {
+      success: true,
+      templates: [
+        {
+          id: 'swarm-agent-template',
+          name: 'Swarm Agent Mesh Template',
+          description: 'Multi-node swarm agent cluster with event mesh capabilities.',
+          files: {
+            'agent.alp': '@agent swarm-coordinator\n  description: Autonomous swarm node coordinator\n  model: gpt-4o\n  tools: [pubsub, claims]\n',
+            'policy.alp': '@policy swarm-security\n  description: Fail-closed verification rule for swarm claims\n  enforce: strict\n',
+          },
+        },
+        {
+          id: 'policy-governance-template',
+          name: 'Policy & Governance Template',
+          description: 'Enterprise compliance rules and contract verification workspace.',
+          files: {
+            'governance.alp': '@contract compliance-v1\n  description: Mandatory audit trail contract\n  policy: strict-audit\n',
+            'rules.alp': '@rule no-raw-sql\n  description: Ban unparameterized SQL queries\n  action: deny\n',
+          },
+        },
+        {
+          id: 'mcp-microservice-template',
+          name: 'MCP Microservice Agent',
+          description: 'Model Context Protocol server integration project.',
+          files: {
+            'mcp-agent.alp': '@agent mcp-bridge\n  description: Model Context Protocol tools orchestrator\n  mcpServer: stdio\n',
+          },
+        },
+      ],
+    };
+  });
+
+  ipcMain.handle('workspace-scaffold-template', async (_event, { templateId, targetDir }: { templateId: string; targetDir: string }) => {
+    try {
+      const templatesResponse = await (ipcMain as unknown as { handleMap?: Map<string, Function> }).handleMap?.get('workspace-list-templates')?.();
+      const templates = [
+        {
+          id: 'swarm-agent-template',
+          files: {
+            'agent.alp': '@agent swarm-coordinator\n  description: Autonomous swarm node coordinator\n  model: gpt-4o\n  tools: [pubsub, claims]\n',
+            'policy.alp': '@policy swarm-security\n  description: Fail-closed verification rule for swarm claims\n  enforce: strict\n',
+          },
+        },
+        {
+          id: 'policy-governance-template',
+          files: {
+            'governance.alp': '@contract compliance-v1\n  description: Mandatory audit trail contract\n  policy: strict-audit\n',
+            'rules.alp': '@rule no-raw-sql\n  description: Ban unparameterized SQL queries\n  action: deny\n',
+          },
+        },
+        {
+          id: 'mcp-microservice-template',
+          files: {
+            'mcp-agent.alp': '@agent mcp-bridge\n  description: Model Context Protocol tools orchestrator\n  mcpServer: stdio\n',
+          },
+        },
+      ];
+      const match = templates.find((t) => t.id === templateId);
+      if (!match) {
+        return { success: false, error: `Template '${templateId}' not found` };
+      }
+
+      const { writeFile, mkdir } = await import('fs/promises');
+      await mkdir(targetDir, { recursive: true });
+
+      const createdFiles: string[] = [];
+      for (const [filename, content] of Object.entries(match.files)) {
+        const filePath = join(targetDir, filename);
+        await writeFile(filePath, content, 'utf-8');
+        createdFiles.push(filePath);
+      }
+
+      return { success: true, createdFiles };
+    } catch (error) {
+      return { success: false, createdFiles: [], error: error instanceof Error ? error.message : String(error) };
+    }
+  });
+
+  ipcMain.handle('workspace-lint-all', async (_event, { workspaceDir }: { workspaceDir: string }) => {
+    try {
+      const parser = await loadParser();
+      const files = await readdir(workspaceDir).catch(() => []);
+      const alpFiles = files.filter((f) => f.endsWith('.alp'));
+      const diagnostics: Array<{ filePath: string; errors: string[] }> = [];
+
+      for (const file of alpFiles) {
+        const fullPath = join(workspaceDir, file);
+        const content = await readFile(fullPath, 'utf-8').catch(() => '');
+        try {
+          const doc = parser.parseALP(content);
+          diagnostics.push({ filePath: fullPath, errors: doc.errors ?? [] });
+        } catch (err) {
+          diagnostics.push({ filePath: fullPath, errors: [err instanceof Error ? err.message : String(err)] });
+        }
+      }
+
+      return { success: true, scannedCount: alpFiles.length, diagnostics };
+    } catch (error) {
+      return { success: false, scannedCount: 0, diagnostics: [], error: error instanceof Error ? error.message : String(error) };
+    }
+  });
+
+  ipcMain.handle('dialog-open-folder', async () => {
+    try {
+      const result = await dialog.showOpenDialog({
+        properties: ['openDirectory'],
+      });
+      if (result.canceled || result.filePaths.length === 0) {
+        return { success: false, canceled: true };
+      }
+      return { success: true, folderPath: result.filePaths[0] };
+    } catch (error) {
+      return { success: false, error: error instanceof Error ? error.message : String(error) };
+    }
   });
 }
 

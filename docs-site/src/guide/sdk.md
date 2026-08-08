@@ -14,7 +14,7 @@ Official SDK packages for integrating ALP (Autonomous Lifecycle Protocol) into m
 
 ---
 
-## ⚡ Go (`alp-go`)
+## Go (`alp-go`)
 
 ### Installation
 
@@ -61,7 +61,7 @@ func main() {
 
 ---
 
-## 🦀 Rust (`alp-rs`)
+## Rust (`alp-rs`)
 
 ### Cargo Dependency
 
@@ -104,7 +104,7 @@ async fn main() -> Result<(), Box<dyn std.error::Error>> {
 
 ---
 
-## ☕ Java (`alp-java`)
+## Java (`alp-java`)
 
 ### Maven Dependency
 
@@ -151,7 +151,7 @@ public class Main {
 
 ---
 
-## 🟨 TypeScript (`@autonomous-lifecycle-protocol-alp/sdk`)
+## TypeScript (`@autonomous-lifecycle-protocol-alp/sdk`)
 
 ```ts
 import { AlpWorkspace, MacroEngine, CollaborationEngine } from '@autonomous-lifecycle-protocol-alp/sdk';
@@ -163,7 +163,7 @@ console.log(ws.getGraph());
 
 ---
 
-## 🐍 Python (`alp-sdk`)
+## Python (`alp-sdk`)
 
 ```python
 from alp_sdk import load_workspace, validate_object, verify_workspace, RegistryClient

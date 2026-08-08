@@ -356,10 +356,10 @@ After verification, a report is generated:
   related_to: -> task-login-ui
   payload: |
     Results:
-    ✓ test     | PASS | npm test -- --filter=LoginForm     | 3.2s
-    ✓ lint     | PASS | eslint src/components/auth/         | 1.1s
-    ✓ a11y     | PASS | axe-core form accessibility         | 0.8s
-    ✗ perf     | FAIL | Lighthouse score 72 (threshold: 80) | 12.4s
+    [+] test     | PASS | npm test -- --filter=LoginForm     | 3.2s
+    [+] lint     | PASS | eslint src/components/auth/         | 1.1s
+    [+] a11y     | PASS | axe-core form accessibility         | 0.8s
+    [-] perf     | FAIL | Lighthouse score 72 (threshold: 80) | 12.4s
     
     Required: 3/3 passed
     Optional: 0/1 passed

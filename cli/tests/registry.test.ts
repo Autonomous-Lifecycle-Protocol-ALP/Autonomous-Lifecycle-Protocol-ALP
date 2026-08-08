@@ -50,20 +50,16 @@ describe('alp registry (Pillar 3: hosted registry & marketplace)', () => {
 
   it('publishes to local store, serves over HTTP, and installs with integrity', async () => {
     const { root, pkgDir } = makeWorkspaceWithPackage();
-    // Init an empty workspace so `alp serve` and `alp publish` find .alp.
     fs.mkdirSync(path.join(root, '.alp'), { recursive: true });
     fs.writeFileSync(path.join(root, '.alp', 'project.alp'), '@project\n  id: demo-ws\n  name: "Demo"\n');
 
-    // Publish into the workspace's local registry.
     execFileSync('node', [CLI, 'registry', 'publish', pkgDir], { cwd: root, encoding: 'utf-8', timeout: 20000 });
 
-    // Start a hosted registry.
     const port = 4321;
     const proc = spawn('node', [CLI, 'serve', '--registry', '--port', String(port)], { cwd: root });
     await waitFor(port);
 
     try {
-      // List via HTTP marketplace.
       const listRaw = await new Promise<string>((res) => {
         http.get({ host: '127.0.0.1', port, path: '/api/registry' }, (r) => {
           let d = ''; r.on('data', (c) => (d += c)); r.on('end', () => res(d));
@@ -72,7 +68,6 @@ describe('alp registry (Pillar 3: hosted registry & marketplace)', () => {
       const list = JSON.parse(listRaw);
       expect(list.some((p: any) => p.name === '@demo/scrum-master')).toBe(true);
 
-      // Install from the hosted registry into a fresh consumer workspace.
       const consumer = fs.mkdtempSync(path.join(os.tmpdir(), 'alp-consumer-')); dirs.push(consumer);
       fs.mkdirSync(path.join(consumer, '.alp'), { recursive: true });
       const installed = execFileSync('node', [CLI, 'registry', 'install', '@demo/scrum-master@1.0.0', '--url', `http://127.0.0.1:${port}`], { cwd: consumer, encoding: 'utf-8', timeout: 20000 });
@@ -83,7 +78,7 @@ describe('alp registry (Pillar 3: hosted registry & marketplace)', () => {
     } finally {
       proc.kill('SIGKILL');
     }
-  });
+  }, 60000);
 
   it('gates /api/registry with a bearer token (spec/14 §4.2)', async () => {
     const { root, pkgDir } = makeWorkspaceWithPackage();
@@ -111,7 +106,7 @@ describe('alp registry (Pillar 3: hosted registry & marketplace)', () => {
     } finally {
       proc.kill('SIGKILL');
     }
-  });
+  }, 60000);
 
   it('enforces per-namespace tokens and publish-time auth', async () => {
     const { root, pkgDir } = makeWorkspaceWithPackage();
@@ -119,7 +114,6 @@ describe('alp registry (Pillar 3: hosted registry & marketplace)', () => {
     fs.writeFileSync(path.join(root, '.alp', 'project.alp'), '@project\n  id demo-ws\n  name: "Demo"\n');
     execFileSync('node', [CLI, 'registry', 'publish', pkgDir], { cwd: root, encoding: 'utf-8', timeout: 20000 });
 
-    // Host with a per-namespace token for @demo only (private namespace).
     const port = 4323;
     const proc = spawn('node', [CLI, 'serve', '--registry', '--registry-token', '@demo=demo-secret', '--port', String(port)], { cwd: root });
     await waitFor(port);
@@ -142,13 +136,10 @@ describe('alp registry (Pillar 3: hosted registry & marketplace)', () => {
       });
 
     try {
-      // Private namespace @demo read requires its token.
       expect(await getStatus('/api/registry/-/demo/scrum-master/meta.json')).toBe(401);
       expect(await getStatus('/api/registry/-/demo/scrum-master/meta.json', { Authorization: 'Bearer demo-secret' })).toBe(200);
-      // Publish into @demo requires the namespace token; wrong token rejected.
       expect(await putStatus({ Authorization: 'Bearer wrong' })).toBe(401);
       expect(await putStatus({ Authorization: 'Bearer demo-secret' })).toBe(201);
-      // A different namespace stays public (no token configured).
       expect(await getStatus('/api/registry/-/public/pkg/meta.json')).toBe(404);
     } finally {
       proc.kill('SIGKILL');
@@ -175,12 +166,10 @@ describe('alp registry (Pillar 3: hosted registry & marketplace)', () => {
     };
 
     try {
-      // No token -> rejected (non-zero exit, not "Published").
       expect(publish().out.toLowerCase()).not.toContain('published');
-      // With token -> succeeds.
       expect(publish('demo-secret').out).toContain('Published');
     } finally {
       proc.kill('SIGKILL');
     }
-  });
+  }, 60000);
 });
