@@ -142,6 +142,7 @@ export default defineConfig({
         items: [
           { text: 'Execution Engine', link: '/execution-engine' },
           { text: 'CLI Tools Reference', link: '/cli-tools' },
+          { text: 'Reasoning Core', link: '/reasoning-core' },
           { text: 'MCP Server', link: '/mcp-server' },
           { text: 'VS Code Extension', link: '/vscode-extension' },
           { text: 'SHAM IDE', link: '/sham' },
