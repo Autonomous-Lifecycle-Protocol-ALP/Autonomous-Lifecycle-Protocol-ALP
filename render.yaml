@@ -16,17 +16,11 @@ services:
       - key: JWT_SECRET
         generateValue: true
       - key: FRONTEND_URL
-        fromService:
-          type: web
-          name: alp-enterprise-frontend
-          property: url
+        value: https://alp-enterprise-frontend.onrender.com
       - key: PORT
         value: 5000
       - key: CORS_ORIGIN
-        fromService:
-          type: web
-          name: alp-enterprise-frontend
-          property: url
+        value: https://alp-enterprise-frontend.onrender.com
 
   - type: web
     name: alp-enterprise-frontend
@@ -41,5 +35,5 @@ services:
 databases:
   - name: alp-enterprise-db
     plan: starter
-    databaseName: alp-enterprise
+    databaseName: alp_enterprise
     user: alp_user
