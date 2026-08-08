@@ -118,6 +118,9 @@ export default defineConfig({
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' },
+          { text: 'Reasoning Core', link: '/reasoning-core' },
+          { text: 'Swarm Federation', link: '/federation-mesh' },
+          { text: 'ZK Policy Proofs', link: '/zk-proofs' },
           { text: 'Roadmap', link: '/roadmap' },
           { text: 'Releases', link: '/releases' }
         ]

@@ -31,6 +31,8 @@ const PRIMARY_NAV = [
 ];
 
 const SECONDARY_NAV = [
+  { path: "/federation-studio", label: "Swarm Federation", icon: LayersIcon },
+  { path: "/zk-proofs", label: "ZK Policy Proofs", icon: ShieldIcon },
   { path: "/hybrid-engineer", label: "Hybrid Engineer AI", icon: HybridEngineerIcon },
   { path: "/analytics", label: "Analytics & BI", icon: AnalyticsIcon },
   { path: "/business-model", label: "Business Model", icon: BusinessModelIcon },
