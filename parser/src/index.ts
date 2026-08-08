@@ -30,6 +30,7 @@ export * from './federation-engine';
 export * from './zk-proof-engine';
 export * from "./digital-twin-engine.js";
 export * from "./neuromorphic-engine.js";
+export * from "./k8s-operator-engine.js";
 export * from './provenance';
 export * from './autonomy';
 export * from './crdt';

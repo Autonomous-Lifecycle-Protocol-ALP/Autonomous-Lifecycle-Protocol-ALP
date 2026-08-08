@@ -52,6 +52,9 @@ const SECONDARY_NAV = [
   { path: "/business-model", label: "Business Model", icon: BusinessModelIcon },
   { path: "/savings", label: "Savings Calculator", icon: SavingsIcon },
   { path: "/billing", label: "Billing & Subscription", icon: BillingIcon },
+  { path: "/changelog", label: "Changelog", icon: CodeIcon },
+  { path: "/audit-log", label: "Audit Log", icon: ShieldIcon },
+  { path: "/onboarding", label: "Getting Started", icon: SparklesIcon },
 ];
 
 const ALL_NAV_ITEMS = [...PRIMARY_NAV, ...SECONDARY_NAV];
