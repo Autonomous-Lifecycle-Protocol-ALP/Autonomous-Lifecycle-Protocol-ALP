@@ -1,12 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../utils/api.js";
-
-const FILE_ICONS = {
-  js: "🟨", jsx: "️🟦", ts: "️💙", tsx: "️🤍", py: "🐍", go: "🐹", rs: "🦀",
-  json: "{} ", md: "📝", txt: "📄", css: "🎨", html: "🔖", yml: "⚙️",
-  toml: "⚙️", lock: "🔒",
-};
+import { WorkspaceIcon, FileTextIcon, CodeIcon, PlayIcon, ZapIcon, CheckCircleIcon } from "../components/Icons.jsx";
+import { LuFolder, LuFolderOpen } from "react-icons/lu";
 
 export default function IdePage() {
   const { id } = useParams();
@@ -109,10 +105,15 @@ export default function IdePage() {
   const renderTree = (node, depth = 0) => {
     const isDir = node.type === "dir";
     const hasChildren = isDir && node.children && node.children.length > 0;
-    const icon = isDir ? "📁" : (FILE_ICONS[getFileExtension(node.name)] || "📄");
+    const isExpanded = expandedDirs.has(node.path);
+    const renderNodeIcon = () => {
+      if (isDir) {
+        return isExpanded ? <LuFolderOpen className="text-sky-400 text-sm flex-shrink-0" /> : <LuFolder className="text-sky-400 text-sm flex-shrink-0" />;
+      }
+      return <FileTextIcon size="sm" className="text-slate-400 flex-shrink-0" />;
+    };
     const isSelected = activeFile === node.path;
     const isChildOfActive = activeFile && activeFile.startsWith(node.path + "/");
-    const isExpanded = expandedDirs.has(node.path);
 
     return (
       <div key={node.path || "root"}>
@@ -129,11 +130,7 @@ export default function IdePage() {
             }
           }}
         >
-          {isDir ? (
-            <span className="mr-1">{isExpanded ? "📂" : icon}</span>
-          ) : (
-            <span className="mr-1">{icon}</span>
-          )}
+          <span className="mr-2 flex items-center">{renderNodeIcon()}</span>
           <span className="truncate">{node.name}</span>
           {isDir && hasChildren && (
             <span className="ml-auto text-xs text-gray-400">({node.children.length})</span>
@@ -181,17 +178,17 @@ export default function IdePage() {
           </button>
           <button
             onClick={() => runCommand("alp test")}
-            className="px-3 py-1 bg-purple-600 text-white rounded text-sm hover:bg-purple-700"
+            className="px-3 py-1 bg-purple-600 text-white rounded text-sm hover:bg-purple-700 flex items-center gap-1.5 font-medium"
             title="Run tests"
           >
-            🧪 Test
+            <CheckCircleIcon size="sm" /> Test
           </button>
           <button
             onClick={() => runCommand("alp deploy")}
-            className="px-3 py-1 bg-amber-600 text-white rounded text-sm hover:bg-amber-700"
+            className="px-3 py-1 bg-amber-600 text-white rounded text-sm hover:bg-amber-700 flex items-center gap-1.5 font-medium"
             title="Deploy workspace"
           >
-            🚀 Deploy
+            <ZapIcon size="sm" /> Deploy
           </button>
         </div>
       </div>
