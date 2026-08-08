@@ -5,7 +5,7 @@ import net from 'net';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const alpServerDir = path.resolve(__dirname, '../../alp-server');
+const alpServerDir = path.resolve(__dirname, '../../../alp-server');
 const enterpriseAppDir = path.resolve(__dirname, '../..');
 
 function isPortInUse(port) {
