@@ -75,10 +75,10 @@ export default function Layout() {
                     <Link
                       key={item.path}
                       to={item.path}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-smooth ${
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold transition-smooth ${
                         isActive
-                          ? "bg-sky-900/40 text-sky-300"
-                          : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/40"
+                          ? "bg-gradient-to-r from-sky-500/20 to-indigo-500/20 text-sky-300 border border-sky-500/40 shadow-sm shadow-sky-500/20"
+                          : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
                       }`}
                     >
                       <Icon size="sm" />
