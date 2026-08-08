@@ -2,15 +2,11 @@ import { spawn } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import net from 'net';
-import os from 'os';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const alpServerDir = path.resolve(__dirname, '../../alp-server');
-const enterpriseAppDir = __dirname;
-const isWindows = os.platform() === 'win32';
-const npmCmd = isWindows ? 'npm.cmd' : 'npm';
-const shellOption = isWindows;
+const enterpriseAppDir = path.resolve(__dirname, '../..');
 
 function isPortInUse(port) {
   return new Promise((resolve) => {
@@ -28,9 +24,9 @@ async function startServers() {
   const alpServerRunning = await isPortInUse(5000);
   
   if (!alpServerRunning) {
-    const alpServer = spawn(npmCmd, ['run', 'dev:mongo'], {
+    const scriptPath = path.join(alpServerDir, 'scripts', 'start-dev.js');
+    const alpServer = spawn(process.execPath, [scriptPath], {
       cwd: alpServerDir,
-      shell: shellOption,
       stdio: 'inherit',
     });
 
@@ -44,9 +40,9 @@ async function startServers() {
     console.log('ALP server already running on port 5000');
   }
 
-  const enterpriseApp = spawn(npmCmd, ['run', 'dev'], {
+  const vitePath = path.join(enterpriseAppDir, 'node_modules', 'vite', 'bin', 'vite.js');
+  const enterpriseApp = spawn(process.execPath, [vitePath], {
     cwd: enterpriseAppDir,
-    shell: shellOption,
     stdio: 'inherit',
   });
 
