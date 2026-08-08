@@ -17,19 +17,20 @@ services:
         generateValue: true
       - key: FRONTEND_URL
         fromService:
-          type: static
+          type: web
           name: alp-enterprise-frontend
           property: url
       - key: PORT
         value: 5000
       - key: CORS_ORIGIN
         fromService:
-          type: static
+          type: web
           name: alp-enterprise-frontend
           property: url
 
-  - type: static
+  - type: web
     name: alp-enterprise-frontend
+    env: static
     buildCommand: cd commercial/enterprise-app && npm install && npm run build
     staticPublishPath: commercial/enterprise-app/dist
     headers:
