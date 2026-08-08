@@ -25,8 +25,8 @@ const quantumEngineerRoutes = require('./routes/quantum-engineer');
 const chipDesignRoutes = require('./routes/chip-design');
 const socSentinelRoutes = require('./routes/soc-sentinel');
 const threatIntelRoutes = require('./routes/threat-intel');
-const zeroTrustRoutes = require('./routes/zero-trust');
 const reasoningRoutes = require('./routes/reasoning');
+const telemetryRoutes = require('./routes/telemetry');
 
 const app = express();
 const server = http.createServer(app);
@@ -78,6 +78,7 @@ app.use('/api/soc-sentinel', socSentinelRoutes);
 app.use('/api/threat-intel', threatIntelRoutes);
 app.use('/api/zero-trust', zeroTrustRoutes);
 app.use('/api/reasoning', reasoningRoutes);
+app.use('/api/telemetry', telemetryRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

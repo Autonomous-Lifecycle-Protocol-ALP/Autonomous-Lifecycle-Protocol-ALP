@@ -54,4 +54,9 @@ export const AlertIcon = wrap(Lu.LuTriangleAlert);
 export const LightbulbIcon = wrap(Lu.LuLightbulb);
 export const CodeIcon = wrap(Lu.LuCode);
 export const FileTextIcon = wrap(Lu.LuFileText);
+export const BellIcon = wrap(Lu.LuBell);
+export const ActivityIcon = wrap(Lu.LuActivity);
+export const ArrowRightIcon = wrap(Lu.LuArrowRight);
+export const CheckCircleIcon = wrap(Lu.LuCircleCheck);
+
 

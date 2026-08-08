@@ -1,6 +1,7 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth.jsx";
+import NotificationCenter from "./NotificationCenter.jsx";
 import {
   DashboardIcon,
   WorkspaceIcon,
@@ -97,9 +98,18 @@ export default function Layout() {
             </div>
 
             <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
+              {/* Cluster Health Badge */}
+              <div className="hidden xl:flex items-center gap-2 px-3 py-1 bg-slate-900/60 border border-slate-800 rounded-xl">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className="text-[11px] font-mono text-slate-300">99.98% System Uptime</span>
+              </div>
+
+              {/* Notification Center */}
+              <NotificationCenter />
+
               <div className="flex items-center space-x-3">
                 <span className="text-sm text-gray-300">{user?.name || user?.email}</span>
-                <div className="w-8 h-8 bg-sky-900/40 rounded-full flex items-center justify-center">
+                <div className="w-8 h-8 bg-sky-900/40 rounded-full flex items-center justify-center border border-sky-500/30">
                   <span className="text-sky-300 font-medium text-xs">
                     {getUserInitials(user)}
                   </span>
