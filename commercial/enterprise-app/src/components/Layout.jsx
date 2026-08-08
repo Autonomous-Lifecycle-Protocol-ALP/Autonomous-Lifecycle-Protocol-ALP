@@ -108,7 +108,7 @@ export default function Layout() {
                 </div>
                 <div className="flex flex-col">
                   <span className="text-base font-black gradient-text tracking-tight leading-none">ALP Enterprise</span>
-                  <span className="text-[10px] text-slate-400 font-mono tracking-wider uppercase mt-0.5">Protocol v82.0</span>
+                  <span className="text-[10px] text-slate-400 font-mono tracking-wider uppercase mt-0.5">Protocol v85.0</span>
                 </div>
               </Link>
 

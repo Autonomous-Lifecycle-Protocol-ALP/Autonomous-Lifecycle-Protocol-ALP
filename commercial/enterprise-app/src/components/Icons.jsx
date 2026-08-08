@@ -43,7 +43,34 @@ export const ZapIcon = wrap(Lu.LuZap);
 export const LayersIcon = wrap(Lu.LuLayers);
 export const AnalyticsIcon = wrap(Lu.LuChartColumnBig);
 export const ReasoningIcon = wrap(Lu.LuBrainCircuit);
-export const LogoIcon = wrap(Lu.LuCpu);
+const AlpBrandLogo = ({ className = "w-6 h-6" }) => (
+  <svg viewBox="0 0 500 500" fill="none" className={className} xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="alp-brand-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#38bdf8" />
+        <stop offset="50%" stopColor="#0284c7" />
+        <stop offset="100%" stopColor="#6366f1" />
+      </linearGradient>
+    </defs>
+    <path
+      d="M 100 380 L 250 80 L 400 380 L 330 380 L 250 220 L 200 320 C 240 300 290 280 320 230 C 340 190 310 140 250 140 C 190 140 150 230 150 280 L 100 380 Z"
+      fill="none"
+      stroke="url(#alp-brand-grad)"
+      strokeWidth="28"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M 120 370 C 180 330 230 280 290 260 C 330 245 345 270 325 305 C 295 355 200 340 120 370 Z"
+      fill="url(#alp-brand-grad)"
+      opacity="0.9"
+    />
+  </svg>
+);
+
+export const LogoIcon = ({ size = "md", className = "" }) => (
+  <AlpBrandLogo className={`inline-block ${SIZE_MAP[size]} ${className}`.trim()} />
+);
 export const SparklesIcon = wrap(Lu.LuSparkles);
 export const ShieldIcon = wrap(Lu.LuShieldCheck);
 export const CopyIcon = wrap(Lu.LuCopy);
