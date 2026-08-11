@@ -2,7 +2,7 @@ name: Deploy Docs to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "feat/enterprise-app-and-repo-updates"]
   workflow_dispatch:
 
 permissions:

@@ -2,7 +2,7 @@ name: "ALP Test CI"
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "feat/enterprise-app-and-repo-updates"]
     paths:
       - "commercial/alp-test/**"
       - ".github/workflows/alp-test.yml"
