@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import InteractiveLionSvg from "../components/InteractiveLionSvg.jsx";
 import {
   ReasoningIcon,
   ZapIcon,
@@ -145,14 +144,15 @@ const CORE_FEATURES = [
 ];
 
 const PRODUCT_SHOWCASE = [
-  { name: "Agent Studio", desc: "Visual agent builder with drag-and-drop workflow composer", icon: LuSparkles, color: "text-violet-400" },
-  { name: "Hybrid Engineer AI", desc: "Multi-modal agent for hardware + software co-design", icon: LuCpu, color: "text-amber-400" },
-  { name: "Data Pipeline Studio", desc: "ETL orchestration with real-time stream processing", icon: LuDatabase, color: "text-emerald-400" },
-  { name: "Model Hub", desc: "Fine-tuning, A/B testing, and model lifecycle management", icon: LuBrainCircuit, color: "text-sky-400" },
-  { name: "Cloud Workspace", desc: "Collaborative dev environment with Merkle-verified files", icon: LuCloud, color: "text-cyan-400" },
-  { name: "DevOps Bridge", desc: "CI/CD pipeline integration with automated deployments", icon: LuGitBranch, color: "text-pink-400" },
-  { name: "Security Scanner", desc: "Vulnerability detection and compliance scanning", icon: LuShieldCheck, color: "text-rose-400" },
-  { name: "Analytics BI", desc: "Real-time revenue dashboards with predictive insights", icon: LuTrendingUp, color: "text-indigo-400" },
+  { name: "Agent Studio", desc: "Visual agent builder with drag-and-drop workflow composer", icon: LuSparkles, color: "text-violet-400", features: ["Visual workflow composer", "Swarm mesh integration", "Enterprise RBAC & audit trails"] },
+  { name: "Hybrid Engineer AI", desc: "Multi-modal agent for hardware + software co-design", icon: LuCpu, color: "text-amber-400", features: ["Hardware + software co-design", "Real-time simulation", "Cross-domain reasoning"] },
+  { name: "Data Pipeline Studio", desc: "ETL orchestration with real-time stream processing", icon: LuDatabase, color: "text-emerald-400", features: ["Real-time stream processing", "Schema evolution", "Federation sync"] },
+  { name: "Model Hub", desc: "Fine-tuning, A/B testing, and model lifecycle management", icon: LuBrainCircuit, color: "text-sky-400", features: ["Fine-tuning workflows", "A/B testing", "Model registry"] },
+  { name: "Cloud Workspace", desc: "Collaborative dev environment with Merkle-verified files", icon: LuCloud, color: "text-cyan-400", features: ["Real-time collaboration", "Merkle-verified files", "Cross-region sync"] },
+  { name: "DevOps Bridge", desc: "CI/CD pipeline integration with automated deployments", icon: LuGitBranch, color: "text-pink-400", features: ["CI/CD integration", "Automated deployments", "Policy gates"] },
+  { name: "Security Scanner", desc: "Vulnerability detection and compliance scanning", icon: LuShieldCheck, color: "text-rose-400", features: ["Vulnerability scanning", "Compliance reports", "Policy enforcement"] },
+  { name: "Analytics BI", desc: "Real-time revenue dashboards with predictive insights", icon: LuTrendingUp, color: "text-indigo-400", features: ["Real-time dashboards", "Predictive analytics", "Custom reports"] },
+  { name: "ALP Test", desc: "Playwright-class E2E, visual regression, and AI-powered test generation", icon: LuActivity, color: "text-emerald-300", features: ["Playwright-class E2E", "Visual regression diff", "AI test generation", "Self-healing selectors"], link: "/products/alp-test" },
 ];
 
 const STATS = [
@@ -274,6 +274,138 @@ const FAQ_ITEMS = [
     q: "What reasoning modes are available?",
     a: "The Reasoning Studio offers Chain-of-Thought (step-by-step analysis), Critique (adversarial review), Synthesis (multi-source combination), and Verification (formal proof checking). Each mode produces transparent, auditable reasoning trails.",
   },
+  {
+    q: "How does ALP handle data privacy and sovereignty?",
+    a: "ALP supports on-premise, private cloud, and hybrid deployment models. All data is encrypted at rest and in transit. ZK-proof policy verification ensures compliance without exposing sensitive data. We are SOC2 Type II certified and HIPAA compliant.",
+  },
+  {
+    q: "What kind of support is available?",
+    a: "Starter plans include community support with forums and documentation. Professional plans include 24-hour SLA priority support. Enterprise customers receive a dedicated success manager, custom onboarding, and 99.99% uptime SLA guarantees.",
+  },
+];
+
+const HOW_IT_WORKS = [
+  {
+    step: "01",
+    title: "Connect Your Stack",
+    desc: "Integrate ALP with your existing tools in minutes using our native connectors or REST API. Supports GitHub, AWS, Kubernetes, and 18+ platforms.",
+    icon: LuZap,
+  },
+  {
+    step: "02",
+    title: "Configure Agents",
+    desc: "Design autonomous agents using our visual workflow composer or code-first SDK. Define reasoning modes, security policies, and orchestration rules.",
+    icon: LuCpu,
+  },
+  {
+    step: "03",
+    title: "Deploy & Govern",
+    desc: "Ship to production with one command. ALP handles scaling, monitoring, and policy enforcement across multi-cloud and on-premise infrastructure.",
+    icon: LuRocket,
+  },
+  {
+    step: "04",
+    title: "Monitor & Optimize",
+    desc: "Track agent performance, reasoning quality, and cost metrics in real-time. Use built-in A/B testing and predictive analytics to continuously improve.",
+    icon: LuTrendingUp,
+  },
+];
+
+const SECURITY_FEATURES = [
+  {
+    title: "Zero-Knowledge Proofs",
+    desc: "Verify policy compliance without exposing sensitive data. ZK-proofs enable auditable governance while maintaining complete data privacy.",
+    icon: LuLock,
+    color: "text-amber-400",
+  },
+  {
+    title: "SOC2 & HIPAA Ready",
+    desc: "Built-in audit trails, encryption at rest and in transit, and role-based access control meet the strictest regulatory requirements.",
+    icon: LuShieldCheck,
+    color: "text-emerald-400",
+  },
+  {
+    title: "End-to-End Encryption",
+    desc: "All data is encrypted using AES-256-GCM. Secrets management integrates with HashiCorp Vault, AWS KMS, and Azure Key Vault.",
+    icon: LuLock,
+    color: "text-sky-400",
+  },
+  {
+    title: "RBAC & SSO",
+    desc: "Granular role-based access control with SAML, OIDC, and OAuth2 support. Fine-grained permissions for every resource and action.",
+    icon: LuUsers,
+    color: "text-violet-400",
+  },
+];
+
+const CODE_EXAMPLES = [
+  {
+    title: "Deploy a Swarm",
+    code: `$ alp deploy --swarm prod --agents 12 --verify`,
+    output: `✦ Initializing swarm mesh with 12 autonomous agents...
+├── Merkle root: 0xab3f...9e2c (strict verification)
+├── ZK policy proof generated (143ms)
+├── Federation sync: us-east-1, eu-west-1, ap-south-1
+└── ✓ Deployed successfully in 4.2s — all agents healthy`,
+    lang: "bash",
+  },
+  {
+    title: "Define a Policy",
+    code: `import { ALP } from "@alp/enterprise";
+
+const policy = ALP.policy("secure-swarm")
+  .require("zk-proof")
+  .require("audit-log")
+  .maxAgents(100)
+  .region(["us-east-1", "eu-west-1"])
+  .compliance("SOC2", "HIPAA");`,
+    output: `✓ Policy compiled in 12ms
+✓ ZK circuit generated (2.1MB)
+✓ Attached to swarm mesh
+Ready for deployment.`,
+    lang: "typescript",
+  },
+  {
+    title: "Monitor Agents",
+    code: `alp monitor --swarm prod --live
+
+# Real-time telemetry stream`,
+    output: `┌─────────────┬────────┬────────┬────────┐
+│ Agent       │ Status │ Latency│ Reasoning│
+├─────────────┼────────┼────────┼────────┤
+│ agent-01    │ healthy│ 42ms   │ chain-of-thought │
+│ agent-02    │ healthy│ 38ms   │ critique │
+│ agent-03    │ busy   │ 156ms  │ synthesis │
+└─────────────┴────────┴────────┴────────┘`,
+    lang: "bash",
+  },
+];
+
+const CASE_STUDIES = [
+  {
+    company: "NeuralScale",
+    logo: "NS",
+    challenge: "Managing 50+ AI agents across 3 cloud regions with inconsistent policies",
+    solution: "Deployed ALP's swarm orchestration with ZK policy proofs across all regions",
+    results: ["400+ hours saved in Q1", "99.99% uptime achieved", "SOC2 audit passed in 2 weeks"],
+    gradient: "from-violet-500 to-purple-600",
+  },
+  {
+    company: "FinGuard Technologies",
+    logo: "FG",
+    challenge: "HIPAA compliance for AI-driven fraud detection across 10M+ transactions daily",
+    solution: "Implemented ALP's zero-trust security with end-to-end encryption and audit trails",
+    results: ["Zero security incidents", "90% faster compliance reporting", "Regulatory approval in 3 months"],
+    gradient: "from-emerald-500 to-teal-600",
+  },
+  {
+    company: "Quantum Dynamics",
+    logo: "QD",
+    challenge: "Orchestrating quantum-classical hybrid workflows across distributed teams",
+    solution: "Used ALP's federation mesh for multi-region quantum circuit composition",
+    results: ["2x faster circuit design", "80% reduction in coordination overhead", "3 new quantum products launched"],
+    gradient: "from-sky-500 to-cyan-600",
+  },
 ];
 
 const FOOTER_LINKS = {
@@ -362,7 +494,7 @@ export default function HomePage() {
 
             {/* Nav links */}
             <div className="hidden md:flex items-center gap-6">
-              {["Features", "Products", "Pricing", "Docs"].map((item) => (
+              {["Features", "Products", "Testing", "Pricing", "Docs"].map((item) => (
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
@@ -394,9 +526,6 @@ export default function HomePage() {
         <section className="relative overflow-hidden">
           {/* Background effects */}
           <div className="absolute inset-0">
-            {/* ── Interactive Lion SVG Background (tracks cursor & mouse movement) ── */}
-            <InteractiveLionSvg />
-
             {/* Existing ambient glow orbs */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-radial from-sky-500/8 via-indigo-500/4 to-transparent rounded-full blur-3xl pointer-events-none" />
             <div className="absolute top-40 left-20 w-72 h-72 bg-violet-500/5 rounded-full blur-3xl animate-pulse-slow pointer-events-none" />
@@ -434,6 +563,21 @@ export default function HomePage() {
                 Build, deploy, and govern AI-native applications with swarm orchestration, predictive policy,
                 and enterprise-grade security — all on a single protocol.
               </p>
+
+              {/* Live Metrics Ticker */}
+              <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 pt-2">
+                {[
+                  { value: "2M+", label: "API calls / day" },
+                  { value: "99.98%", label: "Uptime SLA" },
+                  { value: "14+", label: "Products" },
+                  { value: "50ms", label: "Avg latency" },
+                ].map((m) => (
+                  <div key={m.label} className="text-center">
+                    <div className="text-lg sm:text-xl font-black text-white">{m.value}</div>
+                    <div className="text-[10px] sm:text-xs text-slate-500 uppercase tracking-wider">{m.label}</div>
+                  </div>
+                ))}
+              </div>
 
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
@@ -569,16 +713,8 @@ export default function HomePage() {
                 {PRODUCT_SHOWCASE.map((product, i) => {
                   const PIcon = product.icon;
                   const isActive = activeProduct === i;
-                  return (
-                    <button
-                      key={product.name}
-                      onClick={() => setActiveProduct(i)}
-                      className={`w-full flex items-center gap-4 p-4 rounded-xl text-left transition-all duration-300 ${
-                        isActive
-                          ? "bg-slate-800/60 border border-slate-700/60 shadow-lg"
-                          : "hover:bg-slate-900/40 border border-transparent"
-                      }`}
-                    >
+                  const content = (
+                    <div className="w-full flex items-center gap-4 p-4 rounded-xl text-left transition-all duration-300">
                       <div
                         className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
                           isActive ? "bg-slate-900" : "bg-slate-800/40"
@@ -593,6 +729,26 @@ export default function HomePage() {
                         <p className="text-xs text-slate-500 mt-0.5 truncate">{product.desc}</p>
                       </div>
                       {isActive && <LuChevronRight className="w-4 h-4 text-sky-400 flex-shrink-0" />}
+                    </div>
+                  );
+                  if (product.link) {
+                    return (
+                      <Link key={product.name} to={product.link} className="block">
+                        {content}
+                      </Link>
+                    );
+                  }
+                  return (
+                    <button
+                      key={product.name}
+                      onClick={() => setActiveProduct(i)}
+                      className={`w-full flex items-center gap-4 transition-all duration-300 ${
+                        isActive
+                          ? "bg-slate-800/60 border border-slate-700/60 shadow-lg"
+                          : "hover:bg-slate-900/40 border border-transparent"
+                      }`}
+                    >
+                      {content}
                     </button>
                   );
                 })}
@@ -613,7 +769,7 @@ export default function HomePage() {
                         <p className="text-sm text-slate-400 mt-2 leading-relaxed">{p.desc}</p>
                       </div>
                       <div className="space-y-3">
-                        {["Real-time collaboration & live preview", "Integrated with swarm mesh protocol", "Enterprise RBAC & audit trails"].map((f) => (
+                        {(p.features || []).map((f) => (
                           <div key={f} className="flex items-center gap-2 text-sm text-slate-300">
                             <LuCheck className="w-4 h-4 text-emerald-400 flex-shrink-0" />
                             {f}
@@ -734,6 +890,87 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ═══════════════════ HOW IT WORKS ═══════════════════ */}
+        <section className="border-t border-slate-800/60">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-300 text-xs font-semibold mb-4">
+                <LuPlay className="w-3 h-3" />
+                Getting Started
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                Up and Running in Minutes
+              </h2>
+              <p className="mt-4 text-base text-slate-400 max-w-2xl mx-auto">
+                From zero to production deployment with just four simple steps.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {HOW_IT_WORKS.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.step} className="group relative bg-slate-900/50 border border-slate-800/80 rounded-2xl p-6 hover:border-sky-500/30 transition-all duration-300 hover:-translate-y-1">
+                    <div className="text-4xl font-black gradient-text mb-4 opacity-30 group-hover:opacity-60 transition-opacity">
+                      {item.step}
+                    </div>
+                    <div className="w-10 h-10 rounded-xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <Icon className="w-5 h-5 text-sky-400" />
+                    </div>
+                    <h3 className="text-base font-bold text-white mb-2">{item.title}</h3>
+                    <p className="text-sm text-slate-400 leading-relaxed">{item.desc}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════ SECURITY DEEP DIVE ═══════════════════ */}
+        <section className="border-t border-slate-800/60 bg-gradient-to-b from-slate-950 to-slate-900/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold mb-4">
+                <LuShieldCheck className="w-3 h-3" />
+                Security & Compliance
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                Enterprise-Grade Security Built In
+              </h2>
+              <p className="mt-4 text-base text-slate-400 max-w-2xl mx-auto">
+                Every layer of the stack is designed with security-first principles. From zero-knowledge proofs to end-to-end encryption.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              {SECURITY_FEATURES.map((feature) => {
+                const Icon = feature.icon;
+                return (
+                  <div
+                    key={feature.title}
+                    className="group relative bg-slate-900/50 border border-slate-800/80 rounded-2xl p-6 hover:border-slate-700/80 transition-all duration-300 hover:-translate-y-1"
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                      <Icon className={`w-6 h-6 ${feature.color}`} />
+                    </div>
+                    <h3 className="text-base font-bold text-white mb-2">{feature.title}</h3>
+                    <p className="text-sm text-slate-400 leading-relaxed">{feature.desc}</p>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Compliance badges */}
+            <div className="flex flex-wrap items-center justify-center gap-6 mt-12 pt-8 border-t border-slate-800/60">
+              {["SOC2 Type II", "HIPAA Compliant", "GDPR Ready", "ISO 27001", "PCI DSS"].map((badge) => (
+                <div key={badge} className="px-4 py-2 bg-slate-900/40 border border-slate-800/60 rounded-lg text-xs font-semibold text-slate-400">
+                  {badge}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* ═══════════════════ TESTIMONIALS ═══════════════════ */}
         <section className="border-t border-slate-800/60">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
@@ -766,6 +1003,58 @@ export default function HomePage() {
                     <div>
                       <div className="text-sm font-semibold text-white">{t.name}</div>
                       <div className="text-xs text-slate-500">{t.title}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════ CASE_STUDIES ═══════════════════ */}
+        <section className="border-t border-slate-800/60">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold mb-4">
+                <LuBookOpen className="w-3 h-3" />
+                Case Studies
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                Real Results from Real Teams
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {CASE_STUDIES.map((cs) => (
+                <div key={cs.company} className="bg-slate-900/50 border border-slate-800/60 rounded-2xl p-6 hover:border-slate-700/60 transition-all duration-300">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cs.gradient} flex items-center justify-center text-white font-bold text-sm`}>
+                      {cs.logo}
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-white">{cs.company}</div>
+                      <div className="text-xs text-slate-500">Enterprise customer</div>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <div className="text-xs font-semibold text-amber-400 uppercase tracking-wider mb-1">Challenge</div>
+                      <p className="text-sm text-slate-300 leading-relaxed">{cs.challenge}</p>
+                    </div>
+                    <div>
+                      <div className="text-xs font-semibold text-sky-400 uppercase tracking-wider mb-1">Solution</div>
+                      <p className="text-sm text-slate-300 leading-relaxed">{cs.solution}</p>
+                    </div>
+                    <div>
+                      <div className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">Results</div>
+                      <ul className="space-y-1">
+                        {cs.results.map((r) => (
+                          <li key={r} className="flex items-start gap-2 text-sm text-slate-300">
+                            <LuCheck className="w-3 h-3 text-emerald-400 mt-0.5 flex-shrink-0" />
+                            {r}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </div>
@@ -855,6 +1144,101 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ═══════════════════ TESTING PRODUCT ═══════════════════ */}
+        <section id="testing" className="border-t border-slate-800/60 bg-gradient-to-b from-slate-950 to-slate-900/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-semibold mb-4">
+                <LuActivity className="w-3 h-3" />
+                ALP Test
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                Ship Faster with Autonomous Testing
+              </h2>
+              <p className="mt-4 text-base text-slate-400 max-w-2xl mx-auto">
+                E2E browser automation, visual regression, and AI-generated tests in one CLI. Built for teams that ship on rhythm.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-6 hover:border-slate-700/80 transition-all duration-300 hover:-translate-y-1">
+                <div className="w-12 h-12 rounded-xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-center mb-4">
+                  <LuPlay className="w-6 h-6 text-emerald-400" />
+                </div>
+                <h3 className="text-base font-bold text-white mb-2">E2E Testing</h3>
+                <p className="text-sm text-slate-400 leading-relaxed">Playwright-class browser automation with multi-browser support, network interception, and trace viewer.</p>
+              </div>
+              <div className="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-6 hover:border-slate-700/80 transition-all duration-300 hover:-translate-y-1">
+                <div className="w-12 h-12 rounded-xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-center mb-4">
+                  <LuEye className="w-6 h-6 text-sky-400" />
+                </div>
+                <h3 className="text-base font-bold text-white mb-2">Visual Regression</h3>
+                <p className="text-sm text-slate-400 leading-relaxed">Pixel-level diff with perceptual matching, baseline management, and AI-assisted flake filtering.</p>
+              </div>
+              <div className="bg-slate-900/50 border border-slate-800/80 rounded-2xl p-6 hover:border-slate-700/80 transition-all duration-300 hover:-translate-y-1">
+                <div className="w-12 h-12 rounded-xl bg-slate-800/60 border border-slate-700/60 flex items-center justify-center mb-4">
+                  <LuSparkles className="w-6 h-6 text-amber-400" />
+                </div>
+                <h3 className="text-base font-bold text-white mb-2">AI Test Generation</h3>
+                <p className="text-sm text-slate-400 leading-relaxed">Generate tests from natural language or PR diffs. Self-healing selectors and flake prediction built in.</p>
+              </div>
+            </div>
+
+            <div className="mt-12 p-6 bg-slate-900/40 border border-slate-800/60 rounded-2xl">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                  <h3 className="text-lg font-bold text-white">Add ALP Test to your CI in minutes</h3>
+                  <p className="text-sm text-slate-400 mt-1">One CLI install. Existing Playwright workflows supported.</p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Link to="/products/alp-test" className="px-5 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:shadow-lg hover:shadow-sky-500/20 transition-all">
+                    Explore ALP Test
+                  </Link>
+                  <Link to="/login" className="text-slate-300 hover:text-white text-sm font-medium transition-colors">
+                    Get Started
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════ FEATURED: ALP TEST ═══════════════════ */}
+        <section className="border-t border-slate-800/60 bg-gradient-to-b from-slate-950 to-slate-900/30">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+              <div className="space-y-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs font-semibold">
+                  <LuActivity className="w-3 h-3" />
+                  New Product
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  ALP Test is now in beta
+                </h2>
+                <p className="text-sm text-slate-400 max-w-xl leading-relaxed">
+                  Playwright-class E2E, visual regression, and AI-generated tests in one CLI. Add it to your CI pipeline in minutes and ship with confidence.
+                </p>
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <Link to="/products/alp-test" className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-sm font-semibold rounded-xl hover:shadow-lg hover:shadow-sky-500/20 transition-all">
+                    View Product Details
+                    <LuArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                  <Link to="/login" className="text-slate-300 hover:text-white text-sm font-medium transition-colors">
+                    Get Started
+                  </Link>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3 md:w-96 w-full">
+                {["Playwright-class E2E", "Visual regression diff", "AI test generation", "Self-healing selectors"].map((feature) => (
+                  <div key={feature} className="bg-slate-950/60 border border-slate-800/80 rounded-xl px-3 py-2 text-xs text-slate-300">
+                    {feature}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* ═══════════════════ FAQ ═══════════════════ */}
         <section id="docs" className="border-t border-slate-800/60 bg-gradient-to-b from-slate-950 to-slate-900/30">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
@@ -870,6 +1254,56 @@ export default function HomePage() {
             <div className="divide-y-0">
               {FAQ_ITEMS.map((item) => (
                 <FaqItem key={item.q} item={item} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════ DEVELOPER EXPERIENCE ═══════════════════ */}
+        <section className="border-t border-slate-800/60">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-semibold mb-4">
+                <LuCode className="w-3 h-3" />
+                Developer Experience
+              </div>
+              <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                Built for Developers, by Developers
+              </h2>
+              <p className="mt-4 text-base text-slate-400 max-w-2xl mx-auto">
+                Clean APIs, powerful SDKs, and comprehensive documentation. Ship faster with tooling you'll actually enjoy using.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {CODE_EXAMPLES.map((example) => (
+                <div key={example.title} className="bg-slate-900/50 border border-slate-800/80 rounded-2xl overflow-hidden hover:border-slate-700/80 transition-all duration-300">
+                  <div className="flex items-center gap-2 px-4 py-2.5 border-b border-slate-800/60 bg-slate-900/40">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-rose-500/70" />
+                      <div className="w-3 h-3 rounded-full bg-amber-500/70" />
+                      <div className="w-3 h-3 rounded-full bg-emerald-500/70" />
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-500 ml-2">{example.title}</span>
+                  </div>
+                  <div className="p-4 font-mono text-sm space-y-2">
+                    <div className="text-slate-300 whitespace-pre-wrap break-all">{example.code}</div>
+                    {example.output && (
+                      <div className="pt-2 border-t border-slate-800/60">
+                        <div className="text-emerald-400/80 text-xs whitespace-pre-wrap break-all">{example.output}</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* SDK badges */}
+            <div className="flex flex-wrap items-center justify-center gap-4 mt-10">
+              {["Python SDK", "TypeScript SDK", "Go SDK", "Rust SDK", "Java SDK", "CLI Tools"].map((sdk) => (
+                <div key={sdk} className="px-4 py-2 bg-slate-900/40 border border-slate-800/60 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:border-sky-500/30 hover:bg-sky-500/5 transition-all duration-300 cursor-default">
+                  {sdk}
+                </div>
               ))}
             </div>
           </div>

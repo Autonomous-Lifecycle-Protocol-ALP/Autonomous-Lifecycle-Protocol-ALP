@@ -1,0 +1,15 @@
+{
+  "name": "@alp/test",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "test": "npm run test --workspaces --if-present",
+    "test:cli": "npm run test --workspace=@alp/test-cli",
+    "test:core": "npm run test --workspace=@alp/test-core",
+    "test:visual": "npm run test --workspace=@alp/test-visual",
+    "test:ai": "npm run test --workspace=@alp/test-ai"
+  }
+}

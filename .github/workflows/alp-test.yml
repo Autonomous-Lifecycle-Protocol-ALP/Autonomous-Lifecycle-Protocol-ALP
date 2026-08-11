@@ -1,0 +1,55 @@
+name: "ALP Test CI"
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "commercial/alp-test/**"
+      - ".github/workflows/alp-test.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "commercial/alp-test/**"
+      - ".github/workflows/alp-test.yml"
+
+jobs:
+  alp-test:
+    name: ALP Test Packages
+    runs-on: ubuntu-latest
+    env:
+      ROLLUP_DISABLE_NATIVE: "1"
+      ROLLDOWN_DISABLE_NATIVE: "1"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install dependencies
+        run: npm ci --no-optional
+
+      - name: Install Linux native bindings
+        run: npm install @rollup/rollup-linux-x64-gnu @rolldown/binding-linux-x64-gnu lightningcss-linux-x64-gnu --no-save
+
+      - name: Run ALP Test core tests
+        run: npm run test --workspace=@alp/test-core
+
+      - name: Run ALP Test visual tests
+        run: npm run test --workspace=@alp/test-visual
+
+      - name: Run ALP Test AI tests
+        run: npm run test --workspace=@alp/test-ai
+
+      - name: Run ALP Test CLI tests
+        run: npm run test --workspace=@alp/test-cli
+
+      - name: Install Playwright browsers
+        working-directory: commercial/alp-test/packages/test-cli
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Run Playwright example specs
+        working-directory: commercial/alp-test/packages/test-cli
+        run: npx playwright test tests/example.spec.ts tests/alp-test.smoke.spec.ts --reporter=line

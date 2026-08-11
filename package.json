@@ -13,7 +13,8 @@
     "docs-site",
     "mcp-server",
     "sham",
-    "commercial/*"
+    "commercial/*",
+    "commercial/alp-test"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",

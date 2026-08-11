@@ -1,0 +1,646 @@
+<testsuites id="" name="" tests="24" failures="0" skipped="0" errors="24" time="16.293502">
+<testsuite name="alp-test.smoke.spec.ts" timestamp="2026-08-11T05:22:24.153Z" hostname="chromium" tests="6" failures="0" skipped="0" time="18.225" errors="6">
+<testcase name="ALP Test smoke suite › homepage renders testing section" classname="alp-test.smoke.spec.ts" time="3.177">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-55486-age-renders-testing-section-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-55486-age-renders-testing-section-chromium\error-context.md]]
+]]>
+</system-out>
+<error message="page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/" type="Error">
+<![CDATA[  [chromium] › alp-test.smoke.spec.ts:4:3 › ALP Test smoke suite › homepage renders testing section 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/
+    Call log:
+      - navigating to "http://localhost:5174/", waiting until "load"
+
+
+      3 | test.describe("ALP Test smoke suite", () => {
+      4 |   test("homepage renders testing section", async ({ page }) => {
+    > 5 |     await page.goto("/");
+        |                ^
+      6 |     await expect(page.locator("#testing")).toBeVisible();
+      7 |     await expect(page.getByText("ALP Test")).toBeVisible();
+      8 |   });
+        at C:\Users\KGN\Desktop\new file sys\commercial\alp-test\packages\test-cli\tests\alp-test.smoke.spec.ts:5:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\alp-test.smoke-ALP-Test-sm-55486-age-renders-testing-section-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-55486-age-renders-testing-section-chromium\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › testing cards are visible" classname="alp-test.smoke.spec.ts" time="3.127">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-4cd0b-e-testing-cards-are-visible-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-4cd0b-e-testing-cards-are-visible-chromium\error-context.md]]
+]]>
+</system-out>
+<error message="page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/" type="Error">
+<![CDATA[  [chromium] › alp-test.smoke.spec.ts:10:3 › ALP Test smoke suite › testing cards are visible ──────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/
+    Call log:
+      - navigating to "http://localhost:5174/", waiting until "load"
+
+
+       9 |
+      10 |   test("testing cards are visible", async ({ page }) => {
+    > 11 |     await page.goto("/");
+         |                ^
+      12 |     await expect(page.getByText("E2E Testing")).toBeVisible();
+      13 |     await expect(page.getByText("Visual Regression")).toBeVisible();
+      14 |     await expect(page.getByText("AI Test Generation")).toBeVisible();
+        at C:\Users\KGN\Desktop\new file sys\commercial\alp-test\packages\test-cli\tests\alp-test.smoke.spec.ts:11:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\alp-test.smoke-ALP-Test-sm-4cd0b-e-testing-cards-are-visible-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-4cd0b-e-testing-cards-are-visible-chromium\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › featured ALP Test card exists with CTAs" classname="alp-test.smoke.spec.ts" time="3.128">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-daf5e--Test-card-exists-with-CTAs-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-daf5e--Test-card-exists-with-CTAs-chromium\error-context.md]]
+]]>
+</system-out>
+<error message="page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/" type="Error">
+<![CDATA[  [chromium] › alp-test.smoke.spec.ts:17:3 › ALP Test smoke suite › featured ALP Test card exists with CTAs 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/
+    Call log:
+      - navigating to "http://localhost:5174/", waiting until "load"
+
+
+      16 |
+      17 |   test("featured ALP Test card exists with CTAs", async ({ page }) => {
+    > 18 |     await page.goto("/");
+         |                ^
+      19 |     await expect(page.getByText("ALP Test is now in beta")).toBeVisible();
+      20 |     await expect(page.getByText("View Product Details")).toBeVisible();
+      21 |     await expect(page.getByText("Get Started")).toBeVisible();
+        at C:\Users\KGN\Desktop\new file sys\commercial\alp-test\packages\test-cli\tests\alp-test.smoke.spec.ts:18:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\alp-test.smoke-ALP-Test-sm-daf5e--Test-card-exists-with-CTAs-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-daf5e--Test-card-exists-with-CTAs-chromium\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › product showcase links to ALP Test detail page" classname="alp-test.smoke.spec.ts" time="3.058">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-57ba0-nks-to-ALP-Test-detail-page-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-57ba0-nks-to-ALP-Test-detail-page-chromium\error-context.md]]
+]]>
+</system-out>
+<error message="page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/" type="Error">
+<![CDATA[  [chromium] › alp-test.smoke.spec.ts:24:3 › ALP Test smoke suite › product showcase links to ALP Test detail page 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/
+    Call log:
+      - navigating to "http://localhost:5174/", waiting until "load"
+
+
+      23 |
+      24 |   test("product showcase links to ALP Test detail page", async ({ page }) => {
+    > 25 |     await page.goto("/");
+         |                ^
+      26 |     const alpTestCard = page.getByText("ALP Test").first();
+      27 |     await expect(alpTestCard).toBeVisible();
+      28 |   });
+        at C:\Users\KGN\Desktop\new file sys\commercial\alp-test\packages\test-cli\tests\alp-test.smoke.spec.ts:25:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\alp-test.smoke-ALP-Test-sm-57ba0-nks-to-ALP-Test-detail-page-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-57ba0-nks-to-ALP-Test-detail-page-chromium\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › navigation includes Testing link" classname="alp-test.smoke.spec.ts" time="2.873">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-bfbc7-ation-includes-Testing-link-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-bfbc7-ation-includes-Testing-link-chromium\error-context.md]]
+]]>
+</system-out>
+<error message="page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/" type="Error">
+<![CDATA[  [chromium] › alp-test.smoke.spec.ts:30:3 › ALP Test smoke suite › navigation includes Testing link 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/
+    Call log:
+      - navigating to "http://localhost:5174/", waiting until "load"
+
+
+      29 |
+      30 |   test("navigation includes Testing link", async ({ page }) => {
+    > 31 |     await page.goto("/");
+         |                ^
+      32 |     const testingLink = page.getByRole("link", { name: /Testing/i });
+      33 |     await expect(testingLink).toBeVisible();
+      34 |   });
+        at C:\Users\KGN\Desktop\new file sys\commercial\alp-test\packages\test-cli\tests\alp-test.smoke.spec.ts:31:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\alp-test.smoke-ALP-Test-sm-bfbc7-ation-includes-Testing-link-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-bfbc7-ation-includes-Testing-link-chromium\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › feature chips render in featured card" classname="alp-test.smoke.spec.ts" time="2.862">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-04320-ips-render-in-featured-card-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-04320-ips-render-in-featured-card-chromium\error-context.md]]
+]]>
+</system-out>
+<error message="page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/" type="Error">
+<![CDATA[  [chromium] › alp-test.smoke.spec.ts:36:3 › ALP Test smoke suite › feature chips render in featured card 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/
+    Call log:
+      - navigating to "http://localhost:5174/", waiting until "load"
+
+
+      35 |
+      36 |   test("feature chips render in featured card", async ({ page }) => {
+    > 37 |     await page.goto("/");
+         |                ^
+      38 |     await expect(page.getByText("Playwright-class E2E")).toBeVisible();
+      39 |     await expect(page.getByText("Visual regression diff")).toBeVisible();
+      40 |     await expect(page.getByText("AI test generation")).toBeVisible();
+        at C:\Users\KGN\Desktop\new file sys\commercial\alp-test\packages\test-cli\tests\alp-test.smoke.spec.ts:37:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\alp-test.smoke-ALP-Test-sm-04320-ips-render-in-featured-card-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-04320-ips-render-in-featured-card-chromium\error-context.md
+]]>
+</error>
+</testcase>
+</testsuite>
+<testsuite name="example.spec.ts" timestamp="2026-08-11T05:22:24.153Z" hostname="chromium" tests="2" failures="0" skipped="0" time="5.461" errors="2">
+<testcase name="homepage loads with expected title" classname="example.spec.ts" time="2.73">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|example-homepage-loads-with-expected-title-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|example-homepage-loads-with-expected-title-chromium\error-context.md]]
+]]>
+</system-out>
+<error message="page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/" type="Error">
+<![CDATA[  [chromium] › example.spec.ts:3:1 › homepage loads with expected title ────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/
+    Call log:
+      - navigating to "http://localhost:5174/", waiting until "load"
+
+
+      2 |
+      3 | test("homepage loads with expected title", async ({ page }) => {
+    > 4 |   await page.goto("/");
+        |              ^
+      5 |   await expect(page).toHaveTitle(/ALP/);
+      6 |   await expect(page.getByRole("heading", { name: /ALP/i })).toBeVisible();
+      7 | });
+        at C:\Users\KGN\Desktop\new file sys\commercial\alp-test\packages\test-cli\tests\example.spec.ts:4:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\example-homepage-loads-with-expected-title-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\example-homepage-loads-with-expected-title-chromium\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="navigation contains Testing link" classname="example.spec.ts" time="2.731">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|example-navigation-contains-Testing-link-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|example-navigation-contains-Testing-link-chromium\error-context.md]]
+]]>
+</system-out>
+<error message="page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/" type="Error">
+<![CDATA[  [chromium] › example.spec.ts:9:1 › navigation contains Testing link ──────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:5174/
+    Call log:
+      - navigating to "http://localhost:5174/", waiting until "load"
+
+
+       8 |
+       9 | test("navigation contains Testing link", async ({ page }) => {
+    > 10 |   await page.goto("/");
+         |              ^
+      11 |   const testingLink = page.getByRole("link", { name: /Testing/i });
+      12 |   await expect(testingLink).toBeVisible();
+      13 | });
+        at C:\Users\KGN\Desktop\new file sys\commercial\alp-test\packages\test-cli\tests\example.spec.ts:10:14
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\example-navigation-contains-Testing-link-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\example-navigation-contains-Testing-link-chromium\error-context.md
+]]>
+</error>
+</testcase>
+</testsuite>
+<testsuite name="alp-test.smoke.spec.ts" timestamp="2026-08-11T05:22:24.153Z" hostname="firefox" tests="6" failures="0" skipped="0" time="0.015" errors="6">
+<testcase name="ALP Test smoke suite › homepage renders testing section" classname="alp-test.smoke.spec.ts" time="0.003">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-55486-age-renders-testing-section-firefox\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe" type="Error">
+<![CDATA[  [firefox] › alp-test.smoke.spec.ts:4:3 › ALP Test smoke suite › homepage renders testing section ─
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-55486-age-renders-testing-section-firefox\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › testing cards are visible" classname="alp-test.smoke.spec.ts" time="0.003">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-4cd0b-e-testing-cards-are-visible-firefox\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe" type="Error">
+<![CDATA[  [firefox] › alp-test.smoke.spec.ts:10:3 › ALP Test smoke suite › testing cards are visible ───────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-4cd0b-e-testing-cards-are-visible-firefox\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › featured ALP Test card exists with CTAs" classname="alp-test.smoke.spec.ts" time="0.003">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-daf5e--Test-card-exists-with-CTAs-firefox\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe" type="Error">
+<![CDATA[  [firefox] › alp-test.smoke.spec.ts:17:3 › ALP Test smoke suite › featured ALP Test card exists with CTAs 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-daf5e--Test-card-exists-with-CTAs-firefox\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › product showcase links to ALP Test detail page" classname="alp-test.smoke.spec.ts" time="0.002">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-57ba0-nks-to-ALP-Test-detail-page-firefox\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe" type="Error">
+<![CDATA[  [firefox] › alp-test.smoke.spec.ts:24:3 › ALP Test smoke suite › product showcase links to ALP Test detail page 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-57ba0-nks-to-ALP-Test-detail-page-firefox\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › navigation includes Testing link" classname="alp-test.smoke.spec.ts" time="0.002">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-bfbc7-ation-includes-Testing-link-firefox\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe" type="Error">
+<![CDATA[  [firefox] › alp-test.smoke.spec.ts:30:3 › ALP Test smoke suite › navigation includes Testing link 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-bfbc7-ation-includes-Testing-link-firefox\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › feature chips render in featured card" classname="alp-test.smoke.spec.ts" time="0.002">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-04320-ips-render-in-featured-card-firefox\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe" type="Error">
+<![CDATA[  [firefox] › alp-test.smoke.spec.ts:36:3 › ALP Test smoke suite › feature chips render in featured card 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-04320-ips-render-in-featured-card-firefox\error-context.md
+]]>
+</error>
+</testcase>
+</testsuite>
+<testsuite name="example.spec.ts" timestamp="2026-08-11T05:22:24.153Z" hostname="firefox" tests="2" failures="0" skipped="0" time="0.005" errors="2">
+<testcase name="homepage loads with expected title" classname="example.spec.ts" time="0.002">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|example-homepage-loads-with-expected-title-firefox\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe" type="Error">
+<![CDATA[  [firefox] › example.spec.ts:3:1 › homepage loads with expected title ─────────────────────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\example-homepage-loads-with-expected-title-firefox\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="navigation contains Testing link" classname="example.spec.ts" time="0.003">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|example-navigation-contains-Testing-link-firefox\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe" type="Error">
+<![CDATA[  [firefox] › example.spec.ts:9:1 › navigation contains Testing link ───────────────────────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\firefox-1538\firefox\firefox.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\example-navigation-contains-Testing-link-firefox\error-context.md
+]]>
+</error>
+</testcase>
+</testsuite>
+<testsuite name="alp-test.smoke.spec.ts" timestamp="2026-08-11T05:22:24.153Z" hostname="webkit" tests="6" failures="0" skipped="0" time="0.016" errors="6">
+<testcase name="ALP Test smoke suite › homepage renders testing section" classname="alp-test.smoke.spec.ts" time="0.003">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-55486-age-renders-testing-section-webkit\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe" type="Error">
+<![CDATA[  [webkit] › alp-test.smoke.spec.ts:4:3 › ALP Test smoke suite › homepage renders testing section ──
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-55486-age-renders-testing-section-webkit\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › testing cards are visible" classname="alp-test.smoke.spec.ts" time="0.002">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-4cd0b-e-testing-cards-are-visible-webkit\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe" type="Error">
+<![CDATA[  [webkit] › alp-test.smoke.spec.ts:10:3 › ALP Test smoke suite › testing cards are visible ────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-4cd0b-e-testing-cards-are-visible-webkit\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › featured ALP Test card exists with CTAs" classname="alp-test.smoke.spec.ts" time="0.003">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-daf5e--Test-card-exists-with-CTAs-webkit\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe" type="Error">
+<![CDATA[  [webkit] › alp-test.smoke.spec.ts:17:3 › ALP Test smoke suite › featured ALP Test card exists with CTAs 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-daf5e--Test-card-exists-with-CTAs-webkit\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › product showcase links to ALP Test detail page" classname="alp-test.smoke.spec.ts" time="0.003">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-57ba0-nks-to-ALP-Test-detail-page-webkit\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe" type="Error">
+<![CDATA[  [webkit] › alp-test.smoke.spec.ts:24:3 › ALP Test smoke suite › product showcase links to ALP Test detail page 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-57ba0-nks-to-ALP-Test-detail-page-webkit\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › navigation includes Testing link" classname="alp-test.smoke.spec.ts" time="0.003">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-bfbc7-ation-includes-Testing-link-webkit\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe" type="Error">
+<![CDATA[  [webkit] › alp-test.smoke.spec.ts:30:3 › ALP Test smoke suite › navigation includes Testing link ─
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-bfbc7-ation-includes-Testing-link-webkit\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="ALP Test smoke suite › feature chips render in featured card" classname="alp-test.smoke.spec.ts" time="0.002">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|alp-test.smoke-ALP-Test-sm-04320-ips-render-in-featured-card-webkit\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe" type="Error">
+<![CDATA[  [webkit] › alp-test.smoke.spec.ts:36:3 › ALP Test smoke suite › feature chips render in featured card 
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\alp-test.smoke-ALP-Test-sm-04320-ips-render-in-featured-card-webkit\error-context.md
+]]>
+</error>
+</testcase>
+</testsuite>
+<testsuite name="example.spec.ts" timestamp="2026-08-11T05:22:24.153Z" hostname="webkit" tests="2" failures="0" skipped="0" time="0.01" errors="2">
+<testcase name="homepage loads with expected title" classname="example.spec.ts" time="0.007">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|example-homepage-loads-with-expected-title-webkit\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe" type="Error">
+<![CDATA[  [webkit] › example.spec.ts:3:1 › homepage loads with expected title ──────────────────────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\example-homepage-loads-with-expected-title-webkit\error-context.md
+]]>
+</error>
+</testcase>
+<testcase name="navigation contains Testing link" classname="example.spec.ts" time="0.003">
+<system-out>
+<![CDATA[
+[[ATTACHMENT|example-navigation-contains-Testing-link-webkit\error-context.md]]
+]]>
+</system-out>
+<error message="browserType.launch: Executable doesn&apos;t exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe" type="Error">
+<![CDATA[  [webkit] › example.spec.ts:9:1 › navigation contains Testing link ────────────────────────────────
+
+    Error: browserType.launch: Executable doesn't exist at C:\Users\KGN\AppData\Local\ms-playwright\webkit-2336\Playwright.exe
+    ╔════════════════════════════════════════════════════════════╗
+    ║ Looks like Playwright was just installed or updated.       ║
+    ║ Please run the following command to download new browsers: ║
+    ║                                                            ║
+    ║     npx playwright install                                 ║
+    ║                                                            ║
+    ║ <3 Playwright Team                                         ║
+    ╚════════════════════════════════════════════════════════════╝
+
+    Error Context: ..\test-results\example-navigation-contains-Testing-link-webkit\error-context.md
+]]>
+</error>
+</testcase>
+</testsuite>
+</testsuites>

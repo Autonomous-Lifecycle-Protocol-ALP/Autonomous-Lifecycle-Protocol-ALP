@@ -171,9 +171,27 @@ const PRODUCTS = [
     features: ["SPIFFE/SPIRE agent identities", "Mutual TLS between all components", "Micro-segmentation via @contract", "Continuous authentication (15-min re-auth)", "OPA policy engine integration", "Audit trail with W3C Verifiable Credentials"],
     integration: "Enforces @contract as network policy; integrates @policy for authorization; @vault for certificate management; @timeline for audit logs; @analytics for trust metrics",
   },
+  {
+    id: "alp-test",
+    name: "ALP Test",
+    tagline: "Autonomous testing for autonomous software",
+    category: "Testing",
+    tier: "Pro $99/mo • Enterprise Custom",
+    status: "Beta",
+    description: "Playwright-class E2E browser automation, visual regression with baseline management, and AI-powered test generation in one protocol-native CLI. Built for teams that ship on rhythm and need CI-native quality gates without switching tools.",
+    features: [
+      "Playwright-class multi-browser E2E",
+      "Visual regression with baseline branching",
+      "AI test generation from prompts and PR diffs",
+      "Self-healing selectors with fallback strategies",
+      "JUnit, HTML, and JSON reporters",
+      "Git-friendly baseline storage"
+    ],
+    integration: "Extends @workflow and @contract for quality gates; reads @analytics for flake detection; integrates @policy for test governance and access control",
+  },
 ];
 
-const CATEGORIES = ["All", "SaaS", "Platform", "Security", "DevOps", "Analytics", "Agent Persona", "EDA Platform"];
+const CATEGORIES = ["All", "SaaS", "Platform", "Security", "DevOps", "Analytics", "Agent Persona", "EDA Platform", "Testing"];
 
 export { PRODUCTS };
 

@@ -96,7 +96,8 @@ export default defineConfig({
               { text: 'ALP Chip Design Studio', link: '/products/chip-design-studio' },
               { text: 'ALP SOC Sentinel AI', link: '/products/soc-sentinel' },
               { text: 'ALP Threat Intelligence Engine', link: '/products/threat-intel' },
-              { text: 'ALP Zero Trust Orchestrator', link: '/products/zero-trust' }
+              { text: 'ALP Zero Trust Orchestrator', link: '/products/zero-trust' },
+              { text: 'ALP Test', link: '/products/alp-test' }
             ]
           }
         ]
@@ -167,7 +168,8 @@ export default defineConfig({
               { text: 'ALP Chip Design Studio', link: '/products/chip-design-studio' },
               { text: 'ALP SOC Sentinel AI', link: '/products/soc-sentinel' },
               { text: 'ALP Threat Intelligence Engine', link: '/products/threat-intel' },
-              { text: 'ALP Zero Trust Orchestrator', link: '/products/zero-trust' }
+              { text: 'ALP Zero Trust Orchestrator', link: '/products/zero-trust' },
+              { text: 'ALP Test', link: '/products/alp-test' }
             ]
           }
         ]
