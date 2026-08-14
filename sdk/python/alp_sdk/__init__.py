@@ -2,17 +2,39 @@
 
 __version__ = "80.0.0"
 
+# ──────────────────────────── Core ────────────────────────────
 from .models import AlpObject
 from .error import AlpError, SyntaxError, IndentationError, ValidationError, DirectiveError
 from .reader import load_workspace, AlpReader, AlpParser
 from .validator import validate_object, verify_workspace
-from .analytics import compute_analytics, PredictiveEstimator
-from .planner import GoalDecomposer, Planner, Reflector, Plan, PlanNode, Lesson, ReasoningTracer, ReasoningChain, ReasoningStep, CollabPlanner, AgentContribution, CollabPlanResult, ImprovementProposal
+
+# ──────────────────────────── Planning & Negotiation ────────────────────────────
+from .planner import (
+    GoalDecomposer,
+    Planner,
+    Reflector,
+    Plan,
+    PlanNode,
+    Lesson,
+    ReasoningTracer,
+    ReasoningChain,
+    ReasoningStep,
+    CollabPlanner,
+    AgentContribution,
+    CollabPlanResult,
+    ImprovementProposal,
+)
 from .negotiate import Negotiator, ReputationStore, TeamComposer, Offer, ContractDraft, NegotiationResult, Capability
+
+# ──────────────────────────── Provenance & Tracing ────────────────────────────
 from .provenance import TraceSigner, ProvenanceStore, AuditLedger, VerifiableCredential
 from .trace import TraceEntry, TraceStore, MerkleTree, verify_trace_integrity
+
+# ──────────────────────────── Graph & Memory ────────────────────────────
 from .graph import AlpGraph, GraphNode, GraphEdge
 from .memory import MemoryStore, MemoryEntry, MemoryQuery, MemoryGraph, MemoryConsolidator, MemoryConsolidation
+
+# ──────────────────────────── Policy & Governance ────────────────────────────
 from .policy import (
     PolicyEngine,
     PolicyDecision,
@@ -30,44 +52,37 @@ from .policy import (
     PolicyLearner,
     PolicyContext,
 )
-from .predictive_policy import (
-    PredictivePolicyEngine,
-    AnomalyScore,
-    BaselineProfile,
+from .predictive_policy import PredictivePolicyEngine, AnomalyScore, BaselineProfile
+from .governance import (
+    PolicyBallot,
+    GovernanceEngine,
+    BallotRecord,
+    GovernanceReport,
+    Vote,
+    VoteValue,
 )
-from .schedule import TimelineEngine, TimelineResult
-from .contract import ContractEngine, ContractResult, ContractViolation, ContractObject
-from .vault import Vault, SealedSecret, VaultAuditEntry
-from .telemetry import TelemetryEngine, Span
-from .zk_proof import ZKProofEngine, ZKProof
-from .vector_store import VectorStoreEngine, VectorEntry
-from .did_identity import DIDIdentityEngine, DIDDocument
-from .crdt_sync import CRDTSyncEngine, CRDTState
-from .self_healing import SelfHealingEngine, ASTDiagnosis
-from .formal_verification import FormalVerificationEngine, Transition
-from .asset_context import AssetContextEngine, AssetBundle
-from .cost_budget import CostBudgetEngine, CostBudget
-from .execution_quota import ExecutionQuotaEngine, ExecutionQuota
-from .sandbox_env import SandboxEnvEngine, SandboxInstance
-from .tenant_mesh import TenantMeshEngine, TenantMesh
-from .arch_decomposer import ArchDecomposerEngine, MicroservicePlan
-from .edge_model import EdgeModelEngine, EdgeModelConfig
-from .code_index import CodeIndexEngine, CodeIndexConfig
-from .eval_suite import EvalSuiteEngine, EvalSuiteConfig
-from .prompt_optimizer import PromptOptimizerEngine, PromptOptimizerConfig
-from .consensus_vote import ConsensusVoteEngine, ConsensusVoteConfig
-from .code_transform import CodeTransformEngine, CodeTransformConfig
-from .event_mesh import EventMeshEngine, EventMeshConfig
-from .swarm_marketplace import SwarmMarketplaceEngine, SkillListing
-from .swarm_intelligence import (
-    SwarmSignal,
-    EmergentPattern,
-    AgentSpecialization,
-    EmergentBehaviorDetector,
-    RoleSpecializer,
-    CollectiveVote,
-    CollectiveDecision,
-    CollectiveDecisionMaker,
+from .policy_federation import (
+    PolicyFederation,
+    PolicySource,
+    FederatedDecision,
+    FederatedTrustRoot,
+)
+
+# ──────────────────────────── Execution & Runtime ────────────────────────────
+from .engine import (
+    LoopEngine,
+    LoopConfig,
+    LoopCheckpoint,
+    LoopEvent,
+    WorkflowEngine,
+    RetryStrategy,
+    StepResult,
+    ContextEngine,
+    VerificationEngine,
+    VerificationResult,
+    VerificationReport,
+    EngineError,
+    LOOP_STAGES,
 )
 from .alpel import (
     AlpelError,
@@ -84,32 +99,12 @@ from .workspace import (
     ProjectEntry,
     CrossProjectReference,
 )
-from .engine import (
-    LoopEngine,
-    LoopConfig,
-    LoopCheckpoint,
-    LoopEvent,
-    WorkflowEngine,
-    RetryStrategy,
-    StepResult,
-    ContextEngine,
-    VerificationEngine,
-    VerificationResult,
-    VerificationReport,
-    EngineError,
-    LOOP_STAGES,
-)
-from .plugin import PluginResolver, CustomType, TypeProperty, PluginInfo
-from .registry import (
-    RegistryClient,
-    load_alprc,
-    semver_cmp,
-    satisfies,
-    verify_version_signature,
-    VersionConflictError,
-    parse_registry_alias,
-    resolve_dependency_graph,
-)
+from .schedule import TimelineEngine, TimelineResult
+from .contract import ContractEngine, ContractResult, ContractViolation, ContractObject
+from .execution_quota import ExecutionQuotaEngine, ExecutionQuota
+from .sandbox_env import SandboxEnvEngine, SandboxInstance
+
+# ──────────────────────────── Security & Identity ────────────────────────────
 from .signing import (
     Signature,
     fingerprint,
@@ -118,42 +113,6 @@ from .signing import (
     sign,
     verify,
     resolve_public_key,
-)
-from .author import WorkflowAuthor, AuthoringError
-from .snapshot import SnapshotEngine, WorkspaceSnapshot, SnapshotDiff
-from .diff_engine import DiffEngine, DiffResult, DiffEntry
-from .refactor_engine import RefactorEngine, RenameResult
-from .copy_engine import CopyEngine, CopyResult
-from .stats_engine import StatsEngine, WorkspaceStats, FileStats
-from .template_engine import TemplateEngine
-from .move_engine import MoveEngine, MoveResult
-from .dependency_engine import DependencyEngine, DependencyResult
-from .search_engine import SearchEngine, SearchResult
-from .inspect_engine import InspectEngine, InspectResult
-from .delete_engine import DeleteEngine, DeleteResult
-from .compliance import run_suite, HarnessResult
-from .observ import (
-    RuntimeLog,
-    StateStore,
-    MeteringLog,
-    CostAnalyzer,
-    RUNTIME_EVENT_TYPES,
-    runtime_dir,
-    runtime_log_path,
-)
-from .cost_optimizer import (
-    CostOptimizer,
-    CostEstimator,
-    OptimizationPlan,
-    OptimizationSuggestion,
-    AutoScaleRecommendation,
-)
-from .bridge import (
-    ProtocolBridge,
-    BridgeExportResult,
-    BridgeImportResult,
-    BridgeError,
-    SUPPORTED_FORMATS,
 )
 from .identity import (
     AgentIdentity,
@@ -180,14 +139,6 @@ from .tenant import (
     TenantIsolationError,
     create_tenant_key,
 )
-from .governance import (
-    PolicyBallot,
-    GovernanceEngine,
-    BallotRecord,
-    GovernanceReport,
-    Vote,
-    VoteValue,
-)
 from .domain_trust import (
     DomainTrustAnchor,
     DomainTrustManager,
@@ -196,27 +147,70 @@ from .domain_trust import (
     TrustStatus,
     create_domain_keypair,
 )
-from .debug import (
-    EngineSnapshot,
-    SnapshotStore,
-    DiffResult,
-    DebugSession,
-)
-from .policy_federation import (
-    PolicyFederation,
-    PolicySource,
-    FederatedDecision,
-    FederatedTrustRoot,
-)
-from .anomaly import AnomalyDetector
+from .zk_proof import ZKProofEngine, ZKProof
+from .did_identity import DIDIdentityEngine, DIDDocument
+
+# ──────────────────────────── Storage & Sync ────────────────────────────
+from .vault import Vault, SealedSecret, VaultAuditEntry
+from .vector_store import VectorStoreEngine, VectorEntry
+from .crdt_sync import CRDTSyncEngine, CRDTState
+from .crdt import LWWRegister, ORSet, EdgeRuntime
 from .event_store import Event, EventStore, EVENT_SCHEMA_VERSION
-from .visualize import (
-    WorkflowVisualizer,
-    ParsedWorkflow,
-    WorkflowStep,
-    DiagramFormat,
-    read_workflow,
+from .memory_mesh import (
+    MemoryMeshEngine,
+    MemoryNode,
+    MemoryQueryResult,
+    MemoryMeshStats,
 )
+
+# ──────────────────────────── Intelligence & AI ────────────────────────────
+from .analytics import compute_analytics, PredictiveEstimator
+from .anomaly import AnomalyDetector
+from .swarm_intelligence import (
+    SwarmSignal,
+    EmergentPattern,
+    AgentSpecialization,
+    EmergentBehaviorDetector,
+    RoleSpecializer,
+    CollectiveVote,
+    CollectiveDecision,
+    CollectiveDecisionMaker,
+)
+from .intelligence import (
+    IntelligenceEngine,
+    SmartSuggestion,
+    DiagnosisResult,
+    PredictionResult,
+    ReviewFinding,
+)
+
+# ──────────────────────────── Resilience & Healing ────────────────────────────
+from .self_healing import SelfHealingEngine, ASTDiagnosis
+from .resilience import (
+    ResilientSwarm,
+    ResilienceReport,
+    AgentNode,
+    TaskAssignment,
+    QuorumConsensus,
+    AgentStatus,
+)
+from .healing import HealingEngine, HealingReport, HealingAction, HealingContext, HealingStrategy, CircuitBreaker
+
+# ──────────────────────────── Engineering Tools ────────────────────────────
+from .refactor_engine import RefactorEngine, RenameResult
+from .copy_engine import CopyEngine, CopyResult
+from .move_engine import MoveEngine, MoveResult
+from .dependency_engine import DependencyEngine, DependencyResult
+from .search_engine import SearchEngine, SearchResult
+from .inspect_engine import InspectEngine, InspectResult
+from .delete_engine import DeleteEngine, DeleteResult
+from .format_engine import FormatEngine
+from .code_transform import CodeTransformEngine, CodeTransformConfig
+from .code_index import CodeIndexEngine, CodeIndexConfig
+from .edge_model import EdgeModelEngine, EdgeModelConfig
+from .arch_decomposer import ArchDecomposerEngine, MicroservicePlan
+
+# ──────────────────────────── Formal Methods ────────────────────────────
 from .formal import (
     PolicyModelChecker,
     ContractInvariant,
@@ -226,18 +220,102 @@ from .formal import (
     ZKPolicyProof,
     ComplianceCertifier,
 )
-from .autonomy import WorkflowMutator, AdaptiveEngine, AutonomyController, EditProposal
-from .healing import HealingEngine, HealingReport, HealingAction, HealingContext, HealingStrategy, CircuitBreaker
-from .crdt import LWWRegister, ORSet, EdgeRuntime
-from .resilience import (
-    ResilientSwarm,
-    ResilienceReport,
-    AgentNode,
-    TaskAssignment,
-    QuorumConsensus,
-    AgentStatus,
+from .formal_verification import FormalVerificationEngine, Transition
+from .visualize import (
+    WorkflowVisualizer,
+    ParsedWorkflow,
+    WorkflowStep,
+    DiagramFormat,
+    read_workflow,
 )
-from .migration import MigrationEngine, UpgradeManifest, MigrationRecord, MigrationStatus, UpgradeStrategy
+
+# ──────────────────────────── Observability & Cost ────────────────────────────
+from .telemetry import TelemetryEngine, Span
+from .observ import (
+    RuntimeLog,
+    StateStore,
+    MeteringLog,
+    CostAnalyzer,
+    RUNTIME_EVENT_TYPES,
+    runtime_dir,
+    runtime_log_path,
+)
+from .cost_optimizer import (
+    CostOptimizer,
+    CostEstimator,
+    OptimizationPlan,
+    OptimizationSuggestion,
+    AutoScaleRecommendation,
+)
+from .cost_budget import CostBudgetEngine, CostBudget
+
+# ──────────────────────────── Bridges & Extensions ────────────────────────────
+from .bridge import (
+    ProtocolBridge,
+    BridgeExportResult,
+    BridgeImportResult,
+    BridgeError,
+    SUPPORTED_FORMATS,
+)
+from .plugin import PluginResolver, CustomType, TypeProperty, PluginInfo
+from .registry import (
+    RegistryClient,
+    load_alprc,
+    semver_cmp,
+    satisfies,
+    verify_version_signature,
+    VersionConflictError,
+    parse_registry_alias,
+    resolve_dependency_graph,
+)
+
+# ──────────────────────────── Debug & Snapshots ────────────────────────────
+from .debug import (
+    EngineSnapshot,
+    SnapshotStore,
+    DiffResult as DebugDiffResult,
+    DebugSession,
+)
+from .snapshot import SnapshotEngine, WorkspaceSnapshot, SnapshotDiff
+from .diff_engine import DiffEngine, DiffResult, DiffEntry
+
+# ──────────────────────────── Federation & Mesh ────────────────────────────
+from .event_mesh import EventMeshEngine, EventMeshConfig
+from .tenant_mesh import TenantMeshEngine, TenantMesh
+from .swarm_marketplace import SwarmMarketplaceEngine, SkillListing
+from .consensus_vote import ConsensusVoteEngine, ConsensusVoteConfig
+
+# ──────────────────────────── Quality & Eval ────────────────────────────
+from .eval_suite import EvalSuiteEngine, EvalSuiteConfig
+from .test_runner import (
+    TestRunner,
+    TestCase,
+    TestSuiteResult,
+    CoverageReport,
+)
+from .test_engine import TestEngine, TestSuiteResult
+from .linter import (
+    Linter,
+    LintRule,
+    LintDiagnostic,
+)
+from .formatter import (
+    AlpFormatter,
+    FormatOptions,
+    FormatResult,
+)
+from .compliance import run_suite, HarnessResult
+
+# ──────────────────────────── Specialized Engines ────────────────────────────
+from .asset_context import AssetContextEngine, AssetBundle
+from .archive_engine import ArchiveEngine
+from .deduplicate_engine import DeduplicateEngine
+from .graph_engine import GraphEngine
+from .linter_engine import LintEngine
+from .promote_engine import PromoteEngine
+from .status_engine import StatusEngine
+from .visualize_engine import VisualizeEngine
+from .wasm_ast import WasmAstEvaluator, ASTNode, ASTDiagnostic, ASTEvaluationResult
 from .macro import MacroEngine, MacroDefinition
 from .collaboration import (
     CollaborationEngine,
@@ -252,61 +330,39 @@ from .collaboration import (
     LiveShareSession,
     AuditEvent,
 )
-from .memory_mesh import (
-    MemoryMeshEngine,
-    MemoryNode,
-    MemoryQueryResult,
-    MemoryMeshStats,
-)
-from .test_runner import (
-    TestRunner,
-    TestCase,
-    TestSuiteResult,
-    CoverageReport,
-)
-from .linter import (
-    Linter,
-    LintRule,
-    LintDiagnostic,
-)
-from .formatter import (
-    AlpFormatter,
-    FormatOptions,
-    FormatResult,
-)
-from .archive_engine import ArchiveEngine
-from .deduplicate_engine import DeduplicateEngine
-from .format_engine import FormatEngine
-from .graph_engine import GraphEngine
-from .linter_engine import LintEngine
-from .promote_engine import PromoteEngine
-from .status_engine import StatusEngine
-from .test_engine import TestEngine, TestSuiteResult
-from .visualize_engine import VisualizeEngine
-from .wasm_ast import WasmAstEvaluator, ASTNode, ASTDiagnostic, ASTEvaluationResult
-from .intelligence import (
-    IntelligenceEngine,
-    SmartSuggestion,
-    DiagnosisResult,
-    PredictionResult,
-    ReviewFinding,
-)
+from .migration import MigrationEngine, UpgradeManifest, MigrationRecord, MigrationStatus, UpgradeStrategy
+from .stats_engine import StatsEngine, WorkspaceStats, FileStats
+from .template_engine import TemplateEngine
+from .author import WorkflowAuthor, AuthoringError
+from .autonomy import WorkflowMutator, AdaptiveEngine, AutonomyController, EditProposal
 
 __all__ = [
+    # Core
     "AlpObject",
     "load_workspace",
     "AlpReader",
     "AlpParser",
     "validate_object",
     "verify_workspace",
-    "compute_analytics",
-    "PredictiveEstimator",
+    "AlpError",
+    "SyntaxError",
+    "IndentationError",
+    "ValidationError",
+    "DirectiveError",
+    # Planning & Negotiation
     "GoalDecomposer",
     "Planner",
     "Reflector",
     "Plan",
     "PlanNode",
     "Lesson",
+    "ReasoningTracer",
+    "ReasoningChain",
+    "ReasoningStep",
+    "CollabPlanner",
+    "AgentContribution",
+    "CollabPlanResult",
+    "ImprovementProposal",
     "Negotiator",
     "ReputationStore",
     "TeamComposer",
@@ -314,6 +370,7 @@ __all__ = [
     "ContractDraft",
     "NegotiationResult",
     "Capability",
+    # Provenance & Tracing
     "TraceSigner",
     "ProvenanceStore",
     "AuditLedger",
@@ -322,12 +379,17 @@ __all__ = [
     "TraceStore",
     "MerkleTree",
     "verify_trace_integrity",
+    # Graph & Memory
     "AlpGraph",
     "GraphNode",
     "GraphEdge",
     "MemoryStore",
     "MemoryEntry",
     "MemoryQuery",
+    "MemoryGraph",
+    "MemoryConsolidator",
+    "MemoryConsolidation",
+    # Policy & Governance
     "PolicyEngine",
     "PolicyDecision",
     "PolicyQuery",
@@ -341,20 +403,22 @@ __all__ = [
     "glob_to_regexp",
     "normalize_objects",
     "parse_inline_object",
+    "PolicyLearner",
+    "PolicyContext",
     "PredictivePolicyEngine",
     "AnomalyScore",
     "BaselineProfile",
-    "AlpelError",
-    "build_context",
-    "evaluate",
-    "evaluate_bool",
-    "interpolate",
-    "register_module",
-    "import_module",
-    "WorkspaceLoader",
-    "WorkspaceError",
-    "ProjectEntry",
-    "CrossProjectReference",
+    "PolicyBallot",
+    "GovernanceEngine",
+    "BallotRecord",
+    "GovernanceReport",
+    "Vote",
+    "VoteValue",
+    "PolicyFederation",
+    "PolicySource",
+    "FederatedDecision",
+    "FederatedTrustRoot",
+    # Execution & Runtime
     "LoopEngine",
     "LoopConfig",
     "LoopCheckpoint",
@@ -368,18 +432,28 @@ __all__ = [
     "VerificationReport",
     "EngineError",
     "LOOP_STAGES",
-    "PluginResolver",
-    "CustomType",
-    "TypeProperty",
-    "PluginInfo",
-    "RegistryClient",
-    "load_alprc",
-    "semver_cmp",
-    "satisfies",
-    "verify_version_signature",
-    "VersionConflictError",
-    "parse_registry_alias",
-    "resolve_dependency_graph",
+    "AlpelError",
+    "build_context",
+    "evaluate",
+    "evaluate_bool",
+    "interpolate",
+    "register_module",
+    "import_module",
+    "WorkspaceLoader",
+    "WorkspaceError",
+    "ProjectEntry",
+    "CrossProjectReference",
+    "TimelineEngine",
+    "TimelineResult",
+    "ContractEngine",
+    "ContractResult",
+    "ContractViolation",
+    "ContractObject",
+    "ExecutionQuotaEngine",
+    "ExecutionQuota",
+    "SandboxEnvEngine",
+    "SandboxInstance",
+    # Security & Identity
     "Signature",
     "fingerprint",
     "generate_keypair",
@@ -387,111 +461,6 @@ __all__ = [
     "sign",
     "verify",
     "resolve_public_key",
-    "AlpError",
-    "SyntaxError",
-    "IndentationError",
-    "ValidationError",
-    "DirectiveError",
-    "WorkflowAuthor",
-    "AnomalyDetector",
-    "run_suite",
-    "HarnessResult",
-    "RuntimeLog",
-    "StateStore",
-    "MeteringLog",
-    "CostAnalyzer",
-    "RUNTIME_EVENT_TYPES",
-    "runtime_dir",
-    "runtime_log_path",
-    "CostOptimizer",
-    "CostEstimator",
-    "OptimizationPlan",
-    "OptimizationSuggestion",
-    "AutoScaleRecommendation",
-    "EngineSnapshot",
-    "SnapshotStore",
-    "DiffResult",
-    "SnapshotEngine",
-    "WorkspaceSnapshot",
-    "SnapshotDiff",
-    "DiffEngine",
-    "DiffResult",
-    "DiffEntry",
-    "RefactorEngine",
-    "RenameResult",
-    "CopyEngine",
-    "CopyResult",
-    "StatsEngine",
-    "WorkspaceStats",
-    "FileStats",
-    "TemplateEngine",
-    "MoveEngine",
-    "MoveResult",
-    "DependencyEngine",
-    "DependencyResult",
-    "SearchEngine",
-    "SearchResult",
-    "InspectEngine",
-    "InspectResult",
-    "DeleteEngine",
-    "DeleteResult",
-    "DebugSession",
-    "PolicyFederation",
-    "PolicySource",
-    "FederatedDecision",
-    "TimelineEngine",
-    "TimelineResult",
-    "ContractEngine",
-    "ContractResult",
-    "ContractViolation",
-    "ContractObject",
-    "Vault",
-    "SealedSecret",
-    "VaultAuditEntry",
-    "Event",
-    "EventStore",
-    "EVENT_SCHEMA_VERSION",
-    "WorkflowVisualizer",
-    "ParsedWorkflow",
-    "WorkflowStep",
-    "DiagramFormat",
-    "read_workflow",
-    "PolicyModelChecker",
-    "ContractInvariant",
-    "VerificationProof",
-    "VerificationProperty",
-    "CounterexampleTrace",
-    "ZKPolicyProof",
-    "ComplianceCertifier",
-    "WorkflowMutator",
-    "AdaptiveEngine",
-    "AutonomyController",
-    "EditProposal",
-    "HealingEngine",
-    "HealingReport",
-    "HealingAction",
-    "HealingContext",
-    "HealingStrategy",
-    "CircuitBreaker",
-    "LWWRegister",
-    "ORSet",
-    "EdgeRuntime",
-    "ResilientSwarm",
-    "ResilienceReport",
-    "AgentNode",
-    "TaskAssignment",
-    "QuorumConsensus",
-    "AgentStatus",
-    "MigrationEngine",
-    "UpgradeManifest",
-    "MigrationRecord",
-    "MigrationStatus",
-    "UpgradeStrategy",
-    "ProtocolBridge",
-    "BridgeExportResult",
-    "BridgeImportResult",
-    "BridgeError",
-    "SUPPORTED_FORMATS",
     "AgentIdentity",
     "VerifiablePresentation",
     "TrustRegistry",
@@ -511,21 +480,190 @@ __all__ = [
     "TenantManager",
     "TenantIsolationError",
     "create_tenant_key",
-    "PolicyBallot",
-    "GovernanceEngine",
-    "BallotRecord",
-    "GovernanceReport",
-    "Vote",
-    "VoteValue",
     "DomainTrustAnchor",
     "DomainTrustManager",
     "TrustRoot",
     "DomainLink",
     "TrustStatus",
     "create_domain_keypair",
+    "ZKProofEngine",
+    "ZKProof",
+    "DIDIdentityEngine",
+    "DIDDocument",
+    # Storage & Sync
+    "Vault",
+    "SealedSecret",
+    "VaultAuditEntry",
+    "VectorStoreEngine",
+    "VectorEntry",
+    "CRDTSyncEngine",
+    "CRDTState",
+    "LWWRegister",
+    "ORSet",
+    "EdgeRuntime",
+    "Event",
+    "EventStore",
+    "EVENT_SCHEMA_VERSION",
+    "MemoryMeshEngine",
+    "MemoryNode",
+    "MemoryQueryResult",
+    "MemoryMeshStats",
+    # Intelligence & AI
+    "compute_analytics",
+    "PredictiveEstimator",
+    "AnomalyDetector",
+    "SwarmSignal",
+    "EmergentPattern",
+    "AgentSpecialization",
+    "EmergentBehaviorDetector",
+    "RoleSpecializer",
+    "CollectiveVote",
+    "CollectiveDecision",
+    "CollectiveDecisionMaker",
+    "IntelligenceEngine",
+    "SmartSuggestion",
+    "DiagnosisResult",
+    "PredictionResult",
+    "ReviewFinding",
+    # Resilience & Healing
+    "SelfHealingEngine",
+    "ASTDiagnosis",
+    "ResilientSwarm",
+    "ResilienceReport",
+    "AgentNode",
+    "TaskAssignment",
+    "QuorumConsensus",
+    "AgentStatus",
+    "HealingEngine",
+    "HealingReport",
+    "HealingAction",
+    "HealingContext",
+    "HealingStrategy",
+    "CircuitBreaker",
+    # Engineering Tools
+    "RefactorEngine",
+    "RenameResult",
+    "CopyEngine",
+    "CopyResult",
+    "MoveEngine",
+    "MoveResult",
+    "DependencyEngine",
+    "DependencyResult",
+    "SearchEngine",
+    "SearchResult",
+    "InspectEngine",
+    "InspectResult",
+    "DeleteEngine",
+    "DeleteResult",
+    "FormatEngine",
+    "CodeTransformEngine",
+    "CodeTransformConfig",
+    "CodeIndexEngine",
+    "CodeIndexConfig",
+    "EdgeModelEngine",
+    "EdgeModelConfig",
+    "ArchDecomposerEngine",
+    "MicroservicePlan",
+    # Formal Methods
+    "PolicyModelChecker",
+    "ContractInvariant",
+    "VerificationProof",
+    "VerificationProperty",
+    "CounterexampleTrace",
+    "ZKPolicyProof",
+    "ComplianceCertifier",
+    "FormalVerificationEngine",
+    "Transition",
+    "WorkflowVisualizer",
+    "ParsedWorkflow",
+    "WorkflowStep",
+    "DiagramFormat",
+    "read_workflow",
+    # Observability & Cost
     "TelemetryEngine",
     "Span",
-    "AuthoringError",
+    "RuntimeLog",
+    "StateStore",
+    "MeteringLog",
+    "CostAnalyzer",
+    "RUNTIME_EVENT_TYPES",
+    "runtime_dir",
+    "runtime_log_path",
+    "CostOptimizer",
+    "CostEstimator",
+    "OptimizationPlan",
+    "OptimizationSuggestion",
+    "AutoScaleRecommendation",
+    "CostBudgetEngine",
+    "CostBudget",
+    # Bridges & Extensions
+    "ProtocolBridge",
+    "BridgeExportResult",
+    "BridgeImportResult",
+    "BridgeError",
+    "SUPPORTED_FORMATS",
+    "PluginResolver",
+    "CustomType",
+    "TypeProperty",
+    "PluginInfo",
+    "RegistryClient",
+    "load_alprc",
+    "semver_cmp",
+    "satisfies",
+    "verify_version_signature",
+    "VersionConflictError",
+    "parse_registry_alias",
+    "resolve_dependency_graph",
+    # Debug & Snapshots
+    "EngineSnapshot",
+    "SnapshotStore",
+    "DebugDiffResult",
+    "DebugSession",
+    "SnapshotEngine",
+    "WorkspaceSnapshot",
+    "SnapshotDiff",
+    "DiffEngine",
+    "DiffResult",
+    "DiffEntry",
+    # Federation & Mesh
+    "EventMeshEngine",
+    "EventMeshConfig",
+    "TenantMeshEngine",
+    "TenantMesh",
+    "SwarmMarketplaceEngine",
+    "SkillListing",
+    "ConsensusVoteEngine",
+    "ConsensusVoteConfig",
+    # Quality & Eval
+    "EvalSuiteEngine",
+    "EvalSuiteConfig",
+    "TestRunner",
+    "TestCase",
+    "TestSuiteResult",
+    "CoverageReport",
+    "TestEngine",
+    "Linter",
+    "LintRule",
+    "LintDiagnostic",
+    "AlpFormatter",
+    "FormatOptions",
+    "FormatResult",
+    "run_suite",
+    "HarnessResult",
+    # Specialized Engines
+    "AssetContextEngine",
+    "AssetBundle",
+    "ArchiveEngine",
+    "DeduplicateEngine",
+    "GraphEngine",
+    "LintEngine",
+    "PromoteEngine",
+    "StatusEngine",
+    "VisualizeEngine",
+    "WasmAstEvaluator",
+    "ASTNode",
+    "ASTDiagnostic",
+    "ASTEvaluationResult",
     "MacroEngine",
     "MacroDefinition",
     "CollaborationEngine",
@@ -539,46 +677,19 @@ __all__ = [
     "ActivityEvent",
     "LiveShareSession",
     "AuditEvent",
-    "MemoryMeshEngine",
-    "MemoryNode",
-    "MemoryQueryResult",
-    "MemoryMeshStats",
-    "ConsensusVoteEngine",
-    "ConsensusVoteConfig",
-    "CodeTransformEngine",
-    "CodeTransformConfig",
-    "EventMeshEngine",
-    "EventMeshConfig",
-    "SwarmMarketplaceEngine",
-    "SkillListing",
-    "TestRunner",
-    "TestCase",
-    "TestSuiteResult",
-    "CoverageReport",
-    "Linter",
-    "LintRule",
-    "LintDiagnostic",
-    "AlpFormatter",
-    "FormatOptions",
-    "FormatResult",
-    "ArchiveEngine",
-    "DeduplicateEngine",
-    "FormatEngine",
-    "GraphEngine",
-    "LintEngine",
-    "PromoteEngine",
-    "StatusEngine",
-    "TestEngine",
-    "TestSuiteResult",
-    "VisualizeEngine",
-    "WasmAstEvaluator",
-    "ASTNode",
-    "ASTDiagnostic",
-    "ASTEvaluationResult",
-    "IntelligenceEngine",
-    "SmartSuggestion",
-    "DiagnosisResult",
-    "PredictionResult",
-    "ReviewFinding",
+    "MigrationEngine",
+    "UpgradeManifest",
+    "MigrationRecord",
+    "MigrationStatus",
+    "UpgradeStrategy",
+    "StatsEngine",
+    "WorkspaceStats",
+    "FileStats",
+    "TemplateEngine",
+    "WorkflowAuthor",
+    "AuthoringError",
+    "WorkflowMutator",
+    "AdaptiveEngine",
+    "AutonomyController",
+    "EditProposal",
 ]
-
