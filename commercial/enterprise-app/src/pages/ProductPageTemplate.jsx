@@ -1,8 +1,7 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { PRODUCTS } from "./ProductsPage.jsx";
+
 import {
-  CheckIcon,
   XIcon,
   ReasoningIcon,
   ShieldIcon,

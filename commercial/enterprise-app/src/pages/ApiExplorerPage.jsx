@@ -3,11 +3,8 @@ import api from "../utils/api.js";
 import {
   CodeIcon,
   SendIcon,
-  CheckCircleIcon,
   AlertIcon,
-  SparklesIcon,
-  CopyIcon,
-  ZapIcon
+  CopyIcon
 } from "../components/Icons.jsx";
 
 const API_ENDPOINTS = [

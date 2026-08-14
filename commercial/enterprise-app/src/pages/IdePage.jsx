@@ -2,24 +2,20 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../utils/api.js";
 import {
-  WorkspaceIcon,
   FileTextIcon,
   CodeIcon,
-  PlayIcon,
   ZapIcon,
   CheckCircleIcon,
-  TerminalIcon,
   SparklesIcon,
   ShieldIcon,
   SendIcon,
-  LayersIcon,
   CopyIcon
 } from "../components/Icons.jsx";
 import { LuFolder, LuFolderOpen } from "react-icons/lu";
 
 export default function IdePage() {
   const { id } = useParams();
-  const navigate = useNavigate();
+  
   const [workspace, setWorkspace] = useState(null);
   const [tree, setTree] = useState(null);
   const [fileContent, setFileContent] = useState("");
@@ -28,7 +24,7 @@ export default function IdePage() {
   const [chat, setChat] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [,setError] = useState("");
   const [panel, setPanel] = useState("terminal"); // "terminal" | "chat" | "mcp"
   const [mcpResult, setMcpResult] = useState(null);
   const [merkleCommitted, setMerkleCommitted] = useState(false);

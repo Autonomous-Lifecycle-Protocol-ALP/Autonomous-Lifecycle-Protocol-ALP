@@ -2,12 +2,9 @@ import { useState, useEffect } from "react";
 import api from "../utils/api.js";
 import {
   ServerIcon,
-  CheckCircleIcon,
   RefreshIcon,
   ZapIcon,
-  LayersIcon,
   SparklesIcon,
-  ShieldIcon,
   TerminalIcon,
   CodeIcon
 } from "../components/Icons.jsx";

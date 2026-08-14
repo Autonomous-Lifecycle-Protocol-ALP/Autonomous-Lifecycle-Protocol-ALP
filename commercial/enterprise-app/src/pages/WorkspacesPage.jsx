@@ -3,15 +3,11 @@ import { useNavigate } from "react-router-dom";
 import api from "../utils/api.js";
 import {
   WorkspaceIcon,
-  CheckCircleIcon,
   XIcon,
-  ServerIcon,
   SearchIcon,
   SparklesIcon,
   ArrowRightIcon,
-  LayersIcon,
-  CodeIcon,
-  LogoIcon
+  CodeIcon
 } from "../components/Icons.jsx";
 
 const TEMPLATE_PRESETS = [

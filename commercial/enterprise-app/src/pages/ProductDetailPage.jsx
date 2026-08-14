@@ -4,13 +4,11 @@ import { PRODUCTS } from "./ProductsPage.jsx";
 import {
   ShieldIcon,
   ServerIcon,
-  ProductsIcon,
   DashboardIcon,
   LayersIcon,
   PlayIcon,
   CheckCircleIcon,
   SparklesIcon,
-  ArrowRightIcon,
 } from "../components/Icons.jsx";
 
 export default function ProductDetailPage() {

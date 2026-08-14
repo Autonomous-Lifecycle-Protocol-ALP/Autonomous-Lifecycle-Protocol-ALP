@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useAuth } from "../hooks/useAuth.jsx";
 import {
   ShieldIcon,
   ActivityIcon,
@@ -11,11 +10,8 @@ import {
 } from "../components/Icons.jsx";
 import {
   LuSearch,
-  LuCalendar,
   LuChevronDown,
-  LuFilter,
   LuDownload,
-  LuUser,
   LuShield,
   LuSettings,
   LuKey,

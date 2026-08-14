@@ -31,7 +31,7 @@ const INTEGRATIONS = [
 
 export default function DataPipelineStudioPage() {
   const [pipelines, setPipelines] = useState([]);
-  const [runs, setRuns] = useState([]);
+  const [,setRuns] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -60,14 +60,7 @@ export default function DataPipelineStudioPage() {
     }
   };
 
-  const loadRuns = async () => {
-    try {
-      const res = await dataPipelineApi.listRuns();
-      setRuns(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  
 
   return (
     <ProductPageTemplate product={product}>

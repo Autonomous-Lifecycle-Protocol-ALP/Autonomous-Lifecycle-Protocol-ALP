@@ -13,12 +13,7 @@ const ANALYTICS_MODULES = [
   { name: "Predictive Planning", desc: "Forecast resource needs and identify bottlenecks before they impact delivery" },
 ];
 
-const REPORT_TYPES = [
-  { report: "Sprint Velocity", freq: "Per sprint" },
-  { report: "Cost Attribution", freq: "Daily" },
-  { report: "Agent ROI", freq: "Weekly" },
-  { report: "Quality Trends", freq: "Per release" },
-];
+
 
 const DATA_SOURCES = [
   { source: "ALP Event Mesh", type: "Real-time" },

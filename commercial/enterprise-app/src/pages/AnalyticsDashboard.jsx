@@ -7,10 +7,8 @@ import {
   SparklesIcon,
   DownloadIcon,
   ZapIcon,
-  ShieldIcon,
   UsersIcon,
   RefreshIcon,
-  ArrowRightIcon,
   ProductsIcon
 } from "../components/Icons.jsx";
 
@@ -32,9 +30,9 @@ const METRIC_CARDS = [
 
 export default function AnalyticsDashboard() {
   const [timeRange, setTimeRange] = useState("7 Days");
-  const [summary, setSummary] = useState(null);
+  const [,setSummary] = useState(null);
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [,setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [exportNotice, setExportNotice] = useState(false);
 

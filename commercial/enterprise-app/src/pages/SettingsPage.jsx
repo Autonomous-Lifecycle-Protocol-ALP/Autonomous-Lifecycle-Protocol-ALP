@@ -5,14 +5,10 @@ import {
   UserIcon,
   KeyIcon,
   BellIcon,
-  ShieldIcon,
   CheckCircleIcon,
-  CopyIcon,
   PlusIcon,
   TrashIcon,
-  SparklesIcon,
-  ZapIcon,
-  GlobeIcon
+  ZapIcon
 } from "../components/Icons.jsx";
 
 export default function SettingsPage() {
@@ -43,7 +39,7 @@ export default function SettingsPage() {
   // Notifications State
   const [emailAlerts, setEmailAlerts] = useState(true);
   const [slackWebhook, setSlackWebhook] = useState("https://hooks.slack.com/services/T000/B000/XXXX");
-  const [securityAlerts, setSecurityAlerts] = useState(true);
+  const [,setSecurityAlerts] = useState(true);
 
   const handleSaveProfile = (e) => {
     e.preventDefault();

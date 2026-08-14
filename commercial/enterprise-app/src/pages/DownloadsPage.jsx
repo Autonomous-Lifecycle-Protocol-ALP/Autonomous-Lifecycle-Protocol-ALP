@@ -2,20 +2,15 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   DownloadIcon,
-  DownloadCloudIcon,
   PackageIcon,
   MonitorIcon,
-  SmartphoneIcon,
   HardDriveIcon,
   ExternalLinkIcon,
   SparklesIcon,
-  ServerIcon,
   CodeIcon,
-  ShieldIcon,
   LayersIcon,
   CheckCircleIcon,
   ArrowRightIcon,
-  ZapIcon,
   TerminalIcon,
   SecurityIcon,
 } from "../components/Icons.jsx";
@@ -142,7 +137,7 @@ export default function DownloadsPage() {
     setTimeout(() => setCopiedCmd(null), 2000);
   };
 
-  const simulateDownload = (id, filename) => {
+  const simulateDownload = (id, _filename) => {
     setDownloadStarted((prev) => ({ ...prev, [id]: true }));
     setTimeout(() => setDownloadStarted((prev) => ({ ...prev, [id]: false })), 3000);
   };

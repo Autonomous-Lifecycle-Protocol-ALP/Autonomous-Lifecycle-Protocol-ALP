@@ -21,7 +21,7 @@ const PLATFORM_SUPPORT = [
 
 export default function MobileAppPage() {
   const [sessions, setSessions] = useState([]);
-  const [notifications, setNotifications] = useState([]);
+  const [,setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 

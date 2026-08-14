@@ -2,13 +2,9 @@ import { useState, useEffect } from "react";
 import api from "../utils/api.js";
 import {
   LayersIcon,
-  ShieldIcon,
   ZapIcon,
-  CheckCircleIcon,
   SparklesIcon,
-  RefreshIcon,
-  ActivityIcon,
-  AlertIcon
+  ActivityIcon
 } from "../components/Icons.jsx";
 
 export default function FederationStudioPage() {

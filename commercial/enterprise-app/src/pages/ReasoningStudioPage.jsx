@@ -12,7 +12,6 @@ import {
   LightbulbIcon,
   CopyIcon,
   RefreshIcon,
-  TerminalIcon,
   ZapIcon
 } from "../components/Icons.jsx";
 

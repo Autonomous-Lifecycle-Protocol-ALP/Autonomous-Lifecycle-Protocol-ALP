@@ -7,9 +7,7 @@ import {
   CheckCircleIcon,
   SparklesIcon,
   CodeIcon,
-  LayersIcon,
   ArrowRightIcon,
-  ShieldIcon,
   ZapIcon,
   DownloadIcon,
 } from "../components/Icons.jsx";

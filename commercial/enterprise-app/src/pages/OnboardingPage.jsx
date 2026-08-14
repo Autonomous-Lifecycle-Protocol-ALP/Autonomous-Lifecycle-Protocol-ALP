@@ -2,25 +2,19 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.jsx";
 import {
-  SparklesIcon,
   ZapIcon,
   CheckCircleIcon,
-  ArrowRightIcon,
   DashboardIcon,
   WorkspaceIcon,
   ReasoningIcon,
   ProductsIcon,
   ShieldIcon,
-  CodeIcon,
   TerminalIcon,
-  LayersIcon,
 } from "../components/Icons.jsx";
 import {
   LuRocket,
   LuTarget,
-  LuUsers,
   LuBookOpen,
-  LuPlay,
   LuCheck,
   LuChevronRight,
   LuStar,

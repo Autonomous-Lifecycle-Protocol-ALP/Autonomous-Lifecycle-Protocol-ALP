@@ -5,7 +5,6 @@ import {
   SparklesIcon,
   CheckCircleIcon,
   CopyIcon,
-  ZapIcon,
   CodeIcon,
   RefreshIcon
 } from "../components/Icons.jsx";

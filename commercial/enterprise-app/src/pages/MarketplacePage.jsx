@@ -3,13 +3,10 @@ import {
   SparklesIcon,
   SearchIcon,
   StarIcon,
-  DownloadIcon,
   CheckCircleIcon,
   PlusIcon,
   CodeIcon,
-  ShieldIcon,
   LayersIcon,
-  ZapIcon,
   CopyIcon,
   ExternalLinkIcon
 } from "../components/Icons.jsx";

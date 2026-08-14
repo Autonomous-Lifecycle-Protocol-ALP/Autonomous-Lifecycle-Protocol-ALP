@@ -6,11 +6,9 @@ import {
   SecurityIcon,
   ProductsIcon,
   SearchIcon,
-  FilterIcon,
   SparklesIcon,
   LayersIcon,
   ArrowRightIcon,
-  CheckCircleIcon,
   ZapIcon,
   DownloadIcon,
 } from "../components/Icons.jsx";

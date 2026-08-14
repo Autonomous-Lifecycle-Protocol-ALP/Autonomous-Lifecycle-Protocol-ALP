@@ -1,14 +1,11 @@
 import { useState } from "react";
 import {
   UsersIcon,
-  UserIcon,
   PlusIcon,
   ShieldIcon,
-  CheckCircleIcon,
   XIcon,
   TrashIcon,
-  SparklesIcon,
-  KeyIcon
+  SparklesIcon
 } from "../components/Icons.jsx";
 
 const INITIAL_ROSTER = [

@@ -4,10 +4,8 @@ import {
   SparklesIcon,
   ZapIcon,
   ActivityIcon,
-  CheckCircleIcon,
   RefreshIcon,
   RadioIcon,
-  SlidersIcon,
   SendIcon
 } from "../components/Icons.jsx";
 
