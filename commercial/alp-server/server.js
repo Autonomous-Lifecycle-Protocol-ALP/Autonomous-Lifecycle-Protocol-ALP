@@ -28,11 +28,6 @@ const threatIntelRoutes = require('./routes/threat-intel');
 const zeroTrustRoutes = require('./routes/zero-trust');
 const reasoningRoutes = require('./routes/reasoning');
 const telemetryRoutes = require('./routes/telemetry');
-const federationRoutes = require('./routes/federation');
-const zkProofsRoutes = require('./routes/zk-proofs');
-const digitalTwinRoutes = require('./routes/digital-twin');
-const neuromorphicRoutes = require('./routes/neuromorphic');
-const k8sOperatorRoutes = require('./routes/k8s-operator');
 
 const app = express();
 const server = http.createServer(app);
@@ -85,11 +80,6 @@ app.use('/api/threat-intel', threatIntelRoutes);
 app.use('/api/zero-trust', zeroTrustRoutes);
 app.use('/api/reasoning', reasoningRoutes);
 app.use('/api/telemetry', telemetryRoutes);
-app.use('/api/federation', federationRoutes);
-app.use('/api/zk-proofs', zkProofsRoutes);
-app.use('/api/digital-twin', digitalTwinRoutes);
-app.use('/api/neuromorphic', neuromorphicRoutes);
-app.use('/api/k8s-operator', k8sOperatorRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

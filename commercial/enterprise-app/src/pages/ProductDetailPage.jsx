@@ -16,9 +16,7 @@ export default function ProductDetailPage() {
   const product = PRODUCTS.find((p) => p.id === id);
 
   const [sandboxRunning, setSandboxRunning] = useState(false);
-  const [sandboxLogs, setSandboxLogs] = useState([]);
-  const [sandboxStep, setSandboxStep] = useState(0);
-  const [testResults, setTestResults] = useState(null);
+  const [sandboxLogs, setSandboxLogs] = useState(null);
 
   if (!product) {
     return (
@@ -35,68 +33,19 @@ export default function ProductDetailPage() {
     );
   }
 
-  const getAlpTestSandboxSequence = () => {
-    const steps = [
-      { delay: 400, log: "[ALP:TEST] Initializing ALP Test runner..." },
-      { delay: 700, log: "[ALP:TEST] Discovering specs via glob: **/*.spec.{js,ts}" },
-      { delay: 1000, log: "[ALP:TEST] Found 12 tests across 3 files" },
-      { delay: 1300, log: "[ALP:TEST] Launching browser matrix: Chromium, Firefox, WebKit" },
-      { delay: 1600, log: "[ALP:VISUAL] Capturing screenshots for baseline comparison..." },
-      { delay: 1900, log: "[ALP:VISUAL] Comparing 24 viewports against saved baselines" },
-      { delay: 2200, log: "[ALP:AI] Running flake prediction model on recent test history" },
-      { delay: 2500, log: "[ALP:AI] Healing selector: [data-testid=\"submit-btn\"] → button[type=\"submit\"]" },
-      { delay: 2800, log: "[ALP:RES] Passed: 11 | Failed: 0 | Healed: 1 | Visual diffs: 0" },
-      { delay: 3100, log: "[ALP:RES] Test run completed in 2.4s. Baseline updated." },
-    ];
-    return steps;
-  };
-
-  const getDefaultSandboxSequence = () => {
-    return [
-      { delay: 400, log: `[ALP:${product.id}] Initializing ${product.name} execution engine...` },
-      { delay: 800, log: "[ALP:POL] Evaluating zero-trust @policy rules... Status: PASSED" },
-      { delay: 1200, log: `[ALP:DAG] Building topological task execution graph for ${product.category}...` },
-      { delay: 1600, log: "[ALP:VER] Generating SHA-256 Merkle reasoning step hash..." },
-      { delay: 2000, log: "[ALP:RES] Execution completed successfully. 0 defects, 100% compliance gate." },
-    ];
-  };
-
   const handleRunSandbox = () => {
     setSandboxRunning(true);
-    setSandboxLogs([]);
-    setSandboxStep(0);
-    setTestResults(null);
-
-    const sequence = product.id === "alp-test"
-      ? getAlpTestSandboxSequence()
-      : getDefaultSandboxSequence();
-
-    sequence.forEach((step, idx) => {
-      setTimeout(() => {
-        setSandboxLogs((prev) => [...prev, step.log]);
-        setSandboxStep(idx + 1);
-        if (idx === sequence.length - 1) {
-          setSandboxRunning(false);
-          if (product.id === "alp-test") {
-            setTestResults({
-              passed: 11,
-              failed: 0,
-              healed: 1,
-              visualDiffs: 0,
-              duration: "2.4s",
-            });
-          } else {
-            setTestResults({
-              passed: 0,
-              failed: 0,
-              healed: 0,
-              visualDiffs: 0,
-              duration: "1.1s",
-            });
-          }
-        }
-      }, step.delay);
-    });
+    setSandboxLogs(null);
+    setTimeout(() => {
+      setSandboxLogs([
+        `[ALP:${product.id}] Initializing ${product.name} execution engine...`,
+        `[ALP:POL] Evaluating zero-trust @policy rules... Status: PASSED`,
+        `[ALP:DAG] Building topological task execution graph for ${product.category}...`,
+        `[ALP:VER] Generating SHA-256 Merkle reasoning step hash...`,
+        `[ALP:RES] Execution completed successfully. 0 defects, 100% compliance gate.`,
+      ]);
+      setSandboxRunning(false);
+    }, 1500);
   };
 
   return (
@@ -117,8 +66,6 @@ export default function ProductDetailPage() {
                 <ShieldIcon size="xl" />
               ) : product.category === "SaaS" ? (
                 <ServerIcon size="xl" />
-              ) : product.category === "Testing" ? (
-                <PlayIcon size="xl" />
               ) : (
                 <LayersIcon size="xl" />
               )}
@@ -204,29 +151,17 @@ export default function ProductDetailPage() {
             </h2>
             <p className="text-xs text-slate-400">Dry-run product task execution and verify protocol security gates</p>
           </div>
-          <div className="flex flex-col items-end gap-2">
-            <button
-              onClick={handleRunSandbox}
-              disabled={sandboxRunning}
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-500/20 flex items-center gap-2 disabled:opacity-50"
-            >
-              <PlayIcon size="sm" />
-              {sandboxRunning ? "Simulating Execution..." : "Run Sandbox Test"}
-            </button>
-            {sandboxRunning && (
-              <div className="w-full bg-slate-800 rounded-full h-1.5">
-                <div
-                  className="bg-emerald-400 h-1.5 rounded-full transition-all duration-300"
-                  style={{
-                    width: `${product.id === "alp-test" ? (sandboxStep / 10) * 100 : (sandboxStep / 5) * 100}%`,
-                  }}
-                />
-              </div>
-            )}
-          </div>
+          <button
+            onClick={handleRunSandbox}
+            disabled={sandboxRunning}
+            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition shadow-lg shadow-emerald-500/20 flex items-center gap-2 disabled:opacity-50"
+          >
+            <PlayIcon size="sm" />
+            {sandboxRunning ? "Simulating Execution..." : "Run Sandbox Test"}
+          </button>
         </div>
 
-        {sandboxLogs.length > 0 && (
+        {sandboxLogs && (
           <div className="space-y-2 pt-2">
             <div className="text-[11px] font-mono font-semibold uppercase text-emerald-400">
               Sandbox Console Logs:
@@ -239,36 +174,6 @@ export default function ProductDetailPage() {
                 </div>
               ))}
             </pre>
-
-            {testResults && (
-              <div className="mt-4 p-4 bg-slate-950 rounded-2xl border border-slate-800">
-                <div className="text-[11px] font-mono font-semibold uppercase text-sky-400 mb-3">
-                  Test Results Summary
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                  <div className="text-center p-3 bg-slate-900 rounded-xl border border-slate-800">
-                    <div className="text-lg font-bold text-emerald-400">{testResults.passed}</div>
-                    <div className="text-[10px] text-slate-400 uppercase tracking-wider">Passed</div>
-                  </div>
-                  <div className="text-center p-3 bg-slate-900 rounded-xl border border-slate-800">
-                    <div className="text-lg font-bold text-red-400">{testResults.failed}</div>
-                    <div className="text-[10px] text-slate-400 uppercase tracking-wider">Failed</div>
-                  </div>
-                  <div className="text-center p-3 bg-slate-900 rounded-xl border border-slate-800">
-                    <div className="text-lg font-bold text-amber-400">{testResults.healed}</div>
-                    <div className="text-[10px] text-slate-400 uppercase tracking-wider">Healed</div>
-                  </div>
-                  <div className="text-center p-3 bg-slate-900 rounded-xl border border-slate-800">
-                    <div className="text-lg font-bold text-sky-400">{testResults.visualDiffs}</div>
-                    <div className="text-[10px] text-slate-400 uppercase tracking-wider">Visual Diffs</div>
-                  </div>
-                  <div className="text-center p-3 bg-slate-900 rounded-xl border border-slate-800">
-                    <div className="text-lg font-bold text-indigo-400">{testResults.duration}</div>
-                    <div className="text-[10px] text-slate-400 uppercase tracking-wider">Duration</div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>

@@ -8,9 +8,7 @@ import {
   SearchIcon,
   SparklesIcon,
   LayersIcon,
-  ArrowRightIcon,
-  ZapIcon,
-  DownloadIcon,
+  ArrowRightIcon
 } from "../components/Icons.jsx";
 import { trackCatalogView, trackProductClick } from "../utils/analytics.js";
 
@@ -169,27 +167,9 @@ const PRODUCTS = [
     features: ["SPIFFE/SPIRE agent identities", "Mutual TLS between all components", "Micro-segmentation via @contract", "Continuous authentication (15-min re-auth)", "OPA policy engine integration", "Audit trail with W3C Verifiable Credentials"],
     integration: "Enforces @contract as network policy; integrates @policy for authorization; @vault for certificate management; @timeline for audit logs; @analytics for trust metrics",
   },
-  {
-    id: "alp-test",
-    name: "ALP Test",
-    tagline: "Autonomous testing for autonomous software",
-    category: "Testing",
-    tier: "Pro $99/mo • Enterprise Custom",
-    status: "Beta",
-    description: "Playwright-class E2E browser automation, visual regression with baseline management, and AI-powered test generation in one protocol-native CLI. Built for teams that ship on rhythm and need CI-native quality gates without switching tools.",
-    features: [
-      "Playwright-class multi-browser E2E",
-      "Visual regression with baseline branching",
-      "AI test generation from prompts and PR diffs",
-      "Self-healing selectors with fallback strategies",
-      "JUnit, HTML, and JSON reporters",
-      "Git-friendly baseline storage"
-    ],
-    integration: "Extends @workflow and @contract for quality gates; reads @analytics for flake detection; integrates @policy for test governance and access control",
-  },
 ];
 
-const CATEGORIES = ["All", "SaaS", "Platform", "Security", "DevOps", "Analytics", "Agent Persona", "EDA Platform", "Testing"];
+const CATEGORIES = ["All", "SaaS", "Platform", "Security", "DevOps", "Analytics", "Agent Persona", "EDA Platform"];
 
 export { PRODUCTS };
 
@@ -252,16 +232,6 @@ export default function ProductsPage() {
               </button>
             ))}
           </div>
-        </div>
-
-        {/* Quick Download Link */}
-        <div className="pt-2">
-          <Link
-            to="/downloads"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900/80 border border-slate-800 rounded-xl text-xs text-slate-300 hover:text-sky-400 hover:border-sky-500/40 transition-smooth font-semibold"
-          >
-            <DownloadIcon size="sm" /> Downloads Center
-          </Link>
         </div>
       </div>
 
@@ -372,58 +342,14 @@ export default function ProductsPage() {
 
                 <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
                   <span className="text-slate-400 font-medium">{product.tier}</span>
-                  <div className="flex items-center gap-3">
-                    <Link
-                      to="/downloads"
-                      onClick={(e) => e.stopPropagation()}
-                      className="text-slate-400 hover:text-emerald-400 font-semibold flex items-center gap-1 transition-smooth"
-                    >
-                      <DownloadIcon size="sm" /> Download
-                    </Link>
-                    <span className="text-sky-400 font-semibold group-hover:translate-x-1 transition-smooth flex items-center gap-1">
-                      View Details &amp; Sandbox <ArrowRightIcon size="sm" />
-                    </span>
-                  </div>
+                  <span className="text-sky-400 font-semibold group-hover:translate-x-1 transition-smooth flex items-center gap-1">
+                    View Details &amp; Sandbox <ArrowRightIcon size="sm" />
+                  </span>
                 </div>
               </Link>
             ))}
           </div>
         )}
-      </div>
-
-      {/* Interactive ARR Revenue Projection Calculator */}
-      <div className="card-glass rounded-3xl p-6 space-y-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-              <ZapIcon className="text-emerald-400" />
-              <span>Enterprise Year 1 ARR Revenue Projection</span>
-            </h2>
-            <p className="text-xs text-slate-400">Interactive subscription revenue projection across commercial product tiers</p>
-          </div>
-          <div className="text-left md:text-right">
-            <span className="text-xs text-slate-400 font-semibold uppercase">Projected Year 1 ARR</span>
-            <div className="text-3xl font-black gradient-text">$7.0M ARR</div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-          <div className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 space-y-1">
-            <span className="text-slate-400">ALP Cloud Workspace</span>
-            <div className="text-base font-bold text-sky-400">$2.4M ARR</div>
-            <div className="text-[10px] text-slate-500 font-mono">200 Managed Teams ($49-$999/mo)</div>
-          </div>
-          <div className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 space-y-1">
-            <span className="text-slate-400">ALP Security &amp; SOC Sentinel</span>
-            <div className="text-base font-bold text-rose-400">$1.82M ARR</div>
-            <div className="text-[10px] text-slate-500 font-mono">230 Enterprise Guardrail Subscriptions</div>
-          </div>
-          <div className="bg-slate-950/80 p-4 rounded-xl border border-slate-800 space-y-1">
-            <span className="text-slate-400">Physical, EDA &amp; Quantum AI</span>
-            <div className="text-base font-bold text-purple-400">$2.78M ARR</div>
-            <div className="text-[10px] text-slate-500 font-mono">290 Hardware &amp; EDA Agent Licenses</div>
-          </div>
-        </div>
       </div>
     </div>
   );
