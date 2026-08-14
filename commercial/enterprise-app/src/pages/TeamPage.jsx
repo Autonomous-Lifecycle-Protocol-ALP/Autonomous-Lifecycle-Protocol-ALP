@@ -3,7 +3,6 @@ import {
   UsersIcon,
   PlusIcon,
   ShieldIcon,
-  XIcon,
   TrashIcon,
   SparklesIcon
 } from "../components/Icons.jsx";

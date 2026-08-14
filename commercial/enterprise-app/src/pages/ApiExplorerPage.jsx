@@ -3,7 +3,6 @@ import api from "../utils/api.js";
 import {
   CodeIcon,
   SendIcon,
-  AlertIcon,
   CopyIcon
 } from "../components/Icons.jsx";
 

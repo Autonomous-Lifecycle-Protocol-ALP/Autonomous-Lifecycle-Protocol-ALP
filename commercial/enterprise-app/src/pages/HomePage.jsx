@@ -13,7 +13,6 @@ import {
   LuCloud,
   LuDatabase,
   LuEye,
-  LuCpu,
   LuRocket,
   LuBrainCircuit,
   LuLayers,

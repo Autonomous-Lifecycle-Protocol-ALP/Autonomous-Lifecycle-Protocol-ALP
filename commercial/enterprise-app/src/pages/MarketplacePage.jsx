@@ -3,11 +3,8 @@ import {
   SparklesIcon,
   SearchIcon,
   StarIcon,
-  CheckCircleIcon,
   PlusIcon,
   CodeIcon,
-  LayersIcon,
-  CopyIcon,
   ExternalLinkIcon
 } from "../components/Icons.jsx";
 

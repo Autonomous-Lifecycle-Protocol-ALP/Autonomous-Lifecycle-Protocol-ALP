@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import {
-  XIcon,
   ReasoningIcon,
   ShieldIcon,
   AnalyticsIcon,

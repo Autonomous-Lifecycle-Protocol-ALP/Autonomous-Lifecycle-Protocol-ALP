@@ -1,13 +1,5 @@
 import { useState } from "react";
-import {
-  ShieldIcon,
-  ActivityIcon,
-  CheckCircleIcon,
-  CodeIcon,
-  FileTextIcon,
-  ZapIcon,
-  SparklesIcon,
-} from "../components/Icons.jsx";
+
 import {
   LuSearch,
   LuChevronDown,

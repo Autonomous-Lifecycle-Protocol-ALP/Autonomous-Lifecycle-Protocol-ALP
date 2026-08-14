@@ -5,8 +5,7 @@ import {
   ZapIcon,
   ActivityIcon,
   RefreshIcon,
-  RadioIcon,
-  SendIcon
+  RadioIcon
 } from "../components/Icons.jsx";
 
 export default function NeuromorphicStudioPage() {

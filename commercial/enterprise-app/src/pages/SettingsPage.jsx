@@ -39,7 +39,6 @@ export default function SettingsPage() {
   // Notifications State
   const [emailAlerts, setEmailAlerts] = useState(true);
   const [slackWebhook, setSlackWebhook] = useState("https://hooks.slack.com/services/T000/B000/XXXX");
-  const [,setSecurityAlerts] = useState(true);
 
   const handleSaveProfile = (e) => {
     e.preventDefault();

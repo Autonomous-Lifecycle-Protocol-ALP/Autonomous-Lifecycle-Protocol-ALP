@@ -31,7 +31,6 @@ const INTEGRATIONS = [
 
 export default function DataPipelineStudioPage() {
   const [pipelines, setPipelines] = useState([]);
-  const [,setRuns] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 

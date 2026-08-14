@@ -1,9 +1,6 @@
 import { useState } from "react";
 import {
   SparklesIcon,
-  ShieldIcon,
-  CodeIcon,
-  LayersIcon,
 } from "../components/Icons.jsx";
 import { LuChevronDown, LuChevronRight, LuTag, LuCalendar, LuGitBranch } from "react-icons/lu";
 

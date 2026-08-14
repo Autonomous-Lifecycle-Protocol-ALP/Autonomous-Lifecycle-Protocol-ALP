@@ -1,15 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import api from "../utils/api.js";
 import {
   FileTextIcon,
   CodeIcon,
   ZapIcon,
   CheckCircleIcon,
-  SparklesIcon,
   ShieldIcon,
-  SendIcon,
-  CopyIcon
+  SendIcon
 } from "../components/Icons.jsx";
 import { LuFolder, LuFolderOpen } from "react-icons/lu";
 

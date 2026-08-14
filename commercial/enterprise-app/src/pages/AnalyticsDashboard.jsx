@@ -7,9 +7,7 @@ import {
   SparklesIcon,
   DownloadIcon,
   ZapIcon,
-  UsersIcon,
-  RefreshIcon,
-  ProductsIcon
+  RefreshIcon
 } from "../components/Icons.jsx";
 
 const TIME_RANGES = ["24 Hours", "7 Days", "30 Days", "All Time"];
