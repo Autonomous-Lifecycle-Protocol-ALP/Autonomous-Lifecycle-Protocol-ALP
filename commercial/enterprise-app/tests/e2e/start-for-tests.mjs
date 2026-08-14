@@ -1,7 +1,10 @@
 import { spawn } from 'child_process';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 import net from 'net';
+
+const require = createRequire(import.meta.url);
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -76,8 +79,10 @@ async function startServers() {
     console.log('ALP server already running on port 5000');
   }
 
-  const vitePath = path.join(enterpriseAppDir, 'node_modules', 'vite', 'bin', 'vite.js');
-  const enterpriseApp = spawn(process.execPath, [vitePath], {
+  const vitePkgPath = require.resolve('vite/package.json', { paths: [enterpriseAppDir] });
+  const vitePkg = require(vitePkgPath);
+  const viteBin = path.join(path.dirname(vitePkgPath), vitePkg.bin.vite);
+  const enterpriseApp = spawn(process.execPath, [viteBin], {
     cwd: enterpriseAppDir,
     stdio: 'inherit',
   });

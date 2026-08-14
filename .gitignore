@@ -91,5 +91,9 @@ mingw64/
 # Browser automation artifacts
 .playwright-mcp/
 
+# Playwright artifacts
+playwright-report/
+test-results/
+
 # Dashboard screenshots (generated artifacts)
 dashboard-*.png
