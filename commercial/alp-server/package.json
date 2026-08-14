@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@autonomous-lifecycle-protocol-alp/platform": "*",
+    "array-flatten": "^1.1.1",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "destroy": "^1.2.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
