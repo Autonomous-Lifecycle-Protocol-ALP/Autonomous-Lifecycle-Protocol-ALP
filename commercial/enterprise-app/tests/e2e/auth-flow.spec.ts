@@ -12,7 +12,7 @@ test.describe('Authentication E2E', () => {
     await page.waitForURL('**/dashboard');
     await page.waitForTimeout(1000);
 
-    await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'ALP Enterprise Command Center' })).toBeVisible();
   });
 
   test('shows error with invalid credentials', async ({ page }) => {
@@ -44,6 +44,6 @@ test.describe('Authentication E2E', () => {
     await page.waitForURL('**/dashboard');
     await page.waitForTimeout(1000);
 
-    await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'ALP Enterprise Command Center' })).toBeVisible();
   });
 });

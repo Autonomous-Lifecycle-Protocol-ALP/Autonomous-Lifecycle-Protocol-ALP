@@ -8,6 +8,8 @@ import {
   DigitalTwinIcon,
   CheckIcon,
   XIcon,
+  ZapIcon,
+  ShieldIcon,
 } from "../components/Icons.jsx";
 import { hybridEngineerApi } from "../utils/productApi.js";
 
@@ -112,6 +114,11 @@ export default function HybridEngineerPage() {
     }
   };
 
+  useEffect(() => {
+    loadProjects();
+    loadSimulations();
+  }, []);
+
   return (
     <div className="space-y-8">
       <div className="text-center mb-8">
@@ -127,12 +134,7 @@ export default function HybridEngineerPage() {
         <div className="flex gap-3 overflow-x-auto pb-2 mb-4">
           {DOMAINS.map((domain) => {
             const Icon = domain.icon;
-  useEffect(() => {
-    loadProjects();
-    loadSimulations();
-  }, []);
-
-  return (
+            return (
               <button
                 key={domain.id}
                 onClick={() => setSelectedDomain(domain.id)}

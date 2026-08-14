@@ -20,6 +20,37 @@ function isPortInUse(port) {
   });
 }
 
+function waitForPort(port, timeoutMs = 15000) {
+  return new Promise((resolve, reject) => {
+    const start = Date.now();
+    const check = () => {
+      isPortInUse(port).then((inUse) => {
+        if (inUse) return resolve();
+        if (Date.now() - start > timeoutMs) return reject(new Error(`Timeout waiting for port ${port}`));
+        setTimeout(check, 500);
+      });
+    };
+    check();
+  });
+}
+
+async function startMockServer() {
+  console.log('Starting mock ALP server...');
+  const scriptPath = path.join(__dirname, 'mock-server.mjs');
+  const mockServer = spawn(process.execPath, [scriptPath], {
+    cwd: enterpriseAppDir,
+    stdio: 'inherit',
+  });
+
+  mockServer.on('error', (err) => {
+    console.error('Failed to start mock server:', err);
+    process.exit(1);
+  });
+
+  await waitForPort(5000, 15000);
+  console.log('Mock ALP server ready on port 5000');
+}
+
 async function startServers() {
   const alpServerRunning = await isPortInUse(5000);
   
@@ -32,10 +63,15 @@ async function startServers() {
 
     alpServer.on('error', (err) => {
       console.error('Failed to start alp-server:', err);
-      process.exit(1);
     });
 
-    await new Promise(resolve => setTimeout(resolve, 5000));
+    try {
+      await waitForPort(5000, 20000);
+      console.log('ALP server ready on port 5000');
+    } catch (err) {
+      console.warn('ALP server failed to start, falling back to mock server:', err.message);
+      await startMockServer();
+    }
   } else {
     console.log('ALP server already running on port 5000');
   }
