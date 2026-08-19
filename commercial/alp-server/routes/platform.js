@@ -152,7 +152,11 @@ router.post('/workflows/start', asyncHandler((req, res) => {
   const { workflowId, context } = req.body;
   const run = platform.workflow.startRun(workflowId, context);
   if (!run) return res.status(404).json({ message: 'Workflow not found' });
-  res.status(201).json(run);
+  
+  // Start execution asynchronously
+  platform.workflow.executeAll(run.runId).catch(err => console.error("Workflow failed:", err));
+  
+  res.status(202).json(run);
 }));
 
 router.get('/workflows/runs/:runId', asyncHandler((req, res) => {
@@ -162,9 +166,17 @@ router.get('/workflows/runs/:runId', asyncHandler((req, res) => {
 }));
 
 router.post('/workflows/runs/:runId/execute', asyncHandler(async (req, res) => {
-  const run = await platform.workflow.executeAll(req.params.runId);
+  const run = platform.workflow.getRun(req.params.runId);
   if (!run) return res.status(404).json({ message: 'Run not found' });
-  res.json(run);
+  
+  if (run.status !== 'running') {
+    return res.status(400).json({ message: 'Run is not in running state', status: run.status });
+  }
+
+  // Execute asynchronously
+  platform.workflow.executeAll(req.params.runId).catch(err => console.error("Workflow failed:", err));
+  
+  res.status(202).json(run);
 }));
 
 router.post('/workflows/runs/:runId/complete', asyncHandler((req, res) => {

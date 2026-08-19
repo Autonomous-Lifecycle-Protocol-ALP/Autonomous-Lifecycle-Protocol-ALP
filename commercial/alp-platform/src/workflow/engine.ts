@@ -1,42 +1,4 @@
-export interface WorkflowStep {
-  id: string;
-  name: string;
-  type: "task" | "condition" | "parallel" | "sequence" | "delay";
-  config: Record<string, unknown>;
-  dependencies?: string[];
-  retries?: number;
-  backoffFactor?: number;
-  maxRetryDelayMs?: number;
-  timeoutMs?: number;
-}
-
-export interface WorkflowDefinition {
-  id: string;
-  name: string;
-  description: string;
-  steps: WorkflowStep[];
-  triggers: string[];
-}
-
-export interface WorkflowStepEvent {
-  stepId: string;
-  timestamp: string;
-  event: "start" | "success" | "failure" | "retry";
-  attempt?: number;
-  error?: string;
-}
-
-export interface WorkflowRun {
-  runId: string;
-  workflowId: string;
-  status: "pending" | "running" | "completed" | "failed" | "cancelled";
-  currentStep?: string;
-  results: Record<string, unknown>;
-  stepEvents?: WorkflowStepEvent[];
-  startedAt?: string;
-  completedAt?: string;
-  error?: string;
-}
+import { WorkflowStep, WorkflowDefinition, WorkflowRun, WorkflowStepEvent } from "../types";
 
 export interface WorkflowEngineOptions {
   maxConcurrentRuns?: number;
@@ -49,7 +11,7 @@ export interface WorkflowPersistenceStore {
   deleteRun(runId: string): Promise<void> | void;
 }
 
-export type StepExecutor = (step: WorkflowStep, context: Record<string, unknown>) => Promise<unknown>;
+export type StepExecutor = (step: WorkflowStep, context: Record<string, unknown>, signal?: AbortSignal) => Promise<unknown>;
 
 export class WorkflowEngine {
   private readonly definitions = new Map<string, WorkflowDefinition>();
@@ -58,6 +20,7 @@ export class WorkflowEngine {
   private readonly defaultTimeoutMs: number;
   private readonly executors = new Map<string, StepExecutor>();
   private readonly pendingTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
+  private readonly runControllers = new Map<string, AbortController>();
   private readonly persistenceStore?: WorkflowPersistenceStore;
 
   constructor(options: WorkflowEngineOptions = {}, persistenceStore?: WorkflowPersistenceStore) {
@@ -93,10 +56,12 @@ export class WorkflowEngine {
       workflowId,
       status: "running",
       results: { ...initialContext },
+      completedSteps: [],
       stepEvents: [],
       startedAt: new Date().toISOString(),
     };
 
+    this.runControllers.set(runId, new AbortController());
     this.runs.set(runId, run);
     this.persistRun(run);
     return run;
@@ -113,7 +78,10 @@ export class WorkflowEngine {
     if (persisted.status !== "running") return persisted;
 
     if (!persisted.stepEvents) persisted.stepEvents = [];
+    if (!persisted.completedSteps) persisted.completedSteps = Object.keys(persisted.results);
+    
     this.runs.set(runId, persisted);
+    this.runControllers.set(runId, new AbortController());
     return persisted;
   }
 
@@ -152,6 +120,8 @@ export class WorkflowEngine {
     }
 
     const timeout = nextStep.timeoutMs ?? this.defaultTimeoutMs;
+    const abortController = this.runControllers.get(runId) ?? new AbortController();
+    
     const timeoutHandle = setTimeout(() => {
       if (run.status === "running" && run.currentStep === nextStep.id) {
         run.status = "failed";
@@ -164,6 +134,7 @@ export class WorkflowEngine {
           error: run.error,
         });
         this.pendingTimeouts.delete(runId);
+        abortController.abort(new Error("Timeout"));
         this.persistRun(run);
       }
     }, timeout);
@@ -183,10 +154,18 @@ export class WorkflowEngine {
         attempt: 0,
       });
 
-      while (attempt <= retries) {
+      while (attempt <= retries && run.status === "running") {
         try {
-          const result = await executor(nextStep, run.results);
+          const result = await executor(nextStep, run.results, abortController.signal);
+          
+          if (run.status !== "running") {
+            throw new Error(`Run was aborted with status: ${run.status}`);
+          }
+          
           run.results[nextStep.id] = result;
+          run.completedSteps = run.completedSteps || [];
+          run.completedSteps.push(nextStep.id);
+          
           run.stepEvents.push({
             stepId: nextStep.id,
             timestamp: new Date().toISOString(),
@@ -196,6 +175,11 @@ export class WorkflowEngine {
           break;
         } catch (error) {
           lastError = error;
+          
+          if (run.status !== "running") {
+            return run;
+          }
+          
           attempt++;
           if (attempt > retries) {
             run.status = "failed";
@@ -220,8 +204,14 @@ export class WorkflowEngine {
               attempt,
               error: lastError instanceof Error ? lastError.message : String(lastError),
             });
-            if (delayMs > 0) {
-              await new Promise((resolve) => setTimeout(resolve, delayMs));
+            if (delayMs > 0 && run.status === "running") {
+              await new Promise((resolve) => {
+                const timer = setTimeout(resolve, delayMs);
+                abortController.signal.addEventListener('abort', () => {
+                  clearTimeout(timer);
+                  resolve(null);
+                }, { once: true });
+              });
             }
           }
         }
@@ -248,6 +238,8 @@ export class WorkflowEngine {
     if (!run || run.status !== "running") return undefined;
 
     run.results[stepId] = result;
+    run.completedSteps = run.completedSteps || [];
+    run.completedSteps.push(stepId);
     run.currentStep = stepId;
     this.persistRun(run);
     return run;
@@ -261,6 +253,8 @@ export class WorkflowEngine {
       clearTimeout(this.pendingTimeouts.get(runId)!);
       this.pendingTimeouts.delete(runId);
     }
+    
+    this.runControllers.get(runId)?.abort(new Error("Run failed externally"));
 
     run.status = "failed";
     run.error = error;
@@ -277,6 +271,8 @@ export class WorkflowEngine {
       clearTimeout(this.pendingTimeouts.get(runId)!);
       this.pendingTimeouts.delete(runId);
     }
+
+    this.runControllers.get(runId)?.abort(new Error("Run cancelled"));
 
     run.status = "cancelled";
     run.completedAt = new Date().toISOString();
@@ -297,7 +293,7 @@ export class WorkflowEngine {
   }
 
   private getNextRunnableStep(run: WorkflowRun, workflow: WorkflowDefinition): WorkflowStep | undefined {
-    const completed = new Set(Object.keys(run.results));
+    const completed = new Set(run.completedSteps || []);
 
     return workflow.steps.find((step) => {
       if (completed.has(step.id)) return false;
