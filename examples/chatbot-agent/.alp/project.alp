@@ -1,0 +1,18 @@
+!alp-version: 3.0.0
+
+@project
+  id: chatbot-agent
+  status: [~]
+  description: "An example demonstrating a full-stack LLM chatbot leveraging ALP for memory and agent logic."
+  features:
+    - -> feat-support-chat
+    - -> feat-fallback-research
+
+---
+
+@goal
+  id: goal-chat
+  status: [~]
+  description: "Deploy an intelligent chatbot capable of resolving user queries or delegating to a researcher."
+  target: "Working support bot with fallback mechanism."
+  priority: high

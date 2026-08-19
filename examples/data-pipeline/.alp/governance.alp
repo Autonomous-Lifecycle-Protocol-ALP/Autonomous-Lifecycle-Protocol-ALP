@@ -1,0 +1,12 @@
+!alp-version: 3.0.0
+
+@rule
+  id: rule-pii-scrubbing
+  description: "All output datasets from the ETL pipeline must have Personally Identifiable Information (PII) removed."
+  severity: critical
+  enforcement: block
+  target: 
+    - agent-cleaner
+  conditions:
+    - "output_file.contains('email')"
+    - "output_file.contains('ssn')"

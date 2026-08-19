@@ -1,0 +1,41 @@
+!alp-version: 3.0.0
+
+@agent
+  id: agent-extractor
+  role: "Data Engineer"
+  description: "Pulls raw data from external APIs."
+  permissions:
+    - network
+  tools:
+    - curl
+    - sql-client
+  limits:
+    max_concurrent_tasks: 5
+
+---
+
+@agent
+  id: agent-cleaner
+  role: "Data Steward"
+  description: "Normalizes and cleans data, stripping PII according to governance rules."
+  permissions:
+    - read
+    - write
+  tools:
+    - python-repl
+  limits:
+    max_concurrent_tasks: 1
+
+---
+
+@agent
+  id: agent-analyst
+  role: "Data Analyst"
+  description: "Generates insights and visual reports from cleaned data."
+  permissions:
+    - read
+  tools:
+    - python-repl
+    - chart-generator
+  limits:
+    max_concurrent_tasks: 2

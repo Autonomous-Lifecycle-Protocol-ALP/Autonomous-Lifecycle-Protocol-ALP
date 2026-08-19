@@ -1,0 +1,35 @@
+!alp-version: 3.0.0
+
+@agent
+  id: agent-support
+  role: "Front-Line Support"
+  description: "Interacts directly with users, answers basic questions, and manages context."
+  permissions:
+    - read
+  tools:
+    - knowledge-base-search
+  responsibilities:
+    - Greet user
+    - Answer FAQs
+    - Trigger fallback if uncertain
+  limits:
+    max_concurrent_tasks: 10
+  workspace_access:
+    - "docs-site"
+
+---
+
+@agent
+  id: agent-researcher
+  role: "Deep Researcher"
+  description: "Performs extensive web searches and codebase scans for complex user queries."
+  permissions:
+    - read
+  tools:
+    - web-search
+    - grep
+  responsibilities:
+    - Synthesize answers from deep sources
+    - Provide citations
+  limits:
+    max_concurrent_tasks: 2
