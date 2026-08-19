@@ -1,5 +1,7 @@
-import { AlpReader, AlpObject } from './reader';
+import { AlpReader } from './reader';
+import type { AlpObject } from './reader';
 import { AlpValidator } from './validator';
+
 
 // ── Core ──────────────────────────────────────────────────────────────────────
 export * from './error';
@@ -101,7 +103,11 @@ export * from './local-storage-container';
 export * from './reasoning-core';
 
 
-export { AlpObject, AlpReader };
+export type { AlpObject };
+export { AlpReader };
+export { AlpGraph } from './graph';
+
+
 
 export class AlpParser {
   private reader: AlpReader;

@@ -80,6 +80,7 @@ app.use('/api/threat-intel', threatIntelRoutes);
 app.use('/api/zero-trust', zeroTrustRoutes);
 app.use('/api/reasoning', reasoningRoutes);
 app.use('/api/telemetry', telemetryRoutes);
+app.use('/api/hydra', require('./dist/routes/hydra').default);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

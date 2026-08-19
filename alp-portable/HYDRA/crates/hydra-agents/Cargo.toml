@@ -1,0 +1,21 @@
+[package]
+name = "hydra-agents"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+tokio.workspace = true
+hydra-tools = { path = "../hydra-tools" }
+hydra-security = { path = "../hydra-security" }
+hydra-audit = { path = "../hydra-audit" }
+
+[dev-dependencies]
+hydra-capabilities = { path = "../hydra-capabilities" }
+hydra-computer = { path = "../hydra-computer" }
+hydra-browser = { path = "../hydra-browser" }
+hydra-vision = { path = "../hydra-vision" }
+hydra-voice = { path = "../hydra-voice" }

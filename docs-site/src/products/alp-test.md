@@ -23,15 +23,10 @@ npm install @alp/test-cli
 
 ### Video Walkthrough
 
-<div class="video-placeholder">
-  <video controls poster="/videos/alp-test-poster.svg" style="width:100%;border-radius:12px;border:1px solid var(--vp-c-border);">
-    <source src="/videos/alp-test-quickstart.mp4" type="video/mp4">
-    <source src="/videos/alp-test-quickstart.webm" type="video/webm">
-    Your browser does not support the video tag.
-  </video>
-  <p style="margin-top:10px;color:var(--vp-c-text-2);font-size:0.9rem;">
-    Quickstart video showing install → baseline capture → test run in 60 seconds.
-    Drop <code>/videos/alp-test-quickstart.mp4</code> into <code>docs-site/src/.vitepress/public/videos/</code> to publish.
+<div class="video-placeholder" style="text-align:center;padding:20px;border-radius:12px;border:1px solid var(--vp-c-border);background:var(--vp-c-bg-soft);">
+  <img src="/videos/alp-test-poster.svg" alt="ALP Test Quickstart" style="max-width:100%;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.2);" />
+  <p style="margin-top:12px;color:var(--vp-c-text-2);font-size:0.9rem;">
+    Quickstart walkthrough: install &rarr; baseline capture &rarr; test execution in 60 seconds.
   </p>
 </div>
 

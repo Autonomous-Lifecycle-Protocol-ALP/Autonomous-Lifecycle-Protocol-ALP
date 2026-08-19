@@ -1,0 +1,44 @@
+[package]
+name = "hydra-daemon"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "hydra-daemon"
+path = "src/main.rs"
+
+[dependencies]
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+axum.workspace = true
+tower.workspace = true
+tower-http.workspace = true
+tonic.workspace = true
+prost.workspace = true
+reqwest = { version = "0.12", features = ["json"] }
+tracing = { version = "0.1", optional = true }
+tracing-subscriber = { version = "0.3", optional = true }
+hydra-core = { path = "../../crates/hydra-core" }
+hydra-runtime = { path = "../../crates/hydra-runtime" }
+hydra-scheduler = { path = "../../crates/hydra-scheduler" }
+hydra-health = { path = "../../crates/hydra-health" }
+hydra-security = { path = "../../crates/hydra-security" }
+hydra-orchestrator = { path = "../../crates/hydra-orchestrator" }
+dirs.workspace = true
+toml.workspace = true
+tokio-stream = "0.1"
+
+[build-dependencies]
+tonic-build.workspace = true
+prost-build.workspace = true
+
+[dev-dependencies]
+tempfile = "3"
+
+[features]
+default = ["tracing"]
+tracing = ["dep:tracing", "dep:tracing-subscriber"]

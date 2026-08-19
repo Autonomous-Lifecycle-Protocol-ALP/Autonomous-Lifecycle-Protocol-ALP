@@ -1,0 +1,10 @@
+[package]
+name = "hydra-models"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+tokio.workspace = true

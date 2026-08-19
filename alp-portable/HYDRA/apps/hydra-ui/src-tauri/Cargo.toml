@@ -1,0 +1,17 @@
+[package]
+name = "hydra-ui"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+tauri = { version = "2", features = ["devtools"] }
+tauri-plugin-shell = "2"
+serde.workspace = true
+serde_json.workspace = true
+hydra-orchestrator = { path = "../../../crates/hydra-orchestrator" }
+hydra-security = { path = "../../../crates/hydra-security" }
+hydra-core = { path = "../../../crates/hydra-core" }
+hydra-runtime = { path = "../../../crates/hydra-runtime" }
+hydra-daemon = { path = "../../../apps/hydra-daemon" }

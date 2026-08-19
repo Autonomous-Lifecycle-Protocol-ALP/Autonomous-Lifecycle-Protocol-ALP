@@ -6,6 +6,7 @@ from typing import Dict, List, Optional
 
 class TestCaseResult:
     """Represents a single test case result."""
+    __test__ = False
 
     def __init__(self, id: str, description: str, passed: bool, error: Optional[str] = None):
         self.id = id
@@ -24,6 +25,7 @@ class TestCaseResult:
 
 class TestSuiteResult:
     """Result of a test suite run."""
+    __test__ = False
 
     def __init__(self, file: str, tests: List[TestCaseResult]):
         self.file = file
@@ -53,6 +55,7 @@ class TestSuiteResult:
 
 class TestSummary:
     """Summary of all test results."""
+    __test__ = False
 
     def __init__(self, results: List[TestSuiteResult]):
         self.results = results

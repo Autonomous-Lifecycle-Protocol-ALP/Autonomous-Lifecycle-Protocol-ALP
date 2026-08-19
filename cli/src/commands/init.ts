@@ -23,6 +23,6 @@ export function initCommand(options: any) {
 
   fs.writeFileSync(path.join(targetDir, 'project.alp'), defaultProject);
   
-  console.log('✅ ALP project initialized successfully!');
+  console.log('[OK] ALP project initialized successfully!');
   console.log('Created .alp/project.alp');
 }

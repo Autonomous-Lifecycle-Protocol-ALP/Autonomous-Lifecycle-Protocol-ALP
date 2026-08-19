@@ -10,6 +10,7 @@
     "dev": "vitest"
   },
   "dependencies": {
+    "@autonomous-lifecycle-protocol-alp/hydra-main": "*",
     "@autonomous-lifecycle-protocol-alp/parser": "*",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "@types/three": "^0.160.0",

@@ -45,6 +45,11 @@ const panelIcons: Record<string, string> = {
   workflowReplay: 'playCircle',
   localStorage: 'hardDrive',
   selfHealingMesh: 'shield',
+  intelligence: 'cpu',
+  autonomy: 'zap',
+  'test-runner': 'playCircle',
+  debugger: 'bug',
+  pro: 'star',
 };
 
 const FILE_ICONS: Record<string, string> = {
@@ -98,51 +103,78 @@ const WORKSPACE_TREE: TreeNode[] = [
       { id: 'docs-api', name: 'API.md', type: 'file', path: 'docs/API.md', icon: 'fileText' },
     ],
   },
-  { id: 'root-alp', name: 'example.alp', type: 'file', path: 'example.alp', icon: 'fileText' },
-  { id: 'root-readme', name: 'README.md', type: 'file', path: 'README.md', icon: 'fileText' },
-  { id: 'root-config', name: 'alp.config.json', type: 'file', path: 'alp.config.json', icon: 'settings' },
-  { id: 'root-governance', name: 'governance.alp', type: 'file', path: 'governance.alp', icon: 'fileText' },
-  { id: 'root-contracts', name: 'contracts.alp', type: 'file', path: 'contracts.alp', icon: 'fileText' },
+  { id: 'root-project', name: 'project.alp', type: 'file', path: 'project.alp', icon: 'fileText' },
+  { id: 'root-package', name: 'package.json', type: 'file', path: 'package.json', icon: 'fileCode' },
 ];
 
-function getFileIcon(name: string): string {
-  const ext = name.includes('.') ? '.' + name.split('.').pop() : '';
-  return FILE_ICONS[ext] || 'fileText';
+function getFileIcon(filePath: string): string {
+  const ext = filePath.includes('.') ? '.' + filePath.split('.').pop() : '';
+  return FILE_ICONS[ext] ?? 'fileCode';
 }
 
-function TreeItem({ node, depth = 0, onOpenFile, activeFile }: { node: TreeNode; depth?: number; onOpenFile: (path: string) => void; activeFile: string | null }): React.JSX.Element {
-  const [expanded, setExpanded] = useState(false);
-  const isFolder = node.type === 'folder';
-  const icon = node.icon || (isFolder ? (expanded ? 'folderOpen' : 'folder') : getFileIcon(node.name));
+interface TreeItemProps {
+  node: TreeNode;
+  onOpenFile: (path: string) => void;
+  activeFile: string | null;
+  depth?: number;
+}
+
+function TreeItem({ node, onOpenFile, activeFile, depth = 0 }: TreeItemProps): React.JSX.Element {
+  const [open, setOpen] = useState(true);
+
+  const toggle = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpen((prev) => !prev);
+  }, []);
+
+  const handleClick = useCallback(() => {
+    if (node.type === 'file') {
+      onOpenFile(node.path);
+    } else {
+      setOpen((prev) => !prev);
+    }
+  }, [node, onOpenFile]);
+
+  const paddingLeft = 12 + depth * 14;
+
+  if (node.type === 'folder') {
+    return (
+      <div className="sidebar-tree-folder">
+        <div className="sidebar-tree-row" style={{ paddingLeft }} onClick={handleClick}>
+          <span className="sidebar-tree-toggle" onClick={toggle}>
+            <Icon name={open ? 'chevronDown' : 'chevronRight'} size={12} />
+          </span>
+          <span className="sidebar-tree-icon">
+            <Icon name="folderOpen" size={14} />
+          </span>
+          <span className="sidebar-tree-label">{node.name}</span>
+        </div>
+        {open && node.children && (
+          <div className="sidebar-tree-children">
+            {node.children.map((child) => (
+              <TreeItem key={child.id} node={child} onOpenFile={onOpenFile} activeFile={activeFile} depth={depth + 1} />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <div
-        className={`tree-item ${activeFile === node.path ? 'active' : ''}`}
-        style={{ paddingLeft: `${8 + depth * 16}px` }}
-        onClick={() => {
-          if (isFolder) {
-            setExpanded((prev) => !prev);
-          } else {
-            onOpenFile(node.path);
-          }
-        }}
-      >
-        <span className="tree-item-icon"><Icon name={icon as any} size={14} /></span>
-        <span className="tree-item-label">{node.name}</span>
-      </div>
-      {isFolder && expanded && node.children && (
-        <div className="tree-children">
-          {node.children.map((child) => (
-            <TreeItem key={child.id} node={child} depth={depth + 1} onOpenFile={onOpenFile} activeFile={activeFile} />
-          ))}
-        </div>
-      )}
+    <div
+      className={`sidebar-tree-row sidebar-tree-file ${activeFile === node.path ? 'active' : ''}`}
+      style={{ paddingLeft: paddingLeft + 16 }}
+      onClick={handleClick}
+    >
+      <span className="sidebar-tree-icon">
+        <Icon name={(node.icon as any) || getFileIcon(node.name) as any} size={14} />
+      </span>
+      <span className="sidebar-tree-label">{node.name}</span>
     </div>
   );
 }
 
-export function Sidebar({ state, onOpenFile, onCloseFile, onSelectAgent, activePanel, setActivePanel }: SidebarProps): React.JSX.Element {
+export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActivePanel }: SidebarProps): React.JSX.Element {
   return (
     <div className="sidebar">
       <div className="sidebar-section">
@@ -185,14 +217,24 @@ export function Sidebar({ state, onOpenFile, onCloseFile, onSelectAgent, activeP
       </div>
 
       <div className="sidebar-footer">
-        {['editor', 'terminal', 'agents', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'refactor', 'marketplace', 'zk', 'partition', 'crdtCanvas', 'wasmAst', 'edgeDebug', 'telemetryInspector', 'chaosEngine', 'featureFlags', 'workflowReplay', 'localStorage', 'selfHealingMesh', 'settings', 'git', 'search'].map((panel) => (
+        {['editor', 'terminal', 'agents', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'refactor', 'marketplace', 'zk', 'partition', 'crdtCanvas', 'wasmAst', 'edgeDebug', 'telemetryInspector', 'chaosEngine', 'featureFlags', 'workflowReplay', 'localStorage', 'selfHealingMesh', 'intelligence', 'autonomy', 'test-runner', 'debugger', 'git', 'search', 'pro', 'settings'].map((panel) => (
           <button
             key={panel}
             className={`sidebar-footer-item ${activePanel === panel ? 'active' : ''}`}
             onClick={() => setActivePanel(panel)}
           >
             <Icon name={panelIcons[panel] || 'box'} size={14} />
-            {panel.charAt(0).toUpperCase() + panel.slice(1)}
+            {panel === 'crdtCanvas' ? 'Canvas' :
+             panel === 'wasmAst' ? 'WASM' :
+             panel === 'edgeDebug' ? 'Edge' :
+             panel === 'telemetryInspector' ? 'Telemetry' :
+             panel === 'chaosEngine' ? 'Chaos' :
+             panel === 'featureFlags' ? 'Flags' :
+             panel === 'workflowReplay' ? 'Replay' :
+             panel === 'localStorage' ? 'Storage' :
+             panel === 'selfHealingMesh' ? 'Healing' :
+             panel === 'test-runner' ? 'Tests' :
+             panel.charAt(0).toUpperCase() + panel.slice(1)}
           </button>
         ))}
       </div>

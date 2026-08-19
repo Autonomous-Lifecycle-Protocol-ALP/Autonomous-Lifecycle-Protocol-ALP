@@ -10,6 +10,7 @@ export default defineConfig({
       'cli/tests/**/*.test.ts',
       'mcp-server/tests/**/*.test.ts',
       'sdk/typescript/test/**/*.test.ts',
+      'tests/**/*.test.ts',
       'tests/compliance/**/*.test.ts',
       'sham/tests/**/*.test.ts',
       'commercial/alp-platform/tests/**/*.test.ts',

@@ -1,0 +1,20 @@
+[system]
+mode = "balanced"
+offline = true
+
+[compute]
+max_cpu_percent = 80
+max_memory_mb = 8192
+
+[network]
+enabled = false
+
+[security]
+approval_mode = "balanced"
+
+[sandbox]
+default_timeout = 1800
+network = "none"
+
+[memory]
+enabled = true

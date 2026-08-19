@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=68", "wheel"]
-build-backend = "setuptools.backends.legacy:build"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "hydra-portable"
@@ -20,13 +20,16 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
-dependencies = []
+dependencies = [
+    "grpcio>=1.83.0",
+]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-cov", "ruff", "mypy"]
+grpc-tools = ["grpcio-tools>=1.83.0"]
 
 [tool.setuptools.packages.find]
-where = ["."]
+where = ["python"]
 include = ["hydra*"]
 
 [tool.pytest.ini_options]

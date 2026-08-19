@@ -83,10 +83,20 @@ agent-workspace/
 # Credentials and secrets
 token.txt
 login.json
+create-workspace.json
 
 # Downloaded toolchains and build artifacts
 maven/
 mingw64/
+sdk/rust/target/
+sdk/java/target/
+sdk/java/out/
+*.log
+hs_err_*.log
+
+# Temporary test directories
+.tmp-alp-memory-tests/
+agent-workspace/
 
 # Browser automation artifacts
 .playwright-mcp/
@@ -95,5 +105,6 @@ mingw64/
 playwright-report/
 test-results/
 
-# Dashboard screenshots (generated artifacts)
+# Dashboard screenshots and scratch images
 dashboard-*.png
+landing_page_bg.png

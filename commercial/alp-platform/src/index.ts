@@ -8,6 +8,25 @@ import { HardwareManager } from "./hardware/manager";
 import { MCPClient } from "./tools/mcp-client";
 import { AgentOrchestrator } from "./agents/orchestrator";
 import { CodingAgent } from "./agents/coding-agent";
+import {
+  Orchestrator,
+  AgentRegistry,
+  agentRegistry,
+  ModelRouter,
+  SecurityKernel,
+  AuditLogger as HydraAuditLogger,
+  SandboxManager,
+  KillSwitch,
+  TenantManager,
+  BillingManager,
+  MemoryRetriever,
+  sessionStore,
+  EvolutionEngine,
+  ToolRegistry,
+  toolRegistry,
+  QualityGateEngine,
+  DEFAULT_PROVIDERS,
+} from "@autonomous-lifecycle-protocol-alp/hydra-main";
 import { CostBudgetEngine } from "./budget/cost-engine";
 import { MemoryManager } from "./memory/manager";
 import { SafetyEvaluator } from "./safety/evaluator";
@@ -81,7 +100,22 @@ export class EnterprisePlatform {
   readonly cost: CostManager;
   readonly voice: VoiceMultimodalEngine;
   readonly distributed: DistributedAgentNetwork;
-  readonly selfImproving: SelfImprovingCodebase;
+    readonly selfImproving: SelfImprovingCodebase;
+    readonly hydra: {
+      orchestrator: Orchestrator;
+      agents: AgentRegistry;
+      models: ModelRouter;
+      security: SecurityKernel;
+      audit: HydraAuditLogger;
+      sandbox: SandboxManager;
+      killSwitch: KillSwitch;
+      tenant: TenantManager;
+      billing: BillingManager;
+      memory: MemoryRetriever;
+      tools: ToolRegistry;
+      verification: QualityGateEngine;
+      evolution: EvolutionEngine;
+    };
 
   constructor() {
     this.vendors = new VendorAdapterRegistry();
@@ -104,6 +138,25 @@ export class EnterprisePlatform {
     this.voice = new VoiceMultimodalEngine();
     this.distributed = new DistributedAgentNetwork();
     this.selfImproving = new SelfImprovingCodebase();
+    this.hydra = {
+      orchestrator: new Orchestrator(undefined, {
+        agentRegistry,
+        modelRouter: new ModelRouter(),
+        toolRegistry,
+      }),
+      agents: agentRegistry,
+      models: new ModelRouter(),
+      security: new SecurityKernel(),
+      audit: new HydraAuditLogger(),
+      sandbox: new SandboxManager(),
+      killSwitch: new KillSwitch(),
+      tenant: new TenantManager(),
+      billing: new BillingManager(),
+      memory: new MemoryRetriever(sessionStore),
+      tools: toolRegistry,
+      verification: new QualityGateEngine(),
+      evolution: new EvolutionEngine(agentRegistry, toolRegistry),
+    };
 
     this.registerDefaults();
   }

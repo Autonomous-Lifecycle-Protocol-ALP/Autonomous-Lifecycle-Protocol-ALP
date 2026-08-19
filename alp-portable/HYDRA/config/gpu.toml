@@ -1,0 +1,20 @@
+[system]
+mode = "gpu"
+offline = false
+
+[compute]
+max_cpu_percent = 60
+max_memory_mb = 32768
+
+[network]
+enabled = true
+
+[security]
+approval_mode = "balanced"
+
+[sandbox]
+default_timeout = 1800
+network = "restricted"
+
+[memory]
+enabled = true

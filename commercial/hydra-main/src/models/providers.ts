@@ -1,0 +1,237 @@
+import { ModelProvider } from "./router";
+
+export const OPENAI_PROVIDER: ModelProvider = {
+  id: "openai",
+  name: "OpenAI",
+  type: "openai",
+  defaultModel: "gpt-4o",
+  healthy: true,
+  latencyMs: 450,
+  lastChecked: new Date().toISOString(),
+  models: [
+    {
+      id: "gpt-4o",
+      name: "GPT-4o",
+      contextWindow: 128000,
+      maxOutput: 16384,
+      costPer1kInput: 0.005,
+      costPer1kOutput: 0.015,
+      supportsTools: true,
+      supportsVision: true,
+      supportsStreaming: true,
+      tier: "frontier",
+    },
+    {
+      id: "gpt-4o-mini",
+      name: "GPT-4o Mini",
+      contextWindow: 128000,
+      maxOutput: 16384,
+      costPer1kInput: 0.00015,
+      costPer1kOutput: 0.0006,
+      supportsTools: true,
+      supportsVision: true,
+      supportsStreaming: true,
+      tier: "standard",
+    },
+    {
+      id: "o3",
+      name: "OpenAI o3",
+      contextWindow: 200000,
+      maxOutput: 100000,
+      costPer1kInput: 0.01,
+      costPer1kOutput: 0.04,
+      supportsTools: true,
+      supportsVision: false,
+      supportsStreaming: true,
+      tier: "premium",
+    },
+  ],
+};
+
+export const ANTHROPIC_PROVIDER: ModelProvider = {
+  id: "anthropic",
+  name: "Anthropic",
+  type: "anthropic",
+  defaultModel: "claude-sonnet-4-20250514",
+  healthy: true,
+  latencyMs: 600,
+  lastChecked: new Date().toISOString(),
+  models: [
+    {
+      id: "claude-sonnet-4-20250514",
+      name: "Claude Sonnet 4",
+      contextWindow: 200000,
+      maxOutput: 16384,
+      costPer1kInput: 0.003,
+      costPer1kOutput: 0.015,
+      supportsTools: true,
+      supportsVision: true,
+      supportsStreaming: true,
+      tier: "frontier",
+    },
+    {
+      id: "claude-3-5-haiku-20241022",
+      name: "Claude 3.5 Haiku",
+      contextWindow: 200000,
+      maxOutput: 8192,
+      costPer1kInput: 0.0008,
+      costPer1kOutput: 0.004,
+      supportsTools: true,
+      supportsVision: true,
+      supportsStreaming: true,
+      tier: "standard",
+    },
+  ],
+};
+
+export const AZURE_OPENAI_PROVIDER: ModelProvider = {
+  id: "azure",
+  name: "Azure OpenAI",
+  type: "azure",
+  defaultModel: "gpt-4o",
+  healthy: true,
+  latencyMs: 500,
+  lastChecked: new Date().toISOString(),
+  models: [
+    {
+      id: "azure-gpt-4o",
+      name: "Azure GPT-4o",
+      contextWindow: 128000,
+      maxOutput: 16384,
+      costPer1kInput: 0.005,
+      costPer1kOutput: 0.015,
+      supportsTools: true,
+      supportsVision: true,
+      supportsStreaming: true,
+      tier: "frontier",
+    },
+  ],
+};
+
+export const AWS_BEDROCK_PROVIDER: ModelProvider = {
+  id: "aws",
+  name: "AWS Bedrock",
+  type: "aws",
+  defaultModel: "anthropic.claude-3-sonnet",
+  healthy: true,
+  latencyMs: 700,
+  lastChecked: new Date().toISOString(),
+  models: [
+    {
+      id: "anthropic.claude-3-sonnet",
+      name: "Claude 3 Sonnet (Bedrock)",
+      contextWindow: 200000,
+      maxOutput: 4096,
+      costPer1kInput: 0.003,
+      costPer1kOutput: 0.015,
+      supportsTools: true,
+      supportsVision: true,
+      supportsStreaming: true,
+      tier: "frontier",
+    },
+  ],
+};
+
+export const GCP_VERTEX_PROVIDER: ModelProvider = {
+  id: "gcp",
+  name: "GCP Vertex AI",
+  type: "gcp",
+  defaultModel: "gemini-2.0-flash",
+  healthy: true,
+  latencyMs: 550,
+  lastChecked: new Date().toISOString(),
+  models: [
+    {
+      id: "gemini-2.0-flash",
+      name: "Gemini 2.0 Flash",
+      contextWindow: 1000000,
+      maxOutput: 8192,
+      costPer1kInput: 0.0001,
+      costPer1kOutput: 0.0004,
+      supportsTools: true,
+      supportsVision: true,
+      supportsStreaming: true,
+      tier: "standard",
+    },
+  ],
+};
+
+export const OLLAMA_PROVIDER: ModelProvider = {
+  id: "ollama",
+  name: "Ollama (Local)",
+  type: "ollama",
+  defaultModel: "llama3.1",
+  healthy: true,
+  latencyMs: 200,
+  lastChecked: new Date().toISOString(),
+  models: [
+    {
+      id: "llama3.1",
+      name: "Llama 3.1 (8B)",
+      contextWindow: 128000,
+      maxOutput: 4096,
+      costPer1kInput: 0,
+      costPer1kOutput: 0,
+      supportsTools: true,
+      supportsVision: false,
+      supportsStreaming: true,
+      tier: "budget",
+    },
+    {
+      id: "llama3.1:70b",
+      name: "Llama 3.1 (70B)",
+      contextWindow: 128000,
+      maxOutput: 4096,
+      costPer1kInput: 0,
+      costPer1kOutput: 0,
+      supportsTools: true,
+      supportsVision: false,
+      supportsStreaming: true,
+      tier: "standard",
+    },
+  ],
+};
+
+export const LOCAL_PROVIDER: ModelProvider = {
+  id: "local",
+  name: "Local CPU",
+  type: "local",
+  defaultModel: "tinyllama",
+  healthy: true,
+  latencyMs: 1000,
+  lastChecked: new Date().toISOString(),
+  models: [
+    {
+      id: "tinyllama",
+      name: "TinyLlama (1.1B)",
+      contextWindow: 32768,
+      maxOutput: 2048,
+      costPer1kInput: 0,
+      costPer1kOutput: 0,
+      supportsTools: false,
+      supportsVision: false,
+      supportsStreaming: false,
+      tier: "budget",
+    },
+  ],
+};
+
+export {
+  executeOpenAI,
+  executeAnthropic,
+  executeAzureOpenAI,
+  executeAWSBedrock,
+  executeGCPVertex,
+  executeOllama,
+  executeLocal,
+} from "./adapters";
+
+export const DEFAULT_PROVIDERS: ModelProvider[] = [
+  OPENAI_PROVIDER,
+  ANTHROPIC_PROVIDER,
+  AZURE_OPENAI_PROVIDER,
+  AWS_BEDROCK_PROVIDER,
+  GCP_VERTEX_PROVIDER,
+  OLLAMA_PROVIDER,
+  LOCAL_PROVIDER,
+];

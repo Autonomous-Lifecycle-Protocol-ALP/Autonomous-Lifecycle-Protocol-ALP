@@ -14,6 +14,8 @@ export default defineConfig({
       'node:buffer': path.resolve(__dirname, 'src/shims/buffer.ts'),
       'node:child_process': path.resolve(__dirname, 'src/shims/child_process.ts'),
       child_process: path.resolve(__dirname, 'src/shims/child_process.ts'),
+      '@autonomous-lifecycle-protocol-alp/parser': path.resolve(__dirname, '../parser/src/index.ts'),
     },
   },
 })
+

@@ -24,6 +24,7 @@
     "socket.io": "^4.7.5"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "nodemon": "^3.1.4",
     "supertest": "^6.3.4",
     "vitest": "^4.1.10"

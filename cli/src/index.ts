@@ -61,6 +61,7 @@ import { archiveCommand } from './commands/archive';
 import { deduplicateCommand } from './commands/deduplicate';
 import { promoteCommand } from './commands/promote';
 import { registerReasonCommand } from './commands/reason';
+import { integrateCommand } from './commands/integrate';
 const program = new Command();
 
 program
@@ -72,6 +73,15 @@ program
   .command('init')
   .description('Initialize a new ALP project in the current directory')
   .action(initCommand);
+
+program
+  .command('integrate')
+  .description('Scaffold AI agent and CI/CD integration files (cursor, claude, github, all)')
+  .argument('[target]', 'Target integration: cursor, claude, github, all', 'all')
+  .option('-f, --force', 'Overwrite existing integration files')
+  .action((target, opts) => {
+    integrateCommand(target, opts);
+  });
 
 program
   .command('validate')
