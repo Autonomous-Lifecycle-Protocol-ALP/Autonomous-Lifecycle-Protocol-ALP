@@ -20,7 +20,7 @@ export function registerCRDTCanvasCommand(program: Command) {
 
       const snapshot = engine.exportCanvas();
 
-      console.log('\n🎨 Real-Time Multiplayer CRDT Canvas (v64.0.0)');
+      console.log('\n[STYLE] Real-Time Multiplayer CRDT Canvas (v64.0.0)');
       console.log('==============================================');
       console.log(`  Canvas ID:       ${snapshot.canvasId}`);
       console.log(`  Active Peers:    ${snapshot.peers.length}`);
@@ -31,6 +31,6 @@ export function registerCRDTCanvasCommand(program: Command) {
       snapshot.nodes.forEach(n => {
         console.log(`    - [${n.type}] "${n.title}" v${n.version} @ (${n.position.x}, ${n.position.y})`);
       });
-      console.log(`  Status:          ✅ ACTIVE & SYNCED\n`);
+      console.log(`  Status:          [OK] ACTIVE & SYNCED\n`);
     });
 }

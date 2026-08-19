@@ -50,7 +50,7 @@ export function registerFeatureFlagCommand(program: Command) {
           status: options.status,
           rolloutPercentage: options.rollout || 0,
         });
-        console.log(`  ✅ Created flag: ${flag.flagId}`);
+        console.log(`  [OK] Created flag: ${flag.flagId}`);
         console.log(`     Name:     ${flag.name}`);
         console.log(`     Status:   ${flag.status}`);
         console.log(`     Rollout:  ${flag.rolloutPercentage}%`);
@@ -60,22 +60,22 @@ export function registerFeatureFlagCommand(program: Command) {
 
       // List flags
       const flags = engine.getFlags();
-      console.log('📋 Feature Flags:');
+      console.log('[LIST] Feature Flags:');
       console.log('─────────────────────────────────────────────────────────────────');
       console.log('  Name                          Status       Rollout  Variants  Kill');
       console.log('─────────────────────────────────────────────────────────────────');
       for (const f of flags) {
-        const statusIcon = f.status === 'ENABLED' ? '🟢' : f.status === 'ROLLOUT' ? '🟡' : f.status === 'EXPERIMENT' ? '🔬' : '⚫';
-        console.log(`  ${statusIcon} ${f.name.padEnd(28)} ${f.status.padEnd(13)}${String(f.rolloutPercentage + '%').padEnd(9)}${String(f.variants.length).padEnd(10)}${f.killSwitch ? '🔴' : '⚪'}`);
+        const statusIcon = f.status === 'ENABLED' ? '[UP]' : f.status === 'ROLLOUT' ? '[WARN]' : f.status === 'EXPERIMENT' ? '[VERIFY]' : '⚫';
+        console.log(`  ${statusIcon} ${f.name.padEnd(28)} ${f.status.padEnd(13)}${String(f.rolloutPercentage + '%').padEnd(9)}${String(f.variants.length).padEnd(10)}${f.killSwitch ? '[DOWN]' : '⚪'}`);
       }
       console.log();
 
       // Evaluate each flag for the target agent
-      console.log('🎯 Flag Evaluations:');
+      console.log('[TARGET] Flag Evaluations:');
       console.log('─────────────────────────────────────────────────────────────────');
       for (const f of flags) {
         const ev = engine.evaluate(f.flagId, options.agent, options.env);
-        const icon = ev.enabled ? '✅' : '❌';
+        const icon = ev.enabled ? '[OK]' : '[FAIL]';
         const variantInfo = ev.variant ? ` → variant: ${ev.variant.name}` : '';
         console.log(`  ${icon} ${f.name.padEnd(28)} ${ev.reason.padEnd(22)}${variantInfo}`);
       }
@@ -89,6 +89,6 @@ export function registerFeatureFlagCommand(program: Command) {
         console.log(`  [${entry.action.padEnd(10)}] ${entry.details}`);
       }
       console.log();
-      console.log('✅ Feature flag inspection complete.\n');
+      console.log('[OK] Feature flag inspection complete.\n');
     });
 }

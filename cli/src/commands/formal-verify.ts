@@ -24,7 +24,7 @@ export function registerFormalVerifyCommand(program: Command) {
       console.log('\n📜 Formal Verification Proof Receipt (v23.0.0)');
       console.log('==============================================');
       console.log(`  Spec Target:    ${proof.targetSpec}`);
-      console.log(`  Deadlock-Free: ${proof.deadlockFree ? '✅ YES' : '❌ NO'}`);
+      console.log(`  Deadlock-Free: ${proof.deadlockFree ? '[OK] YES' : '[FAIL] NO'}`);
       console.log(`  Invariants:     ${proof.invariantsSatisfied}/${states.length} Satisfied`);
       console.log(`  TLA+ Hash:      ${proof.tlaSpecHash.slice(0, 16)}...\n`);
     });

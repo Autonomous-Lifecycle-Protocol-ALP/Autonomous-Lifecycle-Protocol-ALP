@@ -42,7 +42,7 @@ export function scheduleCommand(options?: ScheduleOptions) {
     }
     // Persist the change back to the source file.
     persistEnabled(alpDir, targetId, enable);
-    console.log(`✅ @timeline '${targetId}' ${enable ? 'enabled' : 'disabled'}.`);
+    console.log(`[OK] @timeline '${targetId}' ${enable ? 'enabled' : 'disabled'}.`);
     return;
   }
 

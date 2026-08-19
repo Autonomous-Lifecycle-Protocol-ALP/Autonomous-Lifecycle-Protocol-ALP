@@ -33,11 +33,11 @@ export function graphCommand(filePath?: string) {
     try {
       graph.detectCycles();
     } catch (err: any) {
-      console.error(`❌ Graph validation failed: ${err.message}`);
+      console.error(`[FAIL] Graph validation failed: ${err.message}`);
       process.exit(1);
     }
 
-    console.log('\n📦 ALP Dependency Graph');
+    console.log('\n[PKG] ALP Dependency Graph');
     console.log('=======================\n');
     const tree = graph.toTextTree();
     if (tree) {
@@ -49,9 +49,9 @@ export function graphCommand(filePath?: string) {
     
   } catch (err: any) {
     if (err instanceof AlpError) {
-      console.error(`❌ Parse Error: ${err.message}`);
+      console.error(`[FAIL] Parse Error: ${err.message}`);
     } else {
-      console.error(`❌ Unexpected Error: ${err.message}`);
+      console.error(`[FAIL] Unexpected Error: ${err.message}`);
     }
     process.exit(1);
   }

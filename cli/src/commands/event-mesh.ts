@@ -18,7 +18,7 @@ export function registerEventMeshCommand(program: Command) {
       const engine = new EventMeshEngine();
       const event = engine.publish(id, topic, senderAgent, payload, options.type as MeshEventType);
 
-      console.log('\n📡 Event Published to Mesh (v35.0.0)');
+      console.log('\n[SIGNAL] Event Published to Mesh (v35.0.0)');
       console.log('====================================');
       console.log(`  Event ID:     ${event.id}`);
       console.log(`  Topic:        ${event.topic}`);

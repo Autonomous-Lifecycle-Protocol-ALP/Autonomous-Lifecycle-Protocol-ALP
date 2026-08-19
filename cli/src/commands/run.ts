@@ -108,7 +108,7 @@ export function runCommand(taskId?: string, options?: RunOptions) {
     }
 
     if (!targetTask) {
-      console.log('✅ No actionable tasks found. All tasks are either done or blocked.');
+      console.log('[OK] No actionable tasks found. All tasks are either done or blocked.');
       return;
     }
   }
@@ -141,13 +141,13 @@ export function runCommand(taskId?: string, options?: RunOptions) {
 
   // ─── 5. Output / Execution ───────────────────────────────────────────
   if (options?.dryRun) {
-    console.log('\n🔍 DRY RUN — Context Bundle for Task Execution\n');
+    console.log('\n[SCAN] DRY RUN — Context Bundle for Task Execution\n');
     console.log('═'.repeat(60));
     console.log(contextBundle);
     console.log('═'.repeat(60));
     console.log('\nTo execute this task, remove the --dry-run flag.');
   } else if (options?.provider) {
-    console.log(`\n🚀 ALP Execution Engine — Powered by ${options.provider.toUpperCase()}\n`);
+    console.log(`\n[START] ALP Execution Engine — Powered by ${options.provider.toUpperCase()}\n`);
     const llm = createProvider(options.provider, options.model);
     
     const loop = new LoopEngine({
@@ -159,9 +159,9 @@ export function runCommand(taskId?: string, options?: RunOptions) {
       if (event.type === 'stage_enter') {
         console.log(`[Loop] Iteration ${event.iteration} — Entering stage: ${event.stage}`);
       } else if (event.type === 'completed') {
-        console.log(`✅ Task ${(targetTask as any).id} completed successfully in ${event.iteration} iterations!`);
+        console.log(`[OK] Task ${(targetTask as any).id} completed successfully in ${event.iteration} iterations!`);
       } else if (event.type === 'failed') {
-        console.error(`❌ Task execution failed:`, event.data);
+        console.error(`[FAIL] Task execution failed:`, event.data);
       }
     });
 
@@ -186,22 +186,22 @@ export function runCommand(taskId?: string, options?: RunOptions) {
     });
 
   } else {
-    console.log('\n🚀 ALP Execution Engine\n');
+    console.log('\n[START] ALP Execution Engine\n');
     console.log(`  Task:    ${(targetTask as any).id}`);
     console.log(`  Type:    @${(targetTask as any)._type}`);
     console.log(`  Agent:   ${agent ? (agent as any).id : 'default'}`);
     console.log(`  Status:  ${(targetTask as any).status || '[ ]'}`);
     console.log('');
     console.log('═'.repeat(60));
-    console.log('📋 CONTEXT BUNDLE (pass to your LLM agent)');
+    console.log('[LIST] CONTEXT BUNDLE (pass to your LLM agent)');
     console.log('═'.repeat(60));
     console.log(contextBundle);
     console.log('═'.repeat(60));
     console.log('');
-    console.log('💡 Integration: Pipe this output to your agent:');
+    console.log('[TIP] Integration: Pipe this output to your agent:');
     console.log('   alp run --task "' + (targetTask as any).id + '" | claude-code');
     console.log('   alp run --task "' + (targetTask as any).id + '" | cursor-agent');
-    console.log('\n💡 Native Execution: Run with --provider to execute natively:');
+    console.log('\n[TIP] Native Execution: Run with --provider to execute natively:');
     console.log('   alp run --provider openai --model gpt-4o');
   }
 }
@@ -440,7 +440,7 @@ async function runNetworkedSwarm(options: RunOptions, alpDir: string) {
   const cfg = resolveSwarmConfig(alpDir, swarmId, process.env.ALP_SWARM_COORDINATOR, process.env.ALP_SWARM_TOKEN);
   const client = new SwarmClient(cfg);
   const node = await client.join();
-  console.log(`\n🌐 Joined networked swarm "${swarmId}" as node "${node.node_id}".`);
+  console.log(`\n[NET] Joined networked swarm "${swarmId}" as node "${node.node_id}".`);
 
   let currentClaim: string | null = null;
   const stop = client.startHeartbeat(() => currentClaim);
@@ -460,7 +460,7 @@ async function runNetworkedSwarm(options: RunOptions, alpDir: string) {
       allObjects.filter((obj) => obj.status === '[x]' || obj.status === 'done').map((obj) => obj.id)
     );
     if (tasks.every((t) => doneIds.has(t.id))) {
-      console.log(`[${node.node_id}] 🏁 All tasks completed. Leaving swarm.`);
+      console.log(`[${node.node_id}] [FINISH] All tasks completed. Leaving swarm.`);
       break;
     }
     let target: AlpObject | null = null;
@@ -476,7 +476,7 @@ async function runNetworkedSwarm(options: RunOptions, alpDir: string) {
     const claim = await client.claim(target.id as string, agentId);
     if (!claim) { await new Promise((r) => setTimeout(r, 1000)); continue; }
     currentClaim = target.id as string;
-    console.log(`[${node.node_id}] 🚀 Claimed task: ${target.id} (via coordinator)`);
+    console.log(`[${node.node_id}] [START] Claimed task: ${target.id} (via coordinator)`);
     logEvent(alpDir, 'task_claim', { task_id: target.id as string, agent: agentId, source: 'swarm' });
 
     if (options.provider) {
@@ -525,7 +525,7 @@ async function runSwarmMode(options: RunOptions, alpDir: string) {
   // Purge locks from dead processes so a crashed run can't deadlock the swarm.
   const purged = lockManager.cleanup();
   if (purged > 0) {
-    console.log(`🧹 Cleared ${purged} stale lock(s) from previous runs.`);
+    console.log(`[CLEAN] Cleared ${purged} stale lock(s) from previous runs.`);
   }
   const parser = new AlpParser();
   
@@ -546,7 +546,7 @@ async function runSwarmMode(options: RunOptions, alpDir: string) {
       
       const allTasksDone = tasks.every(t => doneIds.has(t.id));
       if (allTasksDone) {
-        console.log(`[Worker ${id}] 🏁 All tasks completed! Shutting down.`);
+        console.log(`[Worker ${id}] [FINISH] All tasks completed! Shutting down.`);
         break;
       }
       
@@ -583,13 +583,13 @@ async function runSwarmMode(options: RunOptions, alpDir: string) {
            await new Promise(resolve => setTimeout(resolve, 2000));
            continue;
         } else {
-           console.log(`[Worker ${id}] 🛑 No actionable tasks found and none pending. Exiting.`);
+           console.log(`[Worker ${id}] [STOP] No actionable tasks found and none pending. Exiting.`);
            break;
         }
       }
       
       idleCount = 0;
-      console.log(`\n[Worker ${id}] 🚀 Claimed task: ${targetTask.id}`);
+      console.log(`\n[Worker ${id}] [START] Claimed task: ${targetTask.id}`);
       logEvent(alpDir, 'task_claim', {
         task_id: targetTask.id as string,
         worker: id,
@@ -606,9 +606,9 @@ async function runSwarmMode(options: RunOptions, alpDir: string) {
       const contextBundle = buildContextBundle(targetTask, project || null, agent || null, memories, rules, decisions, allObjects);
       
       if (options.dryRun) {
-        console.log(`[Worker ${id}] 🔍 DRY RUN: Simulating execution of ${targetTask.id}...`);
+        console.log(`[Worker ${id}] [SCAN] DRY RUN: Simulating execution of ${targetTask.id}...`);
         await new Promise(resolve => setTimeout(resolve, 3000)); // Simulate LLM latency
-        console.log(`[Worker ${id}] ✅ Simulated completion of ${targetTask.id}.`);
+        console.log(`[Worker ${id}] [OK] Simulated completion of ${targetTask.id}.`);
         updateTaskStatusOnFile(targetTask.id as string, '[x]', alpDir);
         logEvent(alpDir, 'task_status', { task_id: targetTask.id as string, status: '[x]', worker: id, message: 'dry-run complete' });
         lockManager.release(targetTask.id as string);
@@ -645,11 +645,11 @@ async function runSwarmMode(options: RunOptions, alpDir: string) {
         }
         
         if (success) {
-           console.log(`[Worker ${id}] ✅ Task ${targetTask.id} completed successfully.`);
+           console.log(`[Worker ${id}] [OK] Task ${targetTask.id} completed successfully.`);
            updateTaskStatusOnFile(targetTask.id as string, '[x]', alpDir);
            logEvent(alpDir, 'task_status', { task_id: targetTask.id as string, status: '[x]', worker: id });
         } else {
-           console.log(`[Worker ${id}] ❌ Task ${targetTask.id} failed verification.`);
+           console.log(`[Worker ${id}] [FAIL] Task ${targetTask.id} failed verification.`);
            updateTaskStatusOnFile(targetTask.id as string, '[!]', alpDir);
            logEvent(alpDir, 'task_status', { task_id: targetTask.id as string, status: '[!]', worker: id, message: 'failed verification' });
         }
@@ -666,7 +666,7 @@ async function runSwarmMode(options: RunOptions, alpDir: string) {
   
   await Promise.all(workers);
   logEvent(alpDir, 'run_end', { message: 'Swarm execution complete' });
-  console.log(`\n🎉 Swarm Execution Complete!`);
+  console.log(`\n[DONE] Swarm Execution Complete!`);
 }
 
 

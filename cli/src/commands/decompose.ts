@@ -22,7 +22,7 @@ export function registerDecomposeCommand(program: Command) {
 
       const analysis = engine.analyzeMonolith(targetPath, mockFiles);
 
-      console.log('\n🏗️ Monolith Architecture Analysis (v28.0.0)');
+      console.log('\n[BUILD] Monolith Architecture Analysis (v28.0.0)');
       console.log('==========================================');
       console.log(`  Target Path:    ${analysis.targetPath}`);
       console.log(`  Total Files:    ${analysis.totalFiles}`);
@@ -45,7 +45,7 @@ export function registerDecomposeCommand(program: Command) {
       const analysis = engine.analyzeMonolith(targetPath, mockFiles);
       const plan = engine.decompose(analysis);
 
-      console.log('\n🧩 Microservice Decomposition Plan (v28.0.0)');
+      console.log('\n[PLUGIN] Microservice Decomposition Plan (v28.0.0)');
       console.log('==========================================');
       console.log(`  Refactor ID: ${plan.id}`);
       console.log(`  Services:    ${plan.proposedServices.join(', ')}`);

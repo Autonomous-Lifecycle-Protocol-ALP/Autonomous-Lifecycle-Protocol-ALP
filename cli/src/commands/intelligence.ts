@@ -109,7 +109,7 @@ export function intelligenceCommand(subcommand: string, options: IntelligenceOpt
       }
       console.log('\n Code Review Findings\n');
       for (const f of findings) {
-        const icon = f.severity === 'error' ? '❌' : f.severity === 'warn' ? '⚠️' : 'ℹ️';
+        const icon = f.severity === 'error' ? '[FAIL]' : f.severity === 'warn' ? '[WARN] ' : 'ℹ️';
         console.log(`  ${icon} [${f.kind}] ${f.object_id}: ${f.message}`);
         if (f.suggestion) {
           console.log(`      Suggestion: ${f.suggestion}`);

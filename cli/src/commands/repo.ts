@@ -34,8 +34,8 @@ export function repoCommand(sub: string | undefined, options?: { fetch?: boolean
       const repos = resolver.discover();
       for (const r of repos) {
         if (r.fetched) {
-          try { resolver.fetch(r); console.log(`✅ Fetched repo "${r.id}" -> ${r.localPath}`); }
-          catch (e: any) { console.error(`❌ Failed to fetch "${r.id}": ${e.message}`); process.exit(1); }
+          try { resolver.fetch(r); console.log(`[OK] Fetched repo "${r.id}" -> ${r.localPath}`); }
+          catch (e: any) { console.error(`[FAIL] Failed to fetch "${r.id}": ${e.message}`); process.exit(1); }
         } else {
           console.log(`• ${r.id}: local path, nothing to fetch.`);
         }
@@ -51,7 +51,7 @@ export function repoCommand(sub: string | undefined, options?: { fetch?: boolean
       }
       const result = resolver.resolve();
       const repoCount = result.repos.length;
-      console.log(`🌐 Federation: ${repoCount} repo(s) + local workspace, ${result.objects.size} objects, ${result.references.length} cross-repo reference(s).`);
+      console.log(`[NET] Federation: ${repoCount} repo(s) + local workspace, ${result.objects.size} objects, ${result.references.length} cross-repo reference(s).`);
 
       if (subcmd === 'graph') {
         console.log('\nNodes:');
@@ -61,10 +61,10 @@ export function repoCommand(sub: string | undefined, options?: { fetch?: boolean
       }
 
       if (result.dangling.length) {
-        console.log(`\n⚠️  ${result.dangling.length} unresolved cross-repo reference(s):`);
+        console.log(`\n[WARN]  ${result.dangling.length} unresolved cross-repo reference(s):`);
         for (const d of result.dangling) console.log(`  • ${d.from} → ${d.raw}`);
       } else {
-        console.log('\n✅ All cross-repo references resolve.');
+        console.log('\n[OK] All cross-repo references resolve.');
       }
       return;
     }

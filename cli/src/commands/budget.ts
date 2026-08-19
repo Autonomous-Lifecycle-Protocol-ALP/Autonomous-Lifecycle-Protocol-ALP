@@ -35,7 +35,7 @@ export function registerBudgetCommand(program: Command) {
       const engine = new CostBudgetEngine();
       const route = engine.selectOptimalModel(complexity as any, maxCostUSD);
 
-      console.log('\n🎯 Optimal LLM Model Route (v25.0.0)');
+      console.log('\n[TARGET] Optimal LLM Model Route (v25.0.0)');
       console.log('===================================');
       console.log(`  Complexity:    ${complexity}`);
       console.log(`  Target Provider: ${route.provider}`);

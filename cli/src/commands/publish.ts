@@ -21,16 +21,16 @@ export async function publishCommand(pkgDir: string, options?: { url?: string; t
         const client = new RegistryClient(options.url);
         const signerKey = resolveSignerKey(options?.signKey);
         const meta = await client.publish(absoluteDir, signerKey);
-        console.log(`📦 Published ${meta.name}@${meta.tags?.latest ?? ''} to ${options.url}`);
+        console.log(`[PKG] Published ${meta.name}@${meta.tags?.latest ?? ''} to ${options.url}`);
       } else {
         const store = new RegistryStore(process.cwd());
         const signerKey = resolveSignerKey(options?.signKey);
         const meta = store.publish(absoluteDir, signerKey);
-        console.log(`📦 Published ${meta.name} — ${Object.keys(meta.versions).length} version(s).`);
+        console.log(`[PKG] Published ${meta.name} — ${Object.keys(meta.versions).length} version(s).`);
         console.log(`   Serve it with: alp serve --registry`);
       }
   } catch (err: any) {
-    console.error(`❌ ${err.message}`);
+    console.error(`[FAIL] ${err.message}`);
     process.exit(1);
   }
 }

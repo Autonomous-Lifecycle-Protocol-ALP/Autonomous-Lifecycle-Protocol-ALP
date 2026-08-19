@@ -24,9 +24,9 @@ export async function pluginCommand(sub: string | undefined, target: string | un
       const resolver = new PluginResolver();
       try {
         await resolver.validate(pluginPath);
-        console.log(`✅ Plugin at ${target} is valid.`);
+        console.log(`[OK] Plugin at ${target} is valid.`);
       } catch (e: any) {
-        console.error(`❌ Validation failed: ${e.message}`);
+        console.error(`[FAIL] Validation failed: ${e.message}`);
         process.exit(1);
       }
       return;
@@ -40,9 +40,9 @@ export async function pluginCommand(sub: string | undefined, target: string | un
       const resolver = new PluginResolver();
       const warnings = resolver.lintPlugin(pluginPath);
       if (!warnings.length) {
-        console.log(`✅ Plugin at ${target} passed lint.`);
+        console.log(`[OK] Plugin at ${target} passed lint.`);
       } else {
-        console.log(`⚠️  Lint warnings for ${target}:`);
+        console.log(`[WARN]  Lint warnings for ${target}:`);
         for (const w of warnings) console.log(`   - ${w}`);
         process.exit(1);
       }
@@ -100,9 +100,9 @@ export async function pluginCommand(sub: string | undefined, target: string | un
       }
       try {
         await resolver.hotReload(target);
-        console.log(`✅ Hot-reloaded plugin '${target}'.`);
+        console.log(`[OK] Hot-reloaded plugin '${target}'.`);
       } catch (e: any) {
-        console.error(`❌ Hot-reload failed: ${e.message}`);
+        console.error(`[FAIL] Hot-reload failed: ${e.message}`);
         process.exit(1);
       }
       return;

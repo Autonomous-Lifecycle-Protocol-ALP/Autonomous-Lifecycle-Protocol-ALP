@@ -15,7 +15,7 @@ export function registerPartitionCommand(program: Command) {
       const alpDir = path.join(cwd, '.alp');
 
       if (!fs.existsSync(alpDir)) {
-        console.error(`\n❌ No .alp/ directory found in ${cwd}`);
+        console.error(`\n[FAIL] No .alp/ directory found in ${cwd}`);
         process.exitCode = 1;
         return;
       }
@@ -39,17 +39,17 @@ export function registerPartitionCommand(program: Command) {
       if (options.out) {
         const outPath = path.resolve(options.out);
         fs.writeFileSync(outPath, JSON.stringify(result, null, 2));
-        console.log(`\n✅ Partition plan written to ${outPath}`);
+        console.log(`\n[OK] Partition plan written to ${outPath}`);
       }
 
-      console.log('\n🌐 Multi-Region DAG Partition Plan (v50.0.0)');
+      console.log('\n[NET] Multi-Region DAG Partition Plan (v50.0.0)');
       console.log('=============================================');
       console.log(`  Total Nodes:       ${result.totalNodes}`);
       console.log(`  Cross-Region Edges: ${result.crossRegionEdgesCount}`);
       console.log(`  Target Regions:    ${targetRegions.join(', ')}\n`);
 
       for (const region of result.regions) {
-        console.log(`  📍 Region [${region.region}]:`);
+        console.log(`  [LOC] Region [${region.region}]:`);
         console.log(`     Nodes:    ${region.nodeIds.length > 0 ? region.nodeIds.join(', ') : 'None'}`);
         console.log(`     Est. Latency: ${region.estimatedLatencyMs} ms\n`);
       }

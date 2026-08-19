@@ -63,7 +63,7 @@ function printWorkflowOptimization(alpDir: string, workflowId: string) {
   const plan = optimizer.optimize(workflow);
   const d = plan as any;
 
-  console.log(`\n🔍 Cost Optimization for Workflow: ${workflowId}`);
+  console.log(`\n[SCAN] Cost Optimization for Workflow: ${workflowId}`);
   console.log('==========================================');
   console.log(`  Current cost:      $${d.current_estimated_cost.toFixed(6)}`);
   console.log(`  Optimized cost:    $${d.optimized_estimated_cost.toFixed(6)}`);

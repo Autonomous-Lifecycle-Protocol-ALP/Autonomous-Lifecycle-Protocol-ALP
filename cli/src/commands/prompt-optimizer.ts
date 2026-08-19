@@ -24,7 +24,7 @@ export function registerPromptOptimizerCommand(program: Command) {
         parseFloat(options.baseline)
       );
 
-      console.log('\n✨ Prompt Optimization Result (v32.0.0)');
+      console.log('\n[NEW] Prompt Optimization Result (v32.0.0)');
       console.log('====================================');
       console.log(`  Optimization ID:    ${res.id}`);
       console.log(`  Target Agent:       ${res.targetAgent}`);

@@ -16,12 +16,12 @@ export function registerSandboxCommand(program: Command) {
       const engine = new SandboxEnvEngine();
       const sb = engine.createSandbox(id, options.engine as SandboxEngineType, parseInt(options.mem, 10));
 
-      console.log('\n📦 Wasm Micro-Sandbox Environment Created (v26.0.0)');
+      console.log('\n[PKG] Wasm Micro-Sandbox Environment Created (v26.0.0)');
       console.log('==================================================');
       console.log(`  Sandbox ID:   ${sb.id}`);
       console.log(`  Engine:       ${sb.engineType}`);
       console.log(`  Memory Limit: ${sb.memoryMB} MB`);
-      console.log(`  Read-Only FS: ${sb.readOnlyFS ? '🔒 YES' : '🔓 NO'}`);
+      console.log(`  Read-Only FS: ${sb.readOnlyFS ? '[LOCK] YES' : '[UNLOCK] NO'}`);
       console.log(`  Status:       ${sb.status}\n`);
     });
 
@@ -37,12 +37,12 @@ export function registerSandboxCommand(program: Command) {
       const fullCmd = cmdParts.join(' ');
       const result = engine.executeInSandbox(sandboxId, fullCmd);
 
-      console.log('\n⚡ Sandbox Execution Receipt (v26.0.0)');
+      console.log('\n[FAST] Sandbox Execution Receipt (v26.0.0)');
       console.log('=====================================');
       console.log(`  Sandbox ID: ${result.sandboxId}`);
       console.log(`  Command:    ${result.command}`);
       console.log(`  Exit Code:  ${result.exitCode}`);
-      console.log(`  Isolated:   ${result.isolated ? '🛡️ TRUE' : '⚠️ UNISOLATED'}`);
+      console.log(`  Isolated:   ${result.isolated ? '[SHIELD] TRUE' : '[WARN] UNISOLATED'}`);
       console.log(`  Output:     ${result.stdout || result.stderr}\n`);
     });
 }

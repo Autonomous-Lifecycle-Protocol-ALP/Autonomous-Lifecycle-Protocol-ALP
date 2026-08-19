@@ -16,7 +16,7 @@ export function registerTenantMeshCommand(program: Command) {
       const engine = new TenantMeshEngine();
       const t = engine.createTenantMesh(tenantId, orgName, options.sso);
 
-      console.log('\n🏢 Enterprise Tenant Mesh Initialized (v27.0.0)');
+      console.log('\n[ORG] Enterprise Tenant Mesh Initialized (v27.0.0)');
       console.log('================================================');
       console.log(`  Tenant ID:   ${t.tenantId}`);
       console.log(`  Org Name:    ${t.orgName}`);
@@ -38,11 +38,11 @@ export function registerTenantMeshCommand(program: Command) {
 
       const isAllowed = engine.authorizeAction(tenantId, userOrAgent, action);
 
-      console.log('\n🔐 RBAC Authorization Decision (v27.0.0)');
+      console.log('\n[LOCK] RBAC Authorization Decision (v27.0.0)');
       console.log('=======================================');
       console.log(`  Subject:     ${userOrAgent} (${role})`);
       console.log(`  Action:      ${action}`);
-      console.log(`  Result:      ${isAllowed ? '✅ PERMITTED' : '❌ DENIED'}\n`);
+      console.log(`  Result:      ${isAllowed ? '[OK] PERMITTED' : '[FAIL] DENIED'}\n`);
     });
 }
 

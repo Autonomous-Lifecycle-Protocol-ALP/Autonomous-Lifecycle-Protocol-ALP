@@ -32,6 +32,6 @@ export function registerEdgeDebugCommand(program: Command) {
       Object.entries(session.variables).forEach(([k, v]) => {
         console.log(`    - ${k}: ${JSON.stringify(v)}`);
       });
-      console.log(`  Status:          ✅ ATTACHED & STEPPED\n`);
+      console.log(`  Status:          [OK] ATTACHED & STEPPED\n`);
     });
 }

@@ -24,7 +24,7 @@ export function registerMemoryMeshCommand(program: Command) {
         topK: parseInt(options.topK, 10),
       });
 
-      console.log(`\n🧠 Memory Mesh Search: "${term}" (v38.0.0)`);
+      console.log(`\n[BRAIN] Memory Mesh Search: "${term}" (v38.0.0)`);
       console.log('============================================');
       console.log(`  Found: ${results.length} relevant memories\n`);
 
@@ -47,7 +47,7 @@ export function registerMemoryMeshCommand(program: Command) {
       engine.storeMemory('m2', 'agent-b', 'k2', 'c2', ['core', 'v38']);
       const stats = engine.getMeshStats();
 
-      console.log('\n📊 Memory Mesh Statistics (v38.0.0)');
+      console.log('\n[STATS] Memory Mesh Statistics (v38.0.0)');
       console.log('=====================================');
       console.log(`  Total Memories:    ${stats.totalMemories}`);
       console.log(`  Active Agents:     ${stats.activeAgents}`);

@@ -21,7 +21,7 @@ export function registerTraceCommand(program: Command) {
 
       const summary = engine.getTraceSummary();
 
-      console.log('\n📊 ALP Telemetry & Span Summary (v17.0.0)');
+      console.log('\n[STATS] ALP Telemetry & Span Summary (v17.0.0)');
       console.log('==========================================');
       console.log(`  Total Spans:    ${summary.totalSpans}`);
       console.log(`  Active Spans:   ${summary.activeSpans}`);

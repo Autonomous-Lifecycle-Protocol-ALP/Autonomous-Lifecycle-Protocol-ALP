@@ -34,7 +34,7 @@ export function gitCommand(options?: GitOptions) {
 function runGit(args: string[], label: string): void {
   try {
     const output = execSync('git', { cwd: process.cwd(), encoding: 'utf8' });
-    console.log(`\n📋 ${label}`);
+    console.log(`\n[LIST] ${label}`);
     console.log(output);
   } catch (err: any) {
     console.error(`Error running git: ${err.message}`);

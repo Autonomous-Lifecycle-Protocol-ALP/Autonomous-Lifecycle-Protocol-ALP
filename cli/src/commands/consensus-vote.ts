@@ -44,14 +44,14 @@ export function registerConsensusVoteCommand(program: Command) {
 
       const res = engine.tallyConsensus(id, 5);
 
-      console.log('\n📊 Consensus Vote Tally Results (v33.0.0)');
+      console.log('\n[STATS] Consensus Vote Tally Results (v33.0.0)');
       console.log('=======================================');
       console.log(`  Proposal ID:      ${res.voteId}`);
       console.log(`  Proposal:         "${res.proposal}"`);
       console.log(`  Strategy:         ${res.strategy}`);
       console.log(`  Total Votes:      ${res.totalVotesCount}`);
       console.log(`  Winning Choice:   ${res.winningChoice}`);
-      console.log(`  Consensus Status: ${res.passed ? '✅ PASSED' : '❌ FAILED'}`);
+      console.log(`  Consensus Status: ${res.passed ? '[OK] PASSED' : '[FAIL] FAILED'}`);
       console.log('\n  Vote Breakdown:');
       for (const [choice, count] of Object.entries(res.voteBreakdown)) {
         console.log(`    - ${choice}: ${count}`);

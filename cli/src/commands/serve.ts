@@ -52,7 +52,7 @@ export function serveCommand(options?: ServeOptions) {
     // Seed the store with any history already in the log.
     const added = store.ingest(readEvents(alpDir) as any);
     store.save();
-    console.log(`💾 State store enabled (${store.size} events, +${added} new).`);
+    console.log(`[SAVE] State store enabled (${store.size} events, +${added} new).`);
   }
 
   // ─── Hosted registry (Pillar 3) ────────────────────────────────────
@@ -80,7 +80,7 @@ export function serveCommand(options?: ServeOptions) {
   if (registryStore) {
     const protectedNs = Object.keys(registryTokens).filter((k) => k !== '*').length;
     const note = protectedNs ? ` (${protectedNs} private namespace(s))` : (registryTokens['*'] ? ' (token-protected)' : '');
-    console.log(`📦 Registry enabled at /.alp/registry${note}`);
+    console.log(`[PKG] Registry enabled at /.alp/registry${note}`);
   }
 
   // ─── Networked swarm registry (Pillar 1) ────────────────────────────
@@ -767,7 +767,7 @@ async function renderAnalytics() {
     '<h2>FAILURE HOTSPOTS</h2>' +
     (a.failure_hotspots && a.failure_hotspots.length
       ? a.failure_hotspots.slice(0,5).map(sec).join('')
-      : '<div class="stat-row" style="color:var(--emerald);">Zero failure hotspots detected 🎉</div>');
+      : '<div class="stat-row" style="color:var(--emerald);">Zero failure hotspots detected [DONE]</div>');
 }
 
 function addEvent(e) {
