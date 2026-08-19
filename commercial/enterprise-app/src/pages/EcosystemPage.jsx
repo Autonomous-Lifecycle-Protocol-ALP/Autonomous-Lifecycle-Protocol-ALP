@@ -1,3 +1,4 @@
+import { FiStar } from 'react-icons/fi';
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -136,7 +137,7 @@ export default function EcosystemPage() {
                 </div>
                 <div className="text-right space-y-0.5">
                   <div className="text-xs font-mono text-emerald-400 font-bold">{skill.invocations.toLocaleString()} runs</div>
-                  <div className="text-[10px] text-amber-400 font-semibold">★ {skill.rating} / 5.0</div>
+                  <div className="text-[10px] text-amber-400 font-semibold"><FiStar className='inline-block mr-1' /> {skill.rating} / 5.0</div>
                 </div>
               </div>
             ))}

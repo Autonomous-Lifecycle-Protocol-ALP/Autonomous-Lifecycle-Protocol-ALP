@@ -1,3 +1,5 @@
+import { FiAlertCircle, FiStar, FiZap } from 'react-icons/fi';
+import { FaBug } from 'react-icons/fa';
 import { useState } from "react";
 import {
   SparklesIcon,
@@ -141,10 +143,10 @@ function ReleaseCard({ release, defaultOpen }) {
   const [expanded, setExpanded] = useState(defaultOpen);
 
   const sections = [
-    { key: "breaking", label: "Breaking Changes", icon: "🚨", items: release.breaking, color: "text-rose-400" },
-    { key: "features", label: "New Features", icon: "✨", items: release.features, color: "text-emerald-400" },
-    { key: "fixes", label: "Bug Fixes", icon: "🐛", items: release.fixes, color: "text-amber-400" },
-    { key: "performance", label: "Performance", icon: "⚡", items: release.performance, color: "text-sky-400" },
+    { key: "breaking", label: "Breaking Changes", icon: FiAlertCircle, items: release.breaking, color: "text-rose-400" },
+    { key: "features", label: "New Features", icon: FiStar, items: release.features, color: "text-emerald-400" },
+    { key: "fixes", label: "Bug Fixes", icon: FaBug, items: release.fixes, color: "text-amber-400" },
+    { key: "performance", label: "Performance", icon: FiZap, items: release.performance, color: "text-sky-400" },
   ].filter(s => s.items && s.items.length > 0);
 
   return (
@@ -191,7 +193,7 @@ function ReleaseCard({ release, defaultOpen }) {
               <div className="hidden sm:flex items-center gap-3 text-[11px] text-slate-500">
                 {release.features.length > 0 && (
                   <span className="flex items-center gap-1">
-                    <span className="text-emerald-400">✦</span> {release.features.length} features
+                    <span className="text-emerald-400"><FiStar className='inline-block mr-1' /></span> {release.features.length} features
                   </span>
                 )}
                 {release.fixes.length > 0 && (

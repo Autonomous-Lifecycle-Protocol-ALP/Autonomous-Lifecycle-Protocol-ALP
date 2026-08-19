@@ -1,3 +1,4 @@
+import { FiStar, FiCheck } from 'react-icons/fi';
 import {
   LuBrainCircuit,
   LuShieldCheck,
@@ -260,11 +261,11 @@ export const CODE_EXAMPLES = [
   {
     title: "Deploy a Swarm",
     code: `$ alp deploy --swarm prod --agents 12 --verify`,
-    output: `✦ Initializing swarm mesh with 12 autonomous agents...
+    output: `<FiStar className='inline-block mr-1' /> Initializing swarm mesh with 12 autonomous agents...
 ├── Merkle root: 0xab3f...9e2c (strict verification)
 ├── ZK policy proof generated (143ms)
 ├── Federation sync: us-east-1, eu-west-1, ap-south-1
-└── ✓ Deployed successfully in 4.2s — all agents healthy`,
+└── <FiCheck className='inline-block mr-1' /> Deployed successfully in 4.2s — all agents healthy`,
     lang: "bash",
   },
   {
@@ -277,9 +278,9 @@ const policy = ALP.policy("secure-swarm")
   .maxAgents(100)
   .region(["us-east-1", "eu-west-1"])
   .compliance("SOC2", "HIPAA");`,
-    output: `✓ Policy compiled in 12ms
-✓ ZK circuit generated (2.1MB)
-✓ Attached to swarm mesh
+    output: `<FiCheck className='inline-block mr-1' /> Policy compiled in 12ms
+<FiCheck className='inline-block mr-1' /> ZK circuit generated (2.1MB)
+<FiCheck className='inline-block mr-1' /> Attached to swarm mesh
 Ready for deployment.`,
     lang: "typescript",
   },

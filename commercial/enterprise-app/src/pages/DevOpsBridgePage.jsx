@@ -1,3 +1,4 @@
+import { FiRefreshCw } from 'react-icons/fi';
 import { AnalyticsIcon, LayersIcon } from "../components/Icons.jsx";
 import { useState, useEffect } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
@@ -168,7 +169,7 @@ export default function DevOpsBridgePage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-200">Key Benefits</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🔄</div>
+            <div className="text-2xl mb-2"><FiRefreshCw className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Automated Rollback</h3>
             <p className="text-sm text-gray-400 mt-1">Instant rollback on failed quality gates with zero-downtime deployments.</p>
           </div>

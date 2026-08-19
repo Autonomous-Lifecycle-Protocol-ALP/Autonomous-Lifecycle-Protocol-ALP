@@ -1,3 +1,4 @@
+import { FiArrowRight } from 'react-icons/fi';
 import { useState, useEffect } from "react";
 import api from "../utils/api.js";
 import {
@@ -191,7 +192,7 @@ export default function NeuromorphicStudioPage() {
                   ) : (
                     Object.entries(node.synapticWeights).map(([target, weight]) => (
                       <div key={target} className="flex justify-between items-center bg-slate-900/60 px-3 py-1.5 rounded-lg text-xs font-mono">
-                        <span className="text-slate-300">➜ {target}</span>
+                        <span className="text-slate-300"><FiArrowRight className='inline-block mr-1' /> {target}</span>
                         <span className="text-purple-400 font-bold">Weight: {weight}</span>
                       </div>
                     ))
@@ -220,7 +221,7 @@ export default function NeuromorphicStudioPage() {
               <div key={idx} className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs font-mono">
                 <div className="flex items-center gap-2">
                   <span className="text-purple-400 font-bold">{log.sourceNodeId}</span>
-                  <span className="text-slate-500">➜</span>
+                  <span className="text-slate-500"><FiArrowRight className='inline-block mr-1' /></span>
                   <span className="text-sky-300 font-bold">{log.targetNodeId}</span>
                 </div>
                 <div className="flex items-center gap-4">

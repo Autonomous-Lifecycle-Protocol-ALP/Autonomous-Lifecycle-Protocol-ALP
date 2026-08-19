@@ -1,3 +1,4 @@
+import { FiCheck } from 'react-icons/fi';
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -312,7 +313,7 @@ export default function DownloadsPage() {
                     onClick={() => copyCommand(active.command, `${tool.id}-${active.method}`)}
                     className="text-xs font-mono text-slate-400 hover:text-sky-300 transition whitespace-nowrap"
                   >
-                    {copiedCmd === `${tool.id}-${active.method}` ? "✓ Copied" : "Copy"}
+                    {copiedCmd === `${tool.id}-${active.method}` ? "<FiCheck className='inline-block mr-1' /> Copied" : "Copy"}
                   </button>
                 </div>
               </div>
@@ -357,7 +358,7 @@ export default function DownloadsPage() {
                   onClick={() => copyCommand(sdk.command, `sdk-${idx}`)}
                   className="text-[11px] font-mono text-slate-400 hover:text-sky-300 transition"
                 >
-                  {copiedCmd === `sdk-${idx}` ? "✓" : "Copy"}
+                  {copiedCmd === `sdk-${idx}` ? FiCheck : "Copy"}
                 </button>
               </div>
 
@@ -441,7 +442,7 @@ export default function DownloadsPage() {
                         onClick={() => copyCommand(product.command, `product-${product.id}`)}
                         className="inline-flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 font-mono font-semibold transition"
                       >
-                        {copiedCmd === `product-${product.id}` ? "✓ Copied" : "Copy Install Cmd"}
+                        {copiedCmd === `product-${product.id}` ? "<FiCheck className='inline-block mr-1' /> Copied" : "Copy Install Cmd"}
                       </button>
                     )}
                   </td>

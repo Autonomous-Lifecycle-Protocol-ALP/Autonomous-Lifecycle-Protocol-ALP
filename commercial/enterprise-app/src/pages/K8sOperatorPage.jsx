@@ -1,3 +1,4 @@
+import { FiCheck } from 'react-icons/fi';
 import { useState, useEffect } from "react";
 import api from "../utils/api.js";
 import {
@@ -129,7 +130,7 @@ spec:
 
             {reconcileResult && (
               <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-[11px] font-mono text-emerald-400 space-y-1">
-                <div>✓ {reconcileResult.status}</div>
+                <div><FiCheck className='inline-block mr-1' /> {reconcileResult.status}</div>
                 <div className="text-[10px] text-slate-500">Pods Reconciled: {reconcileResult.PodsUpdated}</div>
               </div>
             )}

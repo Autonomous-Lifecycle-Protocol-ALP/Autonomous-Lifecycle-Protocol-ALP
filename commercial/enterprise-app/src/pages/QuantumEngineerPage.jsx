@@ -1,3 +1,5 @@
+import { FiRefreshCw, FiLink } from 'react-icons/fi';
+import { FaReact } from 'react-icons/fa';
 import { useState, useEffect } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -155,17 +157,17 @@ export default function QuantumEngineerPage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-200">Key Benefits</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">⚛️</div>
+            <div className="text-2xl mb-2"><FaReact className='inline-block mr-1' />️</div>
             <h3 className="font-medium text-gray-200">Hardware-Aware Compilation</h3>
             <p className="text-sm text-gray-400 mt-1">Maps circuits to physical QPU topology with connectivity optimization.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🔄</div>
+            <div className="text-2xl mb-2"><FiRefreshCw className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Error Mitigation</h3>
             <p className="text-sm text-gray-400 mt-1">Zero-noise extrapolation and dynamical decoupling for NISQ devices.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🔗</div>
+            <div className="text-2xl mb-2"><FiLink className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Hybrid Orchestration</h3>
             <p className="text-sm text-gray-400 mt-1">Seamless classical-quantum co-processing with ALP task coordination.</p>
           </div>

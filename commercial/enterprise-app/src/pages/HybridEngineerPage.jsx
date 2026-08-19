@@ -1,3 +1,4 @@
+import { FiRefreshCw } from 'react-icons/fi';
 import { useState, useEffect } from "react";
 import {
   ServerIcon,
@@ -243,7 +244,7 @@ export default function HybridEngineerPage() {
             <p className="text-sm text-gray-400 mt-1">@policy blocks dangerous operations until simulation, verification, and human approval gates pass.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🔄</div>
+            <div className="text-2xl mb-2"><FiRefreshCw className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Digital Twin Validation</h3>
             <p className="text-sm text-gray-400 mt-1">Mirror physical assets in software. Verify firmware + hardware contracts before physical deployment.</p>
           </div>

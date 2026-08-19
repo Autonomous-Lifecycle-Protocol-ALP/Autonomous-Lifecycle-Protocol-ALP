@@ -1,3 +1,4 @@
+import { FiSave, FiPlay } from 'react-icons/fi';
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import api from "../utils/api.js";
@@ -167,14 +168,14 @@ export default function IdePage() {
             className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 disabled:opacity-50"
             title="Save file"
           >
-            💾 Save
+            <FiSave className='inline-block mr-1' /> Save
           </button>
           <button
             onClick={() => runCommand("alp run")}
             className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
             title="Run ALP agent"
           >
-            ▶ Run
+            <FiPlay className='inline-block mr-1' /> Run
           </button>
           <button
             onClick={() => runCommand("alp test")}

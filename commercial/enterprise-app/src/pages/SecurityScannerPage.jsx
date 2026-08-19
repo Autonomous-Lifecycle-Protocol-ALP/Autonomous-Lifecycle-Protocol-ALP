@@ -1,3 +1,4 @@
+import { FiClipboard } from 'react-icons/fi';
 import { ShieldIcon, LogoIcon } from "../components/Icons.jsx";
 import { useState } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
@@ -147,7 +148,7 @@ export default function SecurityScannerPage() {
             <p className="text-sm text-gray-400 mt-1">Catch vulnerabilities before they reach production with integrated SAST/DAST.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">📋</div>
+            <div className="text-2xl mb-2"><FiClipboard className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Compliance Automation</h3>
             <p className="text-sm text-gray-400 mt-1">SOC2, ISO27001, GDPR, HIPAA reports generated automatically.</p>
           </div>

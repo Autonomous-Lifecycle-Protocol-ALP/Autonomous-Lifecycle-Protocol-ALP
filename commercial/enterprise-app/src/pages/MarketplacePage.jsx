@@ -1,3 +1,5 @@
+import { FiCheck, FiX } from 'react-icons/fi';
+import { FaFire } from 'react-icons/fa';
 import { useState } from "react";
 import {
   SparklesIcon,
@@ -216,13 +218,13 @@ export default function MarketplacePage() {
                   onClick={() => handleCopyCmd(item.installCmd, item.id)}
                   className="text-slate-400 hover:text-sky-300 transition"
                 >
-                  {copiedId === item.id ? "✓" : "Copy"}
+                  {copiedId === item.id ? FiCheck : "Copy"}
                 </button>
               </div>
 
               <div className="flex items-center justify-between text-xs pt-1">
                 <span className="text-slate-400 font-mono text-[11px]">
-                  🔥 {item.invocations.toLocaleString()} runs
+                  <FaFire className='inline-block mr-1' /> {item.invocations.toLocaleString()} runs
                 </span>
                 <button
                   onClick={() => setSelectedSkill(item)}
@@ -249,7 +251,7 @@ export default function MarketplacePage() {
                 <p className="text-xs text-slate-400 font-mono">Author: {selectedSkill.author} • Version: {selectedSkill.version}</p>
               </div>
               <button onClick={() => setSelectedSkill(null)} className="text-slate-400 hover:text-slate-200">
-                ✕
+                <FiX className='inline-block mr-1' />
               </button>
             </div>
 

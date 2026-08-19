@@ -1,3 +1,4 @@
+import { FiCheck, FiX } from 'react-icons/fi';
 import { useState } from "react";
 import {
   UsersIcon,
@@ -182,31 +183,31 @@ export default function TeamPage() {
               <tbody className="divide-y divide-slate-800/60 text-slate-300">
                 <tr>
                   <td className="py-2 font-medium">Create Workspaces</td>
-                  <td className="text-center text-emerald-400">✓</td>
-                  <td className="text-center text-emerald-400">✓</td>
-                  <td className="text-center text-emerald-400">✓</td>
-                  <td className="text-center text-slate-600">✕</td>
+                  <td className="text-center text-emerald-400"><FiCheck className='inline-block mr-1' /></td>
+                  <td className="text-center text-emerald-400"><FiCheck className='inline-block mr-1' /></td>
+                  <td className="text-center text-emerald-400"><FiCheck className='inline-block mr-1' /></td>
+                  <td className="text-center text-slate-600"><FiX className='inline-block mr-1' /></td>
                 </tr>
                 <tr>
                   <td className="py-2 font-medium">Deploy Swarms &amp; Products</td>
-                  <td className="text-center text-emerald-400">✓</td>
-                  <td className="text-center text-emerald-400">✓</td>
-                  <td className="text-center text-emerald-400">✓</td>
-                  <td className="text-center text-slate-600">✕</td>
+                  <td className="text-center text-emerald-400"><FiCheck className='inline-block mr-1' /></td>
+                  <td className="text-center text-emerald-400"><FiCheck className='inline-block mr-1' /></td>
+                  <td className="text-center text-emerald-400"><FiCheck className='inline-block mr-1' /></td>
+                  <td className="text-center text-slate-600"><FiX className='inline-block mr-1' /></td>
                 </tr>
                 <tr>
                   <td className="py-2 font-medium">Manage API Keys &amp; Billing</td>
-                  <td className="text-center text-emerald-400">✓</td>
-                  <td className="text-center text-emerald-400">✓</td>
-                  <td className="text-center text-slate-600">✕</td>
-                  <td className="text-center text-slate-600">✕</td>
+                  <td className="text-center text-emerald-400"><FiCheck className='inline-block mr-1' /></td>
+                  <td className="text-center text-emerald-400"><FiCheck className='inline-block mr-1' /></td>
+                  <td className="text-center text-slate-600"><FiX className='inline-block mr-1' /></td>
+                  <td className="text-center text-slate-600"><FiX className='inline-block mr-1' /></td>
                 </tr>
                 <tr>
                   <td className="py-2 font-medium">Export ZK Policy Proofs</td>
-                  <td className="text-center text-emerald-400">✓</td>
-                  <td className="text-center text-emerald-400">✓</td>
-                  <td className="text-center text-emerald-400">✓</td>
-                  <td className="text-center text-emerald-400">✓</td>
+                  <td className="text-center text-emerald-400"><FiCheck className='inline-block mr-1' /></td>
+                  <td className="text-center text-emerald-400"><FiCheck className='inline-block mr-1' /></td>
+                  <td className="text-center text-emerald-400"><FiCheck className='inline-block mr-1' /></td>
+                  <td className="text-center text-emerald-400"><FiCheck className='inline-block mr-1' /></td>
                 </tr>
               </tbody>
             </table>

@@ -1,3 +1,4 @@
+import { FiCamera } from 'react-icons/fi';
 import { ZapIcon, ShieldIcon } from "../components/Icons.jsx";
 import { useState } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
@@ -126,7 +127,7 @@ export default function CloudWorkspacePage() {
             <p className="text-sm text-gray-400 mt-1">Each workspace is network-isolated with encrypted volume mounts and WireGuard tunneling.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">📸</div>
+            <div className="text-2xl mb-2"><FiCamera className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Snapshot & Rollback</h3>
             <p className="text-sm text-gray-400 mt-1">Point-in-time snapshots of entire workspace state with one-click rollback.</p>
           </div>

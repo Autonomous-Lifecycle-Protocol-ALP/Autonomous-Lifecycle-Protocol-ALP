@@ -23,5 +23,13 @@
   "devDependencies": {
     "typescript": "^5.5.0",
     "vitest": "^2.0.0"
-  }
+  },
+  "description": "",
+  "directories": {
+    "test": "tests"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
 }

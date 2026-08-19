@@ -1,3 +1,4 @@
+import { FiSend } from 'react-icons/fi';
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.jsx";
@@ -226,7 +227,7 @@ export default function OnboardingPage() {
             Getting Started
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2">
-            Welcome to ALP Enterprise{user?.name ? `, ${user.name.split(" ")[0]}` : ""}! 🚀
+            Welcome to ALP Enterprise{user?.name ? `, ${user.name.split(" ")[0]}` : ""}! <FiSend className='inline-block mr-1' />
           </h1>
           <p className="text-sm text-slate-400 max-w-2xl">
             You're now inside the Autonomous Lifecycle Protocol platform — the world's most advanced

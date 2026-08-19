@@ -1,3 +1,4 @@
+import { FiClock } from 'react-icons/fi';
 import { useState } from "react";
 import api from "../utils/api.js";
 import {
@@ -198,7 +199,7 @@ export default function ApiExplorerPage() {
                 )}
                 {responseTime && (
                   <span className="text-[11px] font-mono text-slate-400">
-                    ⏱ {responseTime} ms
+                    <FiClock className='inline-block mr-1' /> {responseTime} ms
                   </span>
                 )}
               </div>

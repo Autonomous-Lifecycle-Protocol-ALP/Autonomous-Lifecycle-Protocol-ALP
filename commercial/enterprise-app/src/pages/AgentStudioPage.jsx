@@ -1,3 +1,4 @@
+import { FiBox } from 'react-icons/fi';
 import { AnalyticsIcon, SparklesIcon } from "../components/Icons.jsx";
 import { useState } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
@@ -117,7 +118,7 @@ export default function AgentStudioPage() {
             <p className="text-sm text-gray-400 mt-1">Drag-and-drop DAG builder with live validation and real-time preview.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🧪</div>
+            <div className="text-2xl mb-2"><FiBox className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Simulation Sandbox</h3>
             <p className="text-sm text-gray-400 mt-1">Test agents in isolation before production with full state replay.</p>
           </div>
