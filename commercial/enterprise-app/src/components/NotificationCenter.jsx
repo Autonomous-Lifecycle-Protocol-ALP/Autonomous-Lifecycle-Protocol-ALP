@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import api from "../utils/api.js";
 import { BellIcon, CheckCircleIcon, AlertIcon, ShieldIcon, SparklesIcon, XIcon } from "./Icons.jsx";
+import { useRealtimeEvents } from "../hooks/useRealtimeEvents.js";
 
 export default function NotificationCenter() {
   const [open, setOpen] = useState(false);
@@ -9,13 +10,15 @@ export default function NotificationCenter() {
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef(null);
 
+  const { connected, liveEvents } = useRealtimeEvents();
+
   const fetchEvents = async () => {
     try {
       setLoading(true);
       const res = await api.get("/telemetry/stream");
       if (res.data?.success) {
         setEvents(res.data.events || []);
-        setUnreadCount(res.data.events?.length || 0);
+        setUnreadCount((c) => c + (res.data.events?.length || 0));
       }
     } catch {
       // Fallback notifications if offline
@@ -23,7 +26,7 @@ export default function NotificationCenter() {
         { id: '1', title: 'SHA-256 Merkle Trace Verified', detail: 'Chain #chain-v8200 integrity confirmed', status: 'success', timestamp: '2m ago' },
         { id: '2', title: 'Governance Guardrail Executed', detail: 'Policy "auth-security-gate" denied untrusted payload', status: 'warning', timestamp: '8m ago' },
       ]);
-      setUnreadCount(2);
+      setUnreadCount((c) => c + 2);
     } finally {
       setLoading(false);
     }
@@ -32,6 +35,20 @@ export default function NotificationCenter() {
   useEffect(() => {
     fetchEvents();
   }, []);
+
+  // When new WebSocket live events arrive, prepend them
+  useEffect(() => {
+    if (liveEvents && liveEvents.length > 0) {
+      const latest = liveEvents[0];
+      setEvents((prev) => {
+        if (prev.some((e) => e.id === latest.id)) return prev;
+        return [latest, ...prev.slice(0, 49)];
+      });
+      if (!open) {
+        setUnreadCount((c) => c + 1);
+      }
+    }
+  }, [liveEvents]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -70,6 +87,9 @@ export default function NotificationCenter() {
         title="Protocol Notifications"
       >
         <BellIcon size="md" />
+        {connected && (
+          <span className="absolute bottom-1 right-1 w-2 h-2 bg-emerald-400 rounded-full ring-2 ring-slate-900 animate-pulse" title="Live WebSocket Connected" />
+        )}
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold text-[10px] rounded-full flex items-center justify-center badge-glow">
             {unreadCount}
@@ -84,6 +104,11 @@ export default function NotificationCenter() {
             <div className="flex items-center gap-2">
               <ShieldIcon className="text-sky-400" />
               <span className="text-sm font-bold text-slate-100">Live Protocol Notifications</span>
+              {connected && (
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                  LIVE WS
+                </span>
+              )}
             </div>
             <button
               onClick={() => setOpen(false)}
@@ -94,7 +119,7 @@ export default function NotificationCenter() {
           </div>
 
           <div className="space-y-2 max-h-72 overflow-y-auto custom-scrollbar">
-            {loading ? (
+            {loading && events.length === 0 ? (
               <div className="text-center py-6 text-xs text-slate-500">Loading events...</div>
             ) : events.length === 0 ? (
               <div className="text-center py-6 text-xs text-slate-500">No recent notifications.</div>
@@ -117,9 +142,12 @@ export default function NotificationCenter() {
             )}
           </div>
 
-          <div className="pt-2 border-t border-slate-800/80 text-center">
-            <span className="text-[10px] text-sky-400 font-mono">
-              Live ALP V82.0.0 Stream
+          <div className="pt-2 border-t border-slate-800/80 text-center flex items-center justify-between text-[10px]">
+            <span className="text-slate-500 font-mono">
+              Status: {connected ? <span className="text-emerald-400">Connected</span> : <span className="text-slate-400">Offline</span>}
+            </span>
+            <span className="text-sky-400 font-mono">
+              ALP V82.0.0 Stream
             </span>
           </div>
         </div>
