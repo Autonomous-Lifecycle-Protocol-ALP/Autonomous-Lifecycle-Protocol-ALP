@@ -271,3 +271,44 @@ export class DocumentValidator {
     return true;
   }
 }
+
+// ── Feature: Real-Time Swarm Digital Twin ─────────────────────────────
+export {
+  LiveStateClient,
+  type SwarmState,
+  type RuntimeEvent,
+  type AgentHeartbeat,
+  type ThroughputMeter,
+  type LiveStateEvent,
+  type LiveStateEventType,
+} from './live-state';
+
+// ── Feature: Native LLM Tool Bridge ──────────────────────────────────
+export {
+  LLMToolBridge,
+  type OpenAITool,
+  type AnthropicTool,
+} from './llm-tool-bridge';
+
+// ── Feature: Live Multi-User CRDT Canvas ─────────────────────────────
+export {
+  CollabCanvas,
+  type CollabUser,
+  type CollabOperation as CanvasOperation,
+  type CollabRoom,
+  type CollabEvent as CanvasEvent,
+  type CollabEventType as CanvasEventType,
+} from './collab-canvas';
+
+// ── Feature: Automated Agent Benchmark Suite ─────────────────────────
+export {
+  EvalSuiteRunner,
+  type EvalCase,
+  type EvalStep,
+  type EvalResult,
+  type EvalDivergence,
+  type BenchmarkReport,
+  type RegressionAlert,
+  type ActualStep,
+  type ActualTrace,
+} from './eval-suite';
