@@ -60,7 +60,7 @@ export function TelemetryInspectorPanel(): React.JSX.Element {
   const deliveryRate = totalPublished > 0 ? ((totalDelivered / totalPublished) * 100).toFixed(1) : '0';
 
   const statusColor = (s: string) => s === 'HEALTHY' ? 'var(--accent-green)' : s === 'DEGRADED' ? 'var(--accent-yellow)' : 'var(--accent-red)';
-  const statusDot = (s: string) => s === 'HEALTHY' ? '●' : s === 'DEGRADED' ? '▲' : '✖';
+  const statusIcon = (s: string) => s === 'HEALTHY' ? <Icon name="check" size={11} /> : s === 'DEGRADED' ? <Icon name="alertTriangle" size={11} /> : <Icon name="xCircle" size={11} />;
 
   const s = {
     container: { display: 'flex', flexDirection: 'column' as const, height: '100%', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', boxSizing: 'border-box' as const },
@@ -150,7 +150,7 @@ export function TelemetryInspectorPanel(): React.JSX.Element {
                       <td style={{ color: 'var(--accent-green)' }}>{t.delivered.toLocaleString()}</td>
                       <td style={{ color: t.failed > 0 ? 'var(--accent-red)' : 'var(--accent-green)' }}>{t.failed}</td>
                       <td style={{ color: 'var(--accent)' }}>{t.throughput} msg/s</td>
-                      <td><span className="badge badge-responsive" style={{ background: statusColor(health) + '18', color: statusColor(health), border: '1px solid ' + statusColor(health) + '33' }}>{statusDot(health)} {health}</span></td>
+                      <td><span className="badge badge-responsive" style={{ background: statusColor(health) + '18', color: statusColor(health), border: '1px solid ' + statusColor(health) + '33' }}>{statusIcon(health)} {health}</span></td>
                     </tr>
                   );
                 })}
@@ -177,7 +177,7 @@ export function TelemetryInspectorPanel(): React.JSX.Element {
                     <td style={{ fontFamily: 'monospace', fontWeight: 600 }}>{sub.id}</td>
                     <td style={{ color: 'var(--accent-blue)' }}>{sub.topic}</td>
                     <td>{sub.consumer}</td>
-                    <td><span className="badge badge-responsive" style={{ background: statusColor(sub.status) + '18', color: statusColor(sub.status), border: '1px solid ' + statusColor(sub.status) + '33' }}>{statusDot(sub.status)} {sub.status}</span></td>
+                    <td><span className="badge badge-responsive" style={{ background: statusColor(sub.status) + '18', color: statusColor(sub.status), border: '1px solid ' + statusColor(sub.status) + '33' }}>{statusIcon(sub.status)} {sub.status}</span></td>
                     <td style={{ color: sub.unacked > 0 ? 'var(--accent-yellow)' : 'var(--accent-green)' }}>{sub.unacked}</td>
                   </tr>
                 ))}
