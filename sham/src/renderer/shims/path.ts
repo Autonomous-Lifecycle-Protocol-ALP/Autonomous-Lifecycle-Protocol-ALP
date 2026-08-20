@@ -1,4 +1,4 @@
-const path = {};
+const path: Record<string, any> = {};
 
 path.sep = '/';
 path.delimiter = ':';

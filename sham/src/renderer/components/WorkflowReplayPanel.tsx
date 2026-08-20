@@ -247,7 +247,6 @@ export const WorkflowReplayPanel: React.FC = () => {
                         borderRadius: '50%',
                         background: isActive ? 'var(--accent-blue)' : 'var(--border)',
                         color: isActive ? 'var(--bg-primary)' : 'var(--text-primary)',
-                        width: '28px', height: '28px',
                         fontSize: 'clamp(0.7rem, 1.5vw, 0.8rem)',
                       }}>
                         {step.stepIndex}

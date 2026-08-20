@@ -30,7 +30,8 @@ import {
 import { CostBudgetEngine } from "./budget/cost-engine";
 import { MemoryManager } from "./memory/manager";
 import { SafetyEvaluator } from "./safety/evaluator";
-import { WorkflowEngine } from "./workflow/engine";
+import { WorkflowEngine, WorkflowPersistenceStore } from "./workflow/engine";
+import { executePythonStep } from "./tools/python";
 import { ResearchWorkbench } from "./research/workbench";
 import { AuditLogger } from "./governance/audit-log";
 import { CostManager } from "./governance/cost-manager";
@@ -117,7 +118,7 @@ export class EnterprisePlatform {
       evolution: EvolutionEngine;
     };
 
-  constructor() {
+  constructor(persistenceStore?: WorkflowPersistenceStore) {
     this.vendors = new VendorAdapterRegistry();
     this.software = new SoftwarePlanningEngine();
     this.hardware = new HardwarePlanningEngine();
@@ -131,7 +132,7 @@ export class EnterprisePlatform {
     this.memory = new MemoryManager();
     this.coding = new CodingAgent({ workspaceRoot: "" });
     this.safety = new SafetyEvaluator();
-    this.workflow = new WorkflowEngine();
+    this.workflow = new WorkflowEngine({}, persistenceStore);
     this.research = new ResearchWorkbench();
     this.audit = new AuditLogger();
     this.cost = new CostManager();
@@ -157,6 +158,8 @@ export class EnterprisePlatform {
       verification: new QualityGateEngine(),
       evolution: new EvolutionEngine(agentRegistry, toolRegistry),
     };
+
+    this.workflow.registerExecutor("python", executePythonStep);
 
     this.registerDefaults();
   }

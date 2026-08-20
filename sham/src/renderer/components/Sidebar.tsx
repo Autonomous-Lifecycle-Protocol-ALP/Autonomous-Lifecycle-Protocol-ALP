@@ -176,7 +176,7 @@ function TreeItem({ node, onOpenFile, activeFile, depth = 0 }: TreeItemProps): R
 
 export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActivePanel }: SidebarProps): React.JSX.Element {
   return (
-    <div className="sidebar">
+    <div className="sidebar" style={{ background: 'linear-gradient(to bottom, rgba(24, 24, 37, 0.8), rgba(17, 17, 27, 0.9))', boxShadow: 'inset -1px 0 0 rgba(255,255,255,0.05)' }}>
       <div className="sidebar-section">
         <div className="sidebar-section-title">
           Explorer
@@ -189,6 +189,7 @@ export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActive
             <div
               key={file}
               className={`sidebar-item ${state.activeFile === file ? 'active' : ''}`}
+              style={state.activeFile === file ? { background: 'linear-gradient(90deg, rgba(137,180,250,0.1) 0%, transparent 100%)', borderLeftColor: 'var(--accent)', color: 'var(--accent)' } : {}}
               onClick={() => onOpenFile(file)}
             >
               <span className="sidebar-item-icon"><Icon name={getFileIcon(file) as any} size={14} /></span>
@@ -221,6 +222,7 @@ export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActive
           <button
             key={panel}
             className={`sidebar-footer-item ${activePanel === panel ? 'active' : ''}`}
+            style={activePanel === panel ? { background: 'linear-gradient(90deg, rgba(137,180,250,0.15) 0%, transparent 100%)', borderLeftColor: 'var(--accent)', color: 'var(--accent)', textShadow: '0 0 10px rgba(137, 180, 250, 0.3)' } : {}}
             onClick={() => setActivePanel(panel)}
           >
             <Icon name={panelIcons[panel] || 'box'} size={14} />

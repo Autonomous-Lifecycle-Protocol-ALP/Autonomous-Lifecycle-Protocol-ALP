@@ -65,14 +65,14 @@ export function TelemetryInspectorPanel(): React.JSX.Element {
   const s = {
     container: { display: 'flex', flexDirection: 'column' as const, height: '100%', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', boxSizing: 'border-box' as const },
     header: { padding: 'var(--spacing-sm) var(--spacing-md)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' as const },
-    kpiRow: { display: 'flex', gap: 'var(--spacing-xs)', padding: 'var(--spacing-xs) var(--spacing-md)', borderBottom: '1px solid var(--border)', flexWrap: 'wrap' },
+    kpiRow: { display: 'flex', gap: 'var(--spacing-xs)', padding: 'var(--spacing-xs) var(--spacing-md)', borderBottom: '1px solid var(--border)', flexWrap: 'wrap' as const },
     kpi: (accent: string) => ({
       flex: 1, minWidth: '120px', background: 'var(--bg-secondary)', borderRadius: 'var(--radius)', padding: 'var(--spacing-sm)',
       border: `1px solid ${accent}33`, display: 'flex', flexDirection: 'column' as const, gap: 4,
     }),
     kpiLabel: { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase' as const, letterSpacing: 0.5 },
     kpiValue: (accent: string) => ({ fontSize: 'clamp(1rem, 3vw, 1.3rem)', fontWeight: 700, color: accent }),
-    tabs: { display: 'flex', gap: 0, borderBottom: '1px solid var(--border)', flexWrap: 'wrap' },
+    tabs: { display: 'flex', gap: 0, borderBottom: '1px solid var(--border)', flexWrap: 'wrap' as const },
     tab: (active: boolean) => ({
       padding: '8px 20px', cursor: 'pointer', fontSize: 'var(--font-size-sm)', fontWeight: 600,
       color: active ? 'var(--accent)' : 'var(--text-muted)', borderBottom: active ? '2px solid var(--accent)' : '2px solid transparent',
