@@ -134,7 +134,9 @@ program
   .command('graph')
   .description('Visualize the project dependency graph')
   .argument('[file]', 'Optional specific file to graph')
-  .action(graphCommand);
+  .option('--mermaid', 'Output dependency graph in Mermaid diagram format')
+  .option('--json', 'Output graph topology as JSON')
+  .action((file, opts) => graphCommand(file, opts));
 
 program
   .command('status')

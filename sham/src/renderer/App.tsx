@@ -1,41 +1,44 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, Suspense } from 'react';
 import { Sidebar } from './components/Sidebar.js';
 import { EditorPanel } from './components/EditorPanel.js';
 import { TerminalPanel } from './components/TerminalPanel.js';
-import { AgentPanel } from './components/AgentPanel.js';
-import { MCPBrowser } from './components/MCPBrowser.js';
 import { WelcomeScreen } from './components/WelcomeScreen.js';
-import { ProPanel } from './components/ProPanel.js';
-import { CollaborationPanel } from './components/CollaborationPanel.js';
-import { PluginPanel } from './components/PluginPanel.js';
-import { ProfilerPanel } from './components/ProfilerPanel.js';
-import { CopilotPanel } from './components/CopilotPanel.js';
-import { RefactorPanel } from './components/RefactorPanel.js';
-import { SettingsPanel } from './components/SettingsPanel.js';
-import { GitPanel } from './components/GitPanel.js';
-import { SearchPanel } from './components/SearchPanel.js';
-import { CommandPalette } from './components/CommandPalette.js';
-import { DebugPanel } from './components/DebugPanel.js';
 import { Icon } from './components/Icon.js';
-import { TestRunnerPanel } from './components/TestRunnerPanel.js';
-import { SwarmMarketplacePanel } from './components/SwarmMarketplacePanel.js';
-import { ZKProofPanel } from './components/ZKProofPanel.js';
-import { DAGPartitionPanel } from './components/DAGPartitionPanel.js';
-import { CRDTCanvasPanel } from './components/CRDTCanvasPanel.js';
-import { WasmAstPanel } from './components/WasmAstPanel.js';
-import { EdgeDebugPanel } from './components/EdgeDebugPanel.js';
-import { TelemetryInspectorPanel } from './components/TelemetryInspectorPanel.js';
-import { ChaosEnginePanel } from './components/ChaosEnginePanel.js';
-import { FeatureFlagPanel } from './components/FeatureFlagPanel.js';
-import { WorkflowReplayPanel } from './components/WorkflowReplayPanel.js';
-import { LocalStoragePanel } from './components/LocalStoragePanel.js';
-import { SelfHealingMeshPanel } from './components/SelfHealingMeshPanel.js';
-import { IntelligencePanel } from './components/IntelligencePanel.js';
-import { AutonomyPanel } from './components/AutonomyPanel.js';
+import { CommandPalette } from './components/CommandPalette.js';
 import { fetchBlockTypes, runAgent, validateALPFile, onAppReady, collabCursorMove } from './shared/alp-client.js';
 import type { SHAMState } from './shared/types.js';
 import './styles/global.css';
 import './styles/layout.css';
+
+// Lazy-loaded panel components for code-splitting
+const AgentPanel = React.lazy(() => import('./components/AgentPanel.js').then(m => ({ default: m.AgentPanel })));
+const MCPBrowser = React.lazy(() => import('./components/MCPBrowser.js').then(m => ({ default: m.MCPBrowser })));
+const ProPanel = React.lazy(() => import('./components/ProPanel.js').then(m => ({ default: m.ProPanel })));
+const CollaborationPanel = React.lazy(() => import('./components/CollaborationPanel.js').then(m => ({ default: m.CollaborationPanel })));
+const PluginPanel = React.lazy(() => import('./components/PluginPanel.js').then(m => ({ default: m.PluginPanel })));
+const ProfilerPanel = React.lazy(() => import('./components/ProfilerPanel.js').then(m => ({ default: m.ProfilerPanel })));
+const CopilotPanel = React.lazy(() => import('./components/CopilotPanel.js').then(m => ({ default: m.CopilotPanel })));
+const RefactorPanel = React.lazy(() => import('./components/RefactorPanel.js').then(m => ({ default: m.RefactorPanel })));
+const SettingsPanel = React.lazy(() => import('./components/SettingsPanel.js').then(m => ({ default: m.SettingsPanel })));
+const GitPanel = React.lazy(() => import('./components/GitPanel.js').then(m => ({ default: m.GitPanel })));
+const SearchPanel = React.lazy(() => import('./components/SearchPanel.js').then(m => ({ default: m.SearchPanel })));
+const DebugPanel = React.lazy(() => import('./components/DebugPanel.js').then(m => ({ default: m.DebugPanel })));
+const TestRunnerPanel = React.lazy(() => import('./components/TestRunnerPanel.js').then(m => ({ default: m.TestRunnerPanel })));
+const SwarmMarketplacePanel = React.lazy(() => import('./components/SwarmMarketplacePanel.js').then(m => ({ default: m.SwarmMarketplacePanel })));
+const ZKProofPanel = React.lazy(() => import('./components/ZKProofPanel.js').then(m => ({ default: m.ZKProofPanel })));
+const DAGPartitionPanel = React.lazy(() => import('./components/DAGPartitionPanel.js').then(m => ({ default: m.DAGPartitionPanel })));
+const CRDTCanvasPanel = React.lazy(() => import('./components/CRDTCanvasPanel.js').then(m => ({ default: m.CRDTCanvasPanel })));
+const WasmAstPanel = React.lazy(() => import('./components/WasmAstPanel.js').then(m => ({ default: m.WasmAstPanel })));
+const EdgeDebugPanel = React.lazy(() => import('./components/EdgeDebugPanel.js').then(m => ({ default: m.EdgeDebugPanel })));
+const TelemetryInspectorPanel = React.lazy(() => import('./components/TelemetryInspectorPanel.js').then(m => ({ default: m.TelemetryInspectorPanel })));
+const ChaosEnginePanel = React.lazy(() => import('./components/ChaosEnginePanel.js').then(m => ({ default: m.ChaosEnginePanel })));
+const FeatureFlagPanel = React.lazy(() => import('./components/FeatureFlagPanel.js').then(m => ({ default: m.FeatureFlagPanel })));
+const WorkflowReplayPanel = React.lazy(() => import('./components/WorkflowReplayPanel.js').then(m => ({ default: m.WorkflowReplayPanel })));
+const LocalStoragePanel = React.lazy(() => import('./components/LocalStoragePanel.js').then(m => ({ default: m.LocalStoragePanel })));
+const SelfHealingMeshPanel = React.lazy(() => import('./components/SelfHealingMeshPanel.js').then(m => ({ default: m.SelfHealingMeshPanel })));
+const IntelligencePanel = React.lazy(() => import('./components/IntelligencePanel.js').then(m => ({ default: m.IntelligencePanel })));
+const AutonomyPanel = React.lazy(() => import('./components/AutonomyPanel.js').then(m => ({ default: m.AutonomyPanel })));
+
 
 const defaultState: SHAMState = {
   activeFile: null,
@@ -382,7 +385,9 @@ export function App(): React.JSX.Element {
             </div>
           )}
           <div className="panel-container">
-            {renderPanel()}
+            <Suspense fallback={<div className="panel-empty" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--text-muted)' }}>Loading panel...</div>}>
+              {renderPanel()}
+            </Suspense>
           </div>
           {bottomPanel && (
             <div className="bottom-panel">
@@ -442,21 +447,23 @@ export function App(): React.JSX.Element {
                 )}
                 {bottomActiveTab === 'debug' && (
                   state.debug.session ? (
-                    <DebugPanel
-                      session={state.debug.session}
-                      output={state.debug.output}
-                      onAppendOutput={(lines) => setState((prev) => ({ ...prev, debug: { ...prev.debug, output: [...prev.debug.output, ...lines] } }))}
-                      onStartDebug={(filePath) => setState((prev) => ({ ...prev, debug: { session: { id: 'debug-1', name: filePath, status: 'running', breakpoints: [], callStack: [], variables: {} }, output: ['Debug session started...'] } }))}
-                      onStopDebug={() => setState((prev) => ({ ...prev, debug: { session: null, output: [] } }))}
-                      onToggleBreakpoint={(line) => setState((prev) => {
-                        const session = prev.debug.session;
-                        if (!session) return prev;
-                        const breakpoints = session.breakpoints.includes(String(line))
-                          ? session.breakpoints.filter((b) => b !== String(line))
-                          : [...session.breakpoints, String(line)];
-                        return { ...prev, debug: { ...prev.debug, session: { ...session, breakpoints } } };
-                      })}
-                    />
+                    <Suspense fallback={<div style={{ color: 'var(--text-muted)' }}>Loading debugger...</div>}>
+                      <DebugPanel
+                        session={state.debug.session}
+                        output={state.debug.output}
+                        onAppendOutput={(lines) => setState((prev) => ({ ...prev, debug: { ...prev.debug, output: [...prev.debug.output, ...lines] } }))}
+                        onStartDebug={(filePath) => setState((prev) => ({ ...prev, debug: { session: { id: 'debug-1', name: filePath, status: 'running', breakpoints: [], callStack: [], variables: {} }, output: ['Debug session started...'] } }))}
+                        onStopDebug={() => setState((prev) => ({ ...prev, debug: { session: null, output: [] } }))}
+                        onToggleBreakpoint={(line) => setState((prev) => {
+                          const session = prev.debug.session;
+                          if (!session) return prev;
+                          const breakpoints = session.breakpoints.includes(String(line))
+                            ? session.breakpoints.filter((b) => b !== String(line))
+                            : [...session.breakpoints, String(line)];
+                          return { ...prev, debug: { ...prev.debug, session: { ...session, breakpoints } } };
+                        })}
+                      />
+                    </Suspense>
                   ) : (
                     <div style={{ color: 'var(--text-muted)' }}>Debug console ready. Attach a debugger to start debugging.</div>
                   )

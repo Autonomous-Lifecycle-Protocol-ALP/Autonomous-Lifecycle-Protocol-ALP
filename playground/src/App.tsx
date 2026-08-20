@@ -12,8 +12,47 @@ import ReactFlow, {
 } from 'reactflow';
 import type { Edge, Node, NodeProps } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { AlpParser, AlpGraph } from '@autonomous-lifecycle-protocol-alp/parser';
+import { AlpParser, AlpGraph, AlpFormatter } from '@autonomous-lifecycle-protocol-alp/parser';
 import type { AlpObject } from '@autonomous-lifecycle-protocol-alp/parser';
+import {
+  FiPlay,
+  FiPause,
+  FiSkipForward,
+  FiSkipBack,
+  FiRotateCcw,
+  FiCopy,
+  FiDownload,
+  FiCheck,
+  FiCheckCircle,
+  FiAlertTriangle,
+  FiAlertCircle,
+  FiClock,
+  FiHelpCircle,
+  FiSun,
+  FiMoon,
+  FiMaximize2,
+  FiLayers,
+  FiGrid,
+  FiTerminal,
+  FiSearch,
+  FiChevronLeft,
+  FiChevronRight,
+  FiChevronUp,
+  FiChevronDown,
+  FiX,
+  FiCode,
+  FiFileText,
+  FiZap,
+  FiSliders,
+  FiKey,
+  FiPlus,
+  FiShare2,
+  FiEdit2,
+  FiTrash2,
+  FiBookmark,
+  FiTrendingUp,
+  FiActivity,
+} from 'react-icons/fi';
 import './App.css';
 
 // ── Preset Templates ───────────────────────────────────────────────────
@@ -239,83 +278,248 @@ const TEMPLATES: Record<string, { label: string; code: string }> = {
     - "npx hardhat test test/verifier.test.ts"
 `,
   },
+  dataPipeline: {
+    label: 'Autonomous Data Pipeline ETL',
+    code: `!alp-version: 3.0.0
+
+@project
+  id: alp-analytics-etl
+  status: [~]
+  description: "Distributed telemetry ETL and analytics ingestion"
+
+@agent
+  id: agent-data-engineer
+  role: "Data Pipeline Orchestrator"
+
+@workflow
+  id: wf-daily-aggregation
+  schedule: "0 2 * * *"
+  status: [~]
+
+@task
+  id: task-extract-logs
+  status: [x]
+  owner: -> agent-data-engineer
+  verify:
+    - "python -m etl.extract --source=s3"
+
+@task
+  id: task-transform-parquet
+  status: [~]
+  depends_on:
+    - -> task-extract-logs
+  owner: -> agent-data-engineer
+  verify:
+    - "python -m etl.transform --format=parquet"
+
+@task
+  id: task-load-clickhouse
+  status: [ ]
+  depends_on:
+    - -> task-transform-parquet
+  owner: -> agent-data-engineer
+  verify:
+    - "python -m etl.load --target=clickhouse"
+`,
+  },
+  bftConsensus: {
+    label: 'BFT Consensus & Settlement Mesh',
+    code: `!alp-version: 3.0.0
+
+@project
+  id: bft-governed-ledger
+  status: [~]
+
+@swarm
+  id: swarm-validator-ring
+  topology: mesh
+  consensus: pbft
+  threshold: 0.67
+
+@agent
+  id: agent-validator-01
+  role: "BFT Consensus Validator 1"
+
+@agent
+  id: agent-validator-02
+  role: "BFT Consensus Validator 2"
+
+@task
+  id: task-propose-block
+  status: [x]
+  owner: -> agent-validator-01
+
+@task
+  id: task-gather-signatures
+  status: [~]
+  depends_on:
+    - -> task-propose-block
+  owner: -> agent-validator-02
+
+@task
+  id: task-settle-epoch
+  status: [ ]
+  depends_on:
+    - -> task-gather-signatures
+`,
+  },
+  aiCopilot: {
+    label: 'Multi-Agent Reasoning & Copilot',
+    code: `!alp-version: 3.0.0
+
+@project
+  id: intelligent-code-copilot
+  status: [~]
+
+@agent
+  id: agent-reasoner
+  role: "Chain-of-Thought Reasoning Model"
+
+@agent
+  id: agent-executor
+  role: "Sandboxed Code Execution Engine"
+
+@memory
+  id: mem-project-context
+  type: semantic-vector
+  scope: workspace
+
+@task
+  id: task-analyze-codebase
+  status: [x]
+  owner: -> agent-reasoner
+
+@task
+  id: task-synthesize-patch
+  status: [~]
+  depends_on:
+    - -> task-analyze-codebase
+  owner: -> agent-reasoner
+
+@task
+  id: task-sandbox-eval
+  status: [ ]
+  depends_on:
+    - -> task-synthesize-patch
+  owner: -> agent-executor
+  verify:
+    - "npm test --run"
+`,
+  },
 };
 
 // ── Directive Snippets ─────────────────────────────────────────────────
 const SNIPPETS: Record<string, string> = {
   task: `\n@task\n  id: task-new-feature\n  status: [ ]\n  description: "Implement new service component"\n  verify:\n    - "npm test"\n`,
   agent: `\n@agent\n  id: agent-specialist\n  role: "Automated Domain Specialist"\n`,
+  feature: `\n@feature\n  id: feat-new-capability\n  status: [ ]\n  description: "Feature specification & requirements"\n`,
+  workflow: `\n@workflow\n  id: wf-pipeline-flow\n  schedule: "0 0 * * *"\n  status: [ ]\n`,
   policy: `\n@policy\n  id: policy-security-guard\n  applies_to: "@agent-coder"\n  allow_paths:\n    - "src/**"\n  deny_paths:\n    - "config/keys/**"\n`,
   contract: `\n@contract\n  id: contract-service-boundary\n  from: "@agent-frontend"\n  to: "@agent-backend"\n  allows:\n    - "api.v1.*"\n`,
   vault: `\n@vault\n  id: vault-credentials\n  recipients:\n    - "devops.pub"\n`,
   rule: `\n@rule\n  id: rule-clean-architecture\n  description: "Do not import infrastructure logic directly into core entities"\n`,
   timeline: `\n@timeline\n  id: tl-scheduled-backup\n  cron: "0 0 * * *"\n  description: "Daily automated snapshot"\n  status: [ ]\n`,
+  memory: `\n@memory\n  id: mem-knowledge-base\n  type: semantic-vector\n  scope: workspace\n`,
+  swarm: `\n@swarm\n  id: swarm-federation\n  topology: mesh\n  consensus: pbft\n`,
+  tenant: `\n@tenant\n  id: tenant-enterprise\n  tier: premium\n`,
 };
 
 // ── Helpers ────────────────────────────────────────────────────────────
-const statusIcon = (st: string) => {
-  if (st.includes('[x]')) return '[DONE]';
-  if (st.includes('[~]')) return '[RUN]';
-  if (st.includes('[!]')) return '[WARN]';
-  if (st.includes('[?]')) return '[WAIT]';
-  return '[TODO]';
+const renderStatusBadge = (st: string) => {
+  const normalized = st.split(' ')[0];
+  if (normalized === '[x]') {
+    return (
+      <span className="status-badge done">
+        <FiCheckCircle size={11} /> done
+      </span>
+    );
+  }
+  if (normalized === '[~]') {
+    return (
+      <span className="status-badge progress">
+        <FiClock size={11} /> progress
+      </span>
+    );
+  }
+  if (normalized === '[!]') {
+    return (
+      <span className="status-badge blocked">
+        <FiAlertTriangle size={11} /> blocked
+      </span>
+    );
+  }
+  if (normalized === '[?]') {
+    return (
+      <span className="status-badge review">
+        <FiHelpCircle size={11} /> review
+      </span>
+    );
+  }
+  return (
+    <span className="status-badge todo">
+      <FiClock size={11} /> todo
+    </span>
+  );
 };
 
 type TypeFilter = 'all' | string;
 type LayoutMode = 'dag' | 'tree' | 'grid';
 
+interface Snapshot {
+  id: string;
+  name: string;
+  code: string;
+  createdAt: string;
+}
+
 const TYPE_META: Record<string, { color: string; icon: string; bg: string }> = {
   task: { color: '#00f0ff', icon: 'TSK', bg: 'rgba(0, 240, 255, 0.08)' },
   agent: { color: '#a855f7', icon: 'AGT', bg: 'rgba(168, 85, 247, 0.08)' },
+  feature: { color: '#38bdf8', icon: 'FET', bg: 'rgba(56, 189, 248, 0.08)' },
+  workflow: { color: '#fb923c', icon: 'WFL', bg: 'rgba(251, 146, 60, 0.08)' },
   policy: { color: '#10b981', icon: 'PLC', bg: 'rgba(16, 185, 129, 0.08)' },
   contract: { color: '#f59e0b', icon: 'CTR', bg: 'rgba(245, 158, 11, 0.08)' },
   vault: { color: '#f43f5e', icon: 'VLT', bg: 'rgba(244, 63, 94, 0.08)' },
   rule: { color: '#3b82f6', icon: 'RUL', bg: 'rgba(59, 130, 246, 0.08)' },
   timeline: { color: '#6366f1', icon: 'TML', bg: 'rgba(99, 102, 241, 0.08)' },
+  memory: { color: '#ec4899', icon: 'MEM', bg: 'rgba(236, 72, 153, 0.08)' },
+  swarm: { color: '#14b8a6', icon: 'SWM', bg: 'rgba(20, 184, 166, 0.08)' },
+  tenant: { color: '#8b5cf6', icon: 'TNT', bg: 'rgba(139, 92, 246, 0.08)' },
   project: { color: '#ec4899', icon: 'PRJ', bg: 'rgba(236, 72, 153, 0.08)' },
 };
 
 // ── Custom ReactFlow Node ─────────────────────────────────────────────
 function AlpCustomNode({ data, selected }: NodeProps) {
   const rawStatus: string = data.simStatus || data.status || '[ ]';
-  const normalizedStatus = rawStatus.split(' ')[0];
   const isSimulating = Boolean(data.isSimulating);
   const isExecutingCurrent = Boolean(data.isExecutingCurrent);
+  const isCriticalPath = Boolean(data.isCriticalPath);
   const meta = TYPE_META[data.type] || { color: '#94a3b8', icon: 'OBJ', bg: 'rgba(148, 163, 184, 0.08)' };
-
-  const getStatusClass = (st: string) => {
-    switch (st) {
-      case '[x]': return 'done';
-      case '[~]': return 'progress';
-      case '[!]': return 'blocked';
-      case '[?]': return 'review';
-      default: return 'todo';
-    }
-  };
 
   return (
     <div
       className={`alp-custom-node ${selected ? 'selected' : ''} ${
         isExecutingCurrent ? 'node-executing-active' : ''
-      } ${data.isHighlightConnected ? 'node-highlight-connected' : ''}`}
-      style={{ borderLeft: `4px solid ${meta.color}` }}
+      } ${data.isHighlightConnected ? 'node-highlight-connected' : ''} ${
+        isCriticalPath ? 'critical-path' : ''
+      }`}
+      style={{ borderLeft: `4px solid ${isCriticalPath ? '#f59e0b' : meta.color}` }}
     >
-      <Handle type="target" position={Position.Left} style={{ background: meta.color, width: 8, height: 8 }} />
+      <Handle type="target" position={Position.Left} style={{ background: isCriticalPath ? '#f59e0b' : meta.color, width: 8, height: 8 }} />
       <div className="node-header">
         <span className="node-type-icon">{meta.icon}</span>
         <span className="node-type-badge" style={{ color: meta.color }}>@{data.type}</span>
+        {isCriticalPath && <span className="critical-path-chip">CP</span>}
       </div>
       <div className="node-title">{data.id}</div>
       <div className="node-footer">
-        <span className={`status-badge ${getStatusClass(normalizedStatus)}`}>
-          {statusIcon(normalizedStatus)} {normalizedStatus.replace(/[\[\]]/g, '') || 'todo'}
-        </span>
+        {renderStatusBadge(rawStatus)}
         {data.owner && <span className="node-owner">{data.owner.replace('-> ', '')}</span>}
       </div>
       {isSimulating && (
-        <div className="sim-pulse-dot" style={{ background: meta.color }} title="Active simulation state" />
+        <div className="sim-pulse-dot" style={{ background: isCriticalPath ? '#f59e0b' : meta.color }} title="Active simulation state" />
       )}
-      <Handle type="source" position={Position.Right} style={{ background: meta.color, width: 8, height: 8 }} />
+      <Handle type="source" position={Position.Right} style={{ background: isCriticalPath ? '#f59e0b' : meta.color, width: 8, height: 8 }} />
     </div>
   );
 }
@@ -329,10 +533,11 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [validationLogs, setValidationLogs] = useState<string[]>([]);
   const [selectedObj, setSelectedObj] = useState<AlpObject | null>(null);
-  const [copied, setCopied] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [logPanelCollapsed, setLogPanelCollapsed] = useState(true);
   const [minimapEnabled, setMinimapEnabled] = useState(true);
+  const [showCriticalPath, setShowCriticalPath] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'done' | 'progress' | 'blocked' | 'todo'>('all');
@@ -340,13 +545,38 @@ export default function App() {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('dag');
   const [parsedObjects, setParsedObjects] = useState<AlpObject[]>([]);
 
+  // Modals State
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showSnapshotsModal, setShowSnapshotsModal] = useState(false);
+  const [showTopologyHud, setShowTopologyHud] = useState(false);
+  const [showKbdHelp, setShowKbdHelp] = useState(false);
+  const [isEditingInspector, setIsEditingInspector] = useState(false);
+  const [inspectorEditFields, setInspectorEditFields] = useState<Record<string, string>>({});
+
+  // New Block Form State
+  const [newBlockType, setNewBlockType] = useState('task');
+  const [newBlockId, setNewBlockId] = useState('');
+  const [newBlockDesc, setNewBlockDesc] = useState('');
+  const [newBlockOwner, setNewBlockOwner] = useState('');
+  const [newBlockDependsOn, setNewBlockDependsOn] = useState('');
+
+  // Snapshots State
+  const [snapshots, setSnapshots] = useState<Snapshot[]>(() => {
+    try {
+      const stored = localStorage.getItem('alp-snapshots');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [snapshotNameInput, setSnapshotNameInput] = useState('');
+
   // Theme State
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     try {
       return (localStorage.getItem('alp-theme') as 'dark' | 'light') || 'dark';
     } catch { return 'dark'; }
   });
-  const [showKbdHelp, setShowKbdHelp] = useState(false);
 
   // Simulation State
   const [isSimulating, setIsSimulating] = useState(false);
@@ -360,6 +590,20 @@ export default function App() {
   const processTimerRef = useRef<number | undefined>(undefined);
   const simTimerRef = useRef<number | undefined>(undefined);
 
+  const showToast = useCallback((msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 2500);
+  }, []);
+
+  // Save snapshots to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('alp-snapshots', JSON.stringify(snapshots));
+    } catch {
+      // ignore
+    }
+  }, [snapshots]);
+
   // Apply theme to document
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -369,6 +613,90 @@ export default function App() {
   const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   }, []);
+
+  // Topological Analysis (Longest Path, Concurrency, Bottlenecks)
+  const topologyMetrics = useMemo(() => {
+    if (parsedObjects.length === 0) {
+      return { criticalPath: [], maxDepth: 0, maxParallel: 0, bottlenecks: [] };
+    }
+
+    const inDegree: Record<string, number> = {};
+    const outDegree: Record<string, number> = {};
+    const adj: Record<string, string[]> = {};
+
+    parsedObjects.forEach((o) => {
+      inDegree[o.id] = 0;
+      outDegree[o.id] = 0;
+      adj[o.id] = [];
+    });
+
+    edges.forEach((e) => {
+      if (adj[e.source]) {
+        adj[e.source].push(e.target);
+        outDegree[e.source] = (outDegree[e.source] || 0) + 1;
+      }
+      if (inDegree[e.target] !== undefined) {
+        inDegree[e.target] = (inDegree[e.target] || 0) + 1;
+      }
+    });
+
+    const dist: Record<string, number> = {};
+    const prev: Record<string, string | null> = {};
+    const queue: string[] = [];
+
+    parsedObjects.forEach((o) => {
+      if ((inDegree[o.id] || 0) === 0) {
+        queue.push(o.id);
+        dist[o.id] = 1;
+        prev[o.id] = null;
+      }
+    });
+
+    const levelCount: Record<number, number> = {};
+
+    while (queue.length > 0) {
+      const u = queue.shift()!;
+      const d = dist[u] || 1;
+      levelCount[d] = (levelCount[d] || 0) + 1;
+
+      (adj[u] || []).forEach((v) => {
+        if ((dist[v] || 0) < d + 1) {
+          dist[v] = d + 1;
+          prev[v] = u;
+          queue.push(v);
+        }
+      });
+    }
+
+    let maxNode: string | null = null;
+    let maxDist = 0;
+    Object.entries(dist).forEach(([id, d]) => {
+      if (d > maxDist) {
+        maxDist = d;
+        maxNode = id;
+      }
+    });
+
+    const criticalPath: string[] = [];
+    let curr: string | null = maxNode;
+    while (curr) {
+      criticalPath.unshift(curr);
+      curr = prev[curr] || null;
+    }
+
+    const maxParallel = Math.max(1, ...Object.values(levelCount), 1);
+    const bottlenecks = parsedObjects
+      .map((o) => ({ id: o.id, type: o._type, score: (inDegree[o.id] || 0) + (outDegree[o.id] || 0) }))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 4);
+
+    return {
+      criticalPath,
+      maxDepth: maxDist || 1,
+      maxParallel,
+      bottlenecks,
+    };
+  }, [parsedObjects, edges]);
 
   // Parse and Layout Engine
   const processCode = useCallback((newCode: string, currentLayout: LayoutMode = layoutMode) => {
@@ -528,6 +856,9 @@ export default function App() {
           if (e.type === 'feature') strokeColor = '#9d4edd';
           if (e.type === 'owner') strokeColor = '#3b82f6';
           if (e.type === 'requires') strokeColor = '#f59e0b';
+          if (e.type === 'policy') strokeColor = '#10b981';
+          if (e.type === 'contract') strokeColor = '#f59e0b';
+          if (e.type === 'vault') strokeColor = '#f43f5e';
 
           return {
             id: `edge-${idx}`,
@@ -602,6 +933,30 @@ export default function App() {
     setSimStepIndex((prev) => prev + 1);
   }, [simStepIndex, simOrder, parsedObjects]);
 
+  const handleStepBackSim = useCallback(() => {
+    if (simStepIndex <= 0) return;
+    const targetIdx = simStepIndex - 1;
+    const targetId = simOrder[targetIdx];
+
+    setSimNodeStates((prev) => {
+      const next = { ...prev };
+      next[targetId] = '[ ]';
+      return next;
+    });
+
+    setSimStepIndex(targetIdx);
+    setSimLogs((prev) => [`Stepped back before ${targetId}`, ...prev]);
+  }, [simStepIndex, simOrder]);
+
+  const handleInjectFailure = (nodeId: string) => {
+    setSimNodeStates((prev) => ({
+      ...prev,
+      [nodeId]: '[!] Injected Failure',
+    }));
+    setSimLogs((prev) => [`[INJECTED FAULT] Simulated failure on ${nodeId}`, ...prev]);
+    showToast(`Injected failure on ${nodeId}`);
+  };
+
   useEffect(() => {
     if (isSimulating) {
       const intervalMs = Math.max(200, 1200 / simSpeed);
@@ -629,15 +984,17 @@ export default function App() {
     });
     setCode(updatedCode);
     setSimLogs((prev) => ['Applied simulation status updates to ALP spec', ...prev]);
+    showToast('Applied simulation status updates to spec');
   };
 
-  // Sync Node data with simulation states
+  // Sync Node data with simulation states and critical path
   useEffect(() => {
     setNodes((prevNodes) =>
       prevNodes.map((n) => {
         const simSt = simNodeStates[n.id];
         const isCurrent = simOrder[simStepIndex - 1] === n.id;
         const isSelected = selectedObj?.id === n.id;
+        const isCritical = showCriticalPath && topologyMetrics.criticalPath.includes(n.id);
 
         return {
           ...n,
@@ -647,11 +1004,12 @@ export default function App() {
             isSimulating: simSt !== undefined,
             isExecutingCurrent: isCurrent,
             isHighlightConnected: isSelected,
+            isCriticalPath: isCritical,
           },
         };
       })
     );
-  }, [simNodeStates, simStepIndex, simOrder, selectedObj, setNodes]);
+  }, [simNodeStates, simStepIndex, simOrder, selectedObj, showCriticalPath, topologyMetrics.criticalPath, setNodes]);
 
   // UI Handlers
   const handleTemplateChange = (key: string) => {
@@ -659,27 +1017,159 @@ export default function App() {
     if (TEMPLATES[key]) {
       handleResetSim();
       setCode(TEMPLATES[key].code);
+      showToast(`Loaded "${TEMPLATES[key].label}"`);
     }
   };
 
   const handleInsertSnippet = (snippetKey: string) => {
     if (SNIPPETS[snippetKey]) {
-      const updated = code + SNIPPETS[snippetKey];
+      const updated = code.trimEnd() + '\n' + SNIPPETS[snippetKey];
       setCode(updated);
+      showToast(`Inserted @${snippetKey}`);
     }
   };
+
+  const handleFormatSpec = useCallback(() => {
+    try {
+      const formatter = new AlpFormatter({ indentSize: 2 });
+      const formattedCode = formatter.format(code);
+      setCode(formattedCode);
+      showToast('Formatted ALP spec');
+    } catch {
+      // ignore
+    }
+  }, [code, showToast]);
 
   const handleNodeClick = (_: any, node: Node) => {
     if (node.data && node.data.rawObject) {
       setSelectedObj(node.data.rawObject);
+      setIsEditingInspector(false);
+      setInspectorEditFields({
+        id: node.data.rawObject.id,
+        status: node.data.rawObject.status || '[ ]',
+        description: node.data.rawObject.description || '',
+        owner: (node.data.rawObject as any).owner || '',
+      });
     }
   };
 
+  const handleSaveInspectorEdit = () => {
+    if (!selectedObj) return;
+    const oldId = selectedObj.id;
+    const newId = inspectorEditFields.id || oldId;
+    const newStatus = inspectorEditFields.status || selectedObj.status || '[ ]';
+    const newDesc = inspectorEditFields.description;
+
+    let updatedCode = code;
+    // Replace id
+    if (newId !== oldId) {
+      updatedCode = updatedCode.replace(new RegExp(`id:\\s*${oldId}\\b`, 'g'), `id: ${newId}`);
+    }
+    // Replace status
+    const statusRegex = new RegExp(`(id:\\s*${newId}[\\s\\S]*?status:\\s*)\\[[^\\]]*\\]`, 'g');
+    if (statusRegex.test(updatedCode)) {
+      updatedCode = updatedCode.replace(statusRegex, `$1${newStatus}`);
+    }
+    // Replace description
+    if (newDesc !== undefined) {
+      const descRegex = new RegExp(`(id:\\s*${newId}[\\s\\S]*?description:\\s*)"[^"]*"`, 'g');
+      if (descRegex.test(updatedCode)) {
+        updatedCode = updatedCode.replace(descRegex, `$1"${newDesc}"`);
+      }
+    }
+
+    setCode(updatedCode);
+    setIsEditingInspector(false);
+    showToast(`Updated @${selectedObj._type} "${newId}"`);
+  };
+
+  const handleCreateBlock = () => {
+    if (!newBlockId.trim()) return;
+    const lines: string[] = [];
+    lines.push(`\n@${newBlockType}`);
+    lines.push(`  id: ${newBlockId.trim()}`);
+    lines.push(`  status: [ ]`);
+    if (newBlockDesc.trim()) {
+      lines.push(`  description: "${newBlockDesc.trim()}"`);
+    }
+    if (newBlockOwner.trim()) {
+      lines.push(`  owner: "${newBlockOwner.trim()}"`);
+    }
+    if (newBlockDependsOn.trim()) {
+      lines.push(`  depends_on:`);
+      newBlockDependsOn.split(',').forEach((dep) => {
+        lines.push(`    - -> ${dep.trim()}`);
+      });
+    }
+    lines.push('');
+
+    const updated = code.trimEnd() + '\n' + lines.join('\n');
+    setCode(updated);
+    setShowAddModal(false);
+    setNewBlockId('');
+    setNewBlockDesc('');
+    setNewBlockOwner('');
+    setNewBlockDependsOn('');
+    showToast(`Created @${newBlockType} "${newBlockId.trim()}"`);
+  };
+
+  const handleSaveSnapshot = () => {
+    const name = snapshotNameInput.trim() || `Snapshot ${snapshots.length + 1}`;
+    const newSnap: Snapshot = {
+      id: `snap-${Date.now()}`,
+      name,
+      code,
+      createdAt: new Date().toLocaleTimeString(),
+    };
+    setSnapshots([newSnap, ...snapshots]);
+    setSnapshotNameInput('');
+    showToast(`Saved snapshot "${name}"`);
+  };
+
+  const handleLoadSnapshot = (snap: Snapshot) => {
+    setCode(snap.code);
+    setShowSnapshotsModal(false);
+    showToast(`Restored "${snap.name}"`);
+  };
+
+  const handleDeleteSnapshot = (id: string) => {
+    setSnapshots(snapshots.filter((s) => s.id !== id));
+  };
+
+  const handleExportMermaid = useCallback(() => {
+    const lines: string[] = ['graph TD'];
+    parsedObjects.forEach((obj) => {
+      const rawSt = simNodeStates[obj.id] || obj.status || '[ ]';
+      const cleanSt = rawSt.replace(/[[\]]/g, '');
+      const safeId = obj.id.replace(/[^a-zA-Z0-9_]/g, '_');
+      lines.push(`  ${safeId}["@${obj._type}: ${obj.id}<br/>(${cleanSt})"]`);
+    });
+    edges.forEach((e) => {
+      const from = e.source.replace(/[^a-zA-Z0-9_]/g, '_');
+      const to = e.target.replace(/[^a-zA-Z0-9_]/g, '_');
+      lines.push(`  ${from} -->|${e.label || 'ref'}| ${to}`);
+    });
+
+    const mermaidText = lines.join('\n');
+    navigator.clipboard.writeText(mermaidText);
+    showToast('Copied Mermaid markdown to clipboard');
+  }, [parsedObjects, edges, simNodeStates, showToast]);
+
   const handleCopyBundle = useCallback(() => {
     navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }, [code]);
+    showToast('Copied ALP spec to clipboard');
+  }, [code, showToast]);
+
+  const handleExportALP = useCallback(() => {
+    const blob = new Blob([code], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'spec.alp';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Downloaded spec.alp');
+  }, [code, showToast]);
 
   const handleExportJSON = useCallback(() => {
     try {
@@ -692,10 +1182,11 @@ export default function App() {
       a.download = 'spec.json';
       a.click();
       URL.revokeObjectURL(url);
+      showToast('Downloaded spec.json');
     } catch {
       // ignore
     }
-  }, [code]);
+  }, [code, showToast]);
 
   // Keyboard Shortcuts
   useEffect(() => {
@@ -707,6 +1198,18 @@ export default function App() {
       } else if (ctrl && e.key === 'e') {
         e.preventDefault();
         handleExportJSON();
+      } else if (ctrl && e.key === 'm') {
+        e.preventDefault();
+        handleExportMermaid();
+      } else if (ctrl && e.key === 'i') {
+        e.preventDefault();
+        handleFormatSpec();
+      } else if (ctrl && e.key === 'n') {
+        e.preventDefault();
+        setShowAddModal(true);
+      } else if (ctrl && e.key === 'k') {
+        e.preventDefault();
+        setShowSnapshotsModal(true);
       } else if (ctrl && e.key === '/') {
         e.preventDefault();
         setShowKbdHelp((p) => !p);
@@ -718,12 +1221,15 @@ export default function App() {
         setLogPanelCollapsed((p) => !p);
       } else if (e.key === 'Escape') {
         setShowKbdHelp(false);
+        setShowAddModal(false);
+        setShowSnapshotsModal(false);
+        setShowTopologyHud(false);
         setSelectedObj(null);
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [handleCopyBundle, handleExportJSON]);
+  }, [handleCopyBundle, handleExportJSON, handleExportMermaid, handleFormatSpec]);
 
   // Stats calculation
   const totalTasks = nodes.filter((n) => n.data.type === 'task').length;
@@ -755,7 +1261,17 @@ export default function App() {
   }, [parsedObjects]);
 
   const handleFocusNode = (id: string) => {
-    setSelectedObj(parsedObjects.find((o) => o.id === id) || null);
+    const obj = parsedObjects.find((o) => o.id === id) || null;
+    setSelectedObj(obj);
+    if (obj) {
+      setIsEditingInspector(false);
+      setInspectorEditFields({
+        id: obj.id,
+        status: simNodeStates[obj.id] || obj.status || '[ ]',
+        description: obj.description || '',
+        owner: (obj as any).owner || '',
+      });
+    }
   };
 
   const renderInspectorFields = (obj: AlpObject) => {
@@ -810,34 +1326,70 @@ export default function App() {
               onClick={() => setLayoutMode('dag')}
               title="Topological DAG Columns"
             >
-              DAG
+              <FiSliders size={12} style={{ marginRight: 4 }} /> DAG
             </button>
             <button
               className={`layout-btn ${layoutMode === 'tree' ? 'active' : ''}`}
               onClick={() => setLayoutMode('tree')}
               title="Hierarchical Tree"
             >
-              Tree
+              <FiLayers size={12} style={{ marginRight: 4 }} /> Tree
             </button>
             <button
               className={`layout-btn ${layoutMode === 'grid' ? 'active' : ''}`}
               onClick={() => setLayoutMode('grid')}
               title="Grid Matrix"
             >
-              Grid
+              <FiGrid size={12} style={{ marginRight: 4 }} /> Grid
             </button>
           </div>
 
+          <button
+            className={`action-btn ${showCriticalPath ? 'active' : ''}`}
+            onClick={() => setShowCriticalPath((p) => !p)}
+            title="Highlight Critical Path (Longest chain)"
+          >
+            <FiActivity size={13} /> Critical Path
+          </button>
+
+          <button
+            className="action-btn"
+            onClick={() => setShowTopologyHud(true)}
+            title="Topology & Bottleneck Analytics"
+          >
+            <FiTrendingUp size={13} /> Analytics
+          </button>
+
           <button className="action-btn" onClick={() => reactFlowInstance?.fitView({ padding: 0.2, duration: 400 })} title="Fit graph view">
-            Fit View
+            <FiMaximize2 size={13} /> Fit View
+          </button>
+
+          <button className="action-btn" onClick={handleFormatSpec} title="Format ALP spec (Ctrl+I)">
+            <FiCode size={13} /> Format <span className="kbd-hint">Ctrl+I</span>
+          </button>
+
+          <button className="action-btn" onClick={() => setShowAddModal(true)} title="Create new ALP block (Ctrl+N)">
+            <FiPlus size={13} /> Add <span className="kbd-hint">Ctrl+N</span>
+          </button>
+
+          <button className="action-btn" onClick={() => setShowSnapshotsModal(true)} title="Manage Snapshots (Ctrl+K)">
+            <FiBookmark size={13} /> Snapshots <span className="kbd-hint">Ctrl+K</span>
           </button>
 
           <button className="action-btn" onClick={handleCopyBundle} title="Copy bundle (Ctrl+S)">
-            {copied ? 'Copied' : 'Copy Bundle'} <span className="kbd-hint">Ctrl+S</span>
+            <FiCopy size={13} /> Copy <span className="kbd-hint">Ctrl+S</span>
+          </button>
+
+          <button className="action-btn" onClick={handleExportMermaid} title="Export Mermaid diagram (Ctrl+M)">
+            <FiShare2 size={13} /> Mermaid <span className="kbd-hint">Ctrl+M</span>
+          </button>
+
+          <button className="action-btn" onClick={handleExportALP} title="Export as spec.alp">
+            <FiFileText size={13} /> .alp
           </button>
 
           <button className="action-btn" onClick={handleExportJSON} title="Export spec as JSON (Ctrl+E)">
-            Export JSON <span className="kbd-hint">Ctrl+E</span>
+            <FiDownload size={13} /> JSON <span className="kbd-hint">Ctrl+E</span>
           </button>
 
           <button
@@ -845,7 +1397,7 @@ export default function App() {
             onClick={() => setLogPanelCollapsed((prev) => !prev)}
             title="Toggle validation log panel (Ctrl+L)"
           >
-            Logs <span className="kbd-hint">Ctrl+L</span>
+            <FiTerminal size={13} /> Logs <span className="kbd-hint">Ctrl+L</span>
           </button>
 
           <button
@@ -853,7 +1405,7 @@ export default function App() {
             onClick={() => setMinimapEnabled((prev) => !prev)}
             title="Toggle graph minimap"
           >
-            Minimap
+            <FiLayers size={13} /> Minimap
           </button>
 
           <button
@@ -861,7 +1413,7 @@ export default function App() {
             onClick={toggleTheme}
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
           >
-            {theme === 'dark' ? 'Lt' : 'Dk'}
+            {theme === 'dark' ? <FiSun size={15} /> : <FiMoon size={15} />}
           </button>
 
           <button
@@ -869,7 +1421,7 @@ export default function App() {
             onClick={() => setShowKbdHelp((p) => !p)}
             title="Keyboard shortcuts (Ctrl+/)"
           >
-            Keys <span className="kbd-hint">Ctrl+/</span>
+            <FiKey size={13} /> <span className="kbd-hint">Ctrl+/</span>
           </button>
 
           <div className="telemetry-badge" title="Live task completion metric">
@@ -878,7 +1430,7 @@ export default function App() {
           </div>
 
           <div className={`status-indicator ${error ? 'invalid' : 'valid'}`}>
-            {error ? 'Invalid Spec' : 'Verified DAG'}
+            {error ? <><FiAlertCircle size={13} /> Invalid Spec</> : <><FiCheckCircle size={13} /> Verified DAG</>}
           </div>
         </div>
       </header>
@@ -888,13 +1440,22 @@ export default function App() {
         <div className="sim-controls">
           {!isSimulating ? (
             <button className="sim-btn play" onClick={handleStartSim} title="Start Swarm Simulation">
-              Run Swarm Sim
+              <FiPlay size={13} /> Run Swarm Sim
             </button>
           ) : (
             <button className="sim-btn pause" onClick={() => setIsSimulating(false)} title="Pause Simulation">
-              Pause Sim
+              <FiPause size={13} /> Pause Sim
             </button>
           )}
+
+          <button
+            className="sim-btn step"
+            onClick={handleStepBackSim}
+            disabled={simStepIndex <= 0}
+            title="Step Back in Simulation"
+          >
+            <FiSkipBack size={13} /> Back
+          </button>
 
           <button
             className="sim-btn step"
@@ -902,11 +1463,11 @@ export default function App() {
             disabled={simStepIndex >= simOrder.length}
             title="Step Forward Topologically"
           >
-            Step
+            <FiSkipForward size={13} /> Step
           </button>
 
           <button className="sim-btn reset" onClick={handleResetSim} title="Reset Simulation">
-            Reset
+            <FiRotateCcw size={13} /> Reset
           </button>
 
           <select
@@ -922,7 +1483,7 @@ export default function App() {
 
           {Object.keys(simNodeStates).length > 0 && (
             <button className="sim-btn apply" onClick={handleApplySimToCode} title="Sync status changes to Monaco editor">
-              Apply Sim to Spec
+              <FiZap size={13} /> Apply Sim to Spec
             </button>
           )}
         </div>
@@ -945,20 +1506,24 @@ export default function App() {
           <div className="sidebar-header">
             <h3>Explorer</h3>
             <button className="sidebar-toggle" onClick={() => setSidebarCollapsed((prev) => !prev)}>
-              {sidebarCollapsed ? '→' : '←'}
+              {sidebarCollapsed ? <FiChevronRight size={14} /> : <FiChevronLeft size={14} />}
             </button>
           </div>
 
           {!sidebarCollapsed && (
             <>
               <div className="sidebar-filters">
-                <input
-                  type="text"
-                  placeholder="Search objects..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="sidebar-search"
-                />
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <FiSearch size={13} style={{ position: 'absolute', left: 10, color: 'var(--text-muted)' }} />
+                  <input
+                    type="text"
+                    placeholder="Search objects..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="sidebar-search"
+                    style={{ paddingLeft: 30 }}
+                  />
+                </div>
                 <select
                   className="sidebar-type-filter"
                   value={typeFilter}
@@ -1007,25 +1572,30 @@ export default function App() {
 
               <div className="sidebar-object-list">
                 {filteredObjects.length === 0 && <div className="sidebar-empty">No objects found</div>}
-                {filteredObjects.map((obj) => (
-                  <div
-                    key={obj.id}
-                    className={`sidebar-object-item ${selectedObj?.id === obj.id ? 'selected' : ''}`}
-                    onClick={() => handleFocusNode(obj.id)}
-                  >
-                    <div className="sidebar-object-icon">
-                      {statusIcon(simNodeStates[obj.id] || obj.status || '[ ]')}
-                    </div>
-                    <div className="sidebar-object-info">
-                      <div className="sidebar-object-id">
-                        @{obj._type} · {obj.id}
+                {filteredObjects.map((obj) => {
+                  const st = simNodeStates[obj.id] || obj.status || '[ ]';
+                  const isCritical = showCriticalPath && topologyMetrics.criticalPath.includes(obj.id);
+                  return (
+                    <div
+                      key={obj.id}
+                      className={`sidebar-object-item ${selectedObj?.id === obj.id ? 'selected' : ''}`}
+                      onClick={() => handleFocusNode(obj.id)}
+                    >
+                      <div className="sidebar-object-icon">
+                        {renderStatusBadge(st)}
                       </div>
-                      <div className="sidebar-object-status">
-                        {simNodeStates[obj.id] || obj.status || ''}
+                      <div className="sidebar-object-info">
+                        <div className="sidebar-object-id">
+                          @{obj._type} · {obj.id}
+                          {isCritical && <span className="critical-path-chip" style={{ marginLeft: 6 }}>CP</span>}
+                        </div>
+                        <div className="sidebar-object-status">
+                          {obj.description ? obj.description.slice(0, 32) : st}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <div className="sidebar-footer">
@@ -1051,11 +1621,16 @@ export default function App() {
               <span className="snippet-label">Insert:</span>
               <button className="snippet-chip" onClick={() => handleInsertSnippet('task')}>+ @task</button>
               <button className="snippet-chip" onClick={() => handleInsertSnippet('agent')}>+ @agent</button>
+              <button className="snippet-chip" onClick={() => handleInsertSnippet('feature')}>+ @feature</button>
+              <button className="snippet-chip" onClick={() => handleInsertSnippet('workflow')}>+ @workflow</button>
               <button className="snippet-chip" onClick={() => handleInsertSnippet('policy')}>+ @policy</button>
               <button className="snippet-chip" onClick={() => handleInsertSnippet('contract')}>+ @contract</button>
               <button className="snippet-chip" onClick={() => handleInsertSnippet('vault')}>+ @vault</button>
               <button className="snippet-chip" onClick={() => handleInsertSnippet('rule')}>+ @rule</button>
               <button className="snippet-chip" onClick={() => handleInsertSnippet('timeline')}>+ @timeline</button>
+              <button className="snippet-chip" onClick={() => handleInsertSnippet('memory')}>+ @memory</button>
+              <button className="snippet-chip" onClick={() => handleInsertSnippet('swarm')}>+ @swarm</button>
+              <button className="snippet-chip" onClick={() => handleInsertSnippet('tenant')}>+ @tenant</button>
             </div>
 
             <Editor
@@ -1105,17 +1680,81 @@ export default function App() {
               <div className="inspector-panel">
                 <div className="inspector-header">
                   <h3>@{selectedObj._type} Details</h3>
-                  <button className="close-btn" onClick={() => setSelectedObj(null)}>
-                    ✕
-                  </button>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <button
+                      className="inspector-edit-btn"
+                      onClick={() => setIsEditingInspector((p) => !p)}
+                    >
+                      <FiEdit2 size={11} /> {isEditingInspector ? 'View' : 'Edit'}
+                    </button>
+                    <button className="close-btn" onClick={() => setSelectedObj(null)}>
+                      <FiX size={14} />
+                    </button>
+                  </div>
                 </div>
                 <div className="inspector-content">
-                  {renderInspectorFields(selectedObj).map((field) => (
-                    <div key={field.label} className="inspector-field">
-                      <div className="field-label">{field.label}</div>
-                      <div className="field-value">{field.value}</div>
+                  {isEditingInspector ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                      <div className="form-group">
+                        <label className="form-label">ID</label>
+                        <input
+                          type="text"
+                          className="inspector-input-field"
+                          value={inspectorEditFields.id || ''}
+                          onChange={(e) => setInspectorEditFields({ ...inspectorEditFields, id: e.target.value })}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Status</label>
+                        <select
+                          className="inspector-input-field"
+                          value={inspectorEditFields.status || '[ ]'}
+                          onChange={(e) => setInspectorEditFields({ ...inspectorEditFields, status: e.target.value })}
+                        >
+                          <option value="[ ]">[ ] Todo</option>
+                          <option value="[~]">[~] In-Progress</option>
+                          <option value="[x]">[x] Done</option>
+                          <option value="[!]">[!] Blocked</option>
+                          <option value="[?]">[?] Review</option>
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Description</label>
+                        <input
+                          type="text"
+                          className="inspector-input-field"
+                          value={inspectorEditFields.description || ''}
+                          onChange={(e) => setInspectorEditFields({ ...inspectorEditFields, description: e.target.value })}
+                        />
+                      </div>
+                      <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
+                        <button className="sim-btn apply" onClick={handleSaveInspectorEdit}>
+                          <FiCheck size={12} /> Save to Spec
+                        </button>
+                        <button className="sim-btn reset" onClick={() => handleInjectFailure(selectedObj.id)}>
+                          <FiAlertTriangle size={12} /> Inject Failure
+                        </button>
+                      </div>
                     </div>
-                  ))}
+                  ) : (
+                    <>
+                      {renderInspectorFields(selectedObj).map((field) => (
+                        <div key={field.label} className="inspector-field">
+                          <div className="field-label">{field.label}</div>
+                          <div className="field-value">{field.value}</div>
+                        </div>
+                      ))}
+                      <div style={{ marginTop: 12, display: 'flex', gap: 6 }}>
+                        <button
+                          className="sim-btn reset"
+                          style={{ width: '100%', justifyContent: 'center' }}
+                          onClick={() => handleInjectFailure(selectedObj.id)}
+                        >
+                          <FiAlertTriangle size={12} /> Simulate Failure
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             )}
@@ -1129,9 +1768,9 @@ export default function App() {
       {/* Validation Log Panel */}
       <div className={`log-panel ${logPanelCollapsed ? 'collapsed' : ''}`}>
         <div className="log-panel-header">
-          <span className="log-panel-title">Validation &amp; Simulation Logs</span>
+          <span className="log-panel-title"><FiTerminal style={{ marginRight: 6 }} /> Validation &amp; Simulation Logs</span>
           <button className="sidebar-toggle" onClick={() => setLogPanelCollapsed((prev) => !prev)}>
-            {logPanelCollapsed ? '↑' : '↓'}
+            {logPanelCollapsed ? <FiChevronUp size={14} /> : <FiChevronDown size={14} />}
           </button>
         </div>
         {!logPanelCollapsed && (
@@ -1185,17 +1824,239 @@ export default function App() {
         </div>
       </footer>
 
+      {/* Add New Block Modal */}
+      {showAddModal && (
+        <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3><FiPlus size={16} color="var(--accent-cyan)" /> Create New ALP Primitive</h3>
+              <button className="modal-close" onClick={() => setShowAddModal(false)}>
+                <FiX size={16} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">Primitive Type</label>
+                <select
+                  className="form-select"
+                  value={newBlockType}
+                  onChange={(e) => setNewBlockType(e.target.value)}
+                >
+                  <option value="task">@task — Executable action node</option>
+                  <option value="agent">@agent — AI actor profile</option>
+                  <option value="feature">@feature — Requirement container</option>
+                  <option value="workflow">@workflow — Pipeline schedule</option>
+                  <option value="policy">@policy — Security guardrail</option>
+                  <option value="contract">@contract — Service boundary</option>
+                  <option value="vault">@vault — Secret repository</option>
+                  <option value="rule">@rule — Project constraint</option>
+                  <option value="timeline">@timeline — Scheduled job</option>
+                  <option value="memory">@memory — Semantic vector store</option>
+                  <option value="swarm">@swarm — Multi-agent mesh</option>
+                  <option value="tenant">@tenant — Multi-tenant boundary</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">ID (e.g. task-auth-service)</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="my-object-id"
+                  value={newBlockId}
+                  onChange={(e) => setNewBlockId(e.target.value)}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Description</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Brief summary of this primitive"
+                  value={newBlockDesc}
+                  onChange={(e) => setNewBlockDesc(e.target.value)}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Owner Agent (Optional)</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="@agent-coder"
+                  value={newBlockOwner}
+                  onChange={(e) => setNewBlockOwner(e.target.value)}
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Dependencies (Comma-separated IDs)</label>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="task-db-schema, task-core"
+                  value={newBlockDependsOn}
+                  onChange={(e) => setNewBlockDependsOn(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="action-btn" onClick={() => setShowAddModal(false)}>Cancel</button>
+              <button className="sim-btn play" onClick={handleCreateBlock} disabled={!newBlockId.trim()}>
+                <FiPlus size={13} /> Insert into Spec
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Snapshots & History Modal */}
+      {showSnapshotsModal && (
+        <div className="modal-overlay" onClick={() => setShowSnapshotsModal(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3><FiBookmark size={16} color="var(--accent-purple)" /> Workspace Snapshots</h3>
+              <button className="modal-close" onClick={() => setShowSnapshotsModal(false)}>
+                <FiX size={16} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <div style={{ display: 'flex', gap: 8 }}>
+                <input
+                  type="text"
+                  className="form-input"
+                  placeholder="Snapshot name (e.g. Before refactoring)"
+                  value={snapshotNameInput}
+                  onChange={(e) => setSnapshotNameInput(e.target.value)}
+                  style={{ flex: 1 }}
+                />
+                <button className="sim-btn play" onClick={handleSaveSnapshot}>
+                  <FiBookmark size={13} /> Save
+                </button>
+              </div>
+
+              <div className="snapshot-list">
+                {snapshots.length === 0 ? (
+                  <div className="sidebar-empty">No saved snapshots yet</div>
+                ) : (
+                  snapshots.map((snap) => (
+                    <div key={snap.id} className="snapshot-item">
+                      <div className="snapshot-info">
+                        <span className="snapshot-name">{snap.name}</span>
+                        <span className="snapshot-date">{snap.createdAt} · {snap.code.split('\n').length} lines</span>
+                      </div>
+                      <div className="snapshot-actions">
+                        <button className="action-btn" onClick={() => handleLoadSnapshot(snap)}>
+                          Restore
+                        </button>
+                        <button className="modal-close" onClick={() => handleDeleteSnapshot(snap.id)} title="Delete snapshot">
+                          <FiTrash2 size={13} color="var(--accent-rose)" />
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="action-btn" onClick={() => setShowSnapshotsModal(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Topology & Bottleneck Analytics HUD */}
+      {showTopologyHud && (
+        <div className="modal-overlay" onClick={() => setShowTopologyHud(false)}>
+          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3><FiTrendingUp size={16} color="var(--accent-cyan)" /> Topology &amp; Critical Path Analytics</h3>
+              <button className="modal-close" onClick={() => setShowTopologyHud(false)}>
+                <FiX size={16} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="topology-hud-grid">
+                <div className="hud-stat-box">
+                  <span className="hud-stat-title">DAG Max Depth</span>
+                  <span className="hud-stat-value">{topologyMetrics.maxDepth}</span>
+                  <span className="hud-stat-desc">Sequential execution levels</span>
+                </div>
+                <div className="hud-stat-box">
+                  <span className="hud-stat-title">Max Concurrency</span>
+                  <span className="hud-stat-value">{topologyMetrics.maxParallel}</span>
+                  <span className="hud-stat-desc">Peak parallel agent tasks</span>
+                </div>
+              </div>
+
+              <div className="form-group" style={{ marginTop: 8 }}>
+                <label className="form-label">Critical Path ({topologyMetrics.criticalPath.length} nodes)</label>
+                <div style={{ background: 'var(--bg-dark)', padding: '10px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#f59e0b' }}>
+                  {topologyMetrics.criticalPath.length > 0 ? topologyMetrics.criticalPath.join(' ➔ ') : 'None'}
+                </div>
+              </div>
+
+              <div className="form-group" style={{ marginTop: 8 }}>
+                <label className="form-label">High-Impact Bottleneck Nodes</label>
+                <div className="bottleneck-list">
+                  {topologyMetrics.bottlenecks.map((b) => (
+                    <div key={b.id} className="bottleneck-item">
+                      <span>@{b.type} · <strong>{b.id}</strong></span>
+                      <span style={{ color: 'var(--accent-rose)', fontWeight: 700 }}>{b.score} dependencies</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                className={`action-btn ${showCriticalPath ? 'active' : ''}`}
+                onClick={() => {
+                  setShowCriticalPath((p) => !p);
+                  setShowTopologyHud(false);
+                }}
+              >
+                <FiActivity size={13} /> {showCriticalPath ? 'Hide on Graph' : 'Highlight on Graph'}
+              </button>
+              <button className="action-btn" onClick={() => setShowTopologyHud(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Keyboard Shortcuts Help Toast */}
       {showKbdHelp && (
-        <div className="kbd-toast">
-          <div className="kbd-grid">
-            <kbd>Ctrl+S</kbd> <span>Copy ALP Spec</span>
-            <kbd>Ctrl+E</kbd> <span>Export as JSON</span>
-            <kbd>Ctrl+B</kbd> <span>Toggle Sidebar</span>
-            <kbd>Ctrl+L</kbd> <span>Toggle Log Panel</span>
-            <kbd>Ctrl+/</kbd> <span>Show/Hide Shortcuts</span>
-            <kbd>Esc</kbd> <span>Close Panels</span>
+        <div className="modal-overlay" onClick={() => setShowKbdHelp(false)}>
+          <div className="modal-card" style={{ maxWidth: 440 }} onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3><FiKey size={16} color="var(--accent-cyan)" /> Keyboard Shortcuts</h3>
+              <button className="modal-close" onClick={() => setShowKbdHelp(false)}>
+                <FiX size={16} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="kbd-grid">
+                <kbd>Ctrl+S</kbd> <span>Copy ALP Spec</span>
+                <kbd>Ctrl+I</kbd> <span>Format ALP Spec</span>
+                <kbd>Ctrl+N</kbd> <span>Create New Block</span>
+                <kbd>Ctrl+K</kbd> <span>Snapshots / History</span>
+                <kbd>Ctrl+M</kbd> <span>Export Mermaid Diagram</span>
+                <kbd>Ctrl+E</kbd> <span>Export as JSON</span>
+                <kbd>Ctrl+B</kbd> <span>Toggle Explorer Sidebar</span>
+                <kbd>Ctrl+L</kbd> <span>Toggle Logs Panel</span>
+                <kbd>Ctrl+/</kbd> <span>Show/Hide Shortcuts</span>
+                <kbd>Esc</kbd> <span>Close Any Open Modal</span>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="action-btn" onClick={() => setShowKbdHelp(false)}>Close</button>
+            </div>
           </div>
+        </div>
+      )}
+
+      {/* Toast Notification Banner */}
+      {toastMessage && (
+        <div className="toast-banner">
+          <FiCheckCircle size={15} color="var(--accent-emerald)" />
+          <span>{toastMessage}</span>
         </div>
       )}
     </div>

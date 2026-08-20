@@ -11,9 +11,23 @@ const starsContent = fs.existsSync(starsPath) ? fs.readFileSync(starsPath, 'utf-
 
 export default defineConfig({
   title: "ALP",
-  description: "Autonomous Lifecycle Protocol",
+  description: "Autonomous Lifecycle Protocol — Open standard and orchestration engine for multi-agent software engineering",
   theme: 'src/.vitepress/theme/index.ts',
   base: '/Autonomous-Lifecycle-Protocol-ALP/',
+  sitemap: {
+    hostname: 'https://autonomous-lifecycle-protocol-alp.github.io/Autonomous-Lifecycle-Protocol-ALP/'
+  },
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['meta', { name: 'author', content: 'Autonomous Lifecycle Protocol Contributors' }],
+    ['meta', { name: 'keywords', content: 'ALP, autonomous agents, swarm intelligence, software lifecycle, AI orchestration, developer tools' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:title', content: 'Autonomous Lifecycle Protocol (ALP)' }],
+    ['meta', { property: 'og:description', content: 'Open standard and execution engine for multi-agent systems and software lifecycles' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'Autonomous Lifecycle Protocol (ALP)' }],
+    ['meta', { name: 'twitter:description', content: 'Open standard and execution engine for multi-agent systems and software lifecycles' }],
+  ],
   markdown: {
     languageAlias: {
       alp: 'markdown',
@@ -29,7 +43,6 @@ export default defineConfig({
     const head: Array<[string, Record<string, string>, string]> = []
     if (styleContent) head.push(['style', {}, styleContent])
     if (starsContent) head.push(['script', {}, starsContent])
-    head.push(['link', { rel: 'icon', href: '/favicon.ico' }])
     return head
   },
   themeConfig: {
