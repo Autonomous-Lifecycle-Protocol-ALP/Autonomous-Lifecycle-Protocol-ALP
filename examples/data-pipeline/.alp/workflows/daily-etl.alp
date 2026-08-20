@@ -4,15 +4,11 @@
   id: wf-daily-etl
   name: "Daily Sales ETL"
   trigger: "cron(0 0 * * *)"
+  agents:
+    - -> agent-extractor
+    - -> agent-cleaner
+    - -> agent-analyst
   steps:
-    - id: step-extract
-      agent: agent-extractor
-      action: "Extract raw sales data from Salesforce API"
-    - id: step-clean
-      agent: agent-cleaner
-      action: "Scrub PII and normalize schemas"
-      depends_on: [step-extract]
-    - id: step-analyze
-      agent: agent-analyst
-      action: "Generate daily aggregation report"
-      depends_on: [step-clean]
+    - "Extract: agent-extractor extracts raw sales data from Salesforce API"
+    - "Clean: agent-cleaner scrubs PII and normalizes schemas"
+    - "Analyze: agent-analyst generates daily aggregation report"

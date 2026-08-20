@@ -4,16 +4,10 @@
   id: wf-chat-interaction
   name: "User Chat Interaction"
   trigger: "on_message"
+  agents:
+    - -> agent-support
+    - -> agent-researcher
   steps:
-    - id: step-analyze
-      agent: agent-support
-      action: "Determine intent and confidence"
-    - id: step-fallback
-      condition: "confidence < 0.7"
-      agent: agent-researcher
-      action: "Research deep context"
-      depends_on: [step-analyze]
-    - id: step-respond
-      agent: agent-support
-      action: "Format and return final answer"
-      depends_on: [step-analyze, step-fallback]
+    - "Analyze: agent-support determines user intent and confidence"
+    - "Fallback: agent-researcher retrieves context if confidence < 0.7"
+    - "Respond: agent-support generates and delivers final response"
