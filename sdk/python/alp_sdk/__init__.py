@@ -336,6 +336,30 @@ from .template_engine import TemplateEngine
 from .author import WorkflowAuthor, AuthoringError
 from .autonomy import WorkflowMutator, AdaptiveEngine, AutonomyController, EditProposal
 
+# ──────────────────────────── Multi-Modal & Synapse ────────────────────────────
+from .multimodal import (
+    MultiModalAsset,
+    ActionDefinition,
+    AlpMultimodal,
+    AlpActionSpace,
+    AlpVisionModel,
+    MultiModalExecutionResult,
+    ContextBudgetResult,
+    MultiModalEngine,
+    MultiModalBridge,
+)
+from .synapse import (
+    SynapseNode,
+    SynapseEdge,
+    SynapseTopology,
+    SynapseStats,
+    CanvasNodeData,
+    CanvasEdgeData,
+    SynapseCanvas,
+    SynapseVaultFile,
+    SynapseEngine,
+)
+
 __all__ = [
     # Core
     "AlpObject",
@@ -692,4 +716,23 @@ __all__ = [
     "AdaptiveEngine",
     "AutonomyController",
     "EditProposal",
+    # Multi-Modal & Synapse
+    "MultiModalAsset",
+    "ActionDefinition",
+    "AlpMultimodal",
+    "AlpActionSpace",
+    "AlpVisionModel",
+    "MultiModalExecutionResult",
+    "ContextBudgetResult",
+    "MultiModalEngine",
+    "MultiModalBridge",
+    "SynapseNode",
+    "SynapseEdge",
+    "SynapseTopology",
+    "SynapseStats",
+    "CanvasNodeData",
+    "CanvasEdgeData",
+    "SynapseCanvas",
+    "SynapseVaultFile",
+    "SynapseEngine",
 ]
