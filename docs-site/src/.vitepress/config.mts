@@ -64,6 +64,7 @@ export default defineConfig({
           { text: 'Examples', link: '/examples' },
           { text: 'CLI Guide', link: '/guide/cli' },
           { text: 'Synapse Knowledge Graph', link: '/guide/synapse' },
+          { text: 'Multi-Modal & VLA', link: '/guide/multimodal' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' }
@@ -130,6 +131,7 @@ export default defineConfig({
           { text: 'Examples', link: '/examples' },
           { text: 'CLI Usage', link: '/guide/cli' },
           { text: 'Synapse Knowledge Graph', link: '/guide/synapse' },
+          { text: 'Multi-Modal & VLA', link: '/guide/multimodal' },
           { text: 'SDKs', link: '/guide/sdk' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
