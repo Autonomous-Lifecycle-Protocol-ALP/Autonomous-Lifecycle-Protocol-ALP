@@ -15,6 +15,7 @@ import 'reactflow/dist/style.css';
 import { AlpParser, AlpGraph, AlpFormatter } from '@autonomous-lifecycle-protocol-alp/parser';
 import type { AlpObject } from '@autonomous-lifecycle-protocol-alp/parser';
 import { SynapseModal } from './components/SynapseModal.js';
+import { MultiModalModal } from './components/MultiModalModal.js';
 import {
   FiPlay,
   FiPause,
@@ -407,6 +408,72 @@ const TEMPLATES: Record<string, { label: string; code: string }> = {
     - "npm test --run"
 `,
   },
+  multimodal: {
+    label: 'Multi-Modal & VLA Action Space',
+    code: `!alp-version: 3.0.0
+
+@project
+  id: multimodal-vision-vla
+  status: [~]
+  description: "Vision-Language-Action Protocol & Sensor Stream Engine"
+
+@agent
+  id: agent-vla-controller
+  role: "Embodied Vision-Language-Action Agent"
+
+@multimodal
+  id: mm-vision-pipeline
+  modalities:
+    - vision
+    - text
+    - sensor
+  resolution: "1920x1080"
+  fps: 30
+  embedding_dim: 768
+  assets:
+    - id: asset-ui-screenshot
+      type: image
+      uri: "file://assets/screenshots/ui-main.png"
+      format: png
+    - id: asset-live-cam
+      type: video
+      uri: "rtsp://camera.local/live"
+      format: h264
+
+@vision_model
+  id: model-siglip-base
+  backbone: siglip
+  context_tokens: 4096
+  embedding_dim: 768
+  latency_p95_ms: 45
+
+@action_space
+  id: act-browser-nav
+  agent: agent-vla-controller
+  domain: browser
+  max_concurrency: 4
+  actions:
+    - name: click_element
+      type: digital
+      safety_level: low
+    - name: submit_transaction
+      type: api
+      safety_level: critical
+      requires_confirmation: true
+
+@task
+  id: task-capture-multimodal-frame
+  status: [x]
+  owner: -> agent-vla-controller
+
+@task
+  id: task-vla-action-dispatch
+  status: [~]
+  depends_on:
+    - -> task-capture-multimodal-frame
+  owner: -> agent-vla-controller
+`,
+  },
 };
 
 // ── Directive Snippets ─────────────────────────────────────────────────
@@ -423,6 +490,9 @@ const SNIPPETS: Record<string, string> = {
   memory: `\n@memory\n  id: mem-knowledge-base\n  type: semantic-vector\n  scope: workspace\n`,
   swarm: `\n@swarm\n  id: swarm-federation\n  topology: mesh\n  consensus: pbft\n`,
   tenant: `\n@tenant\n  id: tenant-enterprise\n  tier: premium\n`,
+  multimodal: `\n@multimodal\n  id: mm-stream-001\n  modalities:\n    - vision\n    - sensor\n  resolution: "1920x1080"\n  fps: 30\n`,
+  vision_model: `\n@vision_model\n  id: model-clip-vit\n  backbone: clip\n  context_tokens: 4096\n`,
+  action_space: `\n@action_space\n  id: act-space-001\n  domain: browser\n  actions:\n    - name: click\n      safety_level: low\n`,
 };
 
 // ── Helpers ────────────────────────────────────────────────────────────
@@ -487,6 +557,9 @@ const TYPE_META: Record<string, { color: string; icon: string; bg: string }> = {
   swarm: { color: '#14b8a6', icon: 'SWM', bg: 'rgba(20, 184, 166, 0.08)' },
   tenant: { color: '#8b5cf6', icon: 'TNT', bg: 'rgba(139, 92, 246, 0.08)' },
   project: { color: '#ec4899', icon: 'PRJ', bg: 'rgba(236, 72, 153, 0.08)' },
+  multimodal: { color: '#06b6d4', icon: 'MMD', bg: 'rgba(6, 182, 212, 0.08)' },
+  vision_model: { color: '#8b5cf6', icon: 'VIS', bg: 'rgba(139, 92, 246, 0.08)' },
+  action_space: { color: '#f43f5e', icon: 'ACT', bg: 'rgba(244, 63, 94, 0.08)' },
 };
 
 // ── Custom ReactFlow Node ─────────────────────────────────────────────
@@ -551,6 +624,7 @@ export default function App() {
   const [showSnapshotsModal, setShowSnapshotsModal] = useState(false);
   const [showTopologyHud, setShowTopologyHud] = useState(false);
   const [showSynapseModal, setShowSynapseModal] = useState(false);
+  const [showMultiModalModal, setShowMultiModalModal] = useState(false);
   const [showKbdHelp, setShowKbdHelp] = useState(false);
   const [isEditingInspector, setIsEditingInspector] = useState(false);
   const [inspectorEditFields, setInspectorEditFields] = useState<Record<string, string>>({});
@@ -1376,6 +1450,20 @@ export default function App() {
             🧠 Synapse
           </button>
 
+          <button
+            className="action-btn"
+            onClick={() => setShowMultiModalModal(true)}
+            title="Multi-Modal Protocol & VLA Action Space Inspector"
+            style={{
+              background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(59, 130, 246, 0.2))',
+              border: '1px solid rgba(6, 182, 212, 0.4)',
+              color: '#38bdf8',
+              fontWeight: 600,
+            }}
+          >
+            👁️ Multi-Modal
+          </button>
+
           <button className="action-btn" onClick={() => reactFlowInstance?.fitView({ padding: 0.2, duration: 400 })} title="Fit graph view">
             <FiMaximize2 size={13} /> Fit View
           </button>
@@ -2041,6 +2129,13 @@ export default function App() {
       <SynapseModal
         isOpen={showSynapseModal}
         onClose={() => setShowSynapseModal(false)}
+        parsedObjects={parsedObjects}
+      />
+
+      {/* Multi-Modal Protocol & VLA Modal */}
+      <MultiModalModal
+        isOpen={showMultiModalModal}
+        onClose={() => setShowMultiModalModal(false)}
         parsedObjects={parsedObjects}
       />
 
