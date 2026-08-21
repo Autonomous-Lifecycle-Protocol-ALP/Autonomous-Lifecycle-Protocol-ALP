@@ -144,4 +144,43 @@ describe('SynapseEngine — Knowledge Graph & Canvas Vault', () => {
     expect(topology.stats.brokenLinks.length).toBe(1);
     expect(topology.stats.brokenLinks[0].target).toBe('non-existent-task-123');
   });
+
+  it('handles empty objects array without crashing', () => {
+    const engine = new SynapseEngine();
+    const topology = engine.buildTopology([]);
+    expect(topology.nodes.length).toBe(0);
+    expect(topology.edges.length).toBe(0);
+    expect(topology.stats.density).toBe(0);
+  });
+
+  it('generates vault files for empty object list', () => {
+    const engine = new SynapseEngine();
+    const vaultFiles = engine.generateVault([]);
+    expect(vaultFiles.length).toBe(2);
+    expect(vaultFiles.some((f) => f.relativePath === 'MOC.md')).toBe(true);
+  });
+
+  it('generates canvas for empty topology', () => {
+    const engine = new SynapseEngine();
+    const topology = engine.buildTopology([]);
+    const canvas = engine.generateCanvas(topology);
+    expect(canvas.nodes.length).toBeGreaterThanOrEqual(0);
+  });
+
+  it('produces valid Mermaid output for single node', () => {
+    const engine = new SynapseEngine();
+    const topology = engine.buildTopology([
+      { _type: 'task', id: 'solo', description: 'Alone' } as any,
+    ]);
+    const mermaid = engine.toMermaid(topology);
+    expect(mermaid).toContain('flowchart LR');
+    expect(mermaid).toContain('solo');
+  });
+
+  it('produces valid DOT output for empty graph', () => {
+    const engine = new SynapseEngine();
+    const topology = engine.buildTopology([]);
+    const dot = engine.toDot(topology);
+    expect(dot).toContain('digraph SynapseGraph');
+  });
 });

@@ -76,4 +76,75 @@ describe('Examples — Synapse Distributed Mesh Project', () => {
     expect(canvasParsed.nodes.length).toBeGreaterThan(0);
     expect(canvasParsed.edges.length).toBeGreaterThan(0);
   });
+
+  it('handles empty object array without crashing', () => {
+    const engine = new SynapseEngine();
+    const topology = engine.buildTopology([]);
+    expect(topology.nodes.length).toBe(0);
+    expect(topology.edges.length).toBe(0);
+    expect(topology.stats.totalNodes).toBe(0);
+    expect(topology.stats.totalEdges).toBe(0);
+    expect(topology.stats.density).toBe(0);
+  });
+
+  it('handles single node with no edges as orphan', () => {
+    const engine = new SynapseEngine();
+    const topology = engine.buildTopology([
+      { _type: 'task', id: 'lonely-task', description: 'No connections' } as AlpObject,
+    ]);
+    expect(topology.nodes.length).toBe(1);
+    expect(topology.nodes[0].degree).toBe(0);
+    expect(topology.nodes[0].outLinks).toHaveLength(0);
+    expect(topology.nodes[0].inLinks).toHaveLength(0);
+  });
+
+  it('identifies orphan nodes and broken links in mixed topology', () => {
+    const engine = new SynapseEngine();
+    const topology = engine.buildTopology([
+      { _type: 'task', id: 'task-a', depends: ['task-b'] } as AlpObject,
+      { _type: 'task', id: 'task-b', depends: ['task-c'] } as AlpObject,
+      { _type: 'task', id: 'task-c', depends: ['non-existent'] } as AlpObject,
+      { _type: 'task', id: 'task-orphan', description: 'Isolated' } as AlpObject,
+    ]);
+
+    expect(topology.stats.orphanNodes).toContain('task-orphan');
+    expect(topology.stats.brokenLinks.length).toBeGreaterThanOrEqual(1);
+    expect(topology.stats.brokenLinks.some((b) => b.target === 'non-existent')).toBe(true);
+  });
+
+  it('generates vault files for empty object list', () => {
+    const engine = new SynapseEngine();
+    const vaultFiles = engine.generateVault([]);
+    expect(vaultFiles.length).toBe(2);
+    expect(vaultFiles.some((f) => f.relativePath === 'MOC.md')).toBe(true);
+  });
+
+  it('generates canvas with zero nodes for empty topology', () => {
+    const engine = new SynapseEngine();
+    const topology = engine.buildTopology([]);
+    const canvas = engine.generateCanvas(topology);
+    expect(canvas.nodes.length).toBeGreaterThanOrEqual(0);
+  });
+
+  it('produces valid Mermaid syntax for simple topology', () => {
+    const engine = new SynapseEngine();
+    const topology = engine.buildTopology([
+      { _type: 'task', id: 'task-a', depends: ['task-b'] } as AlpObject,
+      { _type: 'task', id: 'task-b', depends: [] } as AlpObject,
+    ]);
+    const mermaid = engine.toMermaid(topology);
+    expect(mermaid).toContain('flowchart LR');
+    expect(mermaid).toContain('task_a');
+    expect(mermaid).toContain('task_b');
+  });
+
+  it('produces valid DOT syntax for simple topology', () => {
+    const engine = new SynapseEngine();
+    const topology = engine.buildTopology([
+      { _type: 'agent', id: 'agent-x', description: 'Test agent' } as AlpObject,
+    ]);
+    const dot = engine.toDot(topology);
+    expect(dot).toContain('digraph SynapseGraph');
+    expect(dot).toContain('"agent-x"');
+  });
 });

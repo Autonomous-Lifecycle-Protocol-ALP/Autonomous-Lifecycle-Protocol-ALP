@@ -44,9 +44,9 @@ export function MultiModalModal({
     timestamp?: string;
   } | null>(null);
 
-  // Simulation stream state
-  const [isSimulatingStream] = useState(true);
-  const [simFps] = useState(30);
+  // Simulation stream constants (static simulation display)
+  const isSimulatingStream = true;
+  const simFps = 30;
 
   const engine = useMemo(() => new MultiModalEngine(), []);
 

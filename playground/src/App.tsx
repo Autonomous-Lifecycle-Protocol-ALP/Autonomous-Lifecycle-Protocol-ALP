@@ -10,7 +10,7 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
 } from 'reactflow';
-import type { Edge, Node, NodeProps } from 'reactflow';
+import type { Edge, Node, NodeProps, ReactFlowInstance } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { AlpParser, AlpGraph, AlpFormatter } from '@autonomous-lifecycle-protocol-alp/parser';
 import type { AlpObject } from '@autonomous-lifecycle-protocol-alp/parser';
@@ -615,7 +615,7 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'done' | 'progress' | 'blocked' | 'todo'>('all');
-  const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('dag');
   const [parsedObjects, setParsedObjects] = useState<AlpObject[]>([]);
 
@@ -872,7 +872,7 @@ export default function App() {
                   id: obj.id,
                   type: obj._type,
                   status: obj.status,
-                  owner: (obj as any).owner || null,
+                   owner: obj.owner || null,
                   rawObject: obj,
                 },
               });
@@ -891,7 +891,7 @@ export default function App() {
                 id: obj.id,
                 type: obj._type,
                 status: obj.status,
-                owner: (obj as any).owner || null,
+                   owner: obj.owner || null,
                 rawObject: obj,
               },
             });
@@ -919,7 +919,7 @@ export default function App() {
                   id: obj.id,
                   type: obj._type,
                   status: obj.status,
-                  owner: (obj as any).owner || null,
+                   owner: obj.owner || null,
                   rawObject: obj,
                 },
               });
@@ -1116,7 +1116,7 @@ export default function App() {
     }
   }, [code, showToast]);
 
-  const handleNodeClick = (_: any, node: Node) => {
+  const handleNodeClick = (_: React.MouseEvent, node: Node) => {
     if (node.data && node.data.rawObject) {
       setSelectedObj(node.data.rawObject);
       setIsEditingInspector(false);
@@ -1124,7 +1124,7 @@ export default function App() {
         id: node.data.rawObject.id,
         status: node.data.rawObject.status || '[ ]',
         description: node.data.rawObject.description || '',
-        owner: (node.data.rawObject as any).owner || '',
+        owner: node.data.rawObject.owner || '',
       });
     }
   };
@@ -1300,6 +1300,8 @@ export default function App() {
         setShowAddModal(false);
         setShowSnapshotsModal(false);
         setShowTopologyHud(false);
+        setShowSynapseModal(false);
+        setShowMultiModalModal(false);
         setSelectedObj(null);
       }
     };
@@ -1345,7 +1347,7 @@ export default function App() {
         id: obj.id,
         status: simNodeStates[obj.id] || obj.status || '[ ]',
         description: obj.description || '',
-        owner: (obj as any).owner || '',
+        owner: obj.owner || '',
       });
     }
   };
@@ -1735,6 +1737,9 @@ export default function App() {
               <button className="snippet-chip" onClick={() => handleInsertSnippet('memory')}>+ @memory</button>
               <button className="snippet-chip" onClick={() => handleInsertSnippet('swarm')}>+ @swarm</button>
               <button className="snippet-chip" onClick={() => handleInsertSnippet('tenant')}>+ @tenant</button>
+              <button className="snippet-chip" onClick={() => handleInsertSnippet('multimodal')}>+ @multimodal</button>
+              <button className="snippet-chip" onClick={() => handleInsertSnippet('vision_model')}>+ @vision_model</button>
+              <button className="snippet-chip" onClick={() => handleInsertSnippet('action_space')}>+ @action_space</button>
             </div>
 
             <Editor

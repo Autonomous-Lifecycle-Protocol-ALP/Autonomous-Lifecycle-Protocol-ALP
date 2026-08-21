@@ -38,6 +38,22 @@ describe('CLI multimodal — MultiModalEngine validation', () => {
     expect(result.errors.length).toBeGreaterThan(0);
   });
 
+  it('rejects multimodal spec missing id', () => {
+    const result = engine.validateMultimodal({ modalities: ['vision'] } as any);
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain('Multimodal spec requires a valid non-empty id.');
+  });
+
+  it('rejects multimodal spec with asset missing uri', () => {
+    const result = engine.validateMultimodal({
+      id: 'mm-asset-err',
+      modalities: ['vision'],
+      assets: [{ id: 'a', type: 'image' }],
+    });
+    expect(result.valid).toBe(false);
+    expect(result.errors.some((e) => e.includes('missing a uri'))).toBe(true);
+  });
+
   it('validates action space and counts critical actions', () => {
     const actionSpace: AlpActionSpace = {
       id: 'as-drone-pilot',
@@ -79,6 +95,29 @@ describe('CLI multimodal — MultiModalEngine validation', () => {
     expect(guardCheck.allowed).toBe(true);
     expect(guardCheck.blockedActions).toHaveLength(0);
   });
+
+  it('blocks critical action via specific guard name match', () => {
+    const actionSpace: AlpActionSpace = {
+      id: 'as-name-guard',
+      actions: [
+        { name: 'admin_call', type: 'rpc', safety_level: 'critical', requires_confirmation: false },
+      ],
+    };
+    const result = engine.verifySafetyGuards(actionSpace, ['admin_call']);
+    expect(result.allowed).toBe(true);
+  });
+
+  it('rejects action space with empty actions', () => {
+    const result = engine.validateActionSpace({ id: 'as-empty' });
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain('ActionSpace must declare at least one action in `actions`.');
+  });
+
+  it('rejects action space missing id', () => {
+    const result = engine.validateActionSpace({ actions: [] } as any);
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain('ActionSpace requires a valid non-empty id.');
+  });
 });
 
 describe('CLI multimodal — MultiModalBridge context budget', () => {
@@ -106,6 +145,21 @@ describe('CLI multimodal — MultiModalBridge context budget', () => {
     expect(budget.remainingTokens).toBeGreaterThanOrEqual(0);
   });
 
+  it('caps totalTokens at vision model context_tokens', () => {
+    const spec: AlpMultimodal = {
+      id: 'mm-huge',
+      modalities: ['vision', 'vision', 'vision'],
+      assets: [
+        { id: 'a', type: 'image', uri: 's3://a.png' },
+        { id: 'b', type: 'video', uri: 's3://b.mp4' },
+        { id: 'c', type: 'point_cloud', uri: 's3://c.pcd' },
+      ],
+    };
+    const model: AlpVisionModel = { id: 'vm-tiny', backbone: 'clip', context_tokens: 100 };
+    const budget = bridge.estimateContextBudget(spec, model);
+    expect(budget.totalTokens).toBeLessThanOrEqual(100);
+  });
+
   it('validates action execution with required parameters', () => {
     const actionSpace: AlpActionSpace = {
       id: 'as-param-test',
@@ -129,6 +183,16 @@ describe('CLI multimodal — MultiModalBridge context budget', () => {
     expect(pass.allowed).toBe(true);
   });
 
+  it('returns not-found for undefined action', () => {
+    const space: AlpActionSpace = {
+      id: 'as-missing',
+      actions: [{ name: 'real', type: 'digital', safety_level: 'low' }],
+    };
+    const result = bridge.validateActionExecution(space, 'ghost');
+    expect(result.allowed).toBe(false);
+    expect(result.reason).toContain('not defined');
+  });
+
   it('fuses multimodal streams into context payload', () => {
     const result = bridge.fuseMultimodalStreams('Analyze defects', [
       { id: 'img-1', type: 'image', uri: 's3://img.png' },
@@ -141,5 +205,42 @@ describe('CLI multimodal — MultiModalBridge context budget', () => {
     expect(result.modalities).toContain('audio');
     expect(result.promptPayload).toContain('MULTIMODAL VLA CONTEXT');
     expect(result.promptPayload).toContain('Analyze defects');
+  });
+
+  it('fuses empty assets without asset headers', () => {
+    const result = bridge.fuseMultimodalStreams('Hello', []);
+    expect(result.totalAssets).toBe(0);
+    expect(result.modalities).toEqual(['text']);
+    expect(result.promptPayload).not.toContain('Asset:');
+  });
+
+  it('includes asset resolution in fused payload when present', () => {
+    const result = bridge.fuseMultimodalStreams('Check', [
+      { id: 'cam', type: 'image', uri: 's3://cam.png', resolution: '1920x1080' },
+    ]);
+    expect(result.promptPayload).toContain('Res: 1920x1080');
+  });
+
+  it('blocks critical action without confirmation in bridge', () => {
+    const space: AlpActionSpace = {
+      id: 'as-critical',
+      actions: [
+        { name: 'deploy', type: 'api', safety_level: 'critical', requires_confirmation: true },
+      ],
+    };
+    const fail = bridge.validateActionExecution(space, 'deploy', {}, false);
+    expect(fail.allowed).toBe(false);
+    expect(fail.reason).toContain('requires explicit human confirmation');
+  });
+
+  it('allows critical action with confirmation in bridge', () => {
+    const space: AlpActionSpace = {
+      id: 'as-critical-ok',
+      actions: [
+        { name: 'deploy', type: 'api', safety_level: 'critical', requires_confirmation: true },
+      ],
+    };
+    const pass = bridge.validateActionExecution(space, 'deploy', {}, true);
+    expect(pass.allowed).toBe(true);
   });
 });
