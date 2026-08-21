@@ -72,6 +72,7 @@ export * from './consensus-vote';
 export * from './code-transform';
 export * from './event-mesh';
 export * from './swarm-marketplace';
+export * from './multimodal';
 
 // ── IDE & Editor Extensions ───────────────────────────────────────────────────
 export * from './macro';

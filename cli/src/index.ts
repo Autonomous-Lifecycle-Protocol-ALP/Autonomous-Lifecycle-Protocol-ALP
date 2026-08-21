@@ -63,6 +63,7 @@ import { promoteCommand } from './commands/promote';
 import { registerReasonCommand } from './commands/reason';
 import { integrateCommand } from './commands/integrate';
 import { synapseExportCommand, synapseGraphCommand, synapseStatsCommand } from './commands/synapse';
+import { multimodalInspectCommand, multimodalValidateCommand, actionSpaceCheckCommand } from './commands/multimodal';
 const program = new Command();
 
 program
@@ -693,8 +694,27 @@ registerCRDTSyncCommand(program);
 registerHealCommand(program);
 registerFormalVerifyCommand(program);
 registerReasonCommand(program);
-// Duplicate command registrations removed (see ADR-001: CLI deduplication)
-// All commands are registered once above. Subcommand-registration helpers
-// (registerTraceCommand, registerZKCommand, etc.) are called once at lines 493-498.
+
+// ── Feature: Multi-Modal Protocol & VLA Commands (v82.0.0) ─────────────
+const multimodal = program
+  .command('multimodal')
+  .description('Multi-Modal Protocol & Vision-Language-Action (VLA) Inspector (v82.0.0)');
+
+multimodal
+  .command('inspect')
+  .description('Inspect vision, audio, and sensor assets in .alp workspace')
+  .option('--json', 'Output results as JSON')
+  .action((opts) => multimodalInspectCommand(opts));
+
+multimodal
+  .command('validate')
+  .description('Validate multimodal specification integrity and asset hashes')
+  .action(() => multimodalValidateCommand());
+
+program
+  .command('action-space')
+  .description('Check action space safety levels and guard constraints (v82.0.0)')
+  .argument('[id]', 'Action space id')
+  .action((id) => actionSpaceCheckCommand(id));
 
 program.parse(process.argv);

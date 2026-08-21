@@ -51,6 +51,7 @@ const panelIcons: Record<string, string> = {
   debugger: 'bug',
   pro: 'star',
   synapse: 'network',
+  multimodal: 'camera',
 };
 
 const FILE_ICONS: Record<string, string> = {
@@ -219,7 +220,7 @@ export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActive
       </div>
 
       <div className="sidebar-footer">
-        {['editor', 'terminal', 'agents', 'synapse', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'refactor', 'marketplace', 'zk', 'partition', 'crdtCanvas', 'wasmAst', 'edgeDebug', 'telemetryInspector', 'chaosEngine', 'featureFlags', 'workflowReplay', 'localStorage', 'selfHealingMesh', 'intelligence', 'autonomy', 'test-runner', 'debugger', 'git', 'search', 'pro', 'settings'].map((panel) => (
+        {['editor', 'terminal', 'agents', 'synapse', 'multimodal', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'refactor', 'marketplace', 'zk', 'partition', 'crdtCanvas', 'wasmAst', 'edgeDebug', 'telemetryInspector', 'chaosEngine', 'featureFlags', 'workflowReplay', 'localStorage', 'selfHealingMesh', 'intelligence', 'autonomy', 'test-runner', 'debugger', 'git', 'search', 'pro', 'settings'].map((panel) => (
           <button
             key={panel}
             className={`sidebar-footer-item ${activePanel === panel ? 'active' : ''}`}
@@ -237,6 +238,7 @@ export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActive
              panel === 'workflowReplay' ? 'Replay' :
              panel === 'localStorage' ? 'Storage' :
              panel === 'selfHealingMesh' ? 'Healing' :
+             panel === 'multimodal' ? 'MultiModal' :
              panel === 'test-runner' ? 'Tests' :
              panel.charAt(0).toUpperCase() + panel.slice(1)}
           </button>

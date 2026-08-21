@@ -62,6 +62,9 @@ import {
   LuShare2,
   LuGitGraph,
   LuBrain,
+  LuCamera,
+  LuVideo,
+  LuCrosshair,
 } from 'react-icons/lu';
 
 export type IconName =
@@ -78,7 +81,8 @@ export type IconName =
   | 'trash' | 'mapPin' | 'map-pin' | 'book' | 'menu' | 'layers'
   | 'server' | 'cloud' | 'target' | 'info' | 'key' | 'database'
   | 'play' | 'pause' | 'skipForward' | 'skip-forward' | 'heart'
-  | 'network' | 'share2' | 'gitGraph' | 'brain' | 'synapse';
+  | 'network' | 'share2' | 'gitGraph' | 'brain' | 'synapse'
+  | 'camera' | 'video' | 'crosshair' | 'multimodal';
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   edit3: LuPencil,
@@ -157,6 +161,10 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   gitGraph: LuGitGraph,
   brain: LuBrain,
   synapse: LuNetwork,
+  camera: LuCamera,
+  video: LuVideo,
+  crosshair: LuCrosshair,
+  multimodal: LuCamera,
 };
 
 export function getIconComponent(name: IconName): React.ComponentType<any> {

@@ -326,3 +326,10 @@ export {
   type CanvasEdgeData,
 } from './synapse';
 
+// ── Feature: Multi-Modal Protocol & VLA Bridge ───────────────────────
+export {
+  MultiModalBridge,
+  type MultiModalExecutionResult,
+  type ContextBudgetResult,
+} from './multimodal';
+

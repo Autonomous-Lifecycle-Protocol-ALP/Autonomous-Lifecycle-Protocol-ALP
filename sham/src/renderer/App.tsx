@@ -39,6 +39,7 @@ const SelfHealingMeshPanel = React.lazy(() => import('./components/SelfHealingMe
 const IntelligencePanel = React.lazy(() => import('./components/IntelligencePanel.js').then(m => ({ default: m.IntelligencePanel })));
 const AutonomyPanel = React.lazy(() => import('./components/AutonomyPanel.js').then(m => ({ default: m.AutonomyPanel })));
 const SynapsePanel = React.lazy(() => import('./components/SynapsePanel.js').then(m => ({ default: m.SynapsePanel })));
+const MultiModalPanel = React.lazy(() => import('./components/MultiModalPanel.js').then(m => ({ default: m.MultiModalPanel })));
 
 
 const defaultState: SHAMState = {
@@ -62,7 +63,7 @@ const defaultState: SHAMState = {
   autonomy: { decisions: [], output: [] },
 };
 
-type PanelId = 'editor' | 'terminal' | 'agents' | 'synapse' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'copilot' | 'refactor' | 'pro' | 'settings' | 'git' | 'search' | 'debugger' | 'test-runner' | 'marketplace' | 'zk' | 'partition' | 'crdtCanvas' | 'wasmAst' | 'edgeDebug' | 'telemetryInspector' | 'chaosEngine' | 'featureFlags' | 'workflowReplay' | 'localStorage' | 'selfHealingMesh' | 'intelligence' | 'autonomy';
+type PanelId = 'editor' | 'terminal' | 'agents' | 'synapse' | 'multimodal' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'copilot' | 'refactor' | 'pro' | 'settings' | 'git' | 'search' | 'debugger' | 'test-runner' | 'marketplace' | 'zk' | 'partition' | 'crdtCanvas' | 'wasmAst' | 'edgeDebug' | 'telemetryInspector' | 'chaosEngine' | 'featureFlags' | 'workflowReplay' | 'localStorage' | 'selfHealingMesh' | 'intelligence' | 'autonomy';
 
 export function App(): React.JSX.Element {
   const [state, setState] = useState<SHAMState>(defaultState);
@@ -182,6 +183,8 @@ export function App(): React.JSX.Element {
         return <AgentPanel agents={state.agents} onRunAgent={handleRunAgent} />;
       case 'synapse':
         return <SynapsePanel parsedObjects={state.parseResult?.objects || null} />;
+      case 'multimodal':
+        return <MultiModalPanel parsedObjects={state.parseResult?.objects || null} />;
       case 'mcp':
         return <MCPBrowser tools={state.mcpTools} />;
       case 'collab':
