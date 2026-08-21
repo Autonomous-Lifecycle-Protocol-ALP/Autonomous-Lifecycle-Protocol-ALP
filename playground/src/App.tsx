@@ -16,6 +16,12 @@ import { AlpParser, AlpGraph, AlpFormatter } from '@autonomous-lifecycle-protoco
 import type { AlpObject } from '@autonomous-lifecycle-protocol-alp/parser';
 import { SynapseModal } from './components/SynapseModal.js';
 import { MultiModalModal } from './components/MultiModalModal.js';
+import { SnippetBar, SNIPPETS } from './components/SnippetBar.js';
+import { AddBlockModal } from './components/AddBlockModal.js';
+import { SnapshotsModal, type Snapshot } from './components/SnapshotsModal.js';
+import { TopologyHud } from './components/TopologyHud.js';
+import { KbdHelp } from './components/KbdHelp.js';
+import { NodeInspector } from './components/NodeInspector.js';
 import {
   FiPlay,
   FiPause,
@@ -24,7 +30,6 @@ import {
   FiRotateCcw,
   FiCopy,
   FiDownload,
-  FiCheck,
   FiCheckCircle,
   FiAlertTriangle,
   FiAlertCircle,
@@ -41,7 +46,6 @@ import {
   FiChevronRight,
   FiChevronUp,
   FiChevronDown,
-  FiX,
   FiCode,
   FiFileText,
   FiZap,
@@ -49,8 +53,6 @@ import {
   FiKey,
   FiPlus,
   FiShare2,
-  FiEdit2,
-  FiTrash2,
   FiBookmark,
   FiTrendingUp,
   FiActivity,
@@ -476,25 +478,6 @@ const TEMPLATES: Record<string, { label: string; code: string }> = {
   },
 };
 
-// ── Directive Snippets ─────────────────────────────────────────────────
-const SNIPPETS: Record<string, string> = {
-  task: `\n@task\n  id: task-new-feature\n  status: [ ]\n  description: "Implement new service component"\n  verify:\n    - "npm test"\n`,
-  agent: `\n@agent\n  id: agent-specialist\n  role: "Automated Domain Specialist"\n`,
-  feature: `\n@feature\n  id: feat-new-capability\n  status: [ ]\n  description: "Feature specification & requirements"\n`,
-  workflow: `\n@workflow\n  id: wf-pipeline-flow\n  schedule: "0 0 * * *"\n  status: [ ]\n`,
-  policy: `\n@policy\n  id: policy-security-guard\n  applies_to: "@agent-coder"\n  allow_paths:\n    - "src/**"\n  deny_paths:\n    - "config/keys/**"\n`,
-  contract: `\n@contract\n  id: contract-service-boundary\n  from: "@agent-frontend"\n  to: "@agent-backend"\n  allows:\n    - "api.v1.*"\n`,
-  vault: `\n@vault\n  id: vault-credentials\n  recipients:\n    - "devops.pub"\n`,
-  rule: `\n@rule\n  id: rule-clean-architecture\n  description: "Do not import infrastructure logic directly into core entities"\n`,
-  timeline: `\n@timeline\n  id: tl-scheduled-backup\n  cron: "0 0 * * *"\n  description: "Daily automated snapshot"\n  status: [ ]\n`,
-  memory: `\n@memory\n  id: mem-knowledge-base\n  type: semantic-vector\n  scope: workspace\n`,
-  swarm: `\n@swarm\n  id: swarm-federation\n  topology: mesh\n  consensus: pbft\n`,
-  tenant: `\n@tenant\n  id: tenant-enterprise\n  tier: premium\n`,
-  multimodal: `\n@multimodal\n  id: mm-stream-001\n  modalities:\n    - vision\n    - sensor\n  resolution: "1920x1080"\n  fps: 30\n`,
-  vision_model: `\n@vision_model\n  id: model-clip-vit\n  backbone: clip\n  context_tokens: 4096\n`,
-  action_space: `\n@action_space\n  id: act-space-001\n  domain: browser\n  actions:\n    - name: click\n      safety_level: low\n`,
-};
-
 // ── Helpers ────────────────────────────────────────────────────────────
 const renderStatusBadge = (st: string) => {
   const normalized = st.split(' ')[0];
@@ -535,13 +518,6 @@ const renderStatusBadge = (st: string) => {
 
 type TypeFilter = 'all' | string;
 type LayoutMode = 'dag' | 'tree' | 'grid';
-
-interface Snapshot {
-  id: string;
-  name: string;
-  code: string;
-  createdAt: string;
-}
 
 const TYPE_META: Record<string, { color: string; icon: string; bg: string }> = {
   task: { color: '#00f0ff', icon: 'TSK', bg: 'rgba(0, 240, 255, 0.08)' },
@@ -627,14 +603,6 @@ export default function App() {
   const [showMultiModalModal, setShowMultiModalModal] = useState(false);
   const [showKbdHelp, setShowKbdHelp] = useState(false);
   const [isEditingInspector, setIsEditingInspector] = useState(false);
-  const [inspectorEditFields, setInspectorEditFields] = useState<Record<string, string>>({});
-
-  // New Block Form State
-  const [newBlockType, setNewBlockType] = useState('task');
-  const [newBlockId, setNewBlockId] = useState('');
-  const [newBlockDesc, setNewBlockDesc] = useState('');
-  const [newBlockOwner, setNewBlockOwner] = useState('');
-  const [newBlockDependsOn, setNewBlockDependsOn] = useState('');
 
   // Snapshots State
   const [snapshots, setSnapshots] = useState<Snapshot[]>(() => {
@@ -1119,22 +1087,15 @@ export default function App() {
   const handleNodeClick = (_: React.MouseEvent, node: Node) => {
     if (node.data && node.data.rawObject) {
       setSelectedObj(node.data.rawObject);
-      setIsEditingInspector(false);
-      setInspectorEditFields({
-        id: node.data.rawObject.id,
-        status: node.data.rawObject.status || '[ ]',
-        description: node.data.rawObject.description || '',
-        owner: node.data.rawObject.owner || '',
-      });
     }
   };
 
-  const handleSaveInspectorEdit = () => {
+  const handleSaveInspectorEdit = (fields: { id: string; status: string; description: string }) => {
     if (!selectedObj) return;
     const oldId = selectedObj.id;
-    const newId = inspectorEditFields.id || oldId;
-    const newStatus = inspectorEditFields.status || selectedObj.status || '[ ]';
-    const newDesc = inspectorEditFields.description;
+    const newId = fields.id || oldId;
+    const newStatus = fields.status || selectedObj.status || '[ ]';
+    const newDesc = fields.description;
 
     let updatedCode = code;
     // Replace id
@@ -1155,25 +1116,29 @@ export default function App() {
     }
 
     setCode(updatedCode);
-    setIsEditingInspector(false);
     showToast(`Updated @${selectedObj._type} "${newId}"`);
   };
 
-  const handleCreateBlock = () => {
-    if (!newBlockId.trim()) return;
+  const handleCreateBlock = (block: {
+    type: string;
+    id: string;
+    description: string;
+    owner: string;
+    dependsOn: string;
+  }) => {
     const lines: string[] = [];
-    lines.push(`\n@${newBlockType}`);
-    lines.push(`  id: ${newBlockId.trim()}`);
+    lines.push(`\n@${block.type}`);
+    lines.push(`  id: ${block.id}`);
     lines.push(`  status: [ ]`);
-    if (newBlockDesc.trim()) {
-      lines.push(`  description: "${newBlockDesc.trim()}"`);
+    if (block.description) {
+      lines.push(`  description: "${block.description}"`);
     }
-    if (newBlockOwner.trim()) {
-      lines.push(`  owner: "${newBlockOwner.trim()}"`);
+    if (block.owner) {
+      lines.push(`  owner: "${block.owner}"`);
     }
-    if (newBlockDependsOn.trim()) {
+    if (block.dependsOn) {
       lines.push(`  depends_on:`);
-      newBlockDependsOn.split(',').forEach((dep) => {
+      block.dependsOn.split(',').forEach((dep) => {
         lines.push(`    - -> ${dep.trim()}`);
       });
     }
@@ -1182,11 +1147,7 @@ export default function App() {
     const updated = code.trimEnd() + '\n' + lines.join('\n');
     setCode(updated);
     setShowAddModal(false);
-    setNewBlockId('');
-    setNewBlockDesc('');
-    setNewBlockOwner('');
-    setNewBlockDependsOn('');
-    showToast(`Created @${newBlockType} "${newBlockId.trim()}"`);
+    showToast(`Created @${block.type} "${block.id}"`);
   };
 
   const handleSaveSnapshot = () => {
@@ -1341,37 +1302,6 @@ export default function App() {
   const handleFocusNode = (id: string) => {
     const obj = parsedObjects.find((o) => o.id === id) || null;
     setSelectedObj(obj);
-    if (obj) {
-      setIsEditingInspector(false);
-      setInspectorEditFields({
-        id: obj.id,
-        status: simNodeStates[obj.id] || obj.status || '[ ]',
-        description: obj.description || '',
-        owner: obj.owner || '',
-      });
-    }
-  };
-
-  const renderInspectorFields = (obj: AlpObject) => {
-    const fields: { label: string; value: string }[] = [];
-    fields.push({ label: 'Type', value: obj._type });
-    fields.push({ label: 'ID', value: obj.id });
-    if (obj.status) fields.push({ label: 'Status', value: simNodeStates[obj.id] || obj.status });
-    if (obj.description) fields.push({ label: 'Description', value: obj.description });
-
-    Object.entries(obj).forEach(([key, value]) => {
-      if (['_type', 'id', 'status', 'description'].includes(key)) return;
-      if (value === undefined || value === null || value === '') return;
-      const displayValue =
-        Array.isArray(value)
-          ? value.join('\n')
-          : typeof value === 'object'
-          ? JSON.stringify(value, null, 2)
-          : String(value);
-      fields.push({ label: key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()), value: displayValue });
-    });
-
-    return fields;
   };
 
   return (
@@ -1722,25 +1652,7 @@ export default function App() {
               <span>UTF-8</span>
             </div>
 
-            {/* Directive Snippet Bar */}
-            <div className="snippet-bar">
-              <span className="snippet-label">Insert:</span>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('task')}>+ @task</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('agent')}>+ @agent</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('feature')}>+ @feature</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('workflow')}>+ @workflow</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('policy')}>+ @policy</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('contract')}>+ @contract</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('vault')}>+ @vault</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('rule')}>+ @rule</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('timeline')}>+ @timeline</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('memory')}>+ @memory</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('swarm')}>+ @swarm</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('tenant')}>+ @tenant</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('multimodal')}>+ @multimodal</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('vision_model')}>+ @vision_model</button>
-              <button className="snippet-chip" onClick={() => handleInsertSnippet('action_space')}>+ @action_space</button>
-            </div>
+            <SnippetBar onInsert={handleInsertSnippet} />
 
             <Editor
               height="100%"
@@ -1784,88 +1696,16 @@ export default function App() {
               )}
             </ReactFlow>
 
-            {/* Node Inspector Sidebar */}
             {selectedObj && (
-              <div className="inspector-panel">
-                <div className="inspector-header">
-                  <h3>@{selectedObj._type} Details</h3>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <button
-                      className="inspector-edit-btn"
-                      onClick={() => setIsEditingInspector((p) => !p)}
-                    >
-                      <FiEdit2 size={11} /> {isEditingInspector ? 'View' : 'Edit'}
-                    </button>
-                    <button className="close-btn" onClick={() => setSelectedObj(null)}>
-                      <FiX size={14} />
-                    </button>
-                  </div>
-                </div>
-                <div className="inspector-content">
-                  {isEditingInspector ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                      <div className="form-group">
-                        <label className="form-label">ID</label>
-                        <input
-                          type="text"
-                          className="inspector-input-field"
-                          value={inspectorEditFields.id || ''}
-                          onChange={(e) => setInspectorEditFields({ ...inspectorEditFields, id: e.target.value })}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label className="form-label">Status</label>
-                        <select
-                          className="inspector-input-field"
-                          value={inspectorEditFields.status || '[ ]'}
-                          onChange={(e) => setInspectorEditFields({ ...inspectorEditFields, status: e.target.value })}
-                        >
-                          <option value="[ ]">[ ] Todo</option>
-                          <option value="[~]">[~] In-Progress</option>
-                          <option value="[x]">[x] Done</option>
-                          <option value="[!]">[!] Blocked</option>
-                          <option value="[?]">[?] Review</option>
-                        </select>
-                      </div>
-                      <div className="form-group">
-                        <label className="form-label">Description</label>
-                        <input
-                          type="text"
-                          className="inspector-input-field"
-                          value={inspectorEditFields.description || ''}
-                          onChange={(e) => setInspectorEditFields({ ...inspectorEditFields, description: e.target.value })}
-                        />
-                      </div>
-                      <div style={{ display: 'flex', gap: 8, marginTop: 4 }}>
-                        <button className="sim-btn apply" onClick={handleSaveInspectorEdit}>
-                          <FiCheck size={12} /> Save to Spec
-                        </button>
-                        <button className="sim-btn reset" onClick={() => handleInjectFailure(selectedObj.id)}>
-                          <FiAlertTriangle size={12} /> Inject Failure
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      {renderInspectorFields(selectedObj).map((field) => (
-                        <div key={field.label} className="inspector-field">
-                          <div className="field-label">{field.label}</div>
-                          <div className="field-value">{field.value}</div>
-                        </div>
-                      ))}
-                      <div style={{ marginTop: 12, display: 'flex', gap: 6 }}>
-                        <button
-                          className="sim-btn reset"
-                          style={{ width: '100%', justifyContent: 'center' }}
-                          onClick={() => handleInjectFailure(selectedObj.id)}
-                        >
-                          <FiAlertTriangle size={12} /> Simulate Failure
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
+              <NodeInspector
+                obj={selectedObj}
+                simStatus={simNodeStates[selectedObj.id]}
+                isEditing={isEditingInspector}
+                onClose={() => setSelectedObj(null)}
+                onToggleEdit={() => setIsEditingInspector((p) => !p)}
+                onSave={handleSaveInspectorEdit}
+                onInjectFailure={handleInjectFailure}
+              />
             )}
 
             {/* Error Banner */}
@@ -1933,202 +1773,36 @@ export default function App() {
         </div>
       </footer>
 
-      {/* Add New Block Modal */}
-      {showAddModal && (
-        <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
-          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3><FiPlus size={16} color="var(--accent-cyan)" /> Create New ALP Primitive</h3>
-              <button className="modal-close" onClick={() => setShowAddModal(false)}>
-                <FiX size={16} />
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="form-group">
-                <label className="form-label">Primitive Type</label>
-                <select
-                  className="form-select"
-                  value={newBlockType}
-                  onChange={(e) => setNewBlockType(e.target.value)}
-                >
-                  <option value="task">@task — Executable action node</option>
-                  <option value="agent">@agent — AI actor profile</option>
-                  <option value="feature">@feature — Requirement container</option>
-                  <option value="workflow">@workflow — Pipeline schedule</option>
-                  <option value="policy">@policy — Security guardrail</option>
-                  <option value="contract">@contract — Service boundary</option>
-                  <option value="vault">@vault — Secret repository</option>
-                  <option value="rule">@rule — Project constraint</option>
-                  <option value="timeline">@timeline — Scheduled job</option>
-                  <option value="memory">@memory — Semantic vector store</option>
-                  <option value="swarm">@swarm — Multi-agent mesh</option>
-                  <option value="tenant">@tenant — Multi-tenant boundary</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label">ID (e.g. task-auth-service)</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="my-object-id"
-                  value={newBlockId}
-                  onChange={(e) => setNewBlockId(e.target.value)}
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Description</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="Brief summary of this primitive"
-                  value={newBlockDesc}
-                  onChange={(e) => setNewBlockDesc(e.target.value)}
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Owner Agent (Optional)</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="@agent-coder"
-                  value={newBlockOwner}
-                  onChange={(e) => setNewBlockOwner(e.target.value)}
-                />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Dependencies (Comma-separated IDs)</label>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="task-db-schema, task-core"
-                  value={newBlockDependsOn}
-                  onChange={(e) => setNewBlockDependsOn(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button className="action-btn" onClick={() => setShowAddModal(false)}>Cancel</button>
-              <button className="sim-btn play" onClick={handleCreateBlock} disabled={!newBlockId.trim()}>
-                <FiPlus size={13} /> Insert into Spec
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AddBlockModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onCreate={handleCreateBlock}
+      />
 
-      {/* Snapshots & History Modal */}
-      {showSnapshotsModal && (
-        <div className="modal-overlay" onClick={() => setShowSnapshotsModal(false)}>
-          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3><FiBookmark size={16} color="var(--accent-purple)" /> Workspace Snapshots</h3>
-              <button className="modal-close" onClick={() => setShowSnapshotsModal(false)}>
-                <FiX size={16} />
-              </button>
-            </div>
-            <div className="modal-body">
-              <div style={{ display: 'flex', gap: 8 }}>
-                <input
-                  type="text"
-                  className="form-input"
-                  placeholder="Snapshot name (e.g. Before refactoring)"
-                  value={snapshotNameInput}
-                  onChange={(e) => setSnapshotNameInput(e.target.value)}
-                  style={{ flex: 1 }}
-                />
-                <button className="sim-btn play" onClick={handleSaveSnapshot}>
-                  <FiBookmark size={13} /> Save
-                </button>
-              </div>
+      <SnapshotsModal
+        isOpen={showSnapshotsModal}
+        onClose={() => setShowSnapshotsModal(false)}
+        snapshots={snapshots}
+        onSave={handleSaveSnapshot}
+        onLoad={handleLoadSnapshot}
+        onDelete={handleDeleteSnapshot}
+      />
 
-              <div className="snapshot-list">
-                {snapshots.length === 0 ? (
-                  <div className="sidebar-empty">No saved snapshots yet</div>
-                ) : (
-                  snapshots.map((snap) => (
-                    <div key={snap.id} className="snapshot-item">
-                      <div className="snapshot-info">
-                        <span className="snapshot-name">{snap.name}</span>
-                        <span className="snapshot-date">{snap.createdAt} · {snap.code.split('\n').length} lines</span>
-                      </div>
-                      <div className="snapshot-actions">
-                        <button className="action-btn" onClick={() => handleLoadSnapshot(snap)}>
-                          Restore
-                        </button>
-                        <button className="modal-close" onClick={() => handleDeleteSnapshot(snap.id)} title="Delete snapshot">
-                          <FiTrash2 size={13} color="var(--accent-rose)" />
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button className="action-btn" onClick={() => setShowSnapshotsModal(false)}>Close</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Topology & Bottleneck Analytics HUD */}
-      {showTopologyHud && (
-        <div className="modal-overlay" onClick={() => setShowTopologyHud(false)}>
-          <div className="modal-card" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3><FiTrendingUp size={16} color="var(--accent-cyan)" /> Topology &amp; Critical Path Analytics</h3>
-              <button className="modal-close" onClick={() => setShowTopologyHud(false)}>
-                <FiX size={16} />
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="topology-hud-grid">
-                <div className="hud-stat-box">
-                  <span className="hud-stat-title">DAG Max Depth</span>
-                  <span className="hud-stat-value">{topologyMetrics.maxDepth}</span>
-                  <span className="hud-stat-desc">Sequential execution levels</span>
-                </div>
-                <div className="hud-stat-box">
-                  <span className="hud-stat-title">Max Concurrency</span>
-                  <span className="hud-stat-value">{topologyMetrics.maxParallel}</span>
-                  <span className="hud-stat-desc">Peak parallel agent tasks</span>
-                </div>
-              </div>
-
-              <div className="form-group" style={{ marginTop: 8 }}>
-                <label className="form-label">Critical Path ({topologyMetrics.criticalPath.length} nodes)</label>
-                <div style={{ background: 'var(--bg-dark)', padding: '10px 14px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-color)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#f59e0b' }}>
-                  {topologyMetrics.criticalPath.length > 0 ? topologyMetrics.criticalPath.join(' ➔ ') : 'None'}
-                </div>
-              </div>
-
-              <div className="form-group" style={{ marginTop: 8 }}>
-                <label className="form-label">High-Impact Bottleneck Nodes</label>
-                <div className="bottleneck-list">
-                  {topologyMetrics.bottlenecks.map((b) => (
-                    <div key={b.id} className="bottleneck-item">
-                      <span>@{b.type} · <strong>{b.id}</strong></span>
-                      <span style={{ color: 'var(--accent-rose)', fontWeight: 700 }}>{b.score} dependencies</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button
-                className={`action-btn ${showCriticalPath ? 'active' : ''}`}
-                onClick={() => {
-                  setShowCriticalPath((p) => !p);
-                  setShowTopologyHud(false);
-                }}
-              >
-                <FiActivity size={13} /> {showCriticalPath ? 'Hide on Graph' : 'Highlight on Graph'}
-              </button>
-              <button className="action-btn" onClick={() => setShowTopologyHud(false)}>Close</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <TopologyHud
+        isOpen={showTopologyHud}
+        onClose={() => setShowTopologyHud(false)}
+        metrics={{
+          maxDepth: topologyMetrics.maxDepth,
+          maxParallel: topologyMetrics.maxParallel,
+          criticalPath: topologyMetrics.criticalPath,
+          bottlenecks: topologyMetrics.bottlenecks,
+        }}
+        showCriticalPath={showCriticalPath}
+        onToggleCriticalPath={() => {
+          setShowCriticalPath((p) => !p);
+          setShowTopologyHud(false);
+        }}
+      />
 
       {/* Synapse Knowledge Graph & Vault Modal */}
       <SynapseModal
@@ -2144,36 +1818,7 @@ export default function App() {
         parsedObjects={parsedObjects}
       />
 
-      {/* Keyboard Shortcuts Help Toast */}
-      {showKbdHelp && (
-        <div className="modal-overlay" onClick={() => setShowKbdHelp(false)}>
-          <div className="modal-card" style={{ maxWidth: 440 }} onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3><FiKey size={16} color="var(--accent-cyan)" /> Keyboard Shortcuts</h3>
-              <button className="modal-close" onClick={() => setShowKbdHelp(false)}>
-                <FiX size={16} />
-              </button>
-            </div>
-            <div className="modal-body">
-              <div className="kbd-grid">
-                <kbd>Ctrl+S</kbd> <span>Copy ALP Spec</span>
-                <kbd>Ctrl+I</kbd> <span>Format ALP Spec</span>
-                <kbd>Ctrl+N</kbd> <span>Create New Block</span>
-                <kbd>Ctrl+K</kbd> <span>Snapshots / History</span>
-                <kbd>Ctrl+M</kbd> <span>Export Mermaid Diagram</span>
-                <kbd>Ctrl+E</kbd> <span>Export as JSON</span>
-                <kbd>Ctrl+B</kbd> <span>Toggle Explorer Sidebar</span>
-                <kbd>Ctrl+L</kbd> <span>Toggle Logs Panel</span>
-                <kbd>Ctrl+/</kbd> <span>Show/Hide Shortcuts</span>
-                <kbd>Esc</kbd> <span>Close Any Open Modal</span>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button className="action-btn" onClick={() => setShowKbdHelp(false)}>Close</button>
-            </div>
-          </div>
-        </div>
-      )}
+      <KbdHelp isOpen={showKbdHelp} onClose={() => setShowKbdHelp(false)} />
 
       {/* Toast Notification Banner */}
       {toastMessage && (
