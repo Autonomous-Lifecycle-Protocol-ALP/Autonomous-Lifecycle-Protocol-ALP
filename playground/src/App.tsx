@@ -3,17 +3,16 @@ import Editor from '@monaco-editor/react';
 import ReactFlow, {
   Background,
   Controls,
-  Position,
-  Handle,
   MarkerType,
   MiniMap,
   useNodesState,
   useEdgesState,
 } from 'reactflow';
-import type { Edge, Node, NodeProps, ReactFlowInstance } from 'reactflow';
+import type { Edge, Node, ReactFlowInstance } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { AlpParser, AlpGraph, AlpFormatter } from '@autonomous-lifecycle-protocol-alp/parser';
 import type { AlpObject } from '@autonomous-lifecycle-protocol-alp/parser';
+import { TEMPLATES } from './constants/templates.js';
 import { SynapseModal } from './components/SynapseModal.js';
 import { MultiModalModal } from './components/MultiModalModal.js';
 import { SnippetBar, SNIPPETS } from './components/SnippetBar.js';
@@ -22,6 +21,9 @@ import { SnapshotsModal, type Snapshot } from './components/SnapshotsModal.js';
 import { TopologyHud } from './components/TopologyHud.js';
 import { KbdHelp } from './components/KbdHelp.js';
 import { NodeInspector } from './components/NodeInspector.js';
+import { AlpCustomNode, renderStatusBadge } from './components/AlpCustomNode.js';
+import { useTopologyMetrics } from './hooks/useTopologyMetrics.js';
+import { toPng } from 'html-to-image';
 import {
   FiPlay,
   FiPause,
@@ -31,10 +33,7 @@ import {
   FiCopy,
   FiDownload,
   FiCheckCircle,
-  FiAlertTriangle,
   FiAlertCircle,
-  FiClock,
-  FiHelpCircle,
   FiSun,
   FiMoon,
   FiMaximize2,
@@ -56,523 +55,14 @@ import {
   FiBookmark,
   FiTrendingUp,
   FiActivity,
+  FiImage,
 } from 'react-icons/fi';
 import './App.css';
-
-// ── Preset Templates ───────────────────────────────────────────────────
-const TEMPLATES: Record<string, { label: string; code: string }> = {
-  webApp: {
-    label: 'Web App Lifecycle',
-    code: `!alp-version: 3.0.0
-
-@project
-  id: alp-commerce-app
-  status: [~]
-  description: "Next-gen Autonomous E-Commerce Platform"
-
-@feature
-  id: feat-auth
-  status: [x]
-  description: "User Authentication & OAuth2"
-
-@feature
-  id: feat-checkout
-  status: [~]
-  description: "Stripe & Crypto Payment Gateway"
-
-@task
-  id: task-db-schema
-  status: [x]
-  feature: -> feat-auth
-  owner: "@agent-backend"
-  verify:
-    - "npm run db:migrate"
-
-@task
-  id: task-auth-api
-  status: [x]
-  feature: -> feat-auth
-  depends_on:
-    - -> task-db-schema
-  verify:
-    - "npm test tests/auth.test.ts"
-
-@task
-  id: task-cart-api
-  status: [~]
-  feature: -> feat-checkout
-  depends_on:
-    - -> task-auth-api
-  verify:
-    - "npm test tests/cart.test.ts"
-
-@task
-  id: task-stripe-integration
-  status: [!] Stripe key not configured
-  feature: -> feat-checkout
-  depends_on:
-    - -> task-cart-api
-  requires:
-    - "env.STRIPE_SECRET_KEY != ''"
-  verify:
-    - "npm test tests/stripe.test.ts"
-
-@rule
-  id: rule-no-direct-db-write
-  description: "All DB updates must pass through the repository pattern"
-`,
-  },
-  swarm: {
-    label: 'Swarm & Multi-Agent Network',
-    code: `!alp-version: 3.0.0
-
-@project
-  id: autonomous-swarm-cluster
-  status: [~]
-
-@agent
-  id: agent-architect
-  role: "Lead Systems Architect"
-
-@agent
-  id: agent-coder
-  role: "Senior Fullstack Engineer"
-
-@agent
-  id: agent-qa
-  role: "Automated QA & Security Audit"
-
-@task
-  id: task-spec-decomposition
-  status: [x]
-  owner: -> agent-architect
-
-@task
-  id: task-build-core
-  status: [~]
-  depends_on:
-    - -> task-spec-decomposition
-  owner: -> agent-coder
-
-@task
-  id: task-run-fuzzing
-  status: [ ]
-  depends_on:
-    - -> task-build-core
-  owner: -> agent-qa
-`,
-  },
-  governance: {
-    label: 'Policy & Vault Governance',
-    code: `!alp-version: 3.0.0
-
-@project
-  id: secure-banking-service
-  status: [~]
-
-@policy
-  id: policy-prod-deploy
-  applies_to: "@agent-deployer"
-  allow_paths:
-    - "deploy/**"
-  deny_paths:
-    - "secrets/**"
-  require_approval: true
-
-@contract
-  id: contract-deploy-boundary
-  from: "@agent-deployer"
-  to: "@agent-k8s"
-  allows:
-    - "deploy.k8s.*"
-  denies:
-    - "admin.system.*"
-
-@timeline
-  id: tl-nightly-health
-  cron: "0 1 * * *"
-  description: "Nightly cluster health check"
-  status: [ ]
-
-@vault
-  id: vault-prod-db
-  recipients:
-    - "maintainer.pub"
-
-@task
-  id: task-deploy-service
-  status: [?] Awaiting production approval
-  policy: -> policy-prod-deploy
-  contract: -> contract-deploy-boundary
-  vault: -> vault-prod-db
-`,
-  },
-  eventMesh: {
-    label: 'Event Mesh & CRDT State',
-    code: `!alp-version: 3.0.0
-
-@project
-  id: real-time-crdt-sync
-  status: [~]
-
-@agent
-  id: agent-node-alpha
-  role: "P2P State Synchronizer Alpha"
-
-@agent
-  id: agent-node-beta
-  role: "P2P State Synchronizer Beta"
-
-@task
-  id: task-init-crdt-canvas
-  status: [x]
-  owner: -> agent-node-alpha
-
-@task
-  id: task-broadcast-delta
-  status: [~]
-  depends_on:
-    - -> task-init-crdt-canvas
-  owner: -> agent-node-beta
-
-@task
-  id: task-reconcile-conflicts
-  status: [ ]
-  depends_on:
-    - -> task-broadcast-delta
-  owner: -> agent-node-alpha
-`,
-  },
-  zkProof: {
-    label: 'ZK-Proof & Formal Verification',
-    code: `!alp-version: 3.0.0
-
-@project
-  id: zero-knowledge-verifier
-  status: [~]
-
-@task
-  id: task-compile-circom-circuit
-  status: [x]
-  verify:
-    - "npx circom circuit.circom --r1cs --wasm"
-
-@task
-  id: task-generate-witness
-  status: [x]
-  depends_on:
-    - -> task-compile-circom-circuit
-  verify:
-    - "node generate_witness.js"
-
-@task
-  id: task-prove-zk-snark
-  status: [~]
-  depends_on:
-    - -> task-generate-witness
-  verify:
-    - "npx snarkjs groth16 prove circuit_final.zkey witness.wtns proof.json public.json"
-
-@task
-  id: task-verify-on-chain
-  status: [ ]
-  depends_on:
-    - -> task-prove-zk-snark
-  verify:
-    - "npx hardhat test test/verifier.test.ts"
-`,
-  },
-  dataPipeline: {
-    label: 'Autonomous Data Pipeline ETL',
-    code: `!alp-version: 3.0.0
-
-@project
-  id: alp-analytics-etl
-  status: [~]
-  description: "Distributed telemetry ETL and analytics ingestion"
-
-@agent
-  id: agent-data-engineer
-  role: "Data Pipeline Orchestrator"
-
-@workflow
-  id: wf-daily-aggregation
-  schedule: "0 2 * * *"
-  status: [~]
-
-@task
-  id: task-extract-logs
-  status: [x]
-  owner: -> agent-data-engineer
-  verify:
-    - "python -m etl.extract --source=s3"
-
-@task
-  id: task-transform-parquet
-  status: [~]
-  depends_on:
-    - -> task-extract-logs
-  owner: -> agent-data-engineer
-  verify:
-    - "python -m etl.transform --format=parquet"
-
-@task
-  id: task-load-clickhouse
-  status: [ ]
-  depends_on:
-    - -> task-transform-parquet
-  owner: -> agent-data-engineer
-  verify:
-    - "python -m etl.load --target=clickhouse"
-`,
-  },
-  bftConsensus: {
-    label: 'BFT Consensus & Settlement Mesh',
-    code: `!alp-version: 3.0.0
-
-@project
-  id: bft-governed-ledger
-  status: [~]
-
-@swarm
-  id: swarm-validator-ring
-  topology: mesh
-  consensus: pbft
-  threshold: 0.67
-
-@agent
-  id: agent-validator-01
-  role: "BFT Consensus Validator 1"
-
-@agent
-  id: agent-validator-02
-  role: "BFT Consensus Validator 2"
-
-@task
-  id: task-propose-block
-  status: [x]
-  owner: -> agent-validator-01
-
-@task
-  id: task-gather-signatures
-  status: [~]
-  depends_on:
-    - -> task-propose-block
-  owner: -> agent-validator-02
-
-@task
-  id: task-settle-epoch
-  status: [ ]
-  depends_on:
-    - -> task-gather-signatures
-`,
-  },
-  aiCopilot: {
-    label: 'Multi-Agent Reasoning & Copilot',
-    code: `!alp-version: 3.0.0
-
-@project
-  id: intelligent-code-copilot
-  status: [~]
-
-@agent
-  id: agent-reasoner
-  role: "Chain-of-Thought Reasoning Model"
-
-@agent
-  id: agent-executor
-  role: "Sandboxed Code Execution Engine"
-
-@memory
-  id: mem-project-context
-  type: semantic-vector
-  scope: workspace
-
-@task
-  id: task-analyze-codebase
-  status: [x]
-  owner: -> agent-reasoner
-
-@task
-  id: task-synthesize-patch
-  status: [~]
-  depends_on:
-    - -> task-analyze-codebase
-  owner: -> agent-reasoner
-
-@task
-  id: task-sandbox-eval
-  status: [ ]
-  depends_on:
-    - -> task-synthesize-patch
-  owner: -> agent-executor
-  verify:
-    - "npm test --run"
-`,
-  },
-  multimodal: {
-    label: 'Multi-Modal & VLA Action Space',
-    code: `!alp-version: 3.0.0
-
-@project
-  id: multimodal-vision-vla
-  status: [~]
-  description: "Vision-Language-Action Protocol & Sensor Stream Engine"
-
-@agent
-  id: agent-vla-controller
-  role: "Embodied Vision-Language-Action Agent"
-
-@multimodal
-  id: mm-vision-pipeline
-  modalities:
-    - vision
-    - text
-    - sensor
-  resolution: "1920x1080"
-  fps: 30
-  embedding_dim: 768
-  assets:
-    - id: asset-ui-screenshot
-      type: image
-      uri: "file://assets/screenshots/ui-main.png"
-      format: png
-    - id: asset-live-cam
-      type: video
-      uri: "rtsp://camera.local/live"
-      format: h264
-
-@vision_model
-  id: model-siglip-base
-  backbone: siglip
-  context_tokens: 4096
-  embedding_dim: 768
-  latency_p95_ms: 45
-
-@action_space
-  id: act-browser-nav
-  agent: agent-vla-controller
-  domain: browser
-  max_concurrency: 4
-  actions:
-    - name: click_element
-      type: digital
-      safety_level: low
-    - name: submit_transaction
-      type: api
-      safety_level: critical
-      requires_confirmation: true
-
-@task
-  id: task-capture-multimodal-frame
-  status: [x]
-  owner: -> agent-vla-controller
-
-@task
-  id: task-vla-action-dispatch
-  status: [~]
-  depends_on:
-    - -> task-capture-multimodal-frame
-  owner: -> agent-vla-controller
-`,
-  },
-};
-
-// ── Helpers ────────────────────────────────────────────────────────────
-const renderStatusBadge = (st: string) => {
-  const normalized = st.split(' ')[0];
-  if (normalized === '[x]') {
-    return (
-      <span className="status-badge done">
-        <FiCheckCircle size={11} /> done
-      </span>
-    );
-  }
-  if (normalized === '[~]') {
-    return (
-      <span className="status-badge progress">
-        <FiClock size={11} /> progress
-      </span>
-    );
-  }
-  if (normalized === '[!]') {
-    return (
-      <span className="status-badge blocked">
-        <FiAlertTriangle size={11} /> blocked
-      </span>
-    );
-  }
-  if (normalized === '[?]') {
-    return (
-      <span className="status-badge review">
-        <FiHelpCircle size={11} /> review
-      </span>
-    );
-  }
-  return (
-    <span className="status-badge todo">
-      <FiClock size={11} /> todo
-    </span>
-  );
-};
 
 type TypeFilter = 'all' | string;
 type LayoutMode = 'dag' | 'tree' | 'grid';
 
-const TYPE_META: Record<string, { color: string; icon: string; bg: string }> = {
-  task: { color: '#00f0ff', icon: 'TSK', bg: 'rgba(0, 240, 255, 0.08)' },
-  agent: { color: '#a855f7', icon: 'AGT', bg: 'rgba(168, 85, 247, 0.08)' },
-  feature: { color: '#38bdf8', icon: 'FET', bg: 'rgba(56, 189, 248, 0.08)' },
-  workflow: { color: '#fb923c', icon: 'WFL', bg: 'rgba(251, 146, 60, 0.08)' },
-  policy: { color: '#10b981', icon: 'PLC', bg: 'rgba(16, 185, 129, 0.08)' },
-  contract: { color: '#f59e0b', icon: 'CTR', bg: 'rgba(245, 158, 11, 0.08)' },
-  vault: { color: '#f43f5e', icon: 'VLT', bg: 'rgba(244, 63, 94, 0.08)' },
-  rule: { color: '#3b82f6', icon: 'RUL', bg: 'rgba(59, 130, 246, 0.08)' },
-  timeline: { color: '#6366f1', icon: 'TML', bg: 'rgba(99, 102, 241, 0.08)' },
-  memory: { color: '#ec4899', icon: 'MEM', bg: 'rgba(236, 72, 153, 0.08)' },
-  swarm: { color: '#14b8a6', icon: 'SWM', bg: 'rgba(20, 184, 166, 0.08)' },
-  tenant: { color: '#8b5cf6', icon: 'TNT', bg: 'rgba(139, 92, 246, 0.08)' },
-  project: { color: '#ec4899', icon: 'PRJ', bg: 'rgba(236, 72, 153, 0.08)' },
-  multimodal: { color: '#06b6d4', icon: 'MMD', bg: 'rgba(6, 182, 212, 0.08)' },
-  vision_model: { color: '#8b5cf6', icon: 'VIS', bg: 'rgba(139, 92, 246, 0.08)' },
-  action_space: { color: '#f43f5e', icon: 'ACT', bg: 'rgba(244, 63, 94, 0.08)' },
-};
-
-// ── Custom ReactFlow Node ─────────────────────────────────────────────
-function AlpCustomNode({ data, selected }: NodeProps) {
-  const rawStatus: string = data.simStatus || data.status || '[ ]';
-  const isSimulating = Boolean(data.isSimulating);
-  const isExecutingCurrent = Boolean(data.isExecutingCurrent);
-  const isCriticalPath = Boolean(data.isCriticalPath);
-  const meta = TYPE_META[data.type] || { color: '#94a3b8', icon: 'OBJ', bg: 'rgba(148, 163, 184, 0.08)' };
-
-  return (
-    <div
-      className={`alp-custom-node ${selected ? 'selected' : ''} ${
-        isExecutingCurrent ? 'node-executing-active' : ''
-      } ${data.isHighlightConnected ? 'node-highlight-connected' : ''} ${
-        isCriticalPath ? 'critical-path' : ''
-      }`}
-      style={{ borderLeft: `4px solid ${isCriticalPath ? '#f59e0b' : meta.color}` }}
-    >
-      <Handle type="target" position={Position.Left} style={{ background: isCriticalPath ? '#f59e0b' : meta.color, width: 8, height: 8 }} />
-      <div className="node-header">
-        <span className="node-type-icon">{meta.icon}</span>
-        <span className="node-type-badge" style={{ color: meta.color }}>@{data.type}</span>
-        {isCriticalPath && <span className="critical-path-chip">CP</span>}
-      </div>
-      <div className="node-title">{data.id}</div>
-      <div className="node-footer">
-        {renderStatusBadge(rawStatus)}
-        {data.owner && <span className="node-owner">{data.owner.replace('-> ', '')}</span>}
-      </div>
-      {isSimulating && (
-        <div className="sim-pulse-dot" style={{ background: isCriticalPath ? '#f59e0b' : meta.color }} title="Active simulation state" />
-      )}
-      <Handle type="source" position={Position.Right} style={{ background: isCriticalPath ? '#f59e0b' : meta.color, width: 8, height: 8 }} />
-    </div>
-  );
-}
+// ── Helpers & Node Components moved to ./components/AlpCustomNode.tsx ──
 
 // ── Main App Component ────────────────────────────────────────────────
 export default function App() {
@@ -603,6 +93,8 @@ export default function App() {
   const [showMultiModalModal, setShowMultiModalModal] = useState(false);
   const [showKbdHelp, setShowKbdHelp] = useState(false);
   const [isEditingInspector, setIsEditingInspector] = useState(false);
+  const editorRef = useRef<any>(null);
+  const monacoRef = useRef<any>(null);
 
   // Snapshots State
   const [snapshots, setSnapshots] = useState<Snapshot[]>(() => {
@@ -659,88 +151,7 @@ export default function App() {
   }, []);
 
   // Topological Analysis (Longest Path, Concurrency, Bottlenecks)
-  const topologyMetrics = useMemo(() => {
-    if (parsedObjects.length === 0) {
-      return { criticalPath: [], maxDepth: 0, maxParallel: 0, bottlenecks: [] };
-    }
-
-    const inDegree: Record<string, number> = {};
-    const outDegree: Record<string, number> = {};
-    const adj: Record<string, string[]> = {};
-
-    parsedObjects.forEach((o) => {
-      inDegree[o.id] = 0;
-      outDegree[o.id] = 0;
-      adj[o.id] = [];
-    });
-
-    edges.forEach((e) => {
-      if (adj[e.source]) {
-        adj[e.source].push(e.target);
-        outDegree[e.source] = (outDegree[e.source] || 0) + 1;
-      }
-      if (inDegree[e.target] !== undefined) {
-        inDegree[e.target] = (inDegree[e.target] || 0) + 1;
-      }
-    });
-
-    const dist: Record<string, number> = {};
-    const prev: Record<string, string | null> = {};
-    const queue: string[] = [];
-
-    parsedObjects.forEach((o) => {
-      if ((inDegree[o.id] || 0) === 0) {
-        queue.push(o.id);
-        dist[o.id] = 1;
-        prev[o.id] = null;
-      }
-    });
-
-    const levelCount: Record<number, number> = {};
-
-    while (queue.length > 0) {
-      const u = queue.shift()!;
-      const d = dist[u] || 1;
-      levelCount[d] = (levelCount[d] || 0) + 1;
-
-      (adj[u] || []).forEach((v) => {
-        if ((dist[v] || 0) < d + 1) {
-          dist[v] = d + 1;
-          prev[v] = u;
-          queue.push(v);
-        }
-      });
-    }
-
-    let maxNode: string | null = null;
-    let maxDist = 0;
-    Object.entries(dist).forEach(([id, d]) => {
-      if (d > maxDist) {
-        maxDist = d;
-        maxNode = id;
-      }
-    });
-
-    const criticalPath: string[] = [];
-    let curr: string | null = maxNode;
-    while (curr) {
-      criticalPath.unshift(curr);
-      curr = prev[curr] || null;
-    }
-
-    const maxParallel = Math.max(1, ...Object.values(levelCount), 1);
-    const bottlenecks = parsedObjects
-      .map((o) => ({ id: o.id, type: o._type, score: (inDegree[o.id] || 0) + (outDegree[o.id] || 0) }))
-      .sort((a, b) => b.score - a.score)
-      .slice(0, 4);
-
-    return {
-      criticalPath,
-      maxDepth: maxDist || 1,
-      maxParallel,
-      bottlenecks,
-    };
-  }, [parsedObjects, edges]);
+  const topologyMetrics = useTopologyMetrics(parsedObjects, edges);
 
   // Parse and Layout Engine
   const processCode = useCallback((newCode: string, currentLayout: LayoutMode = layoutMode) => {
@@ -1066,11 +477,40 @@ export default function App() {
   };
 
   const handleInsertSnippet = (snippetKey: string) => {
-    if (SNIPPETS[snippetKey]) {
-      const updated = code.trimEnd() + '\n' + SNIPPETS[snippetKey];
-      setCode(updated);
-      showToast(`Inserted @${snippetKey}`);
+    if (!SNIPPETS[snippetKey]) return;
+
+    const editor = editorRef.current;
+    const monaco = monacoRef.current;
+    if (editor && monaco) {
+      const model = editor.getModel();
+      if (model) {
+        const position = editor.getPosition();
+        if (position) {
+          const currentLine = model.getLineContent(position.lineNumber);
+          const indent = currentLine.match(/^\s*/)?.[0] || '';
+          const snippet = SNIPPETS[snippetKey].replace(/^/gm, indent);
+          editor.executeEdits('insert-snippet', [
+            {
+              range: new monaco.Range(
+                position.lineNumber,
+                position.column,
+                position.lineNumber,
+                position.column
+              ),
+              text: snippet,
+            },
+          ]);
+          editor.focus();
+          showToast(`Inserted @${snippetKey}`);
+          return;
+        }
+      }
     }
+
+    // Fallback: append to end if editor not available
+    const updated = code.trimEnd() + '\n' + SNIPPETS[snippetKey];
+    setCode(updated);
+    showToast(`Inserted @${snippetKey}`);
   };
 
   const handleFormatSpec = useCallback(() => {
@@ -1225,6 +665,27 @@ export default function App() {
     }
   }, [code, showToast]);
 
+  const handleExportPNG = useCallback(async () => {
+    try {
+      const element = document.querySelector('.graph-container .react-flow') as HTMLElement | null;
+      if (!element) {
+        showToast('Could not find canvas element');
+        return;
+      }
+      const dataUrl = await toPng(element, {
+        backgroundColor: theme === 'dark' ? '#0d1017' : '#f8fafc',
+      });
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = 'spec.png';
+      a.click();
+      showToast('Downloaded spec.png');
+    } catch (err) {
+      console.error('PNG export failed:', err);
+      showToast('PNG export failed. Please try again.');
+    }
+  }, [theme, showToast]);
+
   // Keyboard Shortcuts
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -1235,6 +696,9 @@ export default function App() {
       } else if (ctrl && e.key === 'e') {
         e.preventDefault();
         handleExportJSON();
+      } else if (ctrl && e.key === 'p') {
+        e.preventDefault();
+        handleExportPNG();
       } else if (ctrl && e.key === 'm') {
         e.preventDefault();
         handleExportMermaid();
@@ -1268,7 +732,7 @@ export default function App() {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [handleCopyBundle, handleExportJSON, handleExportMermaid, handleFormatSpec]);
+  }, [handleCopyBundle, handleExportJSON, handleExportPNG, handleExportMermaid, handleFormatSpec]);
 
   // Stats calculation
   const totalTasks = nodes.filter((n) => n.data.type === 'task').length;
@@ -1426,6 +890,10 @@ export default function App() {
 
           <button className="action-btn" onClick={handleExportJSON} title="Export spec as JSON (Ctrl+E)">
             <FiDownload size={13} /> JSON <span className="kbd-hint">Ctrl+E</span>
+          </button>
+
+          <button className="action-btn" onClick={handleExportPNG} title="Export canvas as PNG (Ctrl+P)">
+            <FiImage size={13} /> PNG <span className="kbd-hint">Ctrl+P</span>
           </button>
 
           <button
@@ -1660,6 +1128,8 @@ export default function App() {
               theme={theme === 'dark' ? 'vs-dark' : 'light'}
               value={code}
               onChange={(val) => processCode(val || '', layoutMode)}
+              beforeMount={(monaco) => { monacoRef.current = monaco; }}
+              onMount={(editor) => { editorRef.current = editor; }}
               options={{
                 minimap: { enabled: false },
                 fontSize: 13,

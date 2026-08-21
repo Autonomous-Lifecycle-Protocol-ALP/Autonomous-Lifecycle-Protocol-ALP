@@ -6,7 +6,6 @@ interface NodeInspectorProps {
   obj: AlpObject;
   simStatus?: string;
   isEditing: boolean;
-  isCriticalPath: boolean;
   onClose: () => void;
   onToggleEdit: () => void;
   onSave: (fields: {
@@ -75,8 +74,9 @@ export function NodeInspector({
         {isEditing ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div className="form-group">
-              <label className="form-label">ID</label>
+              <label className="form-label" htmlFor="inspector-id">ID</label>
               <input
+                id="inspector-id"
                 type="text"
                 className="inspector-input-field"
                 value={editId}
@@ -84,8 +84,9 @@ export function NodeInspector({
               />
             </div>
             <div className="form-group">
-              <label className="form-label">Status</label>
+              <label className="form-label" htmlFor="inspector-status">Status</label>
               <select
+                id="inspector-status"
                 className="inspector-input-field"
                 value={editStatus}
                 onChange={(e) => setEditStatus(e.target.value)}
@@ -98,8 +99,9 @@ export function NodeInspector({
               </select>
             </div>
             <div className="form-group">
-              <label className="form-label">Description</label>
+              <label className="form-label" htmlFor="inspector-description">Description</label>
               <input
+                id="inspector-description"
                 type="text"
                 className="inspector-input-field"
                 value={editDesc}
