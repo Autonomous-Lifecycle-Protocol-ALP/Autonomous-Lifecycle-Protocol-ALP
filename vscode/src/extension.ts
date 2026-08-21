@@ -247,6 +247,100 @@ export function activate(context: vscode.ExtensionContext) {
     );
   });
 
+  // ─── Register alp.showMultimodal Command ──────────────────────────
+  const multimodalCmd = vscode.commands.registerCommand('alp.showMultimodal', () => {
+    openTypeWebview(
+      'alpMultimodal',
+      'ALP Multi-Modal Specs',
+      'multimodal',
+      (m) => `
+        <div class="node-card progress">
+          <span class="badge">@multimodal</span>
+          <div class="title">${escapeHtml(m.id)}</div>
+          <div><strong>Modalities:</strong> <code>${(m.modalities || []).join(', ') || 'N/A'}</code></div>
+          <div><strong>Resolution:</strong> <code>${escapeHtml(m.resolution || 'N/A')}</code></div>
+          <div><strong>FPS:</strong> <code>${m.fps || 'N/A'}</code></div>
+        </div>
+      `,
+      'No @multimodal objects declared in this file.',
+    );
+  });
+
+  // ─── Register alp.showActionSpaces Command ────────────────────────
+  const actionSpacesCmd = vscode.commands.registerCommand('alp.showActionSpaces', () => {
+    openTypeWebview(
+      'alpActionSpaces',
+      'ALP Action Spaces',
+      'action_space',
+      (as) => `
+        <div class="node-card progress">
+          <span class="badge">@action_space</span>
+          <div class="title">${escapeHtml(as.id)}</div>
+          <div><strong>Domain:</strong> <code>${escapeHtml(as.domain || 'N/A')}</code></div>
+          <div><strong>Agent:</strong> <code>${escapeHtml(as.agent || 'N/A')}</code></div>
+          <div><strong>Actions:</strong> <code>${(as.actions || []).length} defined</code></div>
+        </div>
+      `,
+      'No @action_space objects declared in this file.',
+    );
+  });
+
+  // ─── Register alp.showVisionModels Command ────────────────────────
+  const visionModelsCmd = vscode.commands.registerCommand('alp.showVisionModels', () => {
+    openTypeWebview(
+      'alpVisionModels',
+      'ALP Vision Models',
+      'vision_model',
+      (vm) => `
+        <div class="node-card done">
+          <span class="badge">@vision_model</span>
+          <div class="title">${escapeHtml(vm.id)}</div>
+          <div><strong>Backbone:</strong> <code>${escapeHtml(vm.backbone || 'N/A')}</code></div>
+          <div><strong>Context Tokens:</strong> <code>${vm.context_tokens || 'N/A'}</code></div>
+          <div><strong>Embedding Dim:</strong> <code>${vm.embedding_dim || 'N/A'}</code></div>
+        </div>
+      `,
+      'No @vision_model objects declared in this file.',
+    );
+  });
+
+  // ─── Register alp.showSynapse Command ─────────────────────────────
+  const synapseCmd = vscode.commands.registerCommand('alp.showSynapse', () => {
+    const editor = vscode.window.activeTextEditor;
+    const objects = editor ? getParsedObjects(editor.document) : [];
+    const { SynapseEngine } = require('@autonomous-lifecycle-protocol-alp/sdk');
+    const engine = new SynapseEngine();
+    const topology = engine.buildTopology(objects);
+
+    const panel = vscode.window.createWebviewPanel('alpSynapse', 'ALP Synapse Knowledge Graph', vscode.ViewColumn.Beside, {});
+    const nodesHtml = topology.nodes.map((n: any) => `
+      <div class="node-card ${n.status === '[x]' ? 'done' : n.status === '[!]' ? 'blocked' : 'progress'}">
+        <span class="badge">@${escapeHtml(n.type)}</span>
+        <div class="title">[[${escapeHtml(n.id)}]]</div>
+        <div><strong>Degree:</strong> <code>${n.degree}</code></div>
+        <div><strong>Out:</strong> <code>${n.outLinks.length}</code></div>
+        <div><strong>In:</strong> <code>${n.inLinks.length}</code></div>
+      </div>
+    `).join('');
+    const statsHtml = `
+      <div style="margin-bottom: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+        <div style="background: #131625; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; text-align: center;">
+          <div style="font-size: 1.2rem; font-weight: bold; color: #38bdf8;">${topology.stats.totalNodes}</div>
+          <div style="font-size: 0.75rem; color: #94a3b8;">Nodes</div>
+        </div>
+        <div style="background: #131625; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; text-align: center;">
+          <div style="font-size: 1.2rem; font-weight: bold; color: #4ade80;">${topology.stats.totalEdges}</div>
+          <div style="font-size: 0.75rem; color: #94a3b8;">Edges</div>
+        </div>
+        <div style="background: #131625; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; text-align: center;">
+          <div style="font-size: 1.2rem; font-weight: bold; color: #facc15;">${topology.stats.density.toFixed(3)}</div>
+          <div style="font-size: 0.75rem; color: #94a3b8;">Density</div>
+        </div>
+      </div>
+    `;
+    panel.webview.html = getWebviewContent(statsHtml + `<h3>Topology Nodes</h3><div class="nodes-grid">${nodesHtml || '<div class="placeholder">No objects parsed. Open an .alp file first.</div>'}</div>`);
+  });
+
   // ─── Register alp.diffWorkspace Command ───────────────────────────
   const diffCmd = vscode.commands.registerCommand('alp.diffWorkspace', async () => {
     const wsFolder = vscode.workspace.workspaceFolders?.[0];
@@ -658,7 +752,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.window.showInformationMessage(`Deleted '${objectId}' from current file.`);
   });
 
-  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, inspectCmd, deleteCmd);
+  context.subscriptions.push(visualizerCmd, policyCmd, timelinesCmd, policiesCmd, contractsCmd, vaultsCmd, agentsCmd, multimodalCmd, actionSpacesCmd, visionModelsCmd, synapseCmd, diffCmd, renameCmd, copyCmd, statsCmd, templateCmd, moveCmd, searchCmd, inspectCmd, deleteCmd);
   registerAdditionalCommands(context);
 }
 

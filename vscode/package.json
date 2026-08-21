@@ -112,6 +112,26 @@
         "category": "ALP"
       },
       {
+        "command": "alp.showMultimodal",
+        "title": "ALP: Show Multi-Modal Specs",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.showActionSpaces",
+        "title": "ALP: Show Action Spaces",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.showVisionModels",
+        "title": "ALP: Show Vision Models",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.showSynapse",
+        "title": "ALP: Show Synapse Knowledge Graph",
+        "category": "ALP"
+      },
+      {
         "command": "alp.validateWorkspace",
         "title": "ALP: Validate Workspace Governance & Structure",
         "category": "ALP"
