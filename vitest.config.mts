@@ -23,6 +23,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@autonomous-lifecycle-protocol-alp/parser': resolve('./parser/src/index.ts'),
+      '@autonomous-lifecycle-protocol-alp/sdk': resolve('./sdk/typescript/src/index.ts'),
+      '@autonomous-lifecycle-protocol-alp/platform': resolve('./commercial/alp-platform/src/index.ts'),
     },
   },
 });

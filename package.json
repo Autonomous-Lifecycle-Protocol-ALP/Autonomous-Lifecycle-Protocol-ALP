@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "test": "npm run build --workspace @autonomous-lifecycle-protocol-alp/parser --workspace @autonomous-lifecycle-protocol-alp/cli --workspace @autonomous-lifecycle-protocol-alp/platform && vitest run",
+    "test": "npm run build --workspace @autonomous-lifecycle-protocol-alp/parser --workspace @autonomous-lifecycle-protocol-alp/sdk --workspace @autonomous-lifecycle-protocol-alp/cli --workspace @autonomous-lifecycle-protocol-alp/platform && vitest run",
     "test:python": "cd sdk/python && pytest",
     "typecheck": "npx tsc --noEmit --project parser/tsconfig.json && npx tsc --noEmit --project cli/tsconfig.json && npx tsc --noEmit --project sdk/typescript/tsconfig.json && npx tsc --noEmit --project commercial/alp-platform/tsconfig.json && npx tsc --noEmit --project vscode/server/tsconfig.json",
     "lint": "npm run lint --workspaces --if-present"

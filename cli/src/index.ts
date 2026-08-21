@@ -62,6 +62,7 @@ import { deduplicateCommand } from './commands/deduplicate';
 import { promoteCommand } from './commands/promote';
 import { registerReasonCommand } from './commands/reason';
 import { integrateCommand } from './commands/integrate';
+import { synapseExportCommand, synapseGraphCommand, synapseStatsCommand } from './commands/synapse';
 const program = new Command();
 
 program
@@ -659,6 +660,30 @@ program
   .option('--diff', 'Show git diff summary')
   .option('--commit <message>', 'Stage all changes and commit')
   .action((opts) => gitCommand(opts));
+
+// ── Feature: Synapse Knowledge Graph & Canvas Vault ───────────────────
+const synapse = program
+  .command('synapse')
+  .description('Synapse Knowledge Graph, Canvas Vault & Topology visualizer (v80.0.0)');
+
+synapse
+  .command('export')
+  .description('Export ALP workspace as a Synapse Markdown vault with wikilinks and canvas')
+  .option('--out <dir>', 'Output directory (default: .synapse)')
+  .option('--canvas', 'Include visual .canvas diagram file')
+  .action((opts) => synapseExportCommand(opts));
+
+synapse
+  .command('graph')
+  .description('Generate knowledge graph topology representation')
+  .option('--format <fmt>', 'Graph format: json, dot, mermaid, canvas', 'json')
+  .option('--out <file>', 'Output destination file path')
+  .action((opts) => synapseGraphCommand(opts));
+
+synapse
+  .command('stats')
+  .description('Display knowledge graph connectivity, density, and hub metrics')
+  .action(() => synapseStatsCommand());
 
 registerTraceCommand(program);
 registerZKCommand(program);

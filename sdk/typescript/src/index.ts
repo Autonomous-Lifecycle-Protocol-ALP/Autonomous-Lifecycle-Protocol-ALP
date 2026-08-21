@@ -312,3 +312,17 @@ export {
   type ActualStep,
   type ActualTrace,
 } from './eval-suite';
+
+// ── Feature: Synapse Knowledge Graph & Vault Engine ──────────────────
+export {
+  SynapseEngine,
+  type SynapseNode,
+  type SynapseEdge,
+  type SynapseTopology,
+  type SynapseStats,
+  type SynapseCanvas,
+  type SynapseVaultFile,
+  type CanvasNodeData,
+  type CanvasEdgeData,
+} from './synapse';
+
