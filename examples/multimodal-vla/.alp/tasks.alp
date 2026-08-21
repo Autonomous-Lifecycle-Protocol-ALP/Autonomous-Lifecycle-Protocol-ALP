@@ -1,0 +1,37 @@
+!alp-version: 3.0.0
+
+@task
+  id: task-initialize-vision-pipeline
+  status: [x]
+  description: "Initialize camera streams, LiDAR, and multimodal model loading"
+  owner: "@agent-inspection-orchestrator"
+  verify:
+    - "npm run test:vision:pipeline"
+
+@task
+  id: task-perform-shelf-scan
+  status: [~]
+  description: "Execute multimodal shelf scan using vision + LiDAR fusion"
+  owner: "@agent-warehouse-bot"
+  depends_on:
+    - -> task-initialize-vision-pipeline
+  multimodal: -> mm-warehouse-inspection
+  action_space: -> as-warehouse-robot
+
+@task
+  id: task-analyze-inspection-results
+  status: [ ]
+  description: "Analyze fused vision/sensor data for anomalies and generate report"
+  owner: "@agent-inspection-orchestrator"
+  depends_on:
+    - -> task-perform-shelf-scan
+  vision_model: -> model-warehouse-clip
+
+@task
+  id: task-emergency-protocol
+  status: [ ]
+  description: "Trigger emergency stop and alert human operator if critical anomaly detected"
+  owner: "@agent-warehouse-bot"
+  depends_on:
+    - -> task-analyze-inspection-results
+  action_space: -> as-warehouse-robot

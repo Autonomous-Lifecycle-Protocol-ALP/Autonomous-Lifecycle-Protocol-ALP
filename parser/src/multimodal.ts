@@ -92,6 +92,9 @@ export class MultiModalEngine {
     const assets = spec.assets || [];
     for (let i = 0; i < assets.length; i++) {
       const a = assets[i];
+      if (typeof a === 'string') {
+        continue;
+      }
       if (!a.id) errors.push(`Asset at index ${i} is missing an id.`);
       if (!a.uri) errors.push(`Asset '${a.id || i}' is missing a uri.`);
       if (!a.type) warnings.push(`Asset '${a.id || i}' has no explicit media type.`);
@@ -175,6 +178,10 @@ export class MultiModalEngine {
     }
 
     for (const asset of assets) {
+      if (typeof asset === 'string') {
+        tokenEstimate += 768;
+        continue;
+      }
       switch (asset.type) {
         case 'image':
           // Standard high-res image token cost

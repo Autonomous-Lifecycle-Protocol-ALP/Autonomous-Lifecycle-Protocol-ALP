@@ -75,7 +75,8 @@ export function multimodalInspectCommand(options: { id?: string; json?: boolean 
     const budget = bridge.estimateContextBudget(mm, visionModels[0]);
     console.log(`  • ID: ${mm.id}`);
     console.log(`    - Modalities:   ${mm.modalities ? mm.modalities.join(', ') : 'none'}`);
-    console.log(`    - Assets:       ${mm.assets ? mm.assets.length : 0} items`);
+    const assetCount = Array.isArray(mm.assets) ? mm.assets.length : 0;
+    console.log(`    - Assets:       ${assetCount} items`);
     console.log(`    - Est. Tokens:  ${budget.totalTokens} tokens (~${budget.budgetPercent.toFixed(1)}% of budget)`);
   }
 
@@ -86,7 +87,11 @@ export function multimodalInspectCommand(options: { id?: string; json?: boolean 
     console.log(`    - Actions:      ${as.actions ? as.actions.length : 0}`);
     console.log(`    - Critical:     ${validation.criticalActionCount}`);
     for (const a of as.actions || []) {
-      console.log(`       → ${a.name} [${a.safety_level.toUpperCase()}] (${a.type})`);
+      if (typeof a === 'string') {
+        console.log(`       → ${a}`);
+      } else {
+        console.log(`       → ${a.name} [${(a.safety_level || 'low').toUpperCase()}] (${a.type || 'digital'})`);
+      }
     }
   }
 
@@ -159,5 +164,45 @@ export function actionSpaceCheckCommand(actionSpaceId?: string) {
 
   if (hasBlocked) {
     console.log(`\n[ACTION SPACE] Notice: Unconfirmed critical actions detected.`);
+  }
+}
+
+export function tokenCostCommand(options: { modalities?: string; json?: boolean }) {
+  const objects = loadAllObjects();
+  const mmObjects = objects.filter((o) => o._type === 'multimodal') as unknown as AlpMultimodal[];
+  const visionModels = objects.filter((o) => o._type === 'vision_model') as unknown as AlpVisionModel[];
+  const engine = new MultiModalEngine();
+
+  const modalities = options.modalities ? options.modalities.split(',').map((m) => m.trim()) : [];
+  const visionModel = visionModels[0];
+
+  if (mmObjects.length === 0) {
+    console.error('Error: No multimodal specs found in workspace.');
+    process.exit(1);
+  }
+
+  if (options.json) {
+    const results = mmObjects.map((mm) => ({
+      id: mm.id,
+      modalities: modalities.length > 0 ? modalities : mm.modalities,
+      totalTokens: engine.estimateTokenCost(modalities.length > 0 ? modalities : mm.modalities || [], mm.assets || [], visionModel),
+    }));
+    console.log(JSON.stringify(results, null, 2));
+    return;
+  }
+
+  console.log('💰 TOKEN COST ESTIMATION');
+  console.log('═══════════════════════════════════════════════════════════');
+
+  for (const mm of mmObjects) {
+    const activeModalities = modalities.length > 0 ? modalities : mm.modalities || [];
+    const tokens = engine.estimateTokenCost(activeModalities, mm.assets || [], visionModel);
+    const maxContext = visionModel?.context_tokens || 8192;
+    const percent = Math.min(100, (tokens / maxContext) * 100);
+    console.log(`\n  • ${mm.id}`);
+    console.log(`    - Modalities:   ${activeModalities.join(', ') || 'none'}`);
+    console.log(`    - Assets:       ${mm.assets ? mm.assets.length : 0}`);
+    console.log(`    - Est. Tokens:  ${tokens}`);
+    console.log(`    - Context Use:  ${percent.toFixed(1)}% of ${maxContext} tokens`);
   }
 }

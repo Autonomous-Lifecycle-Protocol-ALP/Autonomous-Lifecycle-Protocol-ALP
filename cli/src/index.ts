@@ -63,7 +63,7 @@ import { promoteCommand } from './commands/promote';
 import { registerReasonCommand } from './commands/reason';
 import { integrateCommand } from './commands/integrate';
 import { synapseExportCommand, synapseGraphCommand, synapseStatsCommand } from './commands/synapse';
-import { multimodalInspectCommand, multimodalValidateCommand, actionSpaceCheckCommand } from './commands/multimodal';
+import { multimodalInspectCommand, multimodalValidateCommand, actionSpaceCheckCommand, tokenCostCommand } from './commands/multimodal';
 const program = new Command();
 
 program
@@ -714,7 +714,16 @@ multimodal
 program
   .command('action-space')
   .description('Check action space safety levels and guard constraints (v82.0.0)')
+  .command('check')
+  .description('Check all action spaces or a specific one by id')
   .argument('[id]', 'Action space id')
   .action((id) => actionSpaceCheckCommand(id));
+
+program
+  .command('token-cost')
+  .description('Estimate token costs for multimodal assets and vision models (v82.0.0)')
+  .option('--modalities <list>', 'Comma-separated modalities (vision,audio,sensor,text,spatial)')
+  .option('--json', 'Output results as JSON')
+  .action((opts) => tokenCostCommand(opts));
 
 program.parse(process.argv);
