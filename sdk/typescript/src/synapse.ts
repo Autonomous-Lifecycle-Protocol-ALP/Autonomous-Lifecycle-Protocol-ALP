@@ -166,66 +166,112 @@ export class SynapseEngine {
       });
     }
 
+    const cleanRef = (raw: unknown): string => {
+      if (typeof raw !== 'string') return '';
+      return raw.trim().replace(/^(?:->|@|#|\s)+/, '').trim();
+    };
+
+    const addEdge = (
+      fromId: string,
+      toId: string,
+      label: string,
+      relation: 'depends_on' | 'assigned_to' | 'guards' | 'implements' | 'references'
+    ) => {
+      const fromNode = nodeMap.get(fromId);
+      const toNode = nodeMap.get(toId);
+      if (!fromNode || !toNode) {
+        brokenLinks.push({ source: fromId, target: toId });
+        return;
+      }
+      // Avoid duplicate edges
+      if (
+        !edges.some(
+          (e) => e.source === fromId && e.target === toId && e.relation === relation
+        )
+      ) {
+        edges.push({ source: fromId, target: toId, label, relation });
+        if (!fromNode.outLinks.includes(toId)) fromNode.outLinks.push(toId);
+        if (!toNode.inLinks.includes(fromId)) toNode.inLinks.push(fromId);
+      }
+    };
+
     // Extract edges and wikilinks
     for (const obj of objects) {
       const sourceId = obj.id;
-      const sourceNode = nodeMap.get(sourceId)!;
 
-      // 1. Dependencies (depends, deps)
-      const deps = (obj as any).depends || (obj as any).deps || [];
+      // 1. Dependencies (depends, deps, depends_on)
+      const deps = (obj as any).depends || (obj as any).deps || (obj as any).depends_on || [];
       const depList = Array.isArray(deps) ? deps : [deps];
-      for (const targetId of depList) {
-        if (typeof targetId !== 'string' || !targetId.trim()) continue;
-        const cleanTarget = targetId.trim();
-        if (knownIds.has(cleanTarget)) {
-          edges.push({ source: sourceId, target: cleanTarget, label: 'depends on', relation: 'depends_on' });
-          sourceNode.outLinks.push(cleanTarget);
-          nodeMap.get(cleanTarget)?.inLinks.push(sourceId);
-        } else {
-          brokenLinks.push({ source: sourceId, target: cleanTarget });
-        }
+      for (const rawTarget of depList) {
+        const cleanTarget = cleanRef(rawTarget);
+        if (cleanTarget) addEdge(sourceId, cleanTarget, 'depends on', 'depends_on');
       }
 
       // 2. Agent assignment (owner, agent)
       const owner = (obj as any).owner || (obj as any).agent;
-      if (owner && typeof owner === 'string') {
-        const cleanOwner = owner.trim();
-        if (knownIds.has(cleanOwner)) {
-          edges.push({ source: cleanOwner, target: sourceId, label: 'executes', relation: 'assigned_to' });
-          nodeMap.get(cleanOwner)?.outLinks.push(sourceId);
-          sourceNode.inLinks.push(cleanOwner);
-        }
+      if (owner) {
+        const cleanOwner = cleanRef(owner);
+        if (cleanOwner) addEdge(cleanOwner, sourceId, 'executes', 'assigned_to');
       }
 
-      // 3. Policies / Guards (policy, guards)
+      // 3. Policies / Guards
       if (obj._type === 'policy') {
         const guards = (obj as any).guards || (obj as any).targets || [];
         const guardList = Array.isArray(guards) ? guards : [guards];
-        for (const targetId of guardList) {
-          if (typeof targetId !== 'string' || !targetId.trim()) continue;
-          const cleanTarget = targetId.trim();
-          if (knownIds.has(cleanTarget)) {
-            edges.push({ source: sourceId, target: cleanTarget, label: 'guards', relation: 'guards' });
-            sourceNode.outLinks.push(cleanTarget);
-            nodeMap.get(cleanTarget)?.inLinks.push(sourceId);
-          } else {
-            brokenLinks.push({ source: sourceId, target: cleanTarget });
-          }
+        for (const rawTarget of guardList) {
+          const cleanTarget = cleanRef(rawTarget);
+          if (cleanTarget) addEdge(sourceId, cleanTarget, 'guards', 'guards');
         }
       } else {
         const policies = (obj as any).policy || (obj as any).policies || [];
         const polList = Array.isArray(policies) ? policies : [policies];
-        for (const polId of polList) {
-          if (typeof polId !== 'string' || !polId.trim()) continue;
-          const cleanPol = polId.trim();
-          if (knownIds.has(cleanPol)) {
-            edges.push({ source: cleanPol, target: sourceId, label: 'guards', relation: 'guards' });
-            nodeMap.get(cleanPol)?.outLinks.push(sourceId);
-            sourceNode.inLinks.push(cleanPol);
-          } else {
-            brokenLinks.push({ source: sourceId, target: cleanPol });
-          }
+        for (const rawPol of polList) {
+          const cleanPol = cleanRef(rawPol);
+          if (cleanPol) addEdge(cleanPol, sourceId, 'guards', 'guards');
         }
+      }
+
+      // 4. Contracts (contract, contracts)
+      if (obj._type === 'contract') {
+        const from = cleanRef((obj as any).from);
+        const to = cleanRef((obj as any).to);
+        if (from && to) addEdge(from, to, 'contracts', 'references');
+        if (to) addEdge(sourceId, to, 'governs', 'implements');
+      } else {
+        const contracts = (obj as any).contract || (obj as any).contracts || [];
+        const conList = Array.isArray(contracts) ? contracts : [contracts];
+        for (const rawCon of conList) {
+          const cleanCon = cleanRef(rawCon);
+          if (cleanCon) addEdge(cleanCon, sourceId, 'governs', 'implements');
+        }
+      }
+
+      // 5. Vaults (vault, vaults, recipients)
+      if (obj._type === 'vault') {
+        const recipients = (obj as any).recipients || [];
+        const recList = Array.isArray(recipients) ? recipients : [recipients];
+        for (const rawRec of recList) {
+          const cleanRec = cleanRef(rawRec);
+          if (cleanRec) addEdge(sourceId, cleanRec, 'secures', 'references');
+        }
+      } else {
+        const vaults = (obj as any).vault || (obj as any).vaults || [];
+        const vList = Array.isArray(vaults) ? vaults : [vaults];
+        for (const rawV of vList) {
+          const cleanV = cleanRef(rawV);
+          if (cleanV) addEdge(cleanV, sourceId, 'secures', 'references');
+        }
+      }
+
+      // 6. Features, Projects, Workflows
+      const feature = cleanRef((obj as any).feature);
+      if (feature) addEdge(sourceId, feature, 'part of', 'references');
+
+      const steps = (obj as any).steps || [];
+      const stepList = Array.isArray(steps) ? steps : [steps];
+      for (const rawStep of stepList) {
+        const cleanStep = cleanRef(rawStep);
+        if (cleanStep) addEdge(sourceId, cleanStep, 'executes step', 'references');
       }
     }
 

@@ -38,6 +38,7 @@ const LocalStoragePanel = React.lazy(() => import('./components/LocalStoragePane
 const SelfHealingMeshPanel = React.lazy(() => import('./components/SelfHealingMeshPanel.js').then(m => ({ default: m.SelfHealingMeshPanel })));
 const IntelligencePanel = React.lazy(() => import('./components/IntelligencePanel.js').then(m => ({ default: m.IntelligencePanel })));
 const AutonomyPanel = React.lazy(() => import('./components/AutonomyPanel.js').then(m => ({ default: m.AutonomyPanel })));
+const SynapsePanel = React.lazy(() => import('./components/SynapsePanel.js').then(m => ({ default: m.SynapsePanel })));
 
 
 const defaultState: SHAMState = {
@@ -61,7 +62,7 @@ const defaultState: SHAMState = {
   autonomy: { decisions: [], output: [] },
 };
 
-type PanelId = 'editor' | 'terminal' | 'agents' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'copilot' | 'refactor' | 'pro' | 'settings' | 'git' | 'search' | 'debugger' | 'test-runner' | 'marketplace' | 'zk' | 'partition' | 'crdtCanvas' | 'wasmAst' | 'edgeDebug' | 'telemetryInspector' | 'chaosEngine' | 'featureFlags' | 'workflowReplay' | 'localStorage' | 'selfHealingMesh' | 'intelligence' | 'autonomy';
+type PanelId = 'editor' | 'terminal' | 'agents' | 'synapse' | 'mcp' | 'collab' | 'plugins' | 'profiler' | 'copilot' | 'refactor' | 'pro' | 'settings' | 'git' | 'search' | 'debugger' | 'test-runner' | 'marketplace' | 'zk' | 'partition' | 'crdtCanvas' | 'wasmAst' | 'edgeDebug' | 'telemetryInspector' | 'chaosEngine' | 'featureFlags' | 'workflowReplay' | 'localStorage' | 'selfHealingMesh' | 'intelligence' | 'autonomy';
 
 export function App(): React.JSX.Element {
   const [state, setState] = useState<SHAMState>(defaultState);
@@ -131,6 +132,7 @@ export function App(): React.JSX.Element {
     { id: 'editor', label: 'Editor' },
     { id: 'terminal', label: 'Terminal' },
     { id: 'agents', label: 'Agents' },
+    { id: 'synapse', label: 'Synapse' },
     { id: 'mcp', label: 'MCP' },
     { id: 'intelligence', label: 'Intelligence' },
     { id: 'autonomy', label: 'Autonomy' },
@@ -178,6 +180,8 @@ export function App(): React.JSX.Element {
         );
       case 'agents':
         return <AgentPanel agents={state.agents} onRunAgent={handleRunAgent} />;
+      case 'synapse':
+        return <SynapsePanel parsedObjects={state.parseResult?.objects || null} />;
       case 'mcp':
         return <MCPBrowser tools={state.mcpTools} />;
       case 'collab':

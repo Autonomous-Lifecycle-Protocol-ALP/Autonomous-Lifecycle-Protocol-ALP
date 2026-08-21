@@ -29,6 +29,8 @@ const commands: Command[] = [
   { id: 'collab.start', label: 'Collaboration: Start Session', icon: 'userPlus', category: 'Collaboration' },
   { id: 'collab.share', label: 'Collaboration: Copy Share Link', icon: 'share2', category: 'Collaboration' },
   { id: 'plugins.list', label: 'Plugins: List Installed', icon: 'puzzle', category: 'Extensions' },
+  { id: 'synapse.open', label: 'Synapse: Open Knowledge Graph', icon: 'network', shortcut: ['Ctrl', 'Shift', 'K'], category: 'Synapse' },
+  { id: 'synapse.export', label: 'Synapse: Export Canvas Vault', icon: 'fileText', category: 'Synapse' },
   { id: 'settings.open', label: 'Preferences: Open Settings', icon: 'settings', shortcut: ['Ctrl', ','], category: 'Preferences' },
   { id: 'workbench.focusSidebar', label: 'View: Focus Sidebar', icon: 'panelLeft', shortcut: ['Ctrl', 'B'], category: 'View' },
 ];

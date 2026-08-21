@@ -1,0 +1,21 @@
+!alp-version: 3.0.0
+
+@policy
+  id: policy-quantum-enclave
+  applies_to: "@agent-cryptographer"
+  guards:
+    - "task-pq-handshake"
+    - "vault-mesh-keys"
+  allow_paths:
+    - "crypto/**"
+    - "certs/**"
+  deny_paths:
+    - "plain_secrets/**"
+  require_approval: false
+
+@vault
+  id: vault-mesh-keys
+  description: "Distributed Post-Quantum Kyber Key Enclave"
+  recipients:
+    - "agent-cryptographer"
+    - "agent-mesh-orchestrator"

@@ -50,6 +50,7 @@ const panelIcons: Record<string, string> = {
   'test-runner': 'playCircle',
   debugger: 'bug',
   pro: 'star',
+  synapse: 'network',
 };
 
 const FILE_ICONS: Record<string, string> = {
@@ -218,7 +219,7 @@ export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActive
       </div>
 
       <div className="sidebar-footer">
-        {['editor', 'terminal', 'agents', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'refactor', 'marketplace', 'zk', 'partition', 'crdtCanvas', 'wasmAst', 'edgeDebug', 'telemetryInspector', 'chaosEngine', 'featureFlags', 'workflowReplay', 'localStorage', 'selfHealingMesh', 'intelligence', 'autonomy', 'test-runner', 'debugger', 'git', 'search', 'pro', 'settings'].map((panel) => (
+        {['editor', 'terminal', 'agents', 'synapse', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'refactor', 'marketplace', 'zk', 'partition', 'crdtCanvas', 'wasmAst', 'edgeDebug', 'telemetryInspector', 'chaosEngine', 'featureFlags', 'workflowReplay', 'localStorage', 'selfHealingMesh', 'intelligence', 'autonomy', 'test-runner', 'debugger', 'git', 'search', 'pro', 'settings'].map((panel) => (
           <button
             key={panel}
             className={`sidebar-footer-item ${activePanel === panel ? 'active' : ''}`}
@@ -226,7 +227,8 @@ export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActive
             onClick={() => setActivePanel(panel)}
           >
             <Icon name={panelIcons[panel] || 'box'} size={14} />
-            {panel === 'crdtCanvas' ? 'Canvas' :
+            {panel === 'synapse' ? 'Synapse' :
+             panel === 'crdtCanvas' ? 'Canvas' :
              panel === 'wasmAst' ? 'WASM' :
              panel === 'edgeDebug' ? 'Edge' :
              panel === 'telemetryInspector' ? 'Telemetry' :

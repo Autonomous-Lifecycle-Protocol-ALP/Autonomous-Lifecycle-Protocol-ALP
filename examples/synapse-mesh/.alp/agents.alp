@@ -1,0 +1,34 @@
+!alp-version: 3.0.0
+
+@agent
+  id: agent-mesh-orchestrator
+  role: "Global Topology & Swarm Lifecycle Coordinator"
+  status: active
+  skills:
+    - "topology-routing"
+    - "consensus-election"
+
+@agent
+  id: agent-cryptographer
+  role: "Post-Quantum Cryptography & Zero-Knowledge Verifier"
+  status: active
+  skills:
+    - "kyber-1024"
+    - "dilithium-5"
+    - "zk-snark-prover"
+
+@agent
+  id: agent-crdt-sync
+  role: "Conflict-Free Replicated State Synchronizer"
+  status: active
+  skills:
+    - "state-mesh-sync"
+    - "delta-reconciliation"
+
+@agent
+  id: agent-auditor
+  role: "Continuous Formal Verification & Policy Enforcement"
+  status: active
+  skills:
+    - "formal-spec-checker"
+    - "boundary-audit"

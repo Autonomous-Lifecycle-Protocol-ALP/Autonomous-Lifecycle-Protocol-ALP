@@ -1,0 +1,8 @@
+!alp-version: 3.0.0
+
+@project
+  id: synapse-distributed-mesh
+  status: [~]
+  description: "Autonomous Multi-Agent Synapse Knowledge Mesh with Post-Quantum Security & CRDT Coordination"
+  repository: "https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP"
+  owner: "@agent-mesh-orchestrator"

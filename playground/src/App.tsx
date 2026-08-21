@@ -14,6 +14,7 @@ import type { Edge, Node, NodeProps } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { AlpParser, AlpGraph, AlpFormatter } from '@autonomous-lifecycle-protocol-alp/parser';
 import type { AlpObject } from '@autonomous-lifecycle-protocol-alp/parser';
+import { SynapseModal } from './components/SynapseModal.js';
 import {
   FiPlay,
   FiPause,
@@ -549,6 +550,7 @@ export default function App() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showSnapshotsModal, setShowSnapshotsModal] = useState(false);
   const [showTopologyHud, setShowTopologyHud] = useState(false);
+  const [showSynapseModal, setShowSynapseModal] = useState(false);
   const [showKbdHelp, setShowKbdHelp] = useState(false);
   const [isEditingInspector, setIsEditingInspector] = useState(false);
   const [inspectorEditFields, setInspectorEditFields] = useState<Record<string, string>>({});
@@ -1360,6 +1362,20 @@ export default function App() {
             <FiTrendingUp size={13} /> Analytics
           </button>
 
+          <button
+            className="action-btn"
+            onClick={() => setShowSynapseModal(true)}
+            title="Synapse Knowledge Graph, Canvas Vault & Wikilinks"
+            style={{
+              background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2))',
+              border: '1px solid rgba(168, 85, 247, 0.4)',
+              color: '#c084fc',
+              fontWeight: 600,
+            }}
+          >
+            🧠 Synapse
+          </button>
+
           <button className="action-btn" onClick={() => reactFlowInstance?.fitView({ padding: 0.2, duration: 400 })} title="Fit graph view">
             <FiMaximize2 size={13} /> Fit View
           </button>
@@ -2020,6 +2036,13 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* Synapse Knowledge Graph & Vault Modal */}
+      <SynapseModal
+        isOpen={showSynapseModal}
+        onClose={() => setShowSynapseModal(false)}
+        parsedObjects={parsedObjects}
+      />
 
       {/* Keyboard Shortcuts Help Toast */}
       {showKbdHelp && (

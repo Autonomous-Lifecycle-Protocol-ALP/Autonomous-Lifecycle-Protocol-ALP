@@ -1,0 +1,23 @@
+!alp-version: 3.0.0
+
+@contract
+  id: contract-crdt-handshake
+  from: "@agent-mesh-orchestrator"
+  to: "@agent-crdt-sync"
+  status: active
+  allows:
+    - "crdt.state.delta"
+    - "crdt.broadcast.peer"
+  denies:
+    - "root.system.mutate"
+
+@contract
+  id: contract-crypto-signing
+  from: "@agent-crdt-sync"
+  to: "@agent-cryptographer"
+  status: active
+  allows:
+    - "crypto.pq.sign"
+    - "crypto.zk.verify"
+  denies:
+    - "crypto.private_key.export"
