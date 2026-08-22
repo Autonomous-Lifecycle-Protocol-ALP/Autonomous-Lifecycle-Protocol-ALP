@@ -485,9 +485,10 @@ class SynapseEngine:
             frontmatter_lines.append(f'status: "{node.status}"')
         if node.owner:
             frontmatter_lines.append(f'owner: "{node.owner}"')
+        tag_str = ", ".join([f'"{t}"' for t in node.tags])
         frontmatter_lines.extend(
             [
-                f"tags: [{', '.join([f'\"{t}\"' for t in node.tags])}]",
+                f"tags: [{tag_str}]",
                 f"degree: {node.degree}",
                 "---",
             ]

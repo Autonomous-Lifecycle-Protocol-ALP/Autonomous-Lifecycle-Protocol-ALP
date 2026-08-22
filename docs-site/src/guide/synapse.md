@@ -126,6 +126,55 @@ for (const file of vaultFiles) {
 const canvas = engine.generateCanvas(topology);
 ```
 
+## 🐍 Python SDK
+
+```python
+from alp_sdk.synapse import SynapseEngine
+
+engine = SynapseEngine()
+
+# Build topology from ALP objects
+topology = engine.build_topology(objects)
+print(f"Density: {topology.stats.density}")
+print(f"Hubs: {topology.stats.central_hubs}")
+
+# Generate vault files
+vault_files = engine.generate_vault(objects)
+for file in vault_files:
+    print(f"File: {file.relative_path}")
+
+# Generate canvas JSON
+canvas = engine.generate_canvas(topology)
+print(canvas.to_json())
+```
+
+## 🔌 MCP Server Tools
+
+When connected to an AI IDE via the ALP MCP server, the following Synapse tools are available:
+
+| Tool | Description |
+| :--- | :--- |
+| `alp_synapse_export` | Export workspace as a Synapse markdown vault and interactive JSON canvas |
+| `alp_synapse_graph` | Generate graph topology in JSON, Mermaid, DOT, or Canvas format |
+| `alp_synapse_stats` | Compute graph centrality, density, orphan nodes, and broken links |
+
+## 📂 Example: Synapse Distributed Mesh
+
+See the full working example in `examples/synapse-mesh/`:
+
+```bash
+# Run the example
+cd examples/synapse-mesh
+npx tsx src/index.ts
+
+# Or use the CLI
+alp synapse export --out .synapse
+alp synapse stats
+alp synapse graph --format mermaid
+```
+
+The example demonstrates a multi-agent knowledge mesh with post-quantum cryptography, CRDT state synchronization, and formal policy enforcement.
+
 ---
 
 ## 🎨 SHAM Desktop IDE Integration

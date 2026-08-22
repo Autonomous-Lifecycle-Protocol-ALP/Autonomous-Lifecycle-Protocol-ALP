@@ -198,6 +198,15 @@ alp action-space check --id act-browser-nav
 
 Verifies action safety guards and flags unconfirmed critical actions.
 
+### Estimate Token Costs
+
+```bash
+alp token-cost
+alp token-cost --modalities vision,audio --json
+```
+
+Estimates token costs for all multimodal specs or overrides modalities via CLI flags. Use `--json` for machine-readable output.
+
 ---
 
 ## TypeScript SDK
@@ -255,6 +264,69 @@ console.log('Reason:', result.reason);
 const fused = bridge.fuseMultimodalStreams('Analyze defects', mm.assets || []);
 console.log(fused.promptPayload);
 ```
+
+## Python SDK
+
+```python
+from alp_sdk.multimodal import (
+    MultiModalEngine,
+    MultiModalBridge,
+    AlpMultimodal,
+    AlpActionSpace,
+    AlpVisionModel,
+    MultiModalAsset,
+)
+
+engine = MultiModalEngine()
+bridge = MultiModalBridge()
+
+mm = AlpMultimodal(
+    id="mm-factory-floor",
+    modalities=["vision", "sensor", "audio"],
+    assets=[
+        MultiModalAsset(id="cam-1", type="image", uri="s3://bucket/cam-1.png"),
+        MultiModalAsset(id="mic-1", type="audio", uri="s3://bucket/mic-1.wav"),
+    ],
+)
+
+validation = engine.validate_multimodal(mm)
+print(f"Valid: {validation['valid']}")
+print(f"Est. Tokens: {validation['total_tokens_estimate']}")
+
+model = AlpVisionModel(id="vm-siglip", backbone="siglip", context_tokens=4096)
+budget = bridge.estimate_context_budget(mm, model)
+print(f"Budget: {budget.total_tokens} / {budget.max_context_tokens} ({budget.budget_percent}%)")
+
+space = AlpActionSpace(
+    id="as-robotic-arm",
+    domain="robotics",
+    actions=[
+        {"name": "grip_object", "type": "actuator", "safety_level": "medium"},
+        {"name": "emergency_stop", "type": "physical", "safety_level": "critical", "requires_confirmation": True},
+    ],
+)
+
+result = bridge.validate_action_execution(space, "emergency_stop", {}, True)
+print(f"Allowed: {result.allowed}")
+print(f"Reason: {result.reason}")
+
+fused = bridge.fuse_multimodal_streams("Analyze defects", mm.assets or [])
+print(fused["prompt_payload"])
+```
+
+## MCP Server Tools
+
+When connected to an AI IDE via the ALP MCP server, the following multimodal tools are available:
+
+| Tool | Description |
+| :--- | :--- |
+| `alp_multimodal_inspect` | Inspect all `@multimodal`, `@action_space`, and `@vision_model` objects in the workspace |
+| `alp_multimodal_validate` | Validate multimodal specifications for required fields, asset URIs, and token budgets |
+| `alp_action_space_check` | Verify action space safety guards and flag unconfirmed critical actions |
+| `alp_token_cost` | Estimate token costs for modalities and assets, optionally overridden by CLI flags |
+| `alp_synapse_export` | Export workspace as a Synapse markdown vault and interactive JSON canvas |
+| `alp_synapse_graph` | Generate graph topology in JSON, Mermaid, DOT, or Canvas format |
+| `alp_synapse_stats` | Compute graph centrality, density, orphan nodes, and broken links |
 
 ---
 
