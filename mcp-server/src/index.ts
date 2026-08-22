@@ -2568,7 +2568,7 @@ case 'alp_intelligence_review': {
         const vaultFiles = engine.generateVault(objects);
         const canvasData = engine.generateCanvas(topology);
 
-        const outDir = path.resolve(cwd, '.synapse');
+        const outDir = path.resolve(cwd, (args?.out as string) || '.synapse');
         fs.mkdirSync(outDir, { recursive: true });
         for (const file of vaultFiles) {
           const filePath = path.join(outDir, file.relativePath);
@@ -2579,7 +2579,7 @@ case 'alp_intelligence_review': {
         fs.writeFileSync(canvasPath, JSON.stringify(canvasData, null, 2), 'utf-8');
 
         return {
-          content: [{ type: 'text', text: `Exported ${vaultFiles.length} vault files and synapse.canvas to .synapse/` }],
+          content: [{ type: 'text', text: `Exported ${vaultFiles.length} vault files and synapse.canvas to ${path.relative(cwd, outDir)}/` }],
         };
       }
 
