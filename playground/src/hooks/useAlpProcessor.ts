@@ -3,8 +3,9 @@ import { AlpParser, AlpGraph } from '@autonomous-lifecycle-protocol-alp/parser';
 import type { AlpObject } from '@autonomous-lifecycle-protocol-alp/parser';
 import { MarkerType } from 'reactflow';
 import type { Edge, Node } from 'reactflow';
+import { applyForceLayout, applyCircularLayout } from './layouts.js';
 
-type LayoutMode = 'dag' | 'tree' | 'grid';
+type LayoutMode = 'dag' | 'tree' | 'grid' | 'force' | 'circular';
 
 interface ProcessResult {
   nodes: Node[];
@@ -139,6 +140,13 @@ export function useAlpProcessor({ onSuccess, onError }: UseAlpProcessorOptions) 
                 },
               });
             });
+          } else if (currentLayout === 'force') {
+            const edgePairs = edgeList.map((e) => ({ source: e.from, target: e.to }));
+            const forceNodes = applyForceLayout(objects, edgePairs);
+            forceNodes.forEach((nd) => newNodes.push(nd));
+          } else if (currentLayout === 'circular') {
+            const circNodes = applyCircularLayout(objects);
+            circNodes.forEach((nd) => newNodes.push(nd));
           } else {
             // Default: Topological DAG columns
             const columns: Record<number, AlpObject[]> = {};

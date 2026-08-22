@@ -38,18 +38,19 @@ export function AddBlockModal({ isOpen, onClose, onCreate }: AddBlockModalProps)
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="add-block-title">
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3><FiPlus size={16} color="var(--accent-cyan)" /> Create New ALP Primitive</h3>
-          <button className="modal-close" onClick={onClose}>
+          <h3 id="add-block-title"><FiPlus size={16} color="var(--accent-cyan)" /> Create New ALP Primitive</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Close">
             <FiX size={16} />
           </button>
         </div>
         <div className="modal-body">
           <div className="form-group">
-            <label className="form-label">Primitive Type</label>
+            <label className="form-label" htmlFor="add-block-type">Primitive Type</label>
             <select
+              id="add-block-type"
               className="form-select"
               value={blockType}
               onChange={(e) => setBlockType(e.target.value)}
@@ -69,18 +70,23 @@ export function AddBlockModal({ isOpen, onClose, onCreate }: AddBlockModalProps)
             </select>
           </div>
           <div className="form-group">
-            <label className="form-label">ID (e.g. task-auth-service)</label>
+            <label className="form-label" htmlFor="add-block-id">ID (e.g. task-auth-service)</label>
             <input
+              id="add-block-id"
               type="text"
               className="form-input"
               placeholder="my-object-id"
               value={blockId}
               onChange={(e) => setBlockId(e.target.value)}
+              aria-required="true"
+              aria-invalid={!blockId.trim()}
+              autoFocus
             />
           </div>
           <div className="form-group">
-            <label className="form-label">Description</label>
+            <label className="form-label" htmlFor="add-block-desc">Description</label>
             <input
+              id="add-block-desc"
               type="text"
               className="form-input"
               placeholder="Brief summary of this primitive"
@@ -89,8 +95,9 @@ export function AddBlockModal({ isOpen, onClose, onCreate }: AddBlockModalProps)
             />
           </div>
           <div className="form-group">
-            <label className="form-label">Owner Agent (Optional)</label>
+            <label className="form-label" htmlFor="add-block-owner">Owner Agent (Optional)</label>
             <input
+              id="add-block-owner"
               type="text"
               className="form-input"
               placeholder="@agent-coder"
@@ -99,8 +106,9 @@ export function AddBlockModal({ isOpen, onClose, onCreate }: AddBlockModalProps)
             />
           </div>
           <div className="form-group">
-            <label className="form-label">Dependencies (Comma-separated IDs)</label>
+            <label className="form-label" htmlFor="add-block-deps">Dependencies (Comma-separated IDs)</label>
             <input
+              id="add-block-deps"
               type="text"
               className="form-input"
               placeholder="task-db-schema, task-core"

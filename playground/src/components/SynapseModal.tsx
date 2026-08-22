@@ -88,6 +88,9 @@ export function SynapseModal({ isOpen, onClose, parsedObjects }: SynapseModalPro
         padding: '20px',
       }}
       onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="synapse-title"
     >
       <div
         style={{
@@ -134,7 +137,7 @@ export function SynapseModal({ isOpen, onClose, parsedObjects }: SynapseModalPro
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '16px', fontWeight: 700 }}>Synapse Knowledge Graph &amp; Canvas Vault</span>
+                <span id="synapse-title" style={{ fontSize: '16px', fontWeight: 700 }}>Synapse Knowledge Graph &amp; Canvas Vault</span>
                 <span
                   style={{
                     fontSize: '11px',
@@ -166,6 +169,7 @@ export function SynapseModal({ isOpen, onClose, parsedObjects }: SynapseModalPro
               display: 'flex',
               alignItems: 'center',
             }}
+            aria-label="Close"
           >
             <FiX size={20} />
           </button>

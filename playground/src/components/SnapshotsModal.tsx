@@ -35,23 +35,25 @@ export function SnapshotsModal({
   };
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="snapshots-title">
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3><FiBookmark size={16} color="var(--accent-purple)" /> Workspace Snapshots</h3>
-          <button className="modal-close" onClick={onClose}>
+          <h3 id="snapshots-title"><FiBookmark size={16} color="var(--accent-purple)" /> Workspace Snapshots</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Close">
             <FiX size={16} />
           </button>
         </div>
         <div className="modal-body">
           <div style={{ display: 'flex', gap: 8 }}>
             <input
+              id="snapshot-name-input"
               type="text"
               className="form-input"
               placeholder="Snapshot name (e.g. Before refactoring)"
               value={nameInput}
               onChange={(e) => setNameInput(e.target.value)}
               style={{ flex: 1 }}
+              autoFocus
             />
             <button className="sim-btn play" onClick={handleSave}>
               <FiBookmark size={13} /> Save
@@ -72,7 +74,7 @@ export function SnapshotsModal({
                     <button className="action-btn" onClick={() => onLoad(snap)}>
                       Restore
                     </button>
-                    <button className="modal-close" onClick={() => onDelete(snap.id)} title="Delete snapshot">
+                    <button className="modal-close" onClick={() => onDelete(snap.id)} title="Delete snapshot" aria-label="Delete snapshot">
                       <FiTrash2 size={13} color="var(--accent-rose)" />
                     </button>
                   </div>

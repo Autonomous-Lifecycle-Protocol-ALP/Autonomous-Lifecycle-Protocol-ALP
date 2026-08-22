@@ -9,11 +9,11 @@ export function KbdHelp({ isOpen, onClose }: KbdHelpProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="kbdhelp-title">
       <div className="modal-card" style={{ maxWidth: 440 }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3><FiKey size={16} color="var(--accent-cyan)" /> Keyboard Shortcuts</h3>
-          <button className="modal-close" onClick={onClose}>
+          <h3 id="kbdhelp-title"><FiKey size={16} color="var(--accent-cyan)" /> Keyboard Shortcuts</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Close">
             <FiX size={16} />
           </button>
         </div>

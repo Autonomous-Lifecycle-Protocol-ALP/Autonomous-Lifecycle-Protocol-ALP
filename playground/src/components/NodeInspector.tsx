@@ -58,14 +58,14 @@ export function NodeInspector({
   ];
 
   return (
-    <div className="inspector-panel">
+    <div className="inspector-panel" role="dialog" aria-modal="true" aria-labelledby="inspector-title">
       <div className="inspector-header">
-        <h3>@{obj._type} Details</h3>
+        <h3 id="inspector-title">@{obj._type} Details</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <button className="inspector-edit-btn" onClick={onToggleEdit}>
             <FiEdit2 size={11} /> {isEditing ? 'View' : 'Edit'}
           </button>
-          <button className="close-btn" onClick={onClose}>
+          <button className="close-btn" onClick={onClose} aria-label="Close">
             <FiX size={14} />
           </button>
         </div>
@@ -81,6 +81,7 @@ export function NodeInspector({
                 className="inspector-input-field"
                 value={editId}
                 onChange={(e) => setEditId(e.target.value)}
+                autoFocus
               />
             </div>
             <div className="form-group">

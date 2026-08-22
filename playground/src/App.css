@@ -1151,6 +1151,52 @@
   }
 }
 
+@media (max-width: 480px) {
+  .brand-logo {
+    display: none;
+  }
+
+  .snippet-bar {
+    display: none;
+  }
+
+  .status-indicator {
+    display: none;
+  }
+
+  .editor-container {
+    max-height: 35vh;
+  }
+
+  .sim-progress {
+    display: none;
+  }
+
+  .header-controls {
+    gap: 4px;
+  }
+
+  .action-btn {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+
+  .action-btn .kbd-hint {
+    display: none;
+  }
+
+  .sim-btn {
+    padding: 4px 8px;
+    font-size: 0.68rem;
+  }
+
+  .summary-bar {
+    font-size: 0.6rem;
+    padding: 3px 8px;
+    gap: 6px;
+  }
+}
+
 /* ── Critical Path Highlighting ────────────────────────────────────────── */
 .alp-custom-node.critical-path {
   box-shadow: 0 0 24px rgba(245, 158, 11, 0.5), 0 0 0 2px #f59e0b !important;
@@ -1559,6 +1605,83 @@
 
   .telemetry-badge {
     display: none;
+  }
+
+  /* ── Mobile Enhancements ──────────────────────────────────────────────── */
+
+  /* Modals full-screen on mobile */
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-start;
+  }
+
+  .modal-card {
+    max-width: 100% !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+    flex: 1;
+  }
+
+  /* Sidebar backdrop when open on mobile */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 15;
+  }
+
+  .sidebar:not(.collapsed) ~ .sidebar-backdrop {
+    display: block;
+  }
+
+  /* Mobile sidebar floating toggle */
+  .mobile-sidebar-toggle {
+    display: none;
+    position: fixed;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 25;
+    width: 40px;
+    height: 40px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-card);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .sidebar.collapsed ~ .mobile-sidebar-toggle {
+    display: flex;
+  }
+
+  /* Min 44px touch targets */
+  .action-btn,
+  .sim-btn,
+  .layout-btn,
+  .snippet-chip,
+  .status-filter-chip,
+  .sidebar-toggle,
+  .theme-toggle,
+  .close-btn,
+  .sidebar-search,
+  .sidebar-type-filter,
+  .form-input,
+  .form-select,
+  .form-textarea,
+  .sim-speed-select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .sim-btn {
+    padding: 6px 12px;
   }
 }
 

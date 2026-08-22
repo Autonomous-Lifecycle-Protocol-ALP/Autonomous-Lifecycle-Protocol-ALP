@@ -35,10 +35,10 @@ export function SnippetBar({ onInsert }: SnippetBarProps) {
   );
 
   return (
-    <div className="snippet-bar">
+    <div className="snippet-bar" role="list" aria-label="Snippet insertion bar">
       <span className="snippet-label">Insert:</span>
       {SNIPPET_KEYS.map((key) => (
-        <button key={key} className="snippet-chip" onClick={() => handleInsert(key)}>
+        <button key={key} className="snippet-chip" role="listitem" onClick={() => handleInsert(key)}>
           + @{key}
         </button>
       ))}

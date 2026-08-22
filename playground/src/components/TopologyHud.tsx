@@ -23,11 +23,11 @@ export function TopologyHud({
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="topology-title">
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3><FiTrendingUp size={16} color="var(--accent-cyan)" /> Topology &amp; Critical Path Analytics</h3>
-          <button className="modal-close" onClick={onClose}>
+          <h3 id="topology-title"><FiTrendingUp size={16} color="var(--accent-cyan)" /> Topology &amp; Critical Path Analytics</h3>
+          <button className="modal-close" onClick={onClose} aria-label="Close">
             <FiX size={16} />
           </button>
         </div>

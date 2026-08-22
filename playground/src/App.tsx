@@ -12,6 +12,7 @@ import type { Edge, Node, ReactFlowInstance } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { AlpParser, AlpGraph, AlpFormatter } from '@autonomous-lifecycle-protocol-alp/parser';
 import type { AlpObject } from '@autonomous-lifecycle-protocol-alp/parser';
+import yaml from 'js-yaml';
 import { TEMPLATES } from './constants/templates.js';
 import { SynapseModal } from './components/SynapseModal.js';
 import { MultiModalModal } from './components/MultiModalModal.js';
@@ -22,7 +23,9 @@ import { TopologyHud } from './components/TopologyHud.js';
 import { KbdHelp } from './components/KbdHelp.js';
 import { NodeInspector } from './components/NodeInspector.js';
 import { AlpCustomNode, renderStatusBadge } from './components/AlpCustomNode.js';
+import { ErrorBoundary } from './components/ErrorBoundary.js';
 import { useTopologyMetrics } from './hooks/useTopologyMetrics.js';
+import { applyForceLayout, applyCircularLayout } from './hooks/layouts.js';
 import { toPng } from 'html-to-image';
 import {
   FiPlay,
@@ -56,11 +59,12 @@ import {
   FiTrendingUp,
   FiActivity,
   FiImage,
+  FiCircle,
 } from 'react-icons/fi';
 import './App.css';
 
 type TypeFilter = 'all' | string;
-type LayoutMode = 'dag' | 'tree' | 'grid';
+type LayoutMode = 'dag' | 'tree' | 'grid' | 'force' | 'circular';
 
 // ── Helpers & Node Components moved to ./components/AlpCustomNode.tsx ──
 
@@ -153,203 +157,207 @@ export default function App() {
   // Topological Analysis (Longest Path, Concurrency, Bottlenecks)
   const topologyMetrics = useTopologyMetrics(parsedObjects, edges);
 
-  // Parse and Layout Engine
-  const processCode = useCallback((newCode: string, currentLayout: LayoutMode = layoutMode) => {
-    setCode(newCode);
-    if (processTimerRef.current) {
-      clearTimeout(processTimerRef.current);
-    }
-    processTimerRef.current = window.setTimeout(() => {
-      const logs: string[] = [];
-      try {
-        const parser = new AlpParser();
-        const objects = parser.parseAndValidate(newCode);
-        setParsedObjects(objects);
+  // Parse and Layout Engine (parsing is debounced via the useEffect below)
+  const processCode = useCallback((codeToParse: string, currentLayout: LayoutMode) => {
+    const logs: string[] = [];
+    try {
+      const parser = new AlpParser();
+      const objects = parser.parseAndValidate(codeToParse);
+      setParsedObjects(objects);
 
-        const graph = new AlpGraph();
-        graph.buildGraph(objects);
+      const graph = new AlpGraph();
+      graph.buildGraph(objects);
 
-        logs.push(`[INFO] Parsed ${objects.length} objects`);
-        logs.push(`[INFO] Discovered ${graph.edges.length} edges`);
+      logs.push(`[INFO] Parsed ${objects.length} objects`);
+      logs.push(`[INFO] Discovered ${graph.edges.length} edges`);
 
-        const blockedCount = objects.filter((o) => o.status && o.status.includes('[!]')).length;
-        const inProgressCount = objects.filter((o) => o.status && o.status.includes('[~]')).length;
+      const blockedCount = objects.filter((o) => o.status && o.status.includes('[!]')).length;
+      const inProgressCount = objects.filter((o) => o.status && o.status.includes('[~]')).length;
 
-        if (blockedCount > 0) logs.push(`[WARN] ${blockedCount} blocked object(s) detected`);
-        if (inProgressCount > 0) logs.push(`[INFO] ${inProgressCount} in-progress item(s)`);
+      if (blockedCount > 0) logs.push(`[WARN] ${blockedCount} blocked object(s) detected`);
+      if (inProgressCount > 0) logs.push(`[INFO] ${inProgressCount} in-progress item(s)`);
 
-        const edgeList: { from: string; to: string; type: string }[] = [];
-        const inDegree: Record<string, number> = {};
-        const adj: Record<string, string[]> = {};
+      const edgeList: { from: string; to: string; type: string }[] = [];
+      const inDegree: Record<string, number> = {};
+      const adj: Record<string, string[]> = {};
 
+      objects.forEach((obj) => {
+        inDegree[obj.id] = 0;
+        adj[obj.id] = [];
+      });
+
+      graph.edges.forEach((e) => {
+        edgeList.push({ from: e.source, to: e.target, type: e.type });
+        if (adj[e.source]) adj[e.source].push(e.target);
+        if (inDegree[e.target] !== undefined) inDegree[e.target] += 1;
+      });
+
+      const depth: Record<string, number> = {};
+      const queue: string[] = [];
+      const topoOrder: string[] = [];
+
+      Object.keys(inDegree).forEach((id) => {
+        if (inDegree[id] === 0) {
+          queue.push(id);
+          depth[id] = 0;
+        }
+      });
+
+      let processed = 0;
+      while (queue.length > 0) {
+        const curr = queue.shift()!;
+        topoOrder.push(curr);
+        processed++;
+        const d = depth[curr];
+        (adj[curr] || []).forEach((next) => {
+          depth[next] = Math.max(depth[next] || 0, d + 1);
+          inDegree[next] -= 1;
+          if (inDegree[next] === 0) queue.push(next);
+        });
+      }
+
+      setSimOrder(topoOrder);
+
+      if (processed < objects.length) {
+        logs.push('[ERROR] Cyclic dependency detected in graph');
+        setError('Cyclic dependency detected in graph');
+      } else {
+        logs.push('[OK] DAG verified: no cycles detected');
+        setError(null);
+      }
+
+      const newNodes: Node[] = [];
+
+      if (currentLayout === 'tree') {
+        const depthRows: Record<number, AlpObject[]> = {};
         objects.forEach((obj) => {
-          inDegree[obj.id] = 0;
-          adj[obj.id] = [];
+          const d = depth[obj.id] ?? 0;
+          if (!depthRows[d]) depthRows[d] = [];
+          depthRows[d].push(obj);
         });
 
-        graph.edges.forEach((e) => {
-          edgeList.push({ from: e.source, to: e.target, type: e.type });
-          if (adj[e.source]) adj[e.source].push(e.target);
-          if (inDegree[e.target] !== undefined) inDegree[e.target] += 1;
-        });
-
-        const depth: Record<string, number> = {};
-        const queue: string[] = [];
-        const topoOrder: string[] = [];
-
-        Object.keys(inDegree).forEach((id) => {
-          if (inDegree[id] === 0) {
-            queue.push(id);
-            depth[id] = 0;
-          }
-        });
-
-        let processed = 0;
-        while (queue.length > 0) {
-          const curr = queue.shift()!;
-          topoOrder.push(curr);
-          processed++;
-          const d = depth[curr];
-          (adj[curr] || []).forEach((next) => {
-            depth[next] = Math.max(depth[next] || 0, d + 1);
-            inDegree[next] -= 1;
-            if (inDegree[next] === 0) queue.push(next);
-          });
-        }
-
-        setSimOrder(topoOrder);
-
-        if (processed < objects.length) {
-          logs.push('[ERROR] Cyclic dependency detected in graph');
-          setError('Cyclic dependency detected in graph');
-        } else {
-          logs.push('[OK] DAG verified: no cycles detected');
-          setError(null);
-        }
-
-        // Calculate positions based on chosen Layout
-        const newNodes: Node[] = [];
-
-        if (currentLayout === 'tree') {
-          const depthRows: Record<number, AlpObject[]> = {};
-          objects.forEach((obj) => {
-            const d = depth[obj.id] ?? 0;
-            if (!depthRows[d]) depthRows[d] = [];
-            depthRows[d].push(obj);
-          });
-
-          Object.entries(depthRows).forEach(([dStr, rowObjs]) => {
-            const row = parseInt(dStr, 10);
-            const rowWidth = rowObjs.length * 240;
-            const startX = 400 - rowWidth / 2;
-            rowObjs.forEach((obj, idx) => {
-              newNodes.push({
-                id: obj.id,
-                type: 'alpNode',
-                position: { x: startX + idx * 240, y: 50 + row * 160 },
-                data: {
-                  id: obj.id,
-                  type: obj._type,
-                  status: obj.status,
-                   owner: obj.owner || null,
-                  rawObject: obj,
-                },
-              });
-            });
-          });
-        } else if (currentLayout === 'grid') {
-          const cols = Math.ceil(Math.sqrt(objects.length));
-          objects.forEach((obj, idx) => {
-            const r = Math.floor(idx / cols);
-            const c = idx % cols;
+        Object.entries(depthRows).forEach(([dStr, rowObjs]) => {
+          const row = parseInt(dStr, 10);
+          const rowWidth = rowObjs.length * 240;
+          const startX = 400 - rowWidth / 2;
+          rowObjs.forEach((obj, idx) => {
             newNodes.push({
               id: obj.id,
               type: 'alpNode',
-              position: { x: 50 + c * 250, y: 50 + r * 140 },
+              position: { x: startX + idx * 240, y: 50 + row * 160 },
               data: {
                 id: obj.id,
                 type: obj._type,
                 status: obj.status,
-                   owner: obj.owner || null,
+                 owner: obj.owner || null,
                 rawObject: obj,
               },
             });
           });
-        } else {
-          // Default: Topological DAG columns
-          const columns: Record<number, AlpObject[]> = {};
-          objects.forEach((obj) => {
-            const d = depth[obj.id] ?? 0;
-            if (!columns[d]) columns[d] = [];
-            columns[d].push(obj);
-          });
-
-          const colWidth = 270;
-          const rowHeight = 130;
-
-          Object.entries(columns).forEach(([colStr, colObjects]) => {
-            const c = parseInt(colStr, 10);
-            colObjects.forEach((obj, r) => {
-              newNodes.push({
-                id: obj.id,
-                type: 'alpNode',
-                position: { x: 50 + c * colWidth, y: 50 + r * rowHeight },
-                data: {
-                  id: obj.id,
-                  type: obj._type,
-                  status: obj.status,
-                   owner: obj.owner || null,
-                  rawObject: obj,
-                },
-              });
-            });
-          });
-        }
-
-        const newEdges: Edge[] = edgeList.map((e, idx) => {
-          let strokeColor = '#00f0ff';
-          if (e.type === 'feature') strokeColor = '#9d4edd';
-          if (e.type === 'owner') strokeColor = '#3b82f6';
-          if (e.type === 'requires') strokeColor = '#f59e0b';
-          if (e.type === 'policy') strokeColor = '#10b981';
-          if (e.type === 'contract') strokeColor = '#f59e0b';
-          if (e.type === 'vault') strokeColor = '#f43f5e';
-
-          return {
-            id: `edge-${idx}`,
-            source: e.from,
-            target: e.to,
-            label: e.type,
-            type: 'smoothstep',
-            animated: e.type === 'depends_on' || e.type === 'requires',
-            style: { stroke: strokeColor, strokeWidth: 2 },
-            labelStyle: { fill: '#8a94b0', fontSize: 10, fontFamily: 'JetBrains Mono' },
-            labelBgStyle: { fill: '#131625', fillOpacity: 0.8 },
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              color: strokeColor,
+        });
+      } else if (currentLayout === 'grid') {
+        const cols = Math.ceil(Math.sqrt(objects.length));
+        objects.forEach((obj, idx) => {
+          const r = Math.floor(idx / cols);
+          const c = idx % cols;
+          newNodes.push({
+            id: obj.id,
+            type: 'alpNode',
+            position: { x: 50 + c * 250, y: 50 + r * 140 },
+            data: {
+              id: obj.id,
+              type: obj._type,
+              status: obj.status,
+               owner: obj.owner || null,
+              rawObject: obj,
             },
-          };
+          });
+        });
+      } else if (currentLayout === 'force') {
+        const edgePairs = edgeList.map((e) => ({ source: e.from, target: e.to }));
+        const forceNodes = applyForceLayout(objects, edgePairs);
+        forceNodes.forEach((nd) => newNodes.push(nd));
+      } else if (currentLayout === 'circular') {
+        const circNodes = applyCircularLayout(objects);
+        circNodes.forEach((nd) => newNodes.push(nd));
+      } else {
+        const columns: Record<number, AlpObject[]> = {};
+        objects.forEach((obj) => {
+          const d = depth[obj.id] ?? 0;
+          if (!columns[d]) columns[d] = [];
+          columns[d].push(obj);
         });
 
-        setNodes(newNodes);
-        setEdges(newEdges);
-        setError(null);
-        setValidationLogs(logs);
-      } catch (err: any) {
-        const errMsg = err.message || 'Syntax Error in ALP specification';
-        setError(errMsg);
-        setValidationLogs((prev) => [`[ERROR] ${errMsg}`, ...prev]);
+        const colWidth = 270;
+        const rowHeight = 130;
+
+        Object.entries(columns).forEach(([colStr, colObjects]) => {
+          const c = parseInt(colStr, 10);
+          colObjects.forEach((obj, r) => {
+            newNodes.push({
+              id: obj.id,
+              type: 'alpNode',
+              position: { x: 50 + c * colWidth, y: 50 + r * rowHeight },
+              data: {
+                id: obj.id,
+                type: obj._type,
+                status: obj.status,
+                 owner: obj.owner || null,
+                rawObject: obj,
+              },
+            });
+          });
+        });
       }
-    });
-  }, [layoutMode, setNodes, setEdges]);
+
+      const newEdges: Edge[] = edgeList.map((e, idx) => {
+        let strokeColor = '#00f0ff';
+        if (e.type === 'feature') strokeColor = '#9d4edd';
+        if (e.type === 'owner') strokeColor = '#3b82f6';
+        if (e.type === 'requires') strokeColor = '#f59e0b';
+        if (e.type === 'policy') strokeColor = '#10b981';
+        if (e.type === 'contract') strokeColor = '#f59e0b';
+        if (e.type === 'vault') strokeColor = '#f43f5e';
+
+        return {
+          id: `edge-${idx}`,
+          source: e.from,
+          target: e.to,
+          label: e.type,
+          type: 'smoothstep',
+          animated: e.type === 'depends_on' || e.type === 'requires',
+          style: { stroke: strokeColor, strokeWidth: 2 },
+          labelStyle: { fill: '#8a94b0', fontSize: 10, fontFamily: 'JetBrains Mono' },
+          labelBgStyle: { fill: '#131625', fillOpacity: 0.8 },
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: strokeColor,
+          },
+        };
+      });
+
+      setNodes(newNodes);
+      setEdges(newEdges);
+      setError(null);
+      setValidationLogs(logs);
+    } catch (err: any) {
+      const errMsg = err.message || 'Syntax Error in ALP specification';
+      setError(errMsg);
+      setValidationLogs((prev) => [`[ERROR] ${errMsg}`, ...prev]);
+    }
+  }, [setNodes, setEdges]);
 
   useEffect(() => {
-    processCode(code, layoutMode);
+    if (processTimerRef.current) clearTimeout(processTimerRef.current);
+    processTimerRef.current = window.setTimeout(() => {
+      processCode(code, layoutMode);
+    }, 300);
+    return () => {
+      if (processTimerRef.current) clearTimeout(processTimerRef.current);
+    };
   }, [code, layoutMode, processCode]);
 
-  // Simulation Controls & Loop
-  const handleStartSim = () => {
+  const handleStartSim = useCallback(() => {
     const initialStates: Record<string, string> = {};
     parsedObjects.forEach((o) => {
       initialStates[o.id] = '[ ]';
@@ -358,7 +366,7 @@ export default function App() {
     setSimStepIndex(0);
     setIsSimulating(true);
     setSimLogs(['Swarm Simulation Started', `[TOPOLOGY] ${simOrder.join(' -> ')}`]);
-  };
+  }, [parsedObjects, simOrder]);
 
   const handleStepSim = useCallback(() => {
     if (simStepIndex >= simOrder.length) {
@@ -403,14 +411,14 @@ export default function App() {
     setSimLogs((prev) => [`Stepped back before ${targetId}`, ...prev]);
   }, [simStepIndex, simOrder]);
 
-  const handleInjectFailure = (nodeId: string) => {
+  const handleInjectFailure = useCallback((nodeId: string) => {
     setSimNodeStates((prev) => ({
       ...prev,
       [nodeId]: '[!] Injected Failure',
     }));
     setSimLogs((prev) => [`[INJECTED FAULT] Simulated failure on ${nodeId}`, ...prev]);
     showToast(`Injected failure on ${nodeId}`);
-  };
+  }, [showToast]);
 
   useEffect(() => {
     if (isSimulating) {
@@ -424,14 +432,14 @@ export default function App() {
     };
   }, [isSimulating, simStepIndex, simSpeed, handleStepSim]);
 
-  const handleResetSim = () => {
+  const handleResetSim = useCallback(() => {
     setIsSimulating(false);
     setSimStepIndex(0);
     setSimNodeStates({});
     setSimLogs([]);
-  };
+  }, []);
 
-  const handleApplySimToCode = () => {
+  const handleApplySimToCode = useCallback(() => {
     let updatedCode = code;
     Object.entries(simNodeStates).forEach(([id, st]) => {
       const regex = new RegExp(`(id:\\s*${id}[\\s\\S]*?status:\\s*)\\[[^\\]]*\\]`, 'g');
@@ -440,7 +448,7 @@ export default function App() {
     setCode(updatedCode);
     setSimLogs((prev) => ['Applied simulation status updates to ALP spec', ...prev]);
     showToast('Applied simulation status updates to spec');
-  };
+  }, [code, simNodeStates, showToast]);
 
   // Sync Node data with simulation states and critical path
   useEffect(() => {
@@ -467,16 +475,16 @@ export default function App() {
   }, [simNodeStates, simStepIndex, simOrder, selectedObj, showCriticalPath, topologyMetrics.criticalPath, setNodes]);
 
   // UI Handlers
-  const handleTemplateChange = (key: string) => {
+  const handleTemplateChange = useCallback((key: string) => {
     setTemplateKey(key);
     if (TEMPLATES[key]) {
       handleResetSim();
       setCode(TEMPLATES[key].code);
       showToast(`Loaded "${TEMPLATES[key].label}"`);
     }
-  };
+  }, [handleResetSim, showToast]);
 
-  const handleInsertSnippet = (snippetKey: string) => {
+  const handleInsertSnippet = useCallback((snippetKey: string) => {
     if (!SNIPPETS[snippetKey]) return;
 
     const editor = editorRef.current;
@@ -507,11 +515,10 @@ export default function App() {
       }
     }
 
-    // Fallback: append to end if editor not available
     const updated = code.trimEnd() + '\n' + SNIPPETS[snippetKey];
     setCode(updated);
     showToast(`Inserted @${snippetKey}`);
-  };
+  }, [code, showToast]);
 
   const handleFormatSpec = useCallback(() => {
     try {
@@ -524,13 +531,27 @@ export default function App() {
     }
   }, [code, showToast]);
 
-  const handleNodeClick = (_: React.MouseEvent, node: Node) => {
+  const handleUndo = useCallback(() => {
+    const editor = editorRef.current;
+    if (editor) {
+      editor.trigger('keyboard', 'undo');
+    }
+  }, []);
+
+  const handleRedo = useCallback(() => {
+    const editor = editorRef.current;
+    if (editor) {
+      editor.trigger('keyboard', 'redo');
+    }
+  }, []);
+
+  const handleNodeClick = useCallback((_: React.MouseEvent, node: Node) => {
     if (node.data && node.data.rawObject) {
       setSelectedObj(node.data.rawObject);
     }
-  };
+  }, [setSelectedObj]);
 
-  const handleSaveInspectorEdit = (fields: { id: string; status: string; description: string }) => {
+  const handleSaveInspectorEdit = useCallback((fields: { id: string; status: string; description: string }) => {
     if (!selectedObj) return;
     const oldId = selectedObj.id;
     const newId = fields.id || oldId;
@@ -538,16 +559,13 @@ export default function App() {
     const newDesc = fields.description;
 
     let updatedCode = code;
-    // Replace id
     if (newId !== oldId) {
       updatedCode = updatedCode.replace(new RegExp(`id:\\s*${oldId}\\b`, 'g'), `id: ${newId}`);
     }
-    // Replace status
     const statusRegex = new RegExp(`(id:\\s*${newId}[\\s\\S]*?status:\\s*)\\[[^\\]]*\\]`, 'g');
     if (statusRegex.test(updatedCode)) {
       updatedCode = updatedCode.replace(statusRegex, `$1${newStatus}`);
     }
-    // Replace description
     if (newDesc !== undefined) {
       const descRegex = new RegExp(`(id:\\s*${newId}[\\s\\S]*?description:\\s*)"[^"]*"`, 'g');
       if (descRegex.test(updatedCode)) {
@@ -557,9 +575,9 @@ export default function App() {
 
     setCode(updatedCode);
     showToast(`Updated @${selectedObj._type} "${newId}"`);
-  };
+  }, [selectedObj, code, showToast]);
 
-  const handleCreateBlock = (block: {
+  const handleCreateBlock = useCallback((block: {
     type: string;
     id: string;
     description: string;
@@ -588,9 +606,9 @@ export default function App() {
     setCode(updated);
     setShowAddModal(false);
     showToast(`Created @${block.type} "${block.id}"`);
-  };
+  }, [code, showToast]);
 
-  const handleSaveSnapshot = () => {
+  const handleSaveSnapshot = useCallback(() => {
     const name = snapshotNameInput.trim() || `Snapshot ${snapshots.length + 1}`;
     const newSnap: Snapshot = {
       id: `snap-${Date.now()}`,
@@ -601,17 +619,17 @@ export default function App() {
     setSnapshots([newSnap, ...snapshots]);
     setSnapshotNameInput('');
     showToast(`Saved snapshot "${name}"`);
-  };
+  }, [snapshotNameInput, snapshots, code, showToast]);
 
-  const handleLoadSnapshot = (snap: Snapshot) => {
+  const handleLoadSnapshot = useCallback((snap: Snapshot) => {
     setCode(snap.code);
     setShowSnapshotsModal(false);
     showToast(`Restored "${snap.name}"`);
-  };
+  }, [showToast]);
 
-  const handleDeleteSnapshot = (id: string) => {
+  const handleDeleteSnapshot = useCallback((id: string) => {
     setSnapshots(snapshots.filter((s) => s.id !== id));
-  };
+  }, [snapshots]);
 
   const handleExportMermaid = useCallback(() => {
     const lines: string[] = ['graph TD'];
@@ -665,6 +683,29 @@ export default function App() {
     }
   }, [code, showToast]);
 
+  const handleExportYAML = useCallback(() => {
+    try {
+      const parser = new AlpParser();
+      const objects = parser.parseAndValidate(code);
+      const yamlStr = yaml.dump(objects, {
+        indent: 2,
+        lineWidth: -1,
+        noRefs: true,
+        styles: { null: 'empty' },
+      });
+      const blob = new Blob([yamlStr], { type: 'text/yaml' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'spec.yaml';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Downloaded spec.yaml');
+    } catch {
+      // ignore
+    }
+  }, [code, showToast]);
+
   const handleExportPNG = useCallback(async () => {
     try {
       const element = document.querySelector('.graph-container .react-flow') as HTMLElement | null;
@@ -696,6 +737,9 @@ export default function App() {
       } else if (ctrl && e.key === 'e') {
         e.preventDefault();
         handleExportJSON();
+      } else if (ctrl && e.key === 'y') {
+        e.preventDefault();
+        handleExportYAML();
       } else if (ctrl && e.key === 'p') {
         e.preventDefault();
         handleExportPNG();
@@ -705,6 +749,12 @@ export default function App() {
       } else if (ctrl && e.key === 'i') {
         e.preventDefault();
         handleFormatSpec();
+      } else if (ctrl && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        handleUndo();
+      } else if (ctrl && e.key === 'z' && e.shiftKey) {
+        e.preventDefault();
+        handleRedo();
       } else if (ctrl && e.key === 'n') {
         e.preventDefault();
         setShowAddModal(true);
@@ -732,15 +782,17 @@ export default function App() {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [handleCopyBundle, handleExportJSON, handleExportPNG, handleExportMermaid, handleFormatSpec]);
+  }, [handleCopyBundle, handleExportJSON, handleExportYAML, handleExportPNG, handleExportMermaid, handleFormatSpec, handleUndo, handleRedo]);
 
-  // Stats calculation
-  const totalTasks = nodes.filter((n) => n.data.type === 'task').length;
-  const doneTasks = nodes.filter((n) => (n.data.simStatus || n.data.status || '').includes('[x]')).length;
-  const inProgressTasks = nodes.filter((n) => (n.data.simStatus || n.data.status || '').includes('[~]')).length;
-  const blockedTasks = nodes.filter((n) => (n.data.simStatus || n.data.status || '').includes('[!]')).length;
-  const reviewTasks = nodes.filter((n) => (n.data.simStatus || n.data.status || '').includes('[?]')).length;
-  const completionRate = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 100;
+  const taskStats = useMemo(() => {
+    const total = nodes.filter((n) => n.data.type === 'task').length;
+    const done = nodes.filter((n) => (n.data.simStatus || n.data.status || '').includes('[x]')).length;
+    const inProgress = nodes.filter((n) => (n.data.simStatus || n.data.status || '').includes('[~]')).length;
+    const blocked = nodes.filter((n) => (n.data.simStatus || n.data.status || '').includes('[!]')).length;
+    const review = nodes.filter((n) => (n.data.simStatus || n.data.status || '').includes('[?]')).length;
+    const completion = total > 0 ? Math.round((done / total) * 100) : 100;
+    return { total, done, inProgress, blocked, review, completion };
+  }, [nodes]);
 
   const filteredObjects = useMemo(() => {
     return parsedObjects.filter((obj) => {
@@ -763,10 +815,10 @@ export default function App() {
     return Array.from(types).sort();
   }, [parsedObjects]);
 
-  const handleFocusNode = (id: string) => {
+  const handleFocusNode = useCallback((id: string) => {
     const obj = parsedObjects.find((o) => o.id === id) || null;
     setSelectedObj(obj);
-  };
+  }, [parsedObjects, setSelectedObj]);
 
   return (
     <div className="playground">
@@ -813,6 +865,20 @@ export default function App() {
               title="Grid Matrix"
             >
               <FiGrid size={12} style={{ marginRight: 4 }} /> Grid
+            </button>
+            <button
+              className={`layout-btn ${layoutMode === 'force' ? 'active' : ''}`}
+              onClick={() => setLayoutMode('force')}
+              title="Force-Directed Physics"
+            >
+              <FiZap size={12} style={{ marginRight: 4 }} /> Force
+            </button>
+            <button
+              className={`layout-btn ${layoutMode === 'circular' ? 'active' : ''}`}
+              onClick={() => setLayoutMode('circular')}
+              title="Circular Layout"
+            >
+              <FiCircle size={12} style={{ marginRight: 4 }} /> Circular
             </button>
           </div>
 
@@ -868,6 +934,14 @@ export default function App() {
             <FiCode size={13} /> Format <span className="kbd-hint">Ctrl+I</span>
           </button>
 
+          <button className="action-btn" onClick={handleUndo} title="Undo (Ctrl+Z)">
+            Undo <span className="kbd-hint">Ctrl+Z</span>
+          </button>
+
+          <button className="action-btn" onClick={handleRedo} title="Redo (Ctrl+Shift+Z)">
+            Redo <span className="kbd-hint">Ctrl+Shift+Z</span>
+          </button>
+
           <button className="action-btn" onClick={() => setShowAddModal(true)} title="Create new ALP block (Ctrl+N)">
             <FiPlus size={13} /> Add <span className="kbd-hint">Ctrl+N</span>
           </button>
@@ -890,6 +964,10 @@ export default function App() {
 
           <button className="action-btn" onClick={handleExportJSON} title="Export spec as JSON (Ctrl+E)">
             <FiDownload size={13} /> JSON <span className="kbd-hint">Ctrl+E</span>
+          </button>
+
+          <button className="action-btn" onClick={handleExportYAML} title="Export spec as YAML (Ctrl+Y)">
+            <FiFileText size={13} /> YAML <span className="kbd-hint">Ctrl+Y</span>
           </button>
 
           <button className="action-btn" onClick={handleExportPNG} title="Export canvas as PNG (Ctrl+P)">
@@ -916,6 +994,7 @@ export default function App() {
             className="theme-toggle"
             onClick={toggleTheme}
             title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
           >
             {theme === 'dark' ? <FiSun size={15} /> : <FiMoon size={15} />}
           </button>
@@ -930,7 +1009,7 @@ export default function App() {
 
           <div className="telemetry-badge" title="Live task completion metric">
             <div className="telemetry-ring" />
-            <span>{completionRate}% Complete</span>
+             <span>{taskStats.completion}% Complete</span>
           </div>
 
           <div className={`status-indicator ${error ? 'invalid' : 'valid'}`}>
@@ -1009,7 +1088,7 @@ export default function App() {
         <div className={`sidebar ${sidebarCollapsed ? 'collapsed' : ''}`} id="object-sidebar">
           <div className="sidebar-header">
             <h3>Explorer</h3>
-            <button className="sidebar-toggle" onClick={() => setSidebarCollapsed((prev) => !prev)}>
+            <button className="sidebar-toggle" onClick={() => setSidebarCollapsed((prev) => !prev)} aria-label="Toggle sidebar">
               {sidebarCollapsed ? <FiChevronRight size={14} /> : <FiChevronLeft size={14} />}
             </button>
           </div>
@@ -1122,49 +1201,62 @@ export default function App() {
 
             <SnippetBar onInsert={handleInsertSnippet} />
 
-            <Editor
-              height="100%"
-              defaultLanguage="yaml"
-              theme={theme === 'dark' ? 'vs-dark' : 'light'}
-              value={code}
-              onChange={(val) => processCode(val || '', layoutMode)}
-              beforeMount={(monaco) => { monacoRef.current = monaco; }}
-              onMount={(editor) => { editorRef.current = editor; }}
-              options={{
-                minimap: { enabled: false },
-                fontSize: 13,
-                fontFamily: 'JetBrains Mono',
-                scrollBeyondLastLine: false,
-                padding: { top: 12 },
-                lineNumbersMinChars: 3,
-              }}
-            />
+            <ErrorBoundary
+              fallbackTitle="Editor failed to load"
+              fallbackMessage="The code editor encountered an unexpected error. You can try reloading the app."
+            >
+              <Editor
+                height="100%"
+                language="alp"
+                theme={theme === 'dark' ? 'alp-dark' : 'light'}
+                value={code}
+                onChange={(val) => setCode(val || '')}
+                beforeMount={(monaco) => { monacoRef.current = monaco; }}
+                onMount={(editor) => { editorRef.current = editor; }}
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: 13,
+                  fontFamily: 'JetBrains Mono',
+                  scrollBeyondLastLine: false,
+                  padding: { top: 12 },
+                  lineNumbersMinChars: 3,
+                  lineNumbers: 'on',
+                  wordWrap: 'on',
+                  automaticLayout: true,
+                }}
+              />
+            </ErrorBoundary>
           </div>
 
           {/* Right: DAG Visualizer */}
-          <div className="graph-container">
-            <ReactFlow
-              nodes={nodes}
-              edges={edges}
-              nodeTypes={nodeTypes}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onNodeClick={handleNodeClick}
-              onInit={setReactFlowInstance}
-              fitView
+          <div className="graph-container" role="application" aria-label="ALP specification graph visualization">
+            <ErrorBoundary
+              fallbackTitle="Graph rendering failed"
+              fallbackMessage="The graph visualizer encountered an unexpected error. Try reloading or simplifying your spec."
             >
-              <Background color={theme === 'dark' ? '#1e2338' : '#cbd5e1'} gap={20} size={1} />
-              <Controls />
-              {minimapEnabled && (
-                <MiniMap
-                  nodeStrokeColor={theme === 'dark' ? '#00f0ff' : '#0891b2'}
-                  nodeColor={theme === 'dark' ? '#1a1f35' : '#e2e8f0'}
-                  nodeBorderRadius={4}
-                  maskColor={theme === 'dark' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)'}
-                  style={{ background: theme === 'dark' ? '#0d1017' : '#f8fafc' }}
-                />
-              )}
-            </ReactFlow>
+              <ReactFlow
+                nodes={nodes}
+                edges={edges}
+                nodeTypes={nodeTypes}
+                onNodesChange={onNodesChange}
+                onEdgesChange={onEdgesChange}
+                onNodeClick={handleNodeClick}
+                onInit={setReactFlowInstance}
+                fitView
+              >
+                <Background color={theme === 'dark' ? '#1e2338' : '#cbd5e1'} gap={20} size={1} />
+                <Controls />
+                {minimapEnabled && (
+                  <MiniMap
+                    nodeStrokeColor={theme === 'dark' ? '#00f0ff' : '#0891b2'}
+                    nodeColor={theme === 'dark' ? '#1a1f35' : '#e2e8f0'}
+                    nodeBorderRadius={4}
+                    maskColor={theme === 'dark' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)'}
+                    style={{ background: theme === 'dark' ? '#0d1017' : '#f8fafc' }}
+                  />
+                )}
+              </ReactFlow>
+            </ErrorBoundary>
 
             {selectedObj && (
               <NodeInspector
@@ -1182,13 +1274,24 @@ export default function App() {
             {error && <div className="error-toast">{error}</div>}
           </div>
         </div>
+        {/* Mobile sidebar backdrop */}
+        <div className="sidebar-backdrop" onClick={() => setSidebarCollapsed(true)} />
+        {/* Mobile sidebar floating toggle */}
+        <button
+          className="mobile-sidebar-toggle"
+          onClick={() => setSidebarCollapsed(false)}
+          aria-label="Open sidebar"
+          title="Open explorer sidebar"
+        >
+          <FiChevronRight size={18} />
+        </button>
       </div>
 
       {/* Validation Log Panel */}
       <div className={`log-panel ${logPanelCollapsed ? 'collapsed' : ''}`}>
         <div className="log-panel-header">
           <span className="log-panel-title"><FiTerminal style={{ marginRight: 6 }} /> Validation &amp; Simulation Logs</span>
-          <button className="sidebar-toggle" onClick={() => setLogPanelCollapsed((prev) => !prev)}>
+          <button className="sidebar-toggle" onClick={() => setLogPanelCollapsed((prev) => !prev)} aria-label="Toggle log panel">
             {logPanelCollapsed ? <FiChevronUp size={14} /> : <FiChevronDown size={14} />}
           </button>
         </div>
@@ -1217,26 +1320,26 @@ export default function App() {
 
       {/* Summary Footer */}
       <footer className="summary-bar">
-        <div className="summary-item">
+         <div className="summary-item">
           Total: <strong>{nodes.length}</strong>
         </div>
         <div className="summary-item">
           By Type: <strong>{uniqueTypes.length}</strong>
         </div>
         <div className="summary-item">
-          Tasks: <strong>{totalTasks}</strong>
+          Tasks: <strong>{taskStats.total}</strong>
         </div>
         <div className="summary-item done">
-          Done: <strong>{doneTasks}</strong>
+          Done: <strong>{taskStats.done}</strong>
         </div>
         <div className="summary-item in-progress">
-          In Progress: <strong>{inProgressTasks}</strong>
+          In Progress: <strong>{taskStats.inProgress}</strong>
         </div>
         <div className="summary-item blocked">
-          Blocked: <strong>{blockedTasks}</strong>
+          Blocked: <strong>{taskStats.blocked}</strong>
         </div>
         <div className="summary-item review">
-          Review: <strong>{reviewTasks}</strong>
+          Review: <strong>{taskStats.review}</strong>
         </div>
         <div className="summary-item edges-count">
           Edges: <strong>{edges.length}</strong>
@@ -1292,7 +1395,7 @@ export default function App() {
 
       {/* Toast Notification Banner */}
       {toastMessage && (
-        <div className="toast-banner">
+        <div className="toast-banner" role="status" aria-live="polite">
           <FiCheckCircle size={15} color="var(--accent-emerald)" />
           <span>{toastMessage}</span>
         </div>

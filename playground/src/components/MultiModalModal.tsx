@@ -33,6 +33,8 @@ export function MultiModalModal({
   const [activeTab, setActiveTab] = useState<'overview' | 'actions' | 'models' | 'stream' | 'json'>('overview');
   const [copied, setCopied] = useState<string | null>(null);
 
+  const [selectedVisionModelId, setSelectedVisionModelId] = useState<string>('');
+
   // Action test state
   const [selectedActionSpaceId, setSelectedActionSpaceId] = useState<string>('');
   const [selectedActionName, setSelectedActionName] = useState<string>('');
@@ -42,6 +44,7 @@ export function MultiModalModal({
     allowed: boolean;
     reason?: string;
     timestamp?: string;
+    blockedActions?: string[];
   } | null>(null);
 
   // Simulation stream constants (static simulation display)
@@ -62,7 +65,11 @@ export function MultiModalModal({
     return parsedObjects.filter((o) => o._type === 'vision_model') as unknown as AlpVisionModel[];
   }, [parsedObjects]);
 
-  const primaryVisionModel = visionModels[0] || undefined;
+  const selectedVisionModel = useMemo(() => {
+    return visionModels.find((vm) => vm.id === selectedVisionModelId) || visionModels[0] || undefined;
+  }, [visionModels, selectedVisionModelId]);
+
+  const primaryVisionModel = selectedVisionModel;
 
   const totalTokens = useMemo(() => {
     let sum = 0;
@@ -91,27 +98,16 @@ export function MultiModalModal({
     return activeActionSpace.actions.find((a) => a.name === selectedActionName) || activeActionSpace.actions[0];
   }, [activeActionSpace, selectedActionName]);
 
-  const handleExecuteActionTest = () => {
+  const handleExecuteActionTest = useCallback(() => {
     if (!activeActionSpace || !activeAction) return;
 
-    // Parameter requirement check
-    if (activeAction.parameters) {
-      for (const p of activeAction.parameters) {
-        if (p.required && !paramInputs[p.name]) {
-          setActionTestResult({
-            allowed: false,
-            reason: `Required parameter '${p.name}' is missing.`,
-            timestamp: new Date().toLocaleTimeString(),
-          });
-          return;
-        }
-      }
-    }
+    const safetyResult = engine.verifySafetyGuards(activeActionSpace, activeActionSpace.safety_guards || []);
 
-    if (activeAction.safety_level === 'critical' && activeAction.requires_confirmation && !confirmed) {
+    if (!safetyResult.allowed) {
       setActionTestResult({
         allowed: false,
-        reason: `Action '${activeAction.name}' is marked CRITICAL and requires user confirmation.`,
+        reason: `Blocked by safety guards: ${safetyResult.blockedActions.join(', ')}`,
+        blockedActions: safetyResult.blockedActions,
         timestamp: new Date().toLocaleTimeString(),
       });
       return;
@@ -119,15 +115,15 @@ export function MultiModalModal({
 
     setActionTestResult({
       allowed: true,
-      reason: `Action '${activeAction.name}' executed safely within action space '${activeActionSpace.id}'.`,
+      reason: `Action '${activeAction.name}' passed safety guards in action space '${activeActionSpace.id}'.`,
       timestamp: new Date().toLocaleTimeString(),
     });
-  };
+  }, [activeActionSpace, activeAction, engine]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="multimodal-title">
       <div
         className="modal-card"
         style={{ maxWidth: 880, width: '92vw', height: '85vh', display: 'flex', flexDirection: 'column' }}
@@ -138,7 +134,7 @@ export function MultiModalModal({
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <span style={{ fontSize: 20 }}>👁️</span>
             <div>
-              <h3 style={{ margin: 0, fontSize: 16, color: '#f1f5f9', fontWeight: 600 }}>
+              <h3 id="multimodal-title" style={{ margin: 0, fontSize: 16, color: '#f1f5f9', fontWeight: 600 }}>
                 Multi-Modal Protocol & VLA Engine
               </h3>
               <span style={{ fontSize: 11, color: '#94a3b8' }}>
@@ -146,7 +142,7 @@ export function MultiModalModal({
               </span>
             </div>
           </div>
-          <button className="modal-close" onClick={onClose}>
+          <button className="modal-close" onClick={onClose} aria-label="Close">
             <FiX size={16} />
           </button>
         </div>
@@ -165,6 +161,7 @@ export function MultiModalModal({
             className={`action-btn ${activeTab === 'overview' ? 'active' : ''}`}
             onClick={() => setActiveTab('overview')}
             style={{ fontSize: 12, padding: '5px 12px' }}
+            autoFocus
           >
             <FiEye size={13} /> Specs ({mmObjects.length})
           </button>
@@ -203,6 +200,43 @@ export function MultiModalModal({
           {/* Overview Tab */}
           {activeTab === 'overview' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* Model Selector for Budget Calculation */}
+              {visionModels.length > 1 && (
+                <div
+                  style={{
+                    background: '#131b2e',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: 8,
+                    padding: '10px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 10,
+                  }}
+                >
+                  <span style={{ fontSize: 12, fontWeight: 600, color: '#c084fc', whiteSpace: 'nowrap' }}>
+                    Vision Model for Budget Calculation:
+                  </span>
+                  <select
+                    value={selectedVisionModelId}
+                    onChange={(e) => setSelectedVisionModelId(e.target.value)}
+                    style={{
+                      flex: 1,
+                      padding: '4px 8px',
+                      borderRadius: 4,
+                      border: '1px solid rgba(255,255,255,0.1)',
+                      background: '#0b0f19',
+                      color: '#f1f5f9',
+                      fontSize: 11,
+                      fontFamily: 'JetBrains Mono',
+                    }}
+                  >
+                    {visionModels.map((vm) => (
+                      <option key={vm.id} value={vm.id}>{vm.id} ({vm.backbone})</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               {/* Context Budget Bar */}
               <div
                 style={{
@@ -353,9 +387,201 @@ export function MultiModalModal({
                             ))}
                           </div>
                         )}
+
+                        {/* Validation details */}
+                        {(validation.errors.length > 0 || validation.warnings.length > 0) && (
+                          <div style={{ marginTop: 10, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                            {validation.errors.length > 0 && (
+                              <div
+                                style={{
+                                  padding: 8,
+                                  borderRadius: 4,
+                                  border: '1px solid rgba(239,68,68,0.4)',
+                                  background: 'rgba(239,68,68,0.06)',
+                                  fontSize: 10,
+                                }}
+                              >
+                                <span style={{ color: '#f87171', fontWeight: 600 }}>Errors</span>
+                                <ul style={{ margin: '4px 0 0 14px', padding: 0, color: '#fca5a5' }}>
+                                  {validation.errors.map((e, i) => (
+                                    <li key={i}>{e}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            {validation.warnings.length > 0 && (
+                              <div
+                                style={{
+                                  padding: 8,
+                                  borderRadius: 4,
+                                  border: '1px solid rgba(245,158,11,0.4)',
+                                  background: 'rgba(245,158,11,0.06)',
+                                  fontSize: 10,
+                                }}
+                              >
+                                <span style={{ color: '#fbbf24', fontWeight: 600 }}>Warnings</span>
+                                <ul style={{ margin: '4px 0 0 14px', padding: 0, color: '#fde68a' }}>
+                                  {validation.warnings.map((w, i) => (
+                                    <li key={i}>{w}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        <div style={{ marginTop: 8 }}>
+                          <span
+                            style={{
+                              fontSize: 10,
+                              padding: '1px 8px',
+                              borderRadius: 12,
+                              background: 'rgba(148,163,184,0.1)',
+                              color: '#94a3b8',
+                            }}
+                          >
+                            Safety Score: {validation.safetyScore}
+                          </span>
+                        </div>
                       </div>
                     );
                   })}
+                </div>
+              )}
+
+              {/* Action Spaces Validation */}
+              {actionSpaces.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#38bdf8' }}>
+                    Action Spaces Validation
+                  </span>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 10 }}>
+                    {actionSpaces.map((as) => {
+                      const asValidation = engine.validateActionSpace(as);
+                      return (
+                        <div
+                          key={as.id}
+                          style={{
+                            background: '#131b2e',
+                            border: '1px solid rgba(255,255,255,0.08)',
+                            borderRadius: 8,
+                            padding: 12,
+                          }}
+                        >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: 13, fontWeight: 600, color: '#f1f5f9' }}>{as.id}</span>
+                            <span
+                              style={{
+                                fontSize: 10,
+                                padding: '2px 8px',
+                                borderRadius: 12,
+                                background: asValidation.valid ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                                color: asValidation.valid ? '#10b981' : '#ef4444',
+                              }}
+                            >
+                              {asValidation.valid ? 'VALID' : 'ERRORS'}
+                            </span>
+                          </div>
+                          {asValidation.errors.length > 0 && (
+                            <div
+                              style={{
+                                marginTop: 8,
+                                padding: 8,
+                                borderRadius: 4,
+                                border: '1px solid rgba(239,68,68,0.4)',
+                                background: 'rgba(239,68,68,0.06)',
+                                fontSize: 10,
+                              }}
+                            >
+                              <ul style={{ margin: 0, padding: '0 0 0 14px', color: '#fca5a5' }}>
+                                {asValidation.errors.map((e, i) => (
+                                  <li key={i}>{e}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          {asValidation.warnings.length > 0 && (
+                            <div
+                              style={{
+                                marginTop: 6,
+                                padding: 8,
+                                borderRadius: 4,
+                                border: '1px solid rgba(245,158,11,0.4)',
+                                background: 'rgba(245,158,11,0.06)',
+                                fontSize: 10,
+                              }}
+                            >
+                              <ul style={{ margin: 0, padding: '0 0 0 14px', color: '#fde68a' }}>
+                                {asValidation.warnings.map((w, i) => (
+                                  <li key={i}>{w}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          <div style={{ marginTop: 6, fontSize: 10, color: '#94a3b8' }}>
+                            Critical Actions: <strong>{asValidation.criticalActionCount}</strong>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Vision Models Validation */}
+              {visionModels.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#c084fc' }}>
+                    Vision Models Validation
+                  </span>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 10 }}>
+                    {visionModels.map((vm) => {
+                      const vmValidation = engine.validateVisionModel(vm);
+                      return (
+                        <div
+                          key={vm.id}
+                          style={{
+                            background: '#131b2e',
+                            border: '1px solid rgba(255,255,255,0.08)',
+                            borderRadius: 8,
+                            padding: 12,
+                          }}
+                        >
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: 13, fontWeight: 600, color: '#f1f5f9' }}>{vm.id}</span>
+                            <span
+                              style={{
+                                fontSize: 10,
+                                padding: '2px 8px',
+                                borderRadius: 12,
+                                background: vmValidation.valid ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                                color: vmValidation.valid ? '#10b981' : '#ef4444',
+                              }}
+                            >
+                              {vmValidation.valid ? 'VALID' : 'ERRORS'}
+                            </span>
+                          </div>
+                          {vmValidation.errors.length > 0 && (
+                            <div
+                              style={{
+                                marginTop: 8,
+                                padding: 8,
+                                borderRadius: 4,
+                                border: '1px solid rgba(239,68,68,0.4)',
+                                background: 'rgba(239,68,68,0.06)',
+                                fontSize: 10,
+                              }}
+                            >
+                              <ul style={{ margin: 0, padding: '0 0 0 14px', color: '#fca5a5' }}>
+                                {vmValidation.errors.map((e, i) => (
+                                  <li key={i}>{e}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
             </div>
@@ -561,6 +787,13 @@ export function MultiModalModal({
                               {actionTestResult.allowed ? '✓ EXECUTION ALLOWED' : '✗ EXECUTION BLOCKED'}
                             </div>
                             <div style={{ color: '#cbd5e1', marginTop: 4 }}>{actionTestResult.reason}</div>
+                            {actionTestResult.blockedActions && actionTestResult.blockedActions.length > 0 && (
+                              <ul style={{ margin: '6px 0 0 16px', padding: 0, color: '#f87171', fontSize: 10 }}>
+                                {actionTestResult.blockedActions.map((ba, i) => (
+                                  <li key={i}>{ba}</li>
+                                ))}
+                              </ul>
+                            )}
                             <div style={{ color: '#64748b', fontSize: 10, marginTop: 4 }}>
                               Checked at: {actionTestResult.timestamp}
                             </div>
@@ -633,7 +866,7 @@ export function MultiModalModal({
           {/* Stream Feed Simulator Tab */}
           {activeTab === 'stream' && (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-              {/* Simulated Camera Feed */}
+              {/* Dynamic Camera Feed */}
               <div
                 style={{
                   background: '#131b2e',
@@ -646,7 +879,9 @@ export function MultiModalModal({
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: 13, fontWeight: 600, color: '#38bdf8' }}>📷 Live Camera Stream Preview</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: '#38bdf8' }}>
+                    📷 {mmObjects.length > 0 ? `${mmObjects[0].id} Stream` : 'Live Camera Stream Preview'}
+                  </span>
                   <span style={{ fontSize: 10, color: isSimulatingStream ? '#10b981' : '#64748b' }}>
                     {isSimulatingStream ? `● LIVE (${simFps} FPS)` : 'PAUSED'}
                   </span>
@@ -675,8 +910,39 @@ export function MultiModalModal({
                       color: '#00f0ff',
                     }}
                   >
-                    1920x1080 • RGB • H.264
+                    {mmObjects.length > 0
+                      ? `${mmObjects[0].resolution || 'No resolution'}${mmObjects[0].fps ? ` • ${mmObjects[0].fps} FPS` : ''} • ${mmObjects[0].modalities?.join(', ') || 'RGB'}`
+                      : '1920x1080 • RGB • H.264'}
                   </div>
+                  {mmObjects.length > 0 && mmObjects[0].modalities && mmObjects[0].modalities.length > 0 && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 10,
+                        right: 10,
+                        display: 'flex',
+                        gap: 4,
+                        flexWrap: 'wrap',
+                        justifyContent: 'flex-end',
+                      }}
+                    >
+                      {mmObjects[0].modalities.map((mod) => (
+                        <span
+                          key={mod}
+                          style={{
+                            padding: '1px 6px',
+                            borderRadius: 4,
+                            background: 'rgba(56, 189, 248, 0.15)',
+                            color: '#38bdf8',
+                            fontSize: 9,
+                            fontFamily: 'JetBrains Mono',
+                          }}
+                        >
+                          {mod}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   <div
                     style={{
                       width: 80,
@@ -687,12 +953,39 @@ export function MultiModalModal({
                     }}
                   />
                   <span style={{ fontSize: 11, color: '#94a3b8', marginTop: 12 }}>
-                    VLA Spatial Visual Grid Active
+                    {mmObjects.length > 0 ? `${mmObjects[0].id} Active` : 'VLA Spatial Visual Grid Active'}
                   </span>
                 </div>
+                {mmObjects.length > 0 && mmObjects[0].assets && mmObjects[0].assets.length > 0 && (
+                  <div
+                    style={{
+                      padding: 8,
+                      background: 'rgba(0,0,0,0.3)',
+                      borderRadius: 6,
+                      fontSize: 10,
+                      fontFamily: 'JetBrains Mono',
+                    }}
+                  >
+                    <span style={{ color: '#64748b', fontSize: 9, textTransform: 'uppercase' }}>Assets</span>
+                    {mmObjects[0].assets.map((asset) => (
+                      <div
+                        key={asset.id}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          marginTop: 3,
+                          color: '#cbd5e1',
+                        }}
+                      >
+                        <span>{asset.id}</span>
+                        <span style={{ color: '#00f0ff' }}>{asset.type} → {asset.uri}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
-              {/* Simulated Sensory Telemetry */}
+              {/* Dynamic Telemetry */}
               <div
                 style={{
                   background: '#131b2e',
@@ -704,7 +997,9 @@ export function MultiModalModal({
                   gap: 10,
                 }}
               >
-                <span style={{ fontSize: 13, fontWeight: 600, color: '#c084fc' }}>🎙️ Audio & Sensor Telemetry</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: '#c084fc' }}>
+                  🎙️ {mmObjects.length > 0 ? `${mmObjects[0].id} Telemetry` : 'Audio & Sensor Telemetry'}
+                </span>
                 <div
                   style={{
                     height: 200,
@@ -718,11 +1013,37 @@ export function MultiModalModal({
                     overflowY: 'auto',
                   }}
                 >
-                  <div>[AUDIO] Sample Rate: 44.1kHz • Channels: 2 • SNR: 48dB</div>
-                  <div>[SENSOR] IMU Gyro: (0.02, -0.01, 0.98) G</div>
-                  <div>[VLA] Action Inference Latency: 32ms</div>
-                  <div>[STATUS] Gating: Enforced • Token Budget: OK</div>
-                  <div>[HEARTBEAT] Stream synced at {new Date().toLocaleTimeString()}</div>
+                  {mmObjects.length > 0 ? (
+                    <>
+                      {mmObjects[0].modalities?.map((mod) => {
+                        const modUpper = mod.toUpperCase();
+                        let line = '';
+                        if (modUpper === 'VISION' || modUpper === 'IMAGE') {
+                          line = `[${modUpper}] Resolution: ${mmObjects[0].resolution || 'N/A'} • FPS: ${mmObjects[0].fps || '—'}`;
+                        } else if (modUpper === 'AUDIO') {
+                           line = `[${modUpper}] Sample Rate: ${(mmObjects[0].sample_rate_hz || 44.1)}kHz • Channels: 2`;
+                        } else {
+                          line = `[${modUpper}] Active`;
+                        }
+                        return <div key={mod}>{line}</div>;
+                      })}
+                      {mmObjects[0].assets && mmObjects[0].assets.map((asset) => (
+                        <div key={asset.id}>
+                          [ASSET] {asset.id} ({asset.type}) → {asset.uri}
+                        </div>
+                      ))}
+                      <div>[STATUS] Gating: Enforced • Token Budget: OK</div>
+                      <div>[HEARTBEAT] Stream synced at {new Date().toLocaleTimeString()}</div>
+                    </>
+                  ) : (
+                    <>
+                      <div>[AUDIO] Sample Rate: 44.1kHz • Channels: 2 • SNR: 48dB</div>
+                      <div>[SENSOR] IMU Gyro: (0.02, -0.01, 0.98) G</div>
+                      <div>[VLA] Action Inference Latency: 32ms</div>
+                      <div>[STATUS] Gating: Enforced • Token Budget: OK</div>
+                      <div>[HEARTBEAT] Stream synced at {new Date().toLocaleTimeString()}</div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
