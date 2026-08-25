@@ -192,7 +192,7 @@ export function initAlpLanguage(): void {
     folding: {
       markers: {
         start: /^(\s*)@\w+(\s.*)?$/m,
-        end: /^\s*$/m,
+        end: /^(\s*)(@\w+|\s*$)/m,
       },
     },
   });
