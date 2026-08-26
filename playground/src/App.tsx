@@ -22,6 +22,7 @@ import { SnapshotsModal, type Snapshot } from './components/SnapshotsModal.js';
 import { TopologyHud } from './components/TopologyHud.js';
 import { KbdHelp } from './components/KbdHelp.js';
 import { NodeInspector } from './components/NodeInspector.js';
+import { AlpBreadcrumbs } from './components/AlpBreadcrumbs.js';
 import { AlpCustomNode, renderStatusBadge } from './components/AlpCustomNode.js';
 import { ErrorBoundary } from './components/ErrorBoundary.js';
 import { useTopologyMetrics } from './hooks/useTopologyMetrics.js';
@@ -88,6 +89,7 @@ export default function App() {
   const [reactFlowInstance, setReactFlowInstance] = useState<ReactFlowInstance | null>(null);
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('dag');
   const [parsedObjects, setParsedObjects] = useState<AlpObject[]>([]);
+  const [cursorLine, setCursorLine] = useState<number>(1);
 
   // Modals State
   const [showAddModal, setShowAddModal] = useState(false);
@@ -1200,6 +1202,7 @@ export default function App() {
             </div>
 
             <SnippetBar onInsert={handleInsertSnippet} />
+            <AlpBreadcrumbs code={code} lineNumber={cursorLine} />
 
             <ErrorBoundary
               fallbackTitle="Editor failed to load"
@@ -1212,7 +1215,12 @@ export default function App() {
                 value={code}
                 onChange={(val) => setCode(val || '')}
                 beforeMount={(monaco) => { monacoRef.current = monaco; }}
-                onMount={(editor) => { editorRef.current = editor; }}
+                onMount={(editor) => {
+                  editorRef.current = editor;
+                  editor.onDidChangeCursorPosition((e: any) => {
+                    setCursorLine(e.position.lineNumber);
+                  });
+                }}
                 options={{
                   minimap: { enabled: false },
                   fontSize: 13,
