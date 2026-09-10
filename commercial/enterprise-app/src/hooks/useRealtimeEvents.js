@@ -27,7 +27,7 @@ export function useRealtimeEvents() {
       setActiveWorkflows((prev) => ({
         ...prev,
         [data.runId]: {
-          ...(prev[data.runId] || {}),
+          ...prev[data.runId],
           lastStep: data.stepId,
           lastResult: data.result,
           updatedAt: new Date().toISOString(),

@@ -1,4 +1,3 @@
-import { FiStar, FiCheck } from 'react-icons/fi';
 import {
   LuBrainCircuit,
   LuShieldCheck,

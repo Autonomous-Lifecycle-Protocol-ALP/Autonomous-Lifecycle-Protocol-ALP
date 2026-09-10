@@ -5,17 +5,12 @@ import {
   FiShield,
   FiZap,
   FiCpu,
-  FiActivity,
   FiTrendingUp,
-  FiLayers,
-  FiCode,
   FiArrowRight,
   FiChevronDown,
   FiChevronUp,
   FiLock,
   FiGlobe,
-  FiUsers,
-  FiDollarSign,
 } from "react-icons/fi";
 
 export default function HomePage() {

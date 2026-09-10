@@ -147,7 +147,7 @@ export function initAlpLanguage(): void {
         [/"/, 'string.double', '@string_double'],
         [/\d+/, 'number'],
         [/:/, 'delimiter'],
-        [/[\[\]]/, 'bracket'],
+        [/[[]]/, 'bracket'],
         [/[{}]/, 'bracket'],
         [/\w+/, 'identifier'],
       ],

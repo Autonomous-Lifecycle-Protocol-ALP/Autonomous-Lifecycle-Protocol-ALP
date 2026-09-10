@@ -110,4 +110,5 @@ export function AlpCustomNode({ data, selected = false }: AlpCustomNodeProps) {
   );
 }
 
+// oxlint-disable-next-line react/only-export-components
 export { TYPE_META, renderStatusBadge };

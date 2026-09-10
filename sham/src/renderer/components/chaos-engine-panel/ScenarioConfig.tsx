@@ -7,7 +7,17 @@ interface ScenarioConfigProps {
 
 export function ScenarioConfig({ experiment }: ScenarioConfigProps) {
   return (
-    <div className="card" style={{ ...{ background: 'var(--bg-secondary)', borderRadius: 'var(--radius)', padding: 'clamp(8px, 2vw, 16px)', border: '1px solid var(--border)', marginBottom: 12, boxSizing: 'border-box' as const }, display: 'flex', gap: 'clamp(10px, 3vw, 20px)', flexDirection: 'column', boxSizing: 'border-box' }}>
+    <div className="card" style={({
+	background: 'var(--bg-secondary)',
+	borderRadius: 'var(--radius)',
+	padding: 'clamp(8px, 2vw, 16px)',
+	border: '1px solid var(--border)',
+	marginBottom: 12,
+	boxSizing: 'border-box' as const,
+	display: 'flex',
+	gap: 'clamp(10px, 3vw, 20px)',
+	flexDirection: 'column',
+})}>
       <div style={{ flex: 1 }}>
         <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 600, marginBottom: 8 }}>CONFIGURATION</div>
         <div className="table-responsive">
