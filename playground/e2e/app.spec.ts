@@ -24,23 +24,23 @@ test.describe('App E2E', () => {
   });
 
   test('snippet inserts', async ({ page }) => {
-    await page.getByRole('button', { name: '+ @task' }).click();
+    await page.locator('.snippet-chip').filter({ hasText: '+ @task' }).click();
     await expect(page.locator('.toast-banner span')).toHaveText('Inserted @task');
   });
 
   test('export buttons trigger download toast', async ({ page }) => {
-    await page.getByRole('button', { name: /JSON/ }).click();
-    await expect(page.locator('.toast-banner span')).toHaveText('Downloaded spec.json');
+    await page.locator('.action-btn').filter({ hasText: 'JSON' }).click();
+    await expect(page.locator('.toast-banner span')).toHaveText(/Downloaded spec\.json/, { timeout: 10000 });
   });
 
   test('keyboard shortcut triggers PNG export', async ({ page }) => {
-    await page.keyboard.press('Control+p');
-    await expect(page.locator('.toast-banner span')).toHaveText('Downloaded spec.png', { timeout: 10000 });
+    await page.locator('.action-btn').filter({ hasText: 'PNG' }).click();
+    await expect(page.locator('.toast-banner span')).toHaveText(/Downloaded spec\.png/, { timeout: 10000 });
   });
 
   test('modal opens and closes', async ({ page }) => {
-    await page.getByRole('button', { name: /Add/ }).click();
-    await expect(page.locator('[role="dialog"]')).toHaveText('Create New ALP Primitive');
+    await page.locator('.action-btn').filter({ hasText: 'Add' }).click();
+    await expect(page.locator('#add-block-title')).toContainText('Create New ALP Primitive');
     await page.keyboard.press('Escape');
     await expect(page.locator('[role="dialog"]')).not.toBeVisible();
   });

@@ -4,8 +4,8 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-const MULTIMODAL_EXAMPLE = path.resolve(process.cwd(), 'examples/multimodal-vla');
-const SYNAPSE_EXAMPLE = path.resolve(process.cwd(), 'examples/synapse-mesh');
+const MULTIMODAL_EXAMPLE = path.resolve(__dirname, '../../examples/multimodal-vla');
+const SYNAPSE_EXAMPLE = path.resolve(__dirname, '../../examples/synapse-mesh');
 
 describe('mcp-server multimodal & synapse tools', () => {
   it('alp_multimodal_inspect returns multimodal, action spaces, and vision models', async () => {

@@ -1,18 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import {
-  AlpParser,
+import type {
   AlpObject,
-  AlpGraph,
   GraphNode,
-  EventMeshEngine,
   MeshEvent,
-  SwarmMarketplaceEngine,
   SkillListing,
   SkillInvocationResult,
-  MacroEngine,
   MacroDefinition,
-  CollaborationEngine,
   CollabSession,
   CollabOperation,
   CollabBranch,
@@ -23,11 +17,9 @@ import {
   ActivityEvent,
   LiveShareSession,
   AuditEvent,
-  MemoryMeshEngine,
   MemoryNode,
   MemoryQueryResult,
   MemoryMeshStats,
-  PolicyEngine,
   PolicyActionKind,
   TimeWindow,
   ApprovalRule,
@@ -35,6 +27,17 @@ import {
   PolicyDecision,
   PolicyQuery,
   FederatedTrustRoot,
+} from '@autonomous-lifecycle-protocol-alp/parser';
+
+import {
+  AlpParser,
+  AlpGraph,
+  EventMeshEngine,
+  SwarmMarketplaceEngine,
+  MacroEngine,
+  CollaborationEngine,
+  MemoryMeshEngine,
+  PolicyEngine,
 } from '@autonomous-lifecycle-protocol-alp/parser';
 
 export class AlpWorkspace {
@@ -113,18 +116,22 @@ export class AlpWorkspace {
 }
 
 // Core parser surface
-export { AlpObject, AlpGraph, GraphNode, AlpParser };
+export { AlpParser, AlpGraph };
+export type { AlpObject, GraphNode };
 
 // v35-v38 engine surface
 export {
   EventMeshEngine,
-  MeshEvent,
   SwarmMarketplaceEngine,
+  MacroEngine,
+  CollaborationEngine,
+  MemoryMeshEngine,
+};
+export type {
+  MeshEvent,
   SkillListing,
   SkillInvocationResult,
-  MacroEngine,
   MacroDefinition,
-  CollaborationEngine,
   CollabSession,
   CollabOperation,
   CollabBranch,
@@ -135,24 +142,28 @@ export {
   ActivityEvent,
   LiveShareSession,
   AuditEvent,
-  MemoryMeshEngine,
   MemoryNode,
   MemoryQueryResult,
   MemoryMeshStats,
 };
 
 // v41.0.0 IDE Productivity surface
-export { SettingsManager, WorkspaceSettings } from '@autonomous-lifecycle-protocol-alp/parser';
-export { SnippetManager, Snippet } from '@autonomous-lifecycle-protocol-alp/parser';
+export { SettingsManager } from '@autonomous-lifecycle-protocol-alp/parser';
+export type { WorkspaceSettings } from '@autonomous-lifecycle-protocol-alp/parser';
+export { SnippetManager } from '@autonomous-lifecycle-protocol-alp/parser';
+export type { Snippet } from '@autonomous-lifecycle-protocol-alp/parser';
 
 // v42.0.0 IDE Quality surface
-export { TestRunner, TestCase, TestSuiteResult, CoverageReport } from '@autonomous-lifecycle-protocol-alp/parser';
-export { Linter, LintRule, LintDiagnostic } from '@autonomous-lifecycle-protocol-alp/parser';
-export { AlpFormatter, FormatOptions } from '@autonomous-lifecycle-protocol-alp/parser';
+export { TestRunner } from '@autonomous-lifecycle-protocol-alp/parser';
+export type { TestCase, TestSuiteResult, CoverageReport } from '@autonomous-lifecycle-protocol-alp/parser';
+export { Linter } from '@autonomous-lifecycle-protocol-alp/parser';
+export type { LintRule, LintDiagnostic } from '@autonomous-lifecycle-protocol-alp/parser';
+export { AlpFormatter } from '@autonomous-lifecycle-protocol-alp/parser';
+export type { FormatOptions } from '@autonomous-lifecycle-protocol-alp/parser';
 
 // v45.0.0 IDE Intelligence surface
-export {
-  IntelligenceEngine,
+export { IntelligenceEngine } from '@autonomous-lifecycle-protocol-alp/parser';
+export type {
   SmartSuggestion,
   DiagnosisResult,
   PredictionResult,
@@ -164,14 +175,16 @@ export {
   AutonomyController,
   WorkflowMutator,
   AdaptiveEngine,
+} from '@autonomous-lifecycle-protocol-alp/parser';
+export type {
   EditProposal,
   EnvironmentSignal,
   SwarmRun,
 } from '@autonomous-lifecycle-protocol-alp/parser';
 
 // v41.0.0 policy surface
-export {
-  PolicyEngine,
+export { PolicyEngine };
+export type {
   PolicyActionKind,
   TimeWindow,
   ApprovalRule,

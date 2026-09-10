@@ -1,0 +1,11 @@
+!alp-version: 3.1.0
+
+@contract
+  id: contract-api-boundary
+  from: -> agent-frontend
+  to: -> agent-backend
+  allows:
+    - "api.v1.tasks.read"
+    - "api.v1.tasks.write"
+  denies:
+    - "api.v1.admin.*"

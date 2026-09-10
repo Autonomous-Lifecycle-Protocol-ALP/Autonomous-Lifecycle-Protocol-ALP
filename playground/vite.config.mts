@@ -17,6 +17,7 @@ export default defineConfig({
       'node:child_process': resolve(__dirname, 'src/shims/child_process.ts'),
       child_process: resolve(__dirname, 'src/shims/child_process.ts'),
       '@autonomous-lifecycle-protocol-alp/parser': resolve(__dirname, '../parser/src/index.ts'),
+      '@autonomous-lifecycle-protocol-alp/sdk': resolve(__dirname, '../sdk/typescript/src/index.ts'),
     },
   },
   build: {

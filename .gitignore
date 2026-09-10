@@ -69,6 +69,7 @@ sham/test-results/
 
 # Project-specific out-of-scope documents
 prd2.md
+*.local.json
 
 # Kilo configuration and agent workspace
 .kilo/
@@ -108,3 +109,14 @@ test-results/
 # Dashboard screenshots and scratch images
 dashboard-*.png
 landing_page_bg.png
+
+# Local scratch and search scripts
+find-files.js
+find-large-files.js
+find-large-files.ps1
+count-lines.ps1
+run-find.bat
+test-d.ts
+scripts/smoke-codegen.cjs
+scripts/tmp-trace.cjs
+

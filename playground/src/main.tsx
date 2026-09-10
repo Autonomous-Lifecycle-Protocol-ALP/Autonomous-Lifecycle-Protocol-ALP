@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 import { loader } from '@monaco-editor/react'
 import './index.css'
 import { initAlpLanguage } from './monaco/alp-language'
-import App from './App.tsx'
+import { App } from './App.tsx'
 import { ErrorBoundary } from './components/ErrorBoundary'
 
 initAlpLanguage()

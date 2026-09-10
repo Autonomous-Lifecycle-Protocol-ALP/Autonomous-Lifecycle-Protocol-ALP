@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, it, expect } from 'vitest';
 import { AlpParser, AlpGraph } from '@autonomous-lifecycle-protocol-alp/parser';
 import { TEMPLATES } from '../constants/templates.js';

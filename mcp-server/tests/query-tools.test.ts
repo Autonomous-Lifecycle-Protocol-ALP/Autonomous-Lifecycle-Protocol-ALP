@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-const EXAMPLE = path.resolve(process.cwd(), 'examples/todo-app');
+const EXAMPLE = path.resolve(__dirname, '../../examples/todo-app');
 
 describe('mcp-server query tools', () => {
   it('alp_get_contracts returns contract objects with allow/deny rules', async () => {

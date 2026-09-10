@@ -18,6 +18,7 @@ export * from './debug';
 export * from './swarm-client';
 export * from './repo-resolver';
 export * from './node-utils';
+export * from './codegen';
 
 // ── Parsing & Lifecycle ───────────────────────────────────────────────────────
 export * from './status';
@@ -30,9 +31,9 @@ export * from './visualize';
 export * from './reasoning-core';
 export * from './federation-engine';
 export * from './zk-proof-engine';
-export * from "./digital-twin-engine.js";
-export * from "./neuromorphic-engine.js";
-export * from "./k8s-operator-engine.js";
+export * from "./digital-twin-engine";
+export * from "./neuromorphic-engine";
+export * from "./k8s-operator-engine";
 export * from './provenance';
 export * from './autonomy';
 export * from './crdt';
@@ -70,6 +71,7 @@ export * from './eval-suite';
 export * from './prompt-optimizer';
 export * from './consensus-vote';
 export * from './code-transform';
+export * from './codegen';
 export * from './event-mesh';
 export * from './swarm-marketplace';
 export * from './multimodal';

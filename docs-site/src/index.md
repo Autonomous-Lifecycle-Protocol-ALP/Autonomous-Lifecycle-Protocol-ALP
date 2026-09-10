@@ -32,7 +32,7 @@ features:
   - title: MCP Server Native
     details: Expose your project's live architecture to Claude Desktop, Cursor, and any MCP client with tools like alp_get_graph.
   - title: Schema-Validated & 100% Parity
-    details: 49 JSON schemas registered with 1:1 TypeScript & Python SDK parity and 1013+ passing automated tests.
+    details: 49 JSON schemas registered with 1:1 TypeScript & Python SDK parity and passing automated tests.
 ---
 
 ## Why ALP?
@@ -48,7 +48,7 @@ files with **one deterministic protocol stored natively in your repository** (`.
 <div class="alp-stats">
   <div class="alp-stat"><span class="alp-stat-num">49</span><span class="alp-stat-label">JSON Schemas</span></div>
   <div class="alp-stat"><span class="alp-stat-num">80.0.0</span><span class="alp-stat-label">Toolchain Release</span></div>
-  <div class="alp-stat"><span class="alp-stat-num">1013+</span><span class="alp-stat-label">Passed Tests</span></div>
+  <div class="alp-stat"><span class="alp-stat-num">...</span><span class="alp-stat-label">Passed Tests</span></div>
   <div class="alp-stat"><span class="alp-stat-num">1:5</span><span class="alp-stat-label">Language SDK Parity</span></div>
 </div>
 
@@ -269,8 +269,6 @@ Released versions are tracked in the [versioning spec](/spec/10-versioning.md). 
 
 ### Current Release
 
-**V9 — Native Desktop (v80.0.0)** — SHAM IDE cross-platform release with native ALP integration, Monaco editor, agent manager, auto-updater, and Pro/Enterprise licensing.
-
-**V10 — The Intelligence Era (v80.0.0)** — Autonomous multi-agent orchestration with self-healing DAGs, predictive governance, edge-native execution, and AI-native lifecycle management.
+**v80.0.0 — Autonomous Orchestration** — SHAM IDE cross-platform release with native ALP integration, Monaco editor, agent manager, auto-updater, and Pro/Enterprise licensing. Autonomous multi-agent orchestration with self-healing DAGs, predictive governance, edge-native execution, and AI-native lifecycle management.
 
 

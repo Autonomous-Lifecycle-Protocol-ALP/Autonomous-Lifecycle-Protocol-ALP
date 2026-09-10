@@ -4,8 +4,8 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-const SERVER = path.resolve(process.cwd(), 'mcp-server/dist/index.js');
-const EXAMPLE = path.resolve(process.cwd(), 'examples/todo-app');
+const SERVER = path.resolve(__dirname, '../dist/index.js');
+const EXAMPLE = path.resolve(__dirname, '../../examples/todo-app');
 
 interface JsonRpc {
   id?: number;

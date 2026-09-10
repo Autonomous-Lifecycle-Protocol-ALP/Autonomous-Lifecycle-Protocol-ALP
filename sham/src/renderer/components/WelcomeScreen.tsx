@@ -3,9 +3,10 @@ import { Icon } from './Icon.js';
 
 interface WelcomeScreenProps {
   onOpenFile: (filePath: string) => void;
+  recentProjects?: string[];
 }
 
-export function WelcomeScreen({ onOpenFile }: WelcomeScreenProps): React.JSX.Element {
+export function WelcomeScreen({ onOpenFile, recentProjects }: WelcomeScreenProps): React.JSX.Element {
   return (
     <div className="empty-state" style={{ height: '100%', flexWrap: 'wrap', justifyContent: 'center', background: 'radial-gradient(circle at top, var(--bg-surface) 0%, var(--bg-primary) 60%)' }}>
       <div className="empty-state-icon" style={{ 
@@ -59,6 +60,30 @@ export function WelcomeScreen({ onOpenFile }: WelcomeScreenProps): React.JSX.Ele
           <Icon name="folderOpen" size={18} /> Open Project
         </button>
       </div>
+
+      {recentProjects && recentProjects.length > 0 && (
+        <div style={{ marginTop: '24px', width: '100%', maxWidth: '500px' }}>
+          <div style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginBottom: '8px', fontWeight: 500 }}>Recent Projects</div>
+          {recentProjects.map((project) => (
+            <div
+              key={project}
+              style={{
+                padding: '8px 12px',
+                marginBottom: '4px',
+                borderRadius: 'var(--radius)',
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-secondary)',
+                fontSize: 'var(--font-size-sm)',
+                cursor: 'pointer'
+              }}
+              onClick={() => onOpenFile(project)}
+            >
+              {project}
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="flex-wrap-gap" style={{ 
         marginTop: 'clamp(32px, 6vw, 64px)', 

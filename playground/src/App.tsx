@@ -70,7 +70,7 @@ type LayoutMode = 'dag' | 'tree' | 'grid' | 'force' | 'circular';
 // ── Helpers & Node Components moved to ./components/AlpCustomNode.tsx ──
 
 // ── Main App Component ────────────────────────────────────────────────
-export default function App() {
+export function App() {
   const [templateKey, setTemplateKey] = useState<string>('webApp');
   const [code, setCode] = useState<string>(TEMPLATES['webApp'].code);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -1411,3 +1411,5 @@ export default function App() {
     </div>
   );
 }
+
+export default App;
