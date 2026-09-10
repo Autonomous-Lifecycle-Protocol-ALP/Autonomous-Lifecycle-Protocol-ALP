@@ -14,7 +14,8 @@
     "mcp-server",
     "sham",
     "commercial/*",
-    "commercial/alp-test"
+    "commercial/alp-test",
+    "commercial/alp-test/packages/*"
   ],
   "scripts": {
     "build": "npm run build --workspaces --if-present",
@@ -44,6 +45,7 @@
   },
   "homepage": "https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP#readme",
   "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
     "@vitest/coverage-v8": "^2.1.9",
     "vitest": "2.1.9"
   },

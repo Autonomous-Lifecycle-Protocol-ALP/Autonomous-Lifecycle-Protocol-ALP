@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "npm run test --workspaces --if-present",
+    "test": "npm run test:core && npm run test:visual && npm run test:ai && npm run test:cli",
     "test:cli": "npm run test --workspace=@alp/test-cli",
     "test:core": "npm run test --workspace=@alp/test-core",
     "test:visual": "npm run test --workspace=@alp/test-visual",

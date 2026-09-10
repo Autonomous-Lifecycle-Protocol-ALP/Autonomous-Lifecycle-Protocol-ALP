@@ -18,6 +18,14 @@ export class AgentRegistry {
     return Array.from(this.personas.values());
   }
 
+  listByPermission(permission: string): AgentPersona[] {
+    return this.list().filter((p) => p.permissions?.includes(permission as any));
+  }
+
+  listByTool(tool: string): AgentPersona[] {
+    return this.list().filter((p) => p.tools?.includes(tool));
+  }
+
   register(persona: AgentPersona): void {
     this.validate(persona);
     this.personas.set(persona.id, persona);

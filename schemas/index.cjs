@@ -51,4 +51,3 @@ const schemas = {
 };
 
 module.exports = schemas;
-module.exports.default = schemas;
