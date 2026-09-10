@@ -57,7 +57,7 @@ export function searchCommand(options?: SearchOptions) {
     );
   }
 
-  console.log(`\n🔍 Search Results (${results.length} match${results.length === 1 ? '' : 'es'})\n`);
+  console.log(`\n[SCAN] Search Results (${results.length} match${results.length === 1 ? '' : 'es'})\n`);
   for (const obj of results) {
     const desc = obj.description ? ` — ${obj.description}` : '';
     console.log(`  • ${obj._type}:${obj.id}${desc}`);

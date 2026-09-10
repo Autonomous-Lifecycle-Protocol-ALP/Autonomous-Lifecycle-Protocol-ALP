@@ -1,66 +1,6 @@
 #!/usr/bin/env node
 import { Command } from 'commander';
-import { initCommand } from './commands/init';
-import { validateCommand } from './commands/validate';
-import { graphCommand } from './commands/graph';
-import { statusCommand } from './commands/status';
-import { runCommand } from './commands/run';
-import { installCommand } from './commands/install';
-import { uninstallCommand } from './commands/uninstall';
-import { publishCommand } from './commands/publish';
-import { exportCommand } from './commands/export';
-import { backupCommand } from './commands/backup';
-import { diffCommand } from './commands/diff';
-import { renameCommand } from './commands/rename';
-import { copyCommand } from './commands/copy';
-import { statsCommand } from './commands/stats';
-import { templateCommand } from './commands/template';
-import { moveCommand } from './commands/move';
-import { dependsCommand } from './commands/depends';
-import { deleteCommand } from './commands/delete';
-import { lintCommand } from './commands/lint';
-import { testCommand } from './commands/test';
-import { formatCommand } from './commands/format';
-import { verifyCommand } from './commands/verify';
-import { doctorCommand } from './commands/doctor';
-import { upgradeCommand } from './commands/upgrade';
-import { importCommand } from './commands/import';
-import { checkpointCommand } from './commands/checkpoint';
-import { serveCommand } from './commands/serve';
-import { evolveCommand } from './commands/evolve';
-import { policyCommand } from './commands/policy';
-import { scheduleCommand } from './commands/schedule';
-import { swarmCommand } from './commands/swarm';
-import { repoCommand } from './commands/repo';
-import { registryCommand } from './commands/registry';
-import { keysCommand } from './commands/keys';
-import { testHarnessCommand } from './commands/test-harness';
-import { replayCommand } from './commands/replay';
-import { visualizeCommand } from './commands/visualize';
-import { costCommand } from './commands/cost';
-import { debugCommand } from './commands/debug';
-import { bridgeCommand } from './commands/bridge';
-import { domainTrustCommand } from './commands/domain-trust';
-import { governanceCommand } from './commands/governance';
-import { tenantCommand } from './commands/tenant';
-import { healingCommand } from './commands/healing';
-import { resilienceCommand } from './commands/resilience';
-import { tuiCommand } from './commands/tui';
-import { registerTraceCommand } from './commands/trace';
-import { registerZKCommand } from './commands/zk';
-import { registerVectorCommand } from './commands/vector';
-import { registerDIDCommand } from './commands/did';
-import { registerCRDTSyncCommand } from './commands/crdt-sync';
-import { registerHealCommand } from './commands/heal';
-import { registerFormalVerifyCommand } from './commands/formal-verify';
-import { settingsCommand } from './commands/settings';
-import { searchCommand } from './commands/search';
-import { inspectCommand } from './commands/inspect';
-import { gitCommand } from './commands/git';
-import { archiveCommand } from './commands/archive';
-import { deduplicateCommand } from './commands/deduplicate';
-import { promoteCommand } from './commands/promote';
-import { registerReasonCommand } from './commands/reason';
+import * as commands from './commands';
 const program = new Command();
 
 program
@@ -71,65 +11,76 @@ program
 program
   .command('init')
   .description('Initialize a new ALP project in the current directory')
-  .action(initCommand);
+  .action(commands.initCommand);
+
+program
+  .command('integrate')
+  .description('Scaffold AI agent and CI/CD integration files (cursor, claude, github, all)')
+  .argument('[target]', 'Target integration: cursor, claude, github, all', 'all')
+  .option('-f, --force', 'Overwrite existing integration files')
+  .action((target, opts) => {
+    commands.integrateCommand(target, opts);
+  });
 
 program
   .command('validate')
   .description('Validate all .alp files against schemas')
   .argument('[file]', 'Optional specific file to validate')
-  .action(validateCommand);
+  .action(commands.validateCommand);
 
 program
   .command('lint')
   .description('Lint the ALP workspace for style conventions and best practices')
-  .action(lintCommand);
+  .action(commands.lintCommand);
 
 program
   .command('test')
   .description('Run ALP tests with pass/fail reporting and optional coverage')
   .option('--coverage', 'Show test coverage report')
   .option('--file <path>', 'Run tests from a specific file')
-  .action(testCommand);
+  .action(commands.testCommand);
 
 program
   .command('format')
   .description('Format .alp files with consistent indentation and style')
   .option('--check', 'Check formatting without writing changes')
-  .action(formatCommand);
+  .action(commands.formatCommand);
 
 program
   .command('verify')
   .description('Execute quality gates and verification scripts for a task')
   .argument('<taskId>', 'The ID of the task to verify')
   .option('--formal <policyId>', 'Run formal model-checking verification for a policy (v10.9.0)')
-  .action(verifyCommand);
+  .action(commands.verifyCommand);
 
 program
   .command('doctor')
   .description('Diagnose workspace health and environment configuration')
-  .action(doctorCommand);
+  .action(commands.doctorCommand);
 
 program
   .command('upgrade')
   .description('Upgrade legacy ALP files to the latest specification version')
-  .action(upgradeCommand);
+  .action(commands.upgradeCommand);
 
 program
   .command('import')
   .description('Import legacy markdown rules (.cursorrules, etc.) into ALP format')
   .argument('[file]', 'Optional specific file to import')
-  .action(importCommand);
+  .action(commands.importCommand);
 
 program
   .command('graph')
   .description('Visualize the project dependency graph')
   .argument('[file]', 'Optional specific file to graph')
-  .action(graphCommand);
+  .option('--mermaid', 'Output dependency graph in Mermaid diagram format')
+  .option('--json', 'Output graph topology as JSON')
+  .action((file, opts) => commands.graphCommand(file, opts));
 
 program
   .command('status')
   .description('Show project state and progress')
-  .action(statusCommand);
+  .action(commands.statusCommand);
 
 program
   .command('run')
@@ -141,7 +92,7 @@ program
   .option('--provider <provider>', 'LLM provider to use for native execution (openai, anthropic, ollama)')
   .option('--model <model>', 'LLM model to use with the selected provider')
   .option('--swarm <id>', 'Join the named networked swarm (v4 Pillar 1) and coordinate claims via a coordinator')
-  .action((task, opts) => runCommand(task, opts));
+  .action((task, opts) => commands.runCommand(task, opts));
 
 program
   .command('checkpoint')
@@ -150,7 +101,7 @@ program
   .argument('[status]', 'New status: done, blocked, in-progress, review, todo')
   .argument('[message]', 'Optional message to log to the runtime log')
   .option('--ask-human', 'Pause for human review: mark the task [ ?] and stop the loop')
-  .action(checkpointCommand);
+  .action(commands.checkpointCommand);
 
 program
   .command('serve')
@@ -161,14 +112,14 @@ program
   .option('--registry', 'Host the ALP package registry over HTTP (v4 Pillar 3)')
   .option('--registry-token <token>', 'Require this bearer token on all /api/registry requests (spec/14 §4.2)')
   .option('--registry-sign-key <file>', 'Ed25519 private key (PEM) to sign published versions on the host (v4.1)')
-  .action((opts) => serveCommand(opts));
+  .action((opts) => commands.serveCommand(opts));
 
 program
   .command('evolve')
   .description('Analyze runtime telemetry and propose self-improvements (v3 Pillar 5)')
   .option('--apply', 'Write proposed rules to .alp/evolved.alp')
   .option('--from-pr <n>', 'Extract rules from a GitHub PR (requires provider)')
-  .action((opts) => evolveCommand(opts));
+  .action((opts) => commands.evolveCommand(opts));
 
 program
   .command('policy')
@@ -178,7 +129,7 @@ program
   .option('--agent <agent>', 'Scope the check to a specific agent')
   .option('--proposal <id>', 'v8.1.0: verify a signed action proposal by id')
   .option('--trust <pem>', 'v8.1.0: trust root (ns=pem) for proposal verification')
-  .action((opts) => policyCommand(opts));
+  .action((opts) => commands.policyCommand(opts));
 
 program
   .command('schedule')
@@ -187,7 +138,7 @@ program
   .option('--enable <id>', 'Enable a disabled @timeline by id')
   .option('--disable <id>', 'Disable an enabled @timeline by id')
   .option('--at <iso>', 'Evaluate schedules as of a fixed ISO datetime (testing)')
-  .action((opts) => scheduleCommand(opts));
+  .action((opts) => commands.scheduleCommand(opts));
 
 program
   .command('swarm')
@@ -197,14 +148,14 @@ program
   .option('--coordinator <url>', 'Coordinator base URL (overrides @swarm coordinator)')
   .option('--token <token>', 'Bearer token for the coordinator')
   .option('--node <id>', 'This node id')
-  .action((sub, swarm, opts) => swarmCommand(sub, swarm, opts));
+  .action((sub, swarm, opts) => commands.swarmCommand(sub, swarm, opts));
 
 program
   .command('repo')
   .description('Cross-repository orchestration: discover, fetch, and resolve external repos (v4 Pillar 2)')
   .argument('[subcommand]', 'ls | fetch | resolve | graph (default resolve)')
   .option('--fetch', 'Fetch/update Git-backed repos before resolving')
-  .action((sub, opts) => repoCommand(sub, opts));
+  .action((sub, opts) => commands.repoCommand(sub, opts));
 
 program
   .command('registry')
@@ -216,7 +167,7 @@ program
   .option('--token <token>', 'Bearer token for the registry (overrides .alprc / ALP_REGISTRY_TOKEN)')
   .option('--key <file>', 'Trusted public key (PEM) — require + verify signed installs (v4.1)')
   .option('--sign-key <file>', 'Ed25519 private key (PEM) to sign published versions (v4.1)')
-  .action((sub, target, opts) => registryCommand(sub, target, opts));
+  .action((sub, target, opts) => commands.registryCommand(sub, target, opts));
 
 program
   .command('install')
@@ -225,13 +176,13 @@ program
   .option('--url <url>', 'Registry base URL (overrides ALP_REGISTRY_URL)')
   .option('--version <v>', 'Version to install (default latest)')
   .option('--key <file>', 'Trusted public key (PEM) — require + verify signed installs (v4.1)')
-  .action((pkg, opts) => installCommand(pkg, opts));
+  .action((pkg, opts) => commands.installCommand(pkg, opts));
 
 program
   .command('uninstall')
   .description('Uninstall a package from the ALP Registry')
   .argument('<package>', 'Name of the package to uninstall')
-  .action(uninstallCommand);
+  .action(commands.uninstallCommand);
 
 program
   .command('publish')
@@ -240,20 +191,20 @@ program
   .option('--url <url>', 'Publish to a remote registry host (alp serve --registry) instead of the local store')
   .option('--token <token>', 'Bearer token for the registry (overrides .alprc / ALP_REGISTRY_TOKEN)')
   .option('--sign-key <file>', 'Ed25519 private key (PEM) to sign the published version (v4.1 trust)')
-  .action((dir, opts) => publishCommand(dir, opts));
+  .action((dir, opts) => commands.publishCommand(dir, opts));
 
 program
   .command('keys')
   .description('Manage registry package-signing keypairs & trust roots (v4.2/4.3)')
   .argument('[args...]', 'generate | fingerprint <file> | trust add <ns|*> <fingerprint|file> | trust list')
-  .action((args: string[]) => keysCommand(args[0], args.slice(1)));
+  .action((args: string[]) => commands.keysCommand(args[0], args.slice(1)));
 
 program
   .command('test-harness')
   .description('Run the ALP compliance test suite against the bundled parser or an external one (v6.2.0)')
   .option('--executable <cmd>', 'External parser executable: takes a .alp path, prints AST JSON to stdout, non-zero on failure')
   .option('--suite <dir>', 'Path to the compliance suite directory (default ./tests/compliance)')
-  .action((opts) => testHarnessCommand(opts));
+  .action((opts) => commands.testHarnessCommand(opts));
 
 program
   .command('replay')
@@ -262,7 +213,7 @@ program
   .option('--to <iso>', 'Replay events at or before this ISO timestamp')
   .option('--type <types>', 'Comma-separated event types to include (e.g. status_changed,object_created)')
   .option('--object-id <id>', 'Only events whose payload references this object id')
-  .action((opts) => replayCommand(opts));
+  .action((opts) => commands.replayCommand(opts));
 
 program
   .command('visualize')
@@ -270,7 +221,7 @@ program
   .argument('[id]', 'Workflow id to visualize (all workflows if omitted)')
   .option('--format <format>', 'Output format: mermaid, dot, json (default mermaid)')
   .option('--out <file>', 'Write output to a file instead of stdout')
-  .action((id, opts) => visualizeCommand(id, opts));
+  .action((id, opts) => commands.visualizeCommand(id, opts));
 
 program
   .command('export')
@@ -278,100 +229,100 @@ program
   .option('--format <format>', 'Export format: json or yaml', 'json')
   .option('--out <file>', 'Output file path (prints to stdout if omitted)')
   .option('--minified', 'Minify JSON output (only applies to json format)')
-  .action(exportCommand);
+  .action(commands.exportCommand);
 
 program
   .command('backup')
   .description('Backup, restore, and list workspace snapshots')
   .argument('<action>', 'Action: create, restore, or list')
   .argument('[name]', 'Backup name for create/restore')
-  .action((action, name) => backupCommand(action, name));
+  .action((action, name) => commands.backupCommand(action, name));
 
 program
   .command('diff')
   .description('Diff two workspace snapshots by object id')
   .argument('<snapshot-a>', 'Older snapshot name')
   .argument('<snapshot-b>', 'Newer snapshot name')
-  .action((a, b) => diffCommand(a, b));
+  .action((a, b) => commands.diffCommand(a, b));
 
 program
   .command('rename')
   .description('Rename an ALP object id across all workspace files')
   .argument('<old-id>', 'Current object id')
   .argument('<new-id>', 'New object id')
-  .action((oldId, newId) => renameCommand(oldId, newId));
+  .action((oldId, newId) => commands.renameCommand(oldId, newId));
 
 program
   .command('copy')
   .description('Copy an ALP object to a new id across all workspace files')
-  .argument('<source-id>', 'Source object id to copy')
-  .argument('<target-id>', 'New object id')
-  .option('--update-refs', 'Update reference fields (depends_on, references, links, parent, child) to the new id')
-  .action((sourceId, targetId, opts) => copyCommand(sourceId, targetId, opts.updateRefs));
+  .argument('<id>', 'Object id to copy')
+  .argument('<new-id>', 'New object id')
+  .option('--update-refs', 'Also update reference fields (depends_on, references, links, parent, child)')
+  .action((id, newId, opts) => commands.copyCommand(id, newId, opts.updateRefs));
 
 program
   .command('stats')
   .description('Show workspace statistics: object counts by type and file')
-  .action(() => statsCommand());
+  .action(() => commands.statsCommand());
 
 program
   .command('template')
   .description('Create a new ALP object from a built-in template')
   .argument('<type>', 'Template type: task, agent, workflow, policy, test')
   .argument('<id>', 'Object id for the new template')
-  .action((type, id) => templateCommand(type, id));
+  .action((type, id) => commands.templateCommand(type, id));
 
 program
   .command('move')
   .description('Move an ALP object from one file to another')
   .argument('<id>', 'Object id to move')
   .argument('<target-file>', 'Target .alp file (e.g. tasks.alp)')
-  .action((id, targetFile) => moveCommand(id, targetFile));
+  .action((id, targetFile) => commands.moveCommand(id, targetFile));
 
 program
   .command('depends')
   .description('Show dependencies for an ALP object')
   .argument('<id>', 'Object id to inspect')
-  .action((id) => dependsCommand(id));
+  .action((id) => commands.dependsCommand(id));
 
 program
   .command('inspect')
   .description('Inspect an ALP object and show its properties')
   .argument('<id>', 'Object id to inspect')
   .option('--file <path>', 'Optional specific file to inspect')
-  .action((id, opts) => inspectCommand(id, opts));
+  .action((id, opts) => commands.inspectCommand(id, opts));
 
 program
   .command('delete')
   .description('Delete an ALP object from a workspace file')
   .argument('<id>', 'Object id to delete')
   .option('--file <path>', 'Optional specific file to delete from')
-  .action((id, opts) => deleteCommand(id, opts));
+  .action((id, opts) => commands.deleteCommand(id, opts));
 
 program
   .command('archive')
   .description('Archive objects with a given status')
   .argument('<status>', 'Status to archive (e.g. done)')
-  .action((status) => archiveCommand(status));
+  .action((status) => commands.archiveCommand(status));
 
 program
   .command('deduplicate')
   .description('Remove duplicate objects across workspace files')
-  .action(() => deduplicateCommand());
+  .action(() => commands.deduplicateCommand());
 
 program
   .command('promote')
   .description('Promote an object to a new type')
   .argument('<id>', 'Object id to promote')
   .argument('<type>', 'New type for the object')
-  .action((id, type) => promoteCommand(id, type));
+  .action((id, type) => commands.promoteCommand(id, type));
 
 program
   .command('cost')
   .description('Show token usage and compute cost for a task (v10.7.0 Resource Metering)')
   .argument('[task-id]', 'Task ID to inspect (defaults to latest metered task)')
   .option('--workflow <id>', 'Optimize a workflow and show cost savings (v16.0.0)')
-  .action((taskId, opts) => costCommand(taskId, opts));
+  .action((taskId, opts) => commands.costCommand(taskId, opts));
 
 program
   .command('debug')
@@ -380,54 +331,54 @@ program
   .option('--step <n>', 'Step forward (positive) or backward (negative) by N snapshots', parseInt)
   .option('--to-stage <name>', 'Jump to the snapshot matching this engine stage')
   .option('--diff <a> <b>', 'Diff two snapshot ids')
-  .action((runId, opts) => debugCommand(runId, opts));
+  .action((runId, opts) => commands.debugCommand(runId, opts));
 
 program
   .command('bridge')
   .description('Export/import ALP workflows to/from OpenAPI, GraphQL, gRPC, or AsyncAPI (v17.0.0)')
   .argument('<format>', 'Target format: openapi, graphql, grpc, asyncapi')
   .argument('[file]', 'Import from a JSON spec file instead of exporting the local workflow')
-  .action((format, file) => bridgeCommand(format, file));
+  .action((format, file) => commands.bridgeCommand(format, file));
 
 program
   .command('domain-trust')
   .description('Manage cross-domain trust relationships (v14)')
   .argument('<subcommand>', 'create-domain | link | accept | list | revoke')
   .argument('[args...]', 'Subcommand arguments')
-  .action((subcommand, args) => domainTrustCommand(subcommand, ...args));
+  .action((subcommand, args) => commands.domainTrustCommand(subcommand, ...args));
 
 program
   .command('governance')
   .description('Autonomous governance ballots (v14)')
   .argument('<subcommand>', 'propose | vote | close | list')
   .argument('[args...]', 'Subcommand arguments')
-  .action((subcommand, args) => governanceCommand(subcommand, ...args));
+  .action((subcommand, args) => commands.governanceCommand(subcommand, ...args));
 
 program
   .command('tenant')
   .description('Multi-tenant isolation (v14)')
   .argument('<subcommand>', 'create | list | vault | delete')
   .argument('[args...]', 'Subcommand arguments')
-  .action((subcommand, args) => tenantCommand(subcommand, ...args));
+  .action((subcommand, args) => commands.tenantCommand(subcommand, ...args));
 
 program
   .command('healing')
   .description('Self-healing workflow history (v12)')
   .argument('<subcommand>', 'history | report')
   .argument('[args...]', 'Subcommand arguments')
-  .action((subcommand, args) => healingCommand(subcommand, ...args));
+  .action((subcommand, args) => commands.healingCommand(subcommand, ...args));
 
 program
   .command('resilience')
   .description('Swarm resilience and agent status (v12)')
   .argument('<subcommand>', 'agents | report')
   .argument('[args...]', 'Subcommand arguments')
-  .action((subcommand, args) => resilienceCommand(subcommand, ...args));
+  .action((subcommand, args) => commands.resilienceCommand(subcommand, ...args));
 
 program
   .command('tui')
   .description('Launch the interactive terminal UI dashboard (v16.0.0)')
-  .action(tuiCommand);
+  .action(commands.tuiCommand);
 
 program
   .command('settings')
@@ -435,7 +386,7 @@ program
   .option('--list', 'List all settings')
   .option('--get <key>', 'Get a specific setting value')
   .option('--set <key> <value>', 'Set a setting value')
-  .action((opts) => settingsCommand(opts));
+  .action((opts) => commands.settingsCommand(opts));
 
 program
   .command('search')
@@ -443,202 +394,7 @@ program
   .option('--query <text>', 'Search query text')
   .option('--type <type>', 'Filter by object type (e.g. task, agent)')
   .option('--regex', 'Treat query as a regular expression')
-  .action((opts) => searchCommand(opts));
-
-program
-  .option('--executable <cmd>', 'External parser executable: takes a .alp path, prints AST JSON to stdout, non-zero on failure')
-  .option('--suite <dir>', 'Path to the compliance suite directory (default ./tests/compliance)')
-  .action((opts) => testHarnessCommand(opts));
-
-program
-  .command('replay')
-  .description('Replay the immutable event log of workspace mutations (v10.1.0 Event Sourcing)')
-  .option('--from <iso>', 'Replay events at or after this ISO timestamp')
-  .option('--to <iso>', 'Replay events at or before this ISO timestamp')
-  .option('--type <types>', 'Comma-separated event types to include (e.g. status_changed,object_created)')
-  .option('--object-id <id>', 'Only events whose payload references this object id')
-  .action((opts) => replayCommand(opts));
-
-program
-  .command('visualize')
-  .description('Generate a diagram from @workflow objects (v10.2.0 Workflow Visualization)')
-  .argument('[id]', 'Workflow id to visualize (all workflows if omitted)')
-  .option('--format <format>', 'Output format: mermaid, dot, json (default mermaid)')
-  .option('--out <file>', 'Write output to a file instead of stdout')
-  .action((id, opts) => visualizeCommand(id, opts));
-
-program
-  .command('export')
-  .description('Export the ALP workspace to a unified JSON or YAML file')
-  .option('--format <format>', 'Export format: json or yaml', 'json')
-  .option('--out <file>', 'Output file path (prints to stdout if omitted)')
-  .option('--minified', 'Minify JSON output (only applies to json format)')
-  .action(exportCommand);
-
-program
-  .command('backup')
-  .description('Backup, restore, and list workspace snapshots')
-  .argument('<action>', 'Action: create, restore, or list')
-  .argument('[name]', 'Backup name for create/restore')
-  .action((action, name) => backupCommand(action, name));
-
-program
-  .command('diff')
-  .description('Diff two workspace snapshots by object id')
-  .argument('<snapshot-a>', 'Older snapshot name')
-  .argument('<snapshot-b>', 'Newer snapshot name')
-  .action((a, b) => diffCommand(a, b));
-
-program
-  .command('rename')
-  .description('Rename an ALP object id across all workspace files')
-  .argument('<old-id>', 'Current object id')
-  .argument('<new-id>', 'New object id')
-  .action((oldId, newId) => renameCommand(oldId, newId));
-
-program
-  .command('copy')
-  .description('Copy an ALP object to a new id across all workspace files')
-  .argument('<source-id>', 'Source object id to copy')
-  .argument('<target-id>', 'New object id')
-  .option('--update-refs', 'Update reference fields (depends_on, references, links, parent, child) to the new id')
-  .action((sourceId, targetId, opts) => copyCommand(sourceId, targetId, opts.updateRefs));
-
-program
-  .command('stats')
-  .description('Show workspace statistics: object counts by type and file')
-  .action(() => statsCommand());
-
-program
-  .command('template')
-  .description('Create a new ALP object from a built-in template')
-  .argument('<type>', 'Template type: task, agent, workflow, policy, test')
-  .argument('<id>', 'Object id for the new template')
-  .action((type, id) => templateCommand(type, id));
-
-program
-  .command('move')
-  .description('Move an ALP object from one file to another')
-  .argument('<id>', 'Object id to move')
-  .argument('<target-file>', 'Target .alp file (e.g. tasks.alp)')
-  .action((id, targetFile) => moveCommand(id, targetFile));
-
-program
-  .command('depends')
-  .description('Show dependencies for an ALP object')
-  .argument('<id>', 'Object id to inspect')
-  .action((id) => dependsCommand(id));
-
-program
-  .command('inspect')
-  .description('Inspect an ALP object and show its properties')
-  .argument('<id>', 'Object id to inspect')
-  .option('--file <path>', 'Optional specific file to inspect')
-  .action((id, opts) => inspectCommand(id, opts));
-
-program
-  .command('delete')
-  .description('Delete an ALP object from a workspace file')
-  .argument('<id>', 'Object id to delete')
-  .option('--file <path>', 'Optional specific file to delete from')
-  .action((id, opts) => deleteCommand(id, opts));
-
-program
-  .command('archive')
-  .description('Archive objects with a given status')
-  .argument('<status>', 'Status to archive (e.g. done)')
-  .action((status) => archiveCommand(status));
-
-program
-  .command('deduplicate')
-  .description('Remove duplicate objects across workspace files')
-  .action(() => deduplicateCommand());
-
-program
-  .command('promote')
-  .description('Promote an object to a new type')
-  .argument('<id>', 'Object id to promote')
-  .argument('<type>', 'New type for the object')
-  .action((id, type) => promoteCommand(id, type));
-
-program
-  .command('cost')
-  .description('Show token usage and compute cost for a task (v10.7.0 Resource Metering)')
-  .argument('[task-id]', 'Task ID to inspect (defaults to latest metered task)')
-  .option('--workflow <id>', 'Optimize a workflow and show cost savings (v16.0.0)')
-  .action((taskId, opts) => costCommand(taskId, opts));
-
-program
-  .command('debug')
-  .description('Time-travel debug a run via snapshots (v10.8.0)')
-  .argument('<run-id>', 'Run identifier')
-  .option('--step <n>', 'Step forward (positive) or backward (negative) by N snapshots', parseInt)
-  .option('--to-stage <name>', 'Jump to the snapshot matching this engine stage')
-  .option('--diff <a> <b>', 'Diff two snapshot ids')
-  .action((runId, opts) => debugCommand(runId, opts));
-
-program
-  .command('bridge')
-  .description('Export/import ALP workflows to/from OpenAPI, GraphQL, gRPC, or AsyncAPI (v17.0.0)')
-  .argument('<format>', 'Target format: openapi, graphql, grpc, asyncapi')
-  .argument('[file]', 'Import from a JSON spec file instead of exporting the local workflow')
-  .action((format, file) => bridgeCommand(format, file));
-
-program
-  .command('domain-trust')
-  .description('Manage cross-domain trust relationships (v14)')
-  .argument('<subcommand>', 'create-domain | link | accept | list | revoke')
-  .argument('[args...]', 'Subcommand arguments')
-  .action((subcommand, args) => domainTrustCommand(subcommand, ...args));
-
-program
-  .command('governance')
-  .description('Autonomous governance ballots (v14)')
-  .argument('<subcommand>', 'propose | vote | close | list')
-  .argument('[args...]', 'Subcommand arguments')
-  .action((subcommand, args) => governanceCommand(subcommand, ...args));
-
-program
-  .command('tenant')
-  .description('Multi-tenant isolation (v14)')
-  .argument('<subcommand>', 'create | list | vault | delete')
-  .argument('[args...]', 'Subcommand arguments')
-  .action((subcommand, args) => tenantCommand(subcommand, ...args));
-
-program
-  .command('healing')
-  .description('Self-healing workflow history (v12)')
-  .argument('<subcommand>', 'history | report')
-  .argument('[args...]', 'Subcommand arguments')
-  .action((subcommand, args) => healingCommand(subcommand, ...args));
-
-program
-  .command('resilience')
-  .description('Swarm resilience and agent status (v12)')
-  .argument('<subcommand>', 'agents | report')
-  .argument('[args...]', 'Subcommand arguments')
-  .action((subcommand, args) => resilienceCommand(subcommand, ...args));
-
-program
-  .command('tui')
-  .description('Launch the interactive terminal UI dashboard (v16.0.0)')
-  .action(tuiCommand);
-
-program
-  .command('settings')
-  .description('Read and write workspace settings (v41.0.0 IDE Productivity)')
-  .option('--list', 'List all settings')
-  .option('--get <key>', 'Get a specific setting value')
-  .option('--set <key> <value>', 'Set a setting value')
-  .action((opts) => settingsCommand(opts));
-
-program
-  .command('search')
-  .description('Global workspace search with regex and file-type filters (v41.0.0)')
-  .option('--query <text>', 'Search query text')
-  .option('--type <type>', 'Filter by object type (e.g. task, agent)')
-  .option('--regex', 'Treat query as a regular expression')
-  .action((opts) => searchCommand(opts));
+  .action((opts) => commands.searchCommand(opts));
 
 program
   .command('git')
@@ -646,18 +402,79 @@ program
   .option('--status', 'Show git status (default)')
   .option('--diff', 'Show git diff summary')
   .option('--commit <message>', 'Stage all changes and commit')
-  .action((opts) => gitCommand(opts));
+  .action((opts) => commands.gitCommand(opts));
 
-registerTraceCommand(program);
-registerZKCommand(program);
-registerVectorCommand(program);
-registerDIDCommand(program);
-registerCRDTSyncCommand(program);
-registerHealCommand(program);
-registerFormalVerifyCommand(program);
-registerReasonCommand(program);
-// Duplicate command registrations removed (see ADR-001: CLI deduplication)
-// All commands are registered once above. Subcommand-registration helpers
-// (registerTraceCommand, registerZKCommand, etc.) are called once at lines 493-498.
+// ── Feature: Synapse Knowledge Graph & Canvas Vault ───────────────────
+const synapse = program
+  .command('synapse')
+  .description('Synapse Knowledge Graph, Canvas Vault & Topology visualizer (v80.0.0)');
+
+synapse
+  .command('export')
+  .description('Export ALP workspace as a Synapse Markdown vault with wikilinks and canvas')
+  .option('--out <dir>', 'Output directory (default: .synapse)')
+  .option('--canvas', 'Include visual .canvas diagram file')
+  .action((opts) => commands.synapseExportCommand(opts));
+
+synapse
+  .command('graph')
+  .description('Generate knowledge graph topology representation')
+  .option('--format <fmt>', 'Graph format: json, dot, mermaid, canvas', 'json')
+  .option('--out <file>', 'Output destination file path')
+  .action((opts) => commands.synapseGraphCommand(opts));
+
+synapse
+  .command('stats')
+  .description('Display knowledge graph connectivity, density, and hub metrics')
+  .action(() => commands.synapseStatsCommand());
+
+commands.registerTraceCommand(program);
+commands.registerZKCommand(program);
+commands.registerVectorCommand(program);
+commands.registerDIDCommand(program);
+commands.registerCRDTSyncCommand(program);
+commands.registerHealCommand(program);
+commands.registerFormalVerifyCommand(program);
+commands.registerReasonCommand(program);
+
+// ── Feature: Multi-Modal Protocol & VLA Commands (v82.0.0) ─────────────
+const multimodal = program
+  .command('multimodal')
+  .description('Multi-Modal Protocol & Vision-Language-Action (VLA) Inspector (v82.0.0)');
+
+multimodal
+  .command('inspect')
+  .description('Inspect vision, audio, and sensor assets in .alp workspace')
+  .option('--json', 'Output results as JSON')
+  .action((opts) => commands.multimodalInspectCommand(opts));
+
+multimodal
+  .command('validate')
+  .description('Validate multimodal specification integrity and asset hashes')
+  .action(() => commands.multimodalValidateCommand());
+
+program
+  .command('action-space')
+  .description('Check action space safety levels and guard constraints (v82.0.0)')
+  .command('check')
+  .description('Check all action spaces or a specific one by id')
+  .argument('[id]', 'Action space id')
+  .action((id) => commands.actionSpaceCheckCommand(id));
+
+program
+  .command('token-cost')
+  .description('Estimate token costs for multimodal assets and vision models (v82.0.0)')
+  .option('--modalities <list>', 'Comma-separated modalities (vision,audio,sensor,text,spatial)')
+  .option('--json', 'Output results as JSON')
+  .action((opts) => commands.tokenCostCommand(opts));
+
+// ── Feature: Code Generation (PHP / C++) ───────────────────────────────
+program
+  .command('codegen')
+  .description('Generate PHP 8 / C++17 source code from ALP workspace objects (v82.0.0)')
+  .requiredOption('--target <t>', 'Target language: php or cpp')
+  .option('--namespace <ns>', 'Target namespace (default: Alp\\Generated for php, alp for cpp)')
+  .option('--out <dir>', 'Output directory (default: alp-codegen/<target>)')
+  .action((opts) => commands.codegenCommand(opts));
 
 program.parse(process.argv);

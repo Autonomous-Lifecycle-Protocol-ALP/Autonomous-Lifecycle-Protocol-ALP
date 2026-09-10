@@ -17,7 +17,7 @@ export function registerVectorCommand(program: Command) {
       const mockVector = [0.1, 0.5, 0.9, 0.2];
       engine.addEntry({ id, text, vector: mockVector });
 
-      console.log('\n🧠 Vector Store Indexing (v19.0.0)');
+      console.log('\n[BRAIN] Vector Store Indexing (v19.0.0)');
       console.log('==================================');
       console.log(`  Indexed ID:   ${id}`);
       console.log(`  Content:      "${text}"`);
@@ -36,7 +36,7 @@ export function registerVectorCommand(program: Command) {
 
       const results = engine.querySimilar([0.85, 0.15, 0.25, 0.75], 2);
 
-      console.log(`\n🔍 Cosine Similarity RAG Results for: "${queryText}"`);
+      console.log(`\n[SCAN] Cosine Similarity RAG Results for: "${queryText}"`);
       console.log('==================================================');
       results.forEach((r, idx) => {
         console.log(`  ${idx + 1}. [${r.id}] (Score: ${(r.score * 100).toFixed(1)}%) — ${r.text}`);

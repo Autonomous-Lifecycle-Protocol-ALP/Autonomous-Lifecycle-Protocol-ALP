@@ -23,7 +23,7 @@ export function registerCopilotCommand(program: Command) {
       const suggestion = copilot.suggestCode(options.prompt, options.lang);
       const delegation = copilot.delegateToAgent(options.prompt);
 
-      console.log('\n🤖 Agent Copilot (v62.0.0)');
+      console.log('\n[BOT] Agent Copilot (v62.0.0)');
       console.log('==========================');
       console.log(`  Workspace:      ${options.workspace}`);
       console.log(`  Prompt:         "${options.prompt}"`);

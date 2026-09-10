@@ -17,7 +17,7 @@ export function registerCRDTSyncCommand(program: Command) {
 
       const state = engine.readState(docId);
 
-      console.log('\n🔄 CRDT Real-Time Document State (v21.0.0)');
+      console.log('\n[SYNC] CRDT Real-Time Document State (v21.0.0)');
       console.log('==========================================');
       console.log(`  Document ID: ${docId}`);
       console.log(`  Properties:  ${JSON.stringify(state, null, 2)}\n`);

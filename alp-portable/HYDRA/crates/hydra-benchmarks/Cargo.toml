@@ -1,0 +1,10 @@
+[package]
+name = "hydra-benchmarks"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+tokio = { version = "1", features = ["macros", "rt"] }

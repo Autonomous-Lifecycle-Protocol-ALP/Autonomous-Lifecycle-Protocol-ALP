@@ -1217,3 +1217,25 @@ alp autonomy decisions
 | `observe --signal <type>` | Observe an environment signal and tune runtime parameters |
 | `mutate --workflow <id>` | Propose a mutation to a running workflow |
 | `decisions` | List all autonomy decisions and their outcomes |
+
+## Code Generation (`alp codegen`)
+
+*New in v82.0.0.* Generate PHP 8 (PSR-4) classes or C++17 header/implementation pairs from the ALP objects in your workspace. Dependencies (`depends_on`) become constructor injection, contracts become interfaces, and status markers become class constants.
+
+```bash
+# Generate PHP classes (PSR-4, namespace Alp\Generated)
+alp codegen --target php
+
+# Generate C++ headers and implementations in namespace app
+alp codegen --target cpp --namespace app
+
+# Custom output directory
+alp codegen --target php --out ./src/Generated
+```
+
+| Flag | Description |
+| :--- | :--- |
+| `--target <t>` | Target language: `php` or `cpp` (required) |
+| `--namespace <ns>` | Target namespace (default: `Alp\Generated` for PHP, `alp` for C++) |
+| `--out <dir>` | Output directory (default: `alp-codegen/<target>`) |
+

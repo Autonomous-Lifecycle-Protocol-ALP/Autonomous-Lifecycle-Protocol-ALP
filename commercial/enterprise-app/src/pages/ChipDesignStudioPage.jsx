@@ -1,3 +1,4 @@
+import { ZapIcon, ShieldIcon, CheckCircleIcon } from "../components/Icons.jsx";
 import { useState, useEffect } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -127,17 +128,17 @@ export default function ChipDesignStudioPage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-200">Key Benefits</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">⚡</div>
+            <div className="text-2xl mb-2 text-amber-400"><ZapIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Rapid Iteration</h3>
             <p className="text-sm text-gray-400 mt-1">Full ASIC/FPGA flow in under 1 hour for 10K-gate designs.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">✅</div>
+            <div className="text-2xl mb-2 text-emerald-400"><CheckCircleIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">100% DRC/LVS Pass</h3>
             <p className="text-sm text-gray-400 mt-1">Automated design rule checking before tape-out.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🔒</div>
+            <div className="text-2xl mb-2 text-red-400"><ShieldIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">IP Protection</h3>
             <p className="text-sm text-gray-400 mt-1">Air-gapped mode with vault-backed key storage for sensitive designs.</p>
           </div>

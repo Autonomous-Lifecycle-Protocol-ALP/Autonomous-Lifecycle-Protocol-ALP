@@ -1,0 +1,16 @@
+[package]
+name = "hydra-security"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+uuid.workspace = true
+hydra-audit = { path = "../hydra-audit" }
+hydra-capabilities = { path = "../hydra-capabilities" }
+
+[dev-dependencies]
+tempfile = "3"
+hydra-core = { path = "../hydra-core" }

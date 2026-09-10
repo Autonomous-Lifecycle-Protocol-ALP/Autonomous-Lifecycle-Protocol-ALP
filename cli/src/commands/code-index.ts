@@ -33,7 +33,7 @@ export function registerCodeIndexCommand(program: Command) {
         options.strategy as ChunkStrategy
       );
 
-      console.log('\n🔍 Semantic Code Index Generated (v30.0.0)');
+      console.log('\n[SCAN] Semantic Code Index Generated (v30.0.0)');
       console.log('=========================================');
       console.log(`  Index ID:       ${config.id}`);
       console.log(`  Language:       ${config.language}`);

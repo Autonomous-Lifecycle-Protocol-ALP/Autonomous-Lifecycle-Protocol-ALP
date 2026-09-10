@@ -97,7 +97,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: pr.number,
-                  body: `🤖 **ALP Tracker:** Successfully updated task \`${taskId}\` status to \`${newStatus}\` in the workspace.`
+                  body: `**ALP Tracker:** Successfully updated task \`${taskId}\` status to \`${newStatus}\` in the workspace.`
                 });
               } catch (e) {
                 console.log("No changes to commit.");

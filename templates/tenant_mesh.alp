@@ -1,0 +1,12 @@
+!alp-version: 3.0.0
+
+// TENANT MESH TEMPLATE
+// Multi-tenant enterprise mesh partition with RBAC roles and workspace limits.
+
+@tenant_mesh
+  id: tenant-enterprise-corp
+  tenant_id: "org-alp-enterprise-01"
+  org_name: "Acme Enterprise Corp"
+  sso_provider: "okta-saml"
+  max_workspaces: 25
+  description: "Enterprise tenant cluster with isolated workspace namespaces"

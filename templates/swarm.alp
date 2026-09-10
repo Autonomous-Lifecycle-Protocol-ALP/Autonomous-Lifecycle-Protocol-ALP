@@ -1,0 +1,12 @@
+!alp-version: 3.0.0
+
+// SWARM TEMPLATE
+// Networked multi-agent cluster with consensus and settlement coordination.
+
+@swarm
+  id: swarm-production-cluster
+  name: "Production Agent Swarm"
+  topology: mesh
+  consensus: pbft
+  threshold: 0.67
+  max_nodes: 50

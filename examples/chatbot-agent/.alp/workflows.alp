@@ -1,0 +1,13 @@
+!alp-version: 3.0.0
+
+@workflow
+  id: wf-chat-interaction
+  name: "User Chat Interaction"
+  trigger: "on_message"
+  agents:
+    - -> agent-support
+    - -> agent-researcher
+  steps:
+    - "Analyze: agent-support determines user intent and confidence"
+    - "Fallback: agent-researcher retrieves context if confidence < 0.7"
+    - "Respond: agent-support generates and delivers final response"

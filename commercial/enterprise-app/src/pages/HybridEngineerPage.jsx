@@ -1,3 +1,4 @@
+import { FiRefreshCw } from 'react-icons/fi';
 import { useState, useEffect } from "react";
 import {
   ServerIcon,
@@ -8,6 +9,8 @@ import {
   DigitalTwinIcon,
   CheckIcon,
   XIcon,
+  ZapIcon,
+  ShieldIcon,
 } from "../components/Icons.jsx";
 import { hybridEngineerApi } from "../utils/productApi.js";
 
@@ -112,6 +115,11 @@ export default function HybridEngineerPage() {
     }
   };
 
+  useEffect(() => {
+    loadProjects();
+    loadSimulations();
+  }, []);
+
   return (
     <div className="space-y-8">
       <div className="text-center mb-8">
@@ -127,12 +135,7 @@ export default function HybridEngineerPage() {
         <div className="flex gap-3 overflow-x-auto pb-2 mb-4">
           {DOMAINS.map((domain) => {
             const Icon = domain.icon;
-  useEffect(() => {
-    loadProjects();
-    loadSimulations();
-  }, []);
-
-  return (
+            return (
               <button
                 key={domain.id}
                 onClick={() => setSelectedDomain(domain.id)}
@@ -231,17 +234,17 @@ export default function HybridEngineerPage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-200">Key Benefits</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">⚡</div>
+            <div className="text-2xl mb-2 text-amber-400"><ZapIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Cross-Domain Synthesis</h3>
             <p className="text-sm text-gray-400 mt-1">Firmware, CAD, simulation, and manufacturing tasks coordinate through ALP DAGs — no manual handoffs.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🛡️</div>
+            <div className="text-2xl mb-2 text-rose-400"><ShieldIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Safety-Critical Enforcement</h3>
             <p className="text-sm text-gray-400 mt-1">@policy blocks dangerous operations until simulation, verification, and human approval gates pass.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🔄</div>
+            <div className="text-2xl mb-2"><FiRefreshCw className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Digital Twin Validation</h3>
             <p className="text-sm text-gray-400 mt-1">Mirror physical assets in software. Verify firmware + hardware contracts before physical deployment.</p>
           </div>

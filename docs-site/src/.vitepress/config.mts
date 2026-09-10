@@ -11,9 +11,23 @@ const starsContent = fs.existsSync(starsPath) ? fs.readFileSync(starsPath, 'utf-
 
 export default defineConfig({
   title: "ALP",
-  description: "Autonomous Lifecycle Protocol",
+  description: "Autonomous Lifecycle Protocol — Open standard and orchestration engine for multi-agent software engineering",
   theme: 'src/.vitepress/theme/index.ts',
   base: '/Autonomous-Lifecycle-Protocol-ALP/',
+  sitemap: {
+    hostname: 'https://autonomous-lifecycle-protocol-alp.github.io/Autonomous-Lifecycle-Protocol-ALP/'
+  },
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
+    ['meta', { name: 'author', content: 'Autonomous Lifecycle Protocol Contributors' }],
+    ['meta', { name: 'keywords', content: 'ALP, autonomous agents, swarm intelligence, software lifecycle, AI orchestration, developer tools' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:title', content: 'Autonomous Lifecycle Protocol (ALP)' }],
+    ['meta', { property: 'og:description', content: 'Open standard and execution engine for multi-agent systems and software lifecycles' }],
+    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
+    ['meta', { name: 'twitter:title', content: 'Autonomous Lifecycle Protocol (ALP)' }],
+    ['meta', { name: 'twitter:description', content: 'Open standard and execution engine for multi-agent systems and software lifecycles' }],
+  ],
   markdown: {
     languageAlias: {
       alp: 'markdown',
@@ -29,7 +43,6 @@ export default defineConfig({
     const head: Array<[string, Record<string, string>, string]> = []
     if (styleContent) head.push(['style', {}, styleContent])
     if (starsContent) head.push(['script', {}, starsContent])
-    head.push(['link', { rel: 'icon', href: '/favicon.ico' }])
     return head
   },
   themeConfig: {
@@ -50,6 +63,8 @@ export default defineConfig({
           { text: 'Tutorial', link: '/tutorial' },
           { text: 'Examples', link: '/examples' },
           { text: 'CLI Guide', link: '/guide/cli' },
+          { text: 'Synapse Knowledge Graph', link: '/guide/synapse' },
+          { text: 'Multi-Modal & VLA', link: '/guide/multimodal' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' }
@@ -96,7 +111,8 @@ export default defineConfig({
               { text: 'ALP Chip Design Studio', link: '/products/chip-design-studio' },
               { text: 'ALP SOC Sentinel AI', link: '/products/soc-sentinel' },
               { text: 'ALP Threat Intelligence Engine', link: '/products/threat-intel' },
-              { text: 'ALP Zero Trust Orchestrator', link: '/products/zero-trust' }
+              { text: 'ALP Zero Trust Orchestrator', link: '/products/zero-trust' },
+              { text: 'ALP Test', link: '/products/alp-test' }
             ]
           }
         ]
@@ -114,10 +130,16 @@ export default defineConfig({
           { text: 'Tutorial', link: '/tutorial' },
           { text: 'Examples', link: '/examples' },
           { text: 'CLI Usage', link: '/guide/cli' },
+          { text: 'Synapse Knowledge Graph', link: '/guide/synapse' },
+          { text: 'Multi-Modal & VLA', link: '/guide/multimodal' },
           { text: 'SDKs', link: '/guide/sdk' },
           { text: 'Best Practices', link: '/best-practices' },
           { text: 'FAQ', link: '/faq' },
           { text: 'Contributing', link: '/contributing' },
+          { text: 'Reasoning Core', link: '/reasoning-core' },
+          { text: 'Swarm Federation', link: '/federation-mesh' },
+          { text: 'ZK Policy Proofs', link: '/zk-proofs' },
+          { text: 'Neuromorphic Mesh', link: '/neuromorphic-mesh' },
           { text: 'Roadmap', link: '/roadmap' },
           { text: 'Releases', link: '/releases' }
         ]
@@ -163,7 +185,8 @@ export default defineConfig({
               { text: 'ALP Chip Design Studio', link: '/products/chip-design-studio' },
               { text: 'ALP SOC Sentinel AI', link: '/products/soc-sentinel' },
               { text: 'ALP Threat Intelligence Engine', link: '/products/threat-intel' },
-              { text: 'ALP Zero Trust Orchestrator', link: '/products/zero-trust' }
+              { text: 'ALP Zero Trust Orchestrator', link: '/products/zero-trust' },
+              { text: 'ALP Test', link: '/products/alp-test' }
             ]
           }
         ]

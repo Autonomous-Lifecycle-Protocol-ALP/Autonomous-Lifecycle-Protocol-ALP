@@ -12,17 +12,17 @@ export function doctorCommand() {
 
   // 1. Check directory existence
   if (!fs.existsSync(alpDir)) {
-    console.error('❌ [ERROR] `.alp` directory not found. Have you run `alp init`?');
+    console.error('[FAIL] [ERROR] `.alp` directory not found. Have you run `alp init`?');
     issues++;
   } else {
-    console.log('✅ Found `.alp` directory.');
+    console.log('[OK] Found `.alp` directory.');
   }
 
   // 2. Check for floating .alp files outside the .alp folder
   const filesInRoot = fs.readdirSync(cwd, { withFileTypes: true });
   for (const file of filesInRoot) {
     if (file.isFile() && file.name.endsWith('.alp')) {
-      console.warn(`⚠️  [WARN] Found floating ALP file outside of .alp/: ${file.name}`);
+      console.warn(`[WARN]  [WARN] Found floating ALP file outside of .alp/: ${file.name}`);
       warnings++;
     }
   }
@@ -44,7 +44,7 @@ export function doctorCommand() {
             parser.parse(content);
           } catch (e: any) {
             parseErrors++;
-            console.error(`❌ [ERROR] Syntax error in ${path.relative(cwd, fullPath)}: ${e.message}`);
+            console.error(`[FAIL] [ERROR] Syntax error in ${path.relative(cwd, fullPath)}: ${e.message}`);
           }
         }
       }
@@ -53,7 +53,7 @@ export function doctorCommand() {
     readDir(alpDir);
     
     if (parseErrors === 0) {
-      console.log('✅ All ALP files parsed successfully (no fatal syntax errors).');
+      console.log('[OK] All ALP files parsed successfully (no fatal syntax errors).');
     } else {
       issues += parseErrors;
     }
@@ -66,10 +66,10 @@ export function doctorCommand() {
       const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
       const deps = { ...pkg.dependencies, ...pkg.devDependencies };
       if (!deps['@autonomous-lifecycle-protocol-alp/sdk'] && !deps['@autonomous-lifecycle-protocol-alp/cli']) {
-        console.warn('⚠️  [WARN] `@autonomous-lifecycle-protocol-alp/sdk` or `@autonomous-lifecycle-protocol-alp/cli` are not listed in package.json dependencies.');
+        console.warn('[WARN]  [WARN] `@autonomous-lifecycle-protocol-alp/sdk` or `@autonomous-lifecycle-protocol-alp/cli` are not listed in package.json dependencies.');
         warnings++;
       } else {
-        console.log('✅ ALP packages found in package.json.');
+        console.log('[OK] ALP packages found in package.json.');
       }
     } catch {
       // ignore
@@ -83,7 +83,7 @@ export function doctorCommand() {
   } else if (warnings > 0) {
     console.log('Your workspace is functional, but consider addressing the warnings.');
   } else {
-    console.log('Your ALP workspace is perfectly healthy! 🎉');
+    console.log('Your ALP workspace is perfectly healthy! [DONE]');
   }
 }
 

@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "oxc"],
+  "rules": {
+    "eslint/no-unused-vars": "off"
+  },
+  "ignorePatterns": [
+    "dist/**",
+    "dist-installer/**",
+    "node_modules/**"
+  ]
+}

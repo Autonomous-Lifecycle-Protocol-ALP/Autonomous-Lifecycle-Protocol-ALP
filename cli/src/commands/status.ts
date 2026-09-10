@@ -40,7 +40,7 @@ export function statusCommand() {
       }
     }
     
-    console.log('\n📊 ALP Project Status');
+    console.log('\n[STATS] ALP Project Status');
     console.log('======================\n');
     
     const types = ['project', 'feature', 'task', 'workflow'];
@@ -58,9 +58,9 @@ export function statusCommand() {
     
   } catch (err: any) {
     if (err instanceof AlpError) {
-      console.error(`❌ Parse Error: ${err.message}`);
+      console.error(`[FAIL] Parse Error: ${err.message}`);
     } else {
-      console.error(`❌ Unexpected Error: ${err.message}`);
+      console.error(`[FAIL] Unexpected Error: ${err.message}`);
     }
     process.exit(1);
   }

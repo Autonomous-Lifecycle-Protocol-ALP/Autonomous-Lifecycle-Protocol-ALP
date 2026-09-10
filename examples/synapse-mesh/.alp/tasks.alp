@@ -1,0 +1,36 @@
+!alp-version: 3.0.0
+
+@task
+  id: task-initialize-topology
+  status: [x]
+  description: "Bootstrap distributed Synapse topology and discover cluster peers"
+  owner: "@agent-mesh-orchestrator"
+  verify:
+    - "npm run test:topology"
+
+@task
+  id: task-pq-handshake
+  status: [x]
+  description: "Establish Post-Quantum Kyber-1024 encrypted communication channels"
+  owner: "@agent-cryptographer"
+  depends_on:
+    - -> task-initialize-topology
+  policy: -> policy-quantum-enclave
+  vault: -> vault-mesh-keys
+
+@task
+  id: task-replicate-crdt-state
+  status: [~]
+  description: "Synchronize distributed CRDT state log across mesh nodes"
+  owner: "@agent-crdt-sync"
+  depends_on:
+    - -> task-pq-handshake
+  contract: -> contract-crdt-handshake
+
+@task
+  id: task-audit-mesh-integrity
+  status: [ ]
+  description: "Execute formal proof verification of all state transitions"
+  owner: "@agent-auditor"
+  depends_on:
+    - -> task-replicate-crdt-state

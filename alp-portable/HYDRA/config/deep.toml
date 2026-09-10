@@ -1,0 +1,20 @@
+[system]
+mode = "deep"
+offline = true
+
+[compute]
+max_cpu_percent = 95
+max_memory_mb = 16384
+
+[network]
+enabled = false
+
+[security]
+approval_mode = "permissive"
+
+[sandbox]
+default_timeout = 3600
+network = "none"
+
+[memory]
+enabled = true

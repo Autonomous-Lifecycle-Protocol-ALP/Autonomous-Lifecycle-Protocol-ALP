@@ -16,5 +16,5 @@ export function uninstallCommand(pkgName: string) {
     return;
   }
   fs.rmSync(target, { recursive: true, force: true });
-  console.log(`✅ Uninstalled ${pkgName}`);
+  console.log(`[OK] Uninstalled ${pkgName}`);
 }

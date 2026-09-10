@@ -40,5 +40,5 @@ export function deleteCommand(objectId: string, options?: DeleteOptions) {
 
   const updated = lines.slice(0, blockStart).concat(lines.slice(blockEnd)).filter((l) => l.trim()).join('\n');
   fs.writeFileSync(targetFile, updated, 'utf-8');
-  console.log(`✅ Deleted '${objectId}' from ${targetFile}`);
+  console.log(`[OK] Deleted '${objectId}' from ${targetFile}`);
 }

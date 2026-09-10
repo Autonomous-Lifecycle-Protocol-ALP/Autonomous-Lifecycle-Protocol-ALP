@@ -1,3 +1,5 @@
+import { FiBox, FiSearch } from 'react-icons/fi';
+import { ProductsIcon } from "../components/Icons.jsx";
 import { useState } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -30,7 +32,6 @@ const INTEGRATIONS = [
 
 export default function DataPipelineStudioPage() {
   const [pipelines, setPipelines] = useState([]);
-  const [runs, setRuns] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -59,14 +60,7 @@ export default function DataPipelineStudioPage() {
     }
   };
 
-  const loadRuns = async () => {
-    try {
-      const res = await dataPipelineApi.listRuns();
-      setRuns(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  
 
   return (
     <ProductPageTemplate product={product}>
@@ -130,17 +124,17 @@ export default function DataPipelineStudioPage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-200">Key Benefits</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🔍</div>
+            <div className="text-2xl mb-2"><FiSearch className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Data Lineage</h3>
             <p className="text-sm text-gray-400 mt-1">Automated lineage inference from task graphs for full traceability.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🧪</div>
+            <div className="text-2xl mb-2"><FiBox className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Experiment Tracking</h3>
             <p className="text-sm text-gray-400 mt-1">ML experiment tracking with model registry and versioning.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">📦</div>
+            <div className="text-2xl mb-2 text-indigo-400"><ProductsIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Schema Evolution</h3>
             <p className="text-sm text-gray-400 mt-1">ALP @contract enforced schema registry with migration automation.</p>
           </div>

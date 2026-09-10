@@ -1,5 +1,7 @@
-import { AlpReader, AlpObject } from './reader';
+import { AlpReader } from './reader';
+import type { AlpObject } from './reader';
 import { AlpValidator } from './validator';
+
 
 // ── Core ──────────────────────────────────────────────────────────────────────
 export * from './error';
@@ -16,6 +18,7 @@ export * from './debug';
 export * from './swarm-client';
 export * from './repo-resolver';
 export * from './node-utils';
+export * from './codegen';
 
 // ── Parsing & Lifecycle ───────────────────────────────────────────────────────
 export * from './status';
@@ -25,9 +28,12 @@ export * from './formal';
 export * from './vault';
 export * from './event-store';
 export * from './visualize';
-export * from './anomaly';
-export * from './planner';
-export * from './negotiate';
+export * from './reasoning-core';
+export * from './federation-engine';
+export * from './zk-proof-engine';
+export * from "./digital-twin-engine";
+export * from "./neuromorphic-engine";
+export * from "./k8s-operator-engine";
 export * from './provenance';
 export * from './autonomy';
 export * from './crdt';
@@ -65,8 +71,10 @@ export * from './eval-suite';
 export * from './prompt-optimizer';
 export * from './consensus-vote';
 export * from './code-transform';
+export * from './codegen';
 export * from './event-mesh';
 export * from './swarm-marketplace';
+export * from './multimodal';
 
 // ── IDE & Editor Extensions ───────────────────────────────────────────────────
 export * from './macro';
@@ -98,7 +106,11 @@ export * from './local-storage-container';
 export * from './reasoning-core';
 
 
-export { AlpObject, AlpReader };
+export type { AlpObject };
+export { AlpReader };
+export { AlpGraph } from './graph';
+
+
 
 export class AlpParser {
   private reader: AlpReader;

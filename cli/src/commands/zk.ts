@@ -16,12 +16,12 @@ export function registerZKCommand(program: Command) {
       const engine = new ZKProofEngine();
       const proof = engine.generateProof(options.id, statement, secret);
 
-      console.log('\n🔒 Generated Zero-Knowledge Proof (v18.0.0)');
+      console.log('\n[LOCK] Generated Zero-Knowledge Proof (v18.0.0)');
       console.log('==========================================');
       console.log(`  ID:          ${proof.id}`);
       console.log(`  Statement:   ${proof.statement}`);
       console.log(`  Commitment:  ${proof.commitment.slice(0, 16)}...`);
-      console.log(`  Verified:    ${proof.verified ? '✅ YES' : '❌ NO'}\n`);
+      console.log(`  Verified:    ${proof.verified ? '[OK] YES' : '[FAIL] NO'}\n`);
     });
 
   zk
@@ -42,9 +42,9 @@ export function registerZKCommand(program: Command) {
       });
 
       if (isValid) {
-        console.log('\n✅ ZK-Proof Verified: Statement is valid without revealing secret!');
+        console.log('\n[OK] ZK-Proof Verified: Statement is valid without revealing secret!');
       } else {
-        console.log('\n❌ ZK-Proof Failed: Invalid proof hash or commitment mismatch.');
+        console.log('\n[FAIL] ZK-Proof Failed: Invalid proof hash or commitment mismatch.');
       }
     });
 }

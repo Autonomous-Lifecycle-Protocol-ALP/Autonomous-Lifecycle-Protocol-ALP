@@ -24,7 +24,7 @@ export function formatCommand(options?: FormatOptions) {
   let changed = 0;
   let checked = 0;
 
-  console.log('📝 Formatting ALP files...\n');
+  console.log('[NOTE] Formatting ALP files...\n');
 
   for (const file of filesToFormat) {
     const original = fs.readFileSync(file, 'utf8');
@@ -34,13 +34,13 @@ export function formatCommand(options?: FormatOptions) {
     if (options?.check) {
       checked++;
       if (original !== formatted) {
-        console.log(`❌ ${relative} needs formatting`);
+        console.log(`[FAIL] ${relative} needs formatting`);
       }
     } else {
       if (original !== formatted) {
         fs.writeFileSync(file, formatted, 'utf8');
         changed++;
-        console.log(`✅ Formatted ${relative}`);
+        console.log(`[OK] Formatted ${relative}`);
       }
     }
   }

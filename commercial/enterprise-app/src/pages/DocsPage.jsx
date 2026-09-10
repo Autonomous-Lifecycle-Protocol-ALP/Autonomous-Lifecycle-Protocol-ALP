@@ -39,7 +39,7 @@ export default function DocsPage() {
             <div className="text-xs text-gray-500">Toolchain Release</div>
           </div>
           <div className="text-center p-4 border border-gray-700 rounded-lg glass-dark">
-            <div className="text-2xl font-bold text-gray-100">1013+</div>
+            <div className="text-2xl font-bold text-gray-100">...</div>
             <div className="text-xs text-gray-500">Passed Tests</div>
           </div>
           <div className="text-center p-4 border border-gray-700 rounded-lg glass-dark">

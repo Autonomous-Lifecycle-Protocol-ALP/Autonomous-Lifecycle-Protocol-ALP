@@ -27,7 +27,7 @@ export function inspectCommand(objectId: string, options?: InspectOptions) {
     process.exit(1);
   }
 
-  console.log(`\n📋 Inspecting '${objectId}'\n`);
+  console.log(`\n[LIST] Inspecting '${objectId}'\n`);
   console.log(`  Type: ${obj._type}`);
   console.log(`  File: ${targetFile}`);
   console.log('');

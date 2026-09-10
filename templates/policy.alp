@@ -1,0 +1,17 @@
+!alp-version: 3.0.0
+
+// POLICY TEMPLATE
+// Enforces security boundaries, path access, and execution guardrails for agents.
+
+@policy
+  id: policy-example-security
+  name: "Example Security Guardrail"
+  applies_to: "@agent-developer"
+  allow_paths:
+    - "src/**"
+    - "tests/**"
+  deny_paths:
+    - "secrets/**"
+    - "credentials/**"
+    - "config/keys/**"
+  require_approval: true

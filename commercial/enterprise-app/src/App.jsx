@@ -32,6 +32,19 @@ const ThreatIntelPage = lazy(() => import("./pages/ThreatIntelPage.jsx"));
 const ZeroTrustPage = lazy(() => import("./pages/ZeroTrustPage.jsx"));
 const ReasoningStudioPage = lazy(() => import("./pages/ReasoningStudioPage.jsx"));
 const DocsPage = lazy(() => import("./pages/DocsPage.jsx"));
+const EcosystemPage = lazy(() => import("./pages/EcosystemPage.jsx"));
+const FederationStudioPage = lazy(() => import("./pages/FederationStudioPage.jsx"));
+const ZKProofStudioPage = lazy(() => import("./pages/ZKProofStudioPage.jsx"));
+const DownloadsPage = lazy(() => import("./pages/DownloadsPage.jsx"));
+const SettingsPage = lazy(() => import("./pages/SettingsPage.jsx"));
+const TeamPage = lazy(() => import("./pages/TeamPage.jsx"));
+const ApiExplorerPage = lazy(() => import("./pages/ApiExplorerPage.jsx"));
+const MarketplacePage = lazy(() => import("./pages/MarketplacePage.jsx"));
+const StatusPage = lazy(() => import("./pages/StatusPage.jsx"));
+const NeuromorphicStudioPage = lazy(() => import("./pages/NeuromorphicStudioPage.jsx"));
+const ChangelogPage = lazy(() => import("./pages/ChangelogPage.jsx"));
+const AuditLogPage = lazy(() => import("./pages/AuditLogPage.jsx"));
+const OnboardingPage = lazy(() => import("./pages/OnboardingPage.jsx"));
 
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center text-gray-300">Loading...</div>
@@ -72,6 +85,19 @@ export default function App() {
             <Route path="products/zero-trust" element={<Suspense fallback={<PageLoader />}><ZeroTrustPage /></Suspense>} />
             <Route path="products/reasoning-studio" element={<Suspense fallback={<PageLoader />}><ReasoningStudioPage /></Suspense>} />
             <Route path="reasoning-studio" element={<Suspense fallback={<PageLoader />}><ReasoningStudioPage /></Suspense>} />
+            <Route path="ecosystem" element={<Suspense fallback={<PageLoader />}><EcosystemPage /></Suspense>} />
+            <Route path="federation-studio" element={<Suspense fallback={<PageLoader />}><FederationStudioPage /></Suspense>} />
+            <Route path="zk-proofs" element={<Suspense fallback={<PageLoader />}><ZKProofStudioPage /></Suspense>} />
+            <Route path="downloads" element={<Suspense fallback={<PageLoader />}><DownloadsPage /></Suspense>} />
+            <Route path="settings" element={<Suspense fallback={<PageLoader />}><SettingsPage /></Suspense>} />
+            <Route path="team" element={<Suspense fallback={<PageLoader />}><TeamPage /></Suspense>} />
+            <Route path="api-explorer" element={<Suspense fallback={<PageLoader />}><ApiExplorerPage /></Suspense>} />
+            <Route path="marketplace" element={<Suspense fallback={<PageLoader />}><MarketplacePage /></Suspense>} />
+            <Route path="status" element={<Suspense fallback={<PageLoader />}><StatusPage /></Suspense>} />
+            <Route path="neuromorphic-studio" element={<Suspense fallback={<PageLoader />}><NeuromorphicStudioPage /></Suspense>} />
+            <Route path="changelog" element={<Suspense fallback={<PageLoader />}><ChangelogPage /></Suspense>} />
+            <Route path="audit-log" element={<Suspense fallback={<PageLoader />}><AuditLogPage /></Suspense>} />
+            <Route path="onboarding" element={<Suspense fallback={<PageLoader />}><OnboardingPage /></Suspense>} />
             <Route path="products/:id" element={<Suspense fallback={<PageLoader />}><ProductDetailPage /></Suspense>} />
             <Route path="docs" element={<Suspense fallback={<PageLoader />}><DocsPage /></Suspense>} />
             <Route path="hybrid-engineer" element={<Suspense fallback={<PageLoader />}><HybridEngineerPage /></Suspense>} />

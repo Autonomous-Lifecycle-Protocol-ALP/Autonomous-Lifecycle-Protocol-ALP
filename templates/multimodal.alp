@@ -1,0 +1,63 @@
+!alp-version: 3.0.0
+
+// MULTIMODAL & VLA SPECIFICATION TEMPLATE
+// Defines vision, audio, and action-space modalities for autonomous agents.
+
+@multimodal
+  id: mm-vision-pipeline
+  modalities:
+    - vision
+    - text
+    - sensor
+  resolution: "1920x1080"
+  fps: 30
+  embedding_dim: 768
+  assets:
+    - id: asset-ui-screenshot
+      type: image
+      uri: "file://assets/screenshots/ui-main.png"
+      format: png
+      resolution: "1920x1080"
+    - id: asset-stream-cam
+      type: video
+      uri: "rtsp://camera.local/live"
+      format: h264
+
+---
+
+@vision_model
+  id: model-siglip-base
+  backbone: siglip
+  embedding_dim: 768
+  max_resolution: "1024x1024"
+  context_tokens: 4096
+  latency_p95_ms: 45
+
+---
+
+@action_space
+  id: act-browser-nav
+  agent: agent-developer
+  domain: browser
+  max_concurrency: 4
+  safety_guards:
+    - guard-origin-whitelist
+    - guard-action-budget
+  actions:
+    - name: click_element
+      type: digital
+      safety_level: low
+      latency_budget_ms: 100
+      parameters:
+        - name: selector
+          type: string
+          required: true
+          description: "CSS selector of element to click"
+    - name: submit_transaction
+      type: api
+      safety_level: critical
+      requires_confirmation: true
+      parameters:
+        - name: transaction_id
+          type: string
+          required: true

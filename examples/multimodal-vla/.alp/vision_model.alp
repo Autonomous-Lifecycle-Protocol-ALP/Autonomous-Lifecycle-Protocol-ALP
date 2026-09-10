@@ -1,0 +1,17 @@
+!alp-version: 3.0.0
+
+@vision_model
+  id: model-warehouse-clip
+  backbone: clip
+  embedding_dim: 768
+  max_resolution: "1920x1080"
+  context_tokens: 4096
+  latency_p95_ms: 120
+
+@vision_model
+  id: model-thermal-detector
+  backbone: custom
+  embedding_dim: 512
+  max_resolution: "640x480"
+  context_tokens: 2048
+  latency_p95_ms: 85

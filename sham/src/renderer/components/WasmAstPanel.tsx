@@ -40,11 +40,11 @@ export function WasmAstPanel(): React.JSX.Element {
 
   const styles = {
     container: { display: 'flex', flexDirection: 'column' as const, height: '100%', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', boxSizing: 'border-box' as const },
-    header: { padding: 'var(--spacing-sm) var(--spacing-md)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' },
+    header: { padding: 'var(--spacing-sm) var(--spacing-md)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxSizing: 'border-box' as const },
     body: { flex: 1, display: 'flex', overflow: 'hidden', flexDirection: 'column' },
-    editorPane: { flex: 1, padding: 'var(--spacing-sm)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column' as const, gap: 'clamp(6px, 1.5vw, 12px)', boxSizing: 'border-box' },
-    astPane: { flex: 1, padding: 'var(--spacing-sm)', overflowY: 'auto' as const, display: 'flex', flexDirection: 'column' as const, gap: 'clamp(6px, 1.5vw, 12px)', boxSizing: 'border-box' },
-    textarea: { width: '100%', flex: 1, background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', color: 'var(--text-primary)', padding: 'clamp(6px, 1.5vw, 12px)', fontSize: 'var(--font-size-sm)', fontFamily: 'monospace', resize: 'none' as const, boxSizing: 'border-box' },
+    editorPane: { flex: 1, padding: 'var(--spacing-sm)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column' as const, gap: 'clamp(6px, 1.5vw, 12px)', boxSizing: 'border-box' as const },
+    astPane: { flex: 1, padding: 'var(--spacing-sm)', overflowY: 'auto' as const, display: 'flex', flexDirection: 'column' as const, gap: 'clamp(6px, 1.5vw, 12px)', boxSizing: 'border-box' as const },
+    textarea: { width: '100%', flex: 1, background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', color: 'var(--text-primary)', padding: 'clamp(6px, 1.5vw, 12px)', fontSize: 'var(--font-size-sm)', fontFamily: 'monospace', resize: 'none' as const, boxSizing: 'border-box' as const },
     btn: { background: 'var(--accent)', border: 'none', borderRadius: 'var(--radius-sm)', color: 'var(--bg-primary)', padding: 'clamp(4px, 1vw, 8px) clamp(10px, 2vw, 16px)', cursor: 'pointer', fontSize: 'var(--font-size-sm)', fontWeight: 600 },
   };
 

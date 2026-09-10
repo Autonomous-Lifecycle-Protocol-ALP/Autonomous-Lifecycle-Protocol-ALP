@@ -1,0 +1,19 @@
+!alp-version: 3.1.0
+
+@multimodal
+  id: mm-warehouse-inspection
+  modalities:
+    - vision
+    - sensor
+
+@action_space
+  id: as-warehouse-robot
+  domain: warehouse
+  actions:
+    - move_to_shelf
+    - pick_item
+
+@vision_model
+  id: vm-clip-base
+  backbone: clip
+  context_tokens: 4096

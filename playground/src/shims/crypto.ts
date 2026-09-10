@@ -1,7 +1,7 @@
 // Browser shim for Node's `crypto` used by ALPEL `crypto.*` expressions and
 // parser vault operations. Caveat: this is a playground-only stub.
 // SHA-256 returns a stable deterministic hex digest; other operations return
-// empty strings so the UI doesn't crash.
+// empty strings or safe dummy objects so the UI doesn't crash.
 
 function stableHex(input: string): string {
   let h = 0;
@@ -38,6 +38,17 @@ export function createHmac(_algorithm: string, _key: string): { update(data: str
   };
 }
 
+export function createCipheriv(_algorithm: string, _key: any, _iv: any): { update(data: string, encoding: string): { final(encoding: string): string }; final(encoding: string): string } {
+  return {
+    update(_data: string, _encoding: string) {
+      return this;
+    },
+    final(_encoding: string): string {
+      return '';
+    },
+  };
+}
+
 export function createDecipheriv(_algorithm: string, _key: string, _iv: string): { update(data: string, encoding: string): { final(encoding: string): string }; final(encoding: string): string } {
   return {
     update(_data: string, _encoding: string) {
@@ -47,6 +58,26 @@ export function createDecipheriv(_algorithm: string, _key: string, _iv: string):
       return '';
     },
   };
+}
+
+export function createPublicKey(_key: any): { export(options?: unknown): ArrayBuffer } {
+  return {
+    export: () => new ArrayBuffer(32),
+  };
+}
+
+export function createPrivateKey(_key: any): { export(options?: unknown): ArrayBuffer } {
+  return {
+    export: () => new ArrayBuffer(32),
+  };
+}
+
+export function randomBytes(size: number): Uint8Array {
+  const arr = new Uint8Array(size);
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    crypto.getRandomValues(arr);
+  }
+  return arr;
 }
 
 export function generateKeyPairSync(_algorithm: string): { publicKey: { export(options: unknown): ArrayBuffer }; privateKey: { export(options: unknown): ArrayBuffer } } {
@@ -77,7 +108,11 @@ export function randomUUID(): string {
 export default {
   createHash,
   createHmac,
+  createCipheriv,
   createDecipheriv,
+  createPublicKey,
+  createPrivateKey,
+  randomBytes,
   generateKeyPairSync,
   diffieHellman,
   randomUUID,

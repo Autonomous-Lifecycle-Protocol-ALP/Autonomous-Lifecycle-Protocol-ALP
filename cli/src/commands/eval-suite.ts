@@ -26,12 +26,12 @@ export function registerEvalSuiteCommand(program: Command) {
 
       const report = engine.runEvaluation(suiteId);
 
-      console.log('\n📊 Agent Evaluation Benchmark Report (v31.0.0)');
+      console.log('\n[STATS] Agent Evaluation Benchmark Report (v31.0.0)');
       console.log('============================================');
       console.log(`  Suite ID:      ${report.suiteId}`);
       console.log(`  Target Agent:  ${report.targetAgent}`);
       console.log(`  Total Score:   ${(report.totalScore * 100).toFixed(1)}%`);
-      console.log(`  Status:        ${report.passed ? '✅ PASSED' : '❌ FAILED'}`);
+      console.log(`  Status:        ${report.passed ? '[OK] PASSED' : '[FAIL] FAILED'}`);
       console.log(`  Threshold:     ${(report.passingThreshold * 100).toFixed(1)}%`);
       console.log('\n  Metric Breakdown:');
       console.log(`    - Accuracy:         ${(report.metricBreakdown.accuracy * 100).toFixed(1)}%`);

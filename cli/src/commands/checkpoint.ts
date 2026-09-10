@@ -78,7 +78,7 @@ export function checkpointCommand(
         if (modified) {
           fs.writeFileSync(fullPath, newLines.join('\n'), 'utf-8');
           const relPath = path.relative(cwd, fullPath);
-          console.log(`✅ Updated task '${taskId}' → status: ${newStatus}`);
+          console.log(`[OK] Updated task '${taskId}' → status: ${newStatus}`);
 
           // Emit a structured runtime event for the `alp serve` dashboard.
           logEvent(alpDir, options?.askHuman ? 'human_handoff' : 'checkpoint', {
@@ -88,9 +88,9 @@ export function checkpointCommand(
           });
 
           if (message) {
-            console.log(`📝 Logged message: ${message}`);
+            console.log(`[NOTE] Logged message: ${message}`);
           }
-          console.log(`📄 Modified: ${relPath}`);
+          console.log(`[FILE] Modified: ${relPath}`);
         }
       }
     }

@@ -2,10 +2,87 @@ const express = require('express');
 const { EnterprisePlatform } = require('@autonomous-lifecycle-protocol-alp/platform');
 const { middleware } = require('../controllers/AuthController');
 const asyncHandler = require('../middleware/asyncHandler');
-const { PlatformProject, PlatformDevice, PlatformPlan } = require('../models/Models');
+const { PlatformProject, PlatformDevice, PlatformPlan, WorkflowRun } = require('../models/Models');
+
+class MongoWorkflowStore {
+  async saveRun(run) {
+    try {
+      const orgId = run.results?.__orgId;
+      if (!orgId) return; // Skip if no orgId
+
+      await WorkflowRun.findOneAndUpdate(
+        { runId: run.runId },
+        {
+          organization: orgId,
+          workflowId: run.workflowId,
+          runId: run.runId,
+          status: run.status,
+          context: run.results,
+          completedSteps: run.completedSteps,
+          logs: run.stepEvents,
+          startedAt: run.startedAt,
+          finishedAt: run.completedAt,
+        },
+        { upsert: true, new: true }
+      );
+    } catch (e) {
+      console.error('Failed to persist WorkflowRun', e);
+    }
+  }
+
+  async loadRun(runId) {
+    const doc = await WorkflowRun.findOne({ runId });
+    if (!doc) return undefined;
+    return {
+      runId: doc.runId,
+      workflowId: doc.workflowId,
+      status: doc.status,
+      results: doc.context || {},
+      completedSteps: doc.completedSteps || [],
+      stepEvents: doc.logs || [],
+      startedAt: doc.startedAt ? doc.startedAt.toISOString() : undefined,
+      completedAt: doc.finishedAt ? doc.finishedAt.toISOString() : undefined,
+    };
+  }
+
+  async deleteRun(runId) {
+    await WorkflowRun.deleteOne({ runId });
+  }
+}
 
 const router = express.Router();
-const platform = new EnterprisePlatform();
+const platform = new EnterprisePlatform(new MongoWorkflowStore());
+
+// Inject global WebSocket io into the platform to broadcast events
+router.use((req, res, next) => {
+  if (!platform.__wsBound && req.app.locals.io) {
+    platform.__wsBound = true;
+    
+    // Bind Workflow Events
+    const originalCompleteStep = platform.workflow.completeStep.bind(platform.workflow);
+    platform.workflow.completeStep = (runId, stepId, result) => {
+      const run = originalCompleteStep(runId, stepId, result);
+      req.app.locals.io.emit('workflow:step_success', { runId, stepId, result });
+      return run;
+    };
+
+    // Bind Distributed Events
+    const originalRegisterNode = platform.distributed.registerNode.bind(platform.distributed);
+    platform.distributed.registerNode = (node) => {
+      const result = originalRegisterNode(node);
+      req.app.locals.io.emit('node:registered', node);
+      return result;
+    };
+
+    const originalDispatch = platform.distributed.dispatchTask.bind(platform.distributed);
+    platform.distributed.dispatchTask = (taskDef) => {
+      const task = originalDispatch(taskDef);
+      if (task) req.app.locals.io.emit('task:dispatched', task);
+      return task;
+    };
+  }
+  next();
+});
 
 router.use(middleware.auth);
 
@@ -150,9 +227,14 @@ router.get('/workflows/:id', asyncHandler((req, res) => {
 
 router.post('/workflows/start', asyncHandler((req, res) => {
   const { workflowId, context } = req.body;
-  const run = platform.workflow.startRun(workflowId, context);
+  const initialContext = { ...context, __orgId: req.orgId };
+  const run = platform.workflow.startRun(workflowId, initialContext);
   if (!run) return res.status(404).json({ message: 'Workflow not found' });
-  res.status(201).json(run);
+  
+  // Start execution asynchronously
+  platform.workflow.executeAll(run.runId).catch(err => console.error("Workflow failed:", err));
+  
+  res.status(202).json(run);
 }));
 
 router.get('/workflows/runs/:runId', asyncHandler((req, res) => {
@@ -162,9 +244,17 @@ router.get('/workflows/runs/:runId', asyncHandler((req, res) => {
 }));
 
 router.post('/workflows/runs/:runId/execute', asyncHandler(async (req, res) => {
-  const run = await platform.workflow.executeAll(req.params.runId);
+  const run = platform.workflow.getRun(req.params.runId);
   if (!run) return res.status(404).json({ message: 'Run not found' });
-  res.json(run);
+  
+  if (run.status !== 'running') {
+    return res.status(400).json({ message: 'Run is not in running state', status: run.status });
+  }
+
+  // Execute asynchronously
+  platform.workflow.executeAll(req.params.runId).catch(err => console.error("Workflow failed:", err));
+  
+  res.status(202).json(run);
 }));
 
 router.post('/workflows/runs/:runId/complete', asyncHandler((req, res) => {

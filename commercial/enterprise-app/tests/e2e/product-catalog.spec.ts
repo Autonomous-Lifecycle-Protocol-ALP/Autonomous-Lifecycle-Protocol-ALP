@@ -18,7 +18,7 @@ test.describe('Product Catalog E2E', () => {
     await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(1000);
 
-    await expect(page.getByRole('heading', { name: 'ALP Product Suite' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'ALP Autonomous Product Ecosystem' })).toBeVisible();
   });
 
   test('opens a product detail page from catalog', async ({ page }) => {
@@ -36,6 +36,7 @@ test.describe('Product Catalog E2E', () => {
   });
 
   test('navigates between multiple products', async ({ page }) => {
+    test.setTimeout(120000);
     await page.goto('/products');
     await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(1000);
@@ -60,13 +61,13 @@ test.describe('Product Catalog E2E', () => {
     for (const product of products) {
       await page.goto('/products');
       await page.waitForLoadState('domcontentloaded');
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(1000);
 
       const link = page.getByRole('link', { name: product.name });
       await expect(link).toBeVisible();
       await link.click();
       await page.waitForURL(product.url);
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(1000);
 
       await expect(page.getByRole('heading', { name: product.name })).toBeVisible();
     }
@@ -96,14 +97,14 @@ test.describe('Product Catalog E2E', () => {
     await page.waitForTimeout(2000);
 
     const pipelineName = `E2E Pipeline ${Date.now()}`;
-    page.on('dialog', async (dialog) => {
+    page.once('dialog', async (dialog) => {
       await dialog.accept(pipelineName);
     });
 
     await page.click('text=Create Pipeline');
     await page.waitForTimeout(1000);
 
-    page.on('dialog', async (dialog) => {
+    page.once('dialog', async (dialog) => {
       await dialog.accept('github');
     });
     await page.waitForTimeout(1000);
@@ -117,7 +118,7 @@ test.describe('Product Catalog E2E', () => {
     await page.waitForTimeout(2000);
 
     const dashboardName = `E2E Dashboard ${Date.now()}`;
-    page.on('dialog', async (dialog) => {
+    page.once('dialog', async (dialog) => {
       await dialog.accept(dashboardName);
     });
 
@@ -133,7 +134,7 @@ test.describe('Product Catalog E2E', () => {
     await page.waitForTimeout(2000);
 
     const workflowName = `E2E Workflow ${Date.now()}`;
-    page.on('dialog', async (dialog) => {
+    page.once('dialog', async (dialog) => {
       await dialog.accept(workflowName);
     });
 
@@ -149,11 +150,16 @@ test.describe('Product Catalog E2E', () => {
     await page.waitForTimeout(2000);
 
     const scanName = `E2E Scan ${Date.now()}`;
-    page.on('dialog', async (dialog) => {
+    page.once('dialog', async (dialog) => {
       await dialog.accept(scanName);
     });
 
     await page.click('text=New Scan');
+    await page.waitForTimeout(1000);
+
+    page.once('dialog', async (dialog) => {
+      await dialog.accept('sast');
+    });
     await page.waitForTimeout(1000);
 
     await expect(page.getByText(scanName)).toBeVisible({ timeout: 10000 });

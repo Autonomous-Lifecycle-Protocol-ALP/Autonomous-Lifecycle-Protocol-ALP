@@ -47,7 +47,7 @@ jobs:
               const output = execSync(`alp run --task ${taskId} --dry-run`).toString();
               
               // Find the start of the context bundle
-              const bundleStart = output.indexOf('📋 CONTEXT BUNDLE');
+              const bundleStart = output.indexOf('CONTEXT BUNDLE');
               let contextText = output;
               if (bundleStart > -1) {
                 // Extract just the context part, skipping the border lines
@@ -55,7 +55,7 @@ jobs:
                 contextText = lines.slice(2, lines.length - 3).join('\n'); // naive strip of borders
               }
 
-              const body = `🤖 **ALP Context Bundle** for Task \`${taskId}\`\n\n<details>\n<summary>Click to view full context (Rules, Memories, Dependencies)</summary>\n\n\`\`\`markdown\n${contextText}\n\`\`\`\n\n</details>`;
+              const body = `**ALP Context Bundle** for Task \`${taskId}\`\n\n<details>\n<summary>Click to view full context (Rules, Memories, Dependencies)</summary>\n\n\`\`\`markdown\n${contextText}\n\`\`\`\n\n</details>`;
               
               await github.rest.issues.createComment({
                 owner: context.repo.owner,

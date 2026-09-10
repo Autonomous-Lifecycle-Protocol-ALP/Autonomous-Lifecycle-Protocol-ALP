@@ -24,7 +24,7 @@ export function installCommand(pkgName: string, options?: { url?: string; versio
   const ver = at > 0 ? body.slice(at + 1) : (options?.version || 'latest');
   const trustedKey = options?.key ? fs.readFileSync(path.resolve(options.key), 'utf-8') : process.env.ALP_REGISTRY_TRUST_KEY;
   client.install(name, alpDir, ver, trustedKey)
-    .then((p) => console.log(`✅ Installed ${name}@${ver} -> ${p}`))
-    .catch((err: any) => { console.error(`❌ ${err.message}`); process.exit(1); });
+    .then((p) => console.log(`[OK] Installed ${name}@${ver} -> ${p}`))
+    .catch((err: any) => { console.error(`[FAIL] ${err.message}`); process.exit(1); });
 }
 

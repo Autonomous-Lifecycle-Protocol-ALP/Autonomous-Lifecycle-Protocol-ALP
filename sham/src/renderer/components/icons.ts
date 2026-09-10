@@ -58,6 +58,13 @@ import {
   LuPause,
   LuSkipForward,
   LuHeart,
+  LuNetwork,
+  LuShare2,
+  LuGitGraph,
+  LuBrain,
+  LuCamera,
+  LuVideo,
+  LuCrosshair,
 } from 'react-icons/lu';
 
 export type IconName =
@@ -73,7 +80,9 @@ export type IconName =
   | 'wifi' | 'barChart2' | 'bar-chart-2' | 'link'
   | 'trash' | 'mapPin' | 'map-pin' | 'book' | 'menu' | 'layers'
   | 'server' | 'cloud' | 'target' | 'info' | 'key' | 'database'
-  | 'play' | 'pause' | 'skipForward' | 'skip-forward' | 'heart';
+  | 'play' | 'pause' | 'skipForward' | 'skip-forward' | 'heart'
+  | 'network' | 'share2' | 'gitGraph' | 'brain' | 'synapse'
+  | 'camera' | 'video' | 'crosshair' | 'multimodal';
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   edit3: LuPencil,
@@ -147,6 +156,15 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   skipForward: LuSkipForward,
   'skip-forward': LuSkipForward,
   heart: LuHeart,
+  network: LuNetwork,
+  share2: LuShare2,
+  gitGraph: LuGitGraph,
+  brain: LuBrain,
+  synapse: LuNetwork,
+  camera: LuCamera,
+  video: LuVideo,
+  crosshair: LuCrosshair,
+  multimodal: LuCamera,
 };
 
 export function getIconComponent(name: IconName): React.ComponentType<any> {

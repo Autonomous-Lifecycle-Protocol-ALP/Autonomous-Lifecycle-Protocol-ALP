@@ -1,0 +1,14 @@
+!alp-version: 3.0.0
+
+@workflow
+  id: wf-daily-etl
+  name: "Daily Sales ETL"
+  trigger: "cron(0 0 * * *)"
+  agents:
+    - -> agent-extractor
+    - -> agent-cleaner
+    - -> agent-analyst
+  steps:
+    - "Extract: agent-extractor extracts raw sales data from Salesforce API"
+    - "Clean: agent-cleaner scrubs PII and normalizes schemas"
+    - "Analyze: agent-analyst generates daily aggregation report"

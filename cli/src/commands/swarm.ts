@@ -96,7 +96,7 @@ export function swarmCommand(sub: string | undefined, swarmId: string | undefine
     }
     case 'leave': {
       client.leave()
-        .then(() => console.log(`👋 Left swarm "${id}".`))
+        .then(() => console.log(`[EXIT] Left swarm "${id}".`))
         .catch((e) => { console.error('Leave failed:', e.message); process.exit(1); });
       return;
     }

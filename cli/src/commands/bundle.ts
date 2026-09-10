@@ -17,7 +17,7 @@ export function registerBundleCommand(program: Command) {
       const alpDir = path.join(cwd, '.alp');
 
       if (!fs.existsSync(alpDir)) {
-        console.error(`\n❌ No .alp/ directory found in ${cwd}`);
+        console.error(`\n[FAIL] No .alp/ directory found in ${cwd}`);
         process.exitCode = 1;
         return;
       }
@@ -33,7 +33,7 @@ export function registerBundleCommand(program: Command) {
       }
 
       if (objects.length === 0) {
-        console.error('\n⚠️  No ALP objects found in workspace.');
+        console.error('\n[WARN]  No ALP objects found in workspace.');
         process.exitCode = 1;
         return;
       }
@@ -48,10 +48,10 @@ export function registerBundleCommand(program: Command) {
       if (options.out) {
         const outPath = path.resolve(options.out);
         fs.writeFileSync(outPath, JSON.stringify(result, null, 2));
-        console.log(`\n✅ Bundle written to ${outPath}`);
+        console.log(`\n[OK] Bundle written to ${outPath}`);
       }
 
-      console.log('\n⚡ Edge Context Bundle Compiled (v46.0.0)');
+      console.log('\n[FAST] Edge Context Bundle Compiled (v46.0.0)');
       console.log('==========================================');
       console.log(`  Bundle ID:     ${result.manifest.id}`);
       console.log(`  Format:        ${result.manifest.format}`);
@@ -61,6 +61,6 @@ export function registerBundleCommand(program: Command) {
       console.log(`  Size:          ${result.sizeBytes} bytes`);
       console.log(`  Compiled In:   ${result.manifest.compilationMs} ms`);
       console.log(`  Checksum:      ${result.manifest.checksum}`);
-      console.log(`  Integrity:     ${bundler.verify(result) ? '✅ VERIFIED' : '❌ FAILED'}\n`);
+      console.log(`  Integrity:     ${bundler.verify(result) ? '[OK] VERIFIED' : '[FAIL] FAILED'}\n`);
     });
 }

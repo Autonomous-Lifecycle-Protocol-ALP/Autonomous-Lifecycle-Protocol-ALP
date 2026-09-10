@@ -2,7 +2,7 @@ name: Deploy Docs to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "feat/enterprise-app-and-repo-updates"]
   workflow_dispatch:
 
 permissions:
@@ -41,6 +41,16 @@ jobs:
       - name: Build VitePress site
         working-directory: docs-site
         run: npm run docs:build
+
+      - name: Validate ALP Test docs page exists
+        working-directory: docs-site
+        run: test -f src/.vitepress/dist/products/alp-test/index.html || (echo "ALP Test docs page missing from build" && exit 1)
+
+      - name: Check for broken internal links
+        working-directory: docs-site
+        run: |
+          npm install -g markdown-link-check
+          markdown-link-check -c .markdown-link-check.json src/products/alp-test.md || true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-export const SERVER = path.resolve(process.cwd(), 'mcp-server/dist/index.js');
+export const SERVER = path.resolve(__dirname, '../dist/index.js');
 
 export interface JsonRpc {
   id?: number;

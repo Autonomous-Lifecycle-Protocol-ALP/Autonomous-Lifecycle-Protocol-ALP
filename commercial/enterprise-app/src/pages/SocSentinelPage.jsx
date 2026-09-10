@@ -1,3 +1,5 @@
+import { FiSearch, FiRadio } from 'react-icons/fi';
+import { LogoIcon } from "../components/Icons.jsx";
 import { useState, useEffect } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -131,17 +133,17 @@ export default function SocSentinelPage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-200">Key Benefits</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🤖</div>
+            <div className="text-2xl mb-2 text-sky-400"><LogoIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Adversarial ML Defense</h3>
             <p className="text-sm text-gray-400 mt-1">Detect prompt injection, model extraction, and jailbreaking attempts.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🔍</div>
+            <div className="text-2xl mb-2"><FiSearch className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Automated Forensics</h3>
             <p className="text-sm text-gray-400 mt-1">Immutable event log with W3C Verifiable Credentials for chain-of-custody.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">📡</div>
+            <div className="text-2xl mb-2"><FiRadio className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Real-Time Detection</h3>
             <p className="text-sm text-gray-400 mt-1">Sub-30-second threat detection latency from anomalous event to alert.</p>
           </div>

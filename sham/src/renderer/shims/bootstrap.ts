@@ -9,5 +9,5 @@ if (typeof globalThis.process === 'undefined') {
     env: {},
     browser: true,
     nextTick: (cb: Function, ...args: any[]) => Promise.resolve(cb(...args)),
-  };
+  } as any;
 }

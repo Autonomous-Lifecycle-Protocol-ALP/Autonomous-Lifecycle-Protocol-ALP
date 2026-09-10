@@ -32,7 +32,7 @@ export function validateCommand(filePath?: string) {
     if (hasErrors) {
       process.exit(1);
     } else {
-      console.log('✅ All ALP files are valid!');
+      console.log('[OK] All ALP files are valid!');
     }
   }
 }
@@ -54,7 +54,7 @@ function validateDirectory(parser: AlpParser, dir: string): void {
   if (hasErrors) {
     process.exit(1);
   } else {
-    console.log('✅ All ALP files are valid!');
+    console.log('[OK] All ALP files are valid!');
   }
 }
 
@@ -62,17 +62,17 @@ function validateFile(parser: AlpParser, filePath: string): boolean {
   try {
     const content = fs.readFileSync(filePath, 'utf8');
     const objects = parser.parseAndValidate(content);
-    console.log(`✅ [OK] ${filePath} (${objects.length} objects)`);
+    console.log(`[OK] ${filePath} (${objects.length} objects)`);
     return true;
   } catch (err: any) {
     if (err instanceof AlpError) {
-      console.error(`❌ [ERROR] ${filePath}`);
+      console.error(`[ERROR] ${filePath}`);
       console.error(`   ${err.message}`);
       if ((err as any).details) {
         console.error(JSON.stringify((err as any).details, null, 2));
       }
     } else {
-      console.error(`❌ [ERROR] ${filePath}: ${err.message}`);
+      console.error(`[ERROR] ${filePath}: ${err.message}`);
     }
     return false;
   }

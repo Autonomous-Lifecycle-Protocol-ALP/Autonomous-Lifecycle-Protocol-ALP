@@ -47,6 +47,21 @@ The extension provides hover documentation and autocomplete for all ALP object t
 | **V13+** | `@negotiate`, `@vector_store`, `@sandbox_env`, `@crdt_sync`, `@self_healing`, `@formal_verification`, `@asset_context`, `@cost_budget`, `@tenant_mesh` |
 | **V14+** | `@zk_proof`, `@anomaly`, `@prompt_optimizer`, `@code_index`, `@code_transform`, `@event_mesh`, `@swarm_marketplace`, `@consensus_vote`, `@eval_suite` |
 | **V38+** | `@macro`, `@collaboration`, `@memory_mesh` |
+| **V82+** | `@multimodal`, `@action_space`, `@vision_model` |
+
+## Multi-Modal & VLA Commands
+
+| Command | Description |
+| :--- | :--- |
+| `ALP: Show Multi-Modal Specs` (`alp.showMultimodal`) | Browse `@multimodal` definitions with modality, resolution, and FPS metadata |
+| `ALP: Show Action Spaces` (`alp.showActionSpaces`) | Inspect `@action_space` definitions with domain, agent binding, and action counts |
+| `ALP: Show Vision Models` (`alp.showVisionModels`) | Review `@vision_model` configurations with backbone, context tokens, and embedding dimensions |
+
+## Synapse Knowledge Graph Command
+
+| Command | Description |
+| :--- | :--- |
+| `ALP: Show Synapse Knowledge Graph` (`alp.showSynapse`) | Open an interactive Webview panel showing the compiled Synapse topology with node degree, in/out link counts, and graph density metrics |
 
 ## Supported Directives
 

@@ -19,14 +19,14 @@ export function registerBFTVoteCommand(program: Command) {
 
       const tally = engine.tally(proposalId);
 
-      console.log('\n🛡️ BFT Swarm Consensus Round (v48.0.0)');
+      console.log('\n[SHIELD] BFT Swarm Consensus Round (v48.0.0)');
       console.log('=======================================');
       console.log(`  Proposal ID:    ${tally.proposalId}`);
       console.log(`  Phase:          ${tally.phase.toUpperCase()}`);
       console.log(`  Swarm Size (N): ${tally.totalNodes}`);
       console.log(`  Max Faulty (f): ${tally.maxFaultyNodes}`);
       console.log(`  Quorum (2f+1):  ${tally.requiredQuorum}`);
-      console.log(`  Committed:      ${tally.committed ? '✅ YES' : '⏳ IN PROGRESS'}`);
+      console.log(`  Committed:      ${tally.committed ? '[OK] YES' : '⏳ IN PROGRESS'}`);
       console.log(`  Winning Value:  ${tally.winningValue}\n`);
     });
 }

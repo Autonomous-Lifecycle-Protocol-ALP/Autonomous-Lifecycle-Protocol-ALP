@@ -10,7 +10,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "vitest run"
   },
   "publishConfig": {
     "access": "public",
@@ -20,7 +21,8 @@
     "@autonomous-lifecycle-protocol-alp/parser": "*"
   },
   "devDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "2.1.9"
   },
   "keywords": [
     "alp",

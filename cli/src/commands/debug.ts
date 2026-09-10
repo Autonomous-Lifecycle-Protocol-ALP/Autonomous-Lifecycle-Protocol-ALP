@@ -23,7 +23,7 @@ export function debugCommand(runId: string, opts: { step?: number; toStage?: str
       process.exit(1);
     }
     const diff = session.diffSnapshots(a, b);
-    console.log(`\n🔍 Diff: ${aId} → ${bId}`);
+    console.log(`\n[SCAN] Diff: ${aId} → ${bId}`);
     console.log('==============================');
     console.log(`  Added keys:   ${Object.keys(diff.added).join(', ') || 'none'}`);
     console.log(`  Removed keys: ${Object.keys(diff.removed).join(', ') || 'none'}`);

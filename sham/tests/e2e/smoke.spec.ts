@@ -19,15 +19,18 @@ test.describe('SHAM Desktop E2E', () => {
     await page.goto('/');
     await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(2000);
-    const shamText = page.getByRole('banner').getByText('SHAM', { exact: false });
-    await expect(shamText).toBeVisible();
+    // The header is a <header> element with class "app-header"
+    // containing a logo div with span text "SHAM"
+    const shamText = page.locator('header').getByText('SHAM', { exact: false });
+    await expect(shamText.first()).toBeVisible();
   });
 
-  test('pro tab is accessible', async ({ page }) => {
+  test('editor tab is accessible', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(2000);
-    const proButton = page.getByRole('button', { name: /Pro/i });
-    await expect(proButton).toBeVisible();
+    // The header contains panel buttons including "Editor"
+    const editorButton = page.locator('header').getByRole('button', { name: /Editor/i });
+    await expect(editorButton).toBeVisible();
   });
 });
