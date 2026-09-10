@@ -24,21 +24,21 @@ export default defineConfig({
     ],
     setupFiles: ['sham/tests/setup.ts'],
     testTimeout: 60000,
-  },
-  coverage: {
-    provider: 'v8',
-    reporter: ['text', 'json', 'html'],
-    reportsDirectory: './coverage',
-    include: [
-      'sdk/typescript/src/**/*.ts',
-      'mcp-server/src/**/*.ts',
-      'vscode/server/src/**/*.ts',
-      'cli/src/**/*.ts',
-      'parser/src/**/*.ts',
-      'sham/src/**/*.ts',
-      'sham/src/**/*.tsx',
-    ],
-    exclude: ['**/*.test.ts', '**/*.spec.ts', '**/node_modules/**'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      reportsDirectory: './coverage',
+      include: [
+        'sdk/typescript/src/**/*.ts',
+        'mcp-server/src/**/*.ts',
+        'vscode/server/src/**/*.ts',
+        'cli/src/**/*.ts',
+        'parser/src/**/*.ts',
+        'sham/src/**/*.ts',
+        'sham/src/**/*.tsx',
+      ],
+      exclude: ['**/*.test.ts', '**/*.spec.ts', '**/node_modules/**'],
+    },
   },
   resolve: {
     alias: {
