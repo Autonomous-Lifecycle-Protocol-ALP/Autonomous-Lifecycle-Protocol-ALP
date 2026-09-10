@@ -2,9 +2,9 @@ name: "ALP CI"
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "feat/**"]
   pull_request:
-    branches: ["main"]
+    branches: ["main", "feat/**"]
 
 jobs:
   typescript:
@@ -30,6 +30,12 @@ jobs:
 
       - name: Build workspaces
         run: npm run build
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
 
       - name: Run unit & compliance tests
         run: npm test
