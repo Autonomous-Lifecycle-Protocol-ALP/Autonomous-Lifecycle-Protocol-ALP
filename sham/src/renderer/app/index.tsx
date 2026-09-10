@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Sidebar } from '../components/Sidebar.js';
 import { CommandPalette } from '../components/CommandPalette.js';
 import { TerminalPanel } from '../components/TerminalPanel.js';
+import { DebugPanel } from '../components/DebugPanel.js';
 import { Icon } from '../components/Icon.js';
 import { PanelRouter } from './PanelRouter.js';
 import { useAppState } from './useAppState.js';
