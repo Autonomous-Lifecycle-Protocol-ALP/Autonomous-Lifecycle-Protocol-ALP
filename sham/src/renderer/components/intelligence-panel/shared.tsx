@@ -1,7 +1,1 @@
-export interface IntelligenceSuggestion {
-  id: string;
-  title: string;
-  description: string;
-  type: string;
-  confidence: number;
-}
+export type { IntelligenceSuggestion } from '../../shared/types.js';

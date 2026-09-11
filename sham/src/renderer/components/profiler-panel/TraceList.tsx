@@ -11,6 +11,7 @@ import {
 export interface TraceListProps {
   traces: ProfileTrace[];
   loading: boolean;
+  runningTraceId?: string | null;
   onStop: (trace: ProfileTrace, status: 'completed' | 'failed') => void;
 }
 

@@ -34,24 +34,26 @@ const AutonomyPanel = React.lazy(() => import('../components/AutonomyPanel.js').
 const SynapsePanel = React.lazy(() => import('../components/SynapsePanel.js').then((m) => ({ default: m.SynapsePanel })));
 const MultiModalPanel = React.lazy(() => import('../components/MultiModalPanel.js').then((m) => ({ default: m.MultiModalPanel })));
 
+import type { SHAMState } from '../shared/types.js';
+
 interface PanelRouterProps {
   activePanel: PanelId;
   showWelcome: boolean;
-  state: ReturnType<typeof import('../shared/types.js').SHAMState>;
+  state: SHAMState;
   onOpenFile: (filePath: string) => void;
   onValidate: (content: string, filePath: string) => Promise<void>;
   onCursorChange: (position: { line: number; column: number }) => Promise<void>;
   onRunAgent: (agentId: string, config: Record<string, unknown>) => Promise<void>;
-  onUpdateCollabSession: (session: ReturnType<typeof import('../shared/types.js').SHAMState>['collab']['session']) => void;
+  onUpdateCollabSession: (session: SHAMState['collab']['session']) => void;
   onAppendCollabOutput: (lines: string[]) => void;
-  onUpdateCollabPresence: (presence: ReturnType<typeof import('../shared/types.js').SHAMState>['collab']['presence']) => void;
-  onUpdatePlugins: (plugins: ReturnType<typeof import('../shared/types.js').SHAMState>['plugins']['plugins']) => void;
+  onUpdateCollabPresence: (presence: SHAMState['collab']['presence']) => void;
+  onUpdatePlugins: (plugins: SHAMState['plugins']['plugins']) => void;
   onAppendPluginOutput: (lines: string[]) => void;
-  onUpdateProfilerTraces: (traces: ReturnType<typeof import('../shared/types.js').SHAMState>['profiler']['traces']) => void;
+  onUpdateProfilerTraces: (traces: SHAMState['profiler']['traces']) => void;
   onAppendProfilerOutput: (lines: string[]) => void;
-  onUpdateCopilotSuggestions: (suggestions: ReturnType<typeof import('../shared/types.js').SHAMState>['copilot']['suggestions']) => void;
+  onUpdateCopilotSuggestions: (suggestions: SHAMState['copilot']['suggestions']) => void;
   onAppendCopilotOutput: (lines: string[]) => void;
-  onUpdateRefactorRenames: (renames: ReturnType<typeof import('../shared/types.js').SHAMState>['refactor']['renames']) => void;
+  onUpdateRefactorRenames: (renames: SHAMState['refactor']['renames']) => void;
   onAppendRefactorOutput: (lines: string[]) => void;
   onAppendDebugOutput: (lines: string[]) => void;
   onStartDebug: (filePath: string) => void;
@@ -59,9 +61,9 @@ interface PanelRouterProps {
   onToggleBreakpoint: (line: number | string) => void;
   onRunTests: (suiteIds: string[]) => Promise<void>;
   onAppendTestOutput: (lines: string[]) => void;
-  onUpdateIntelligenceState: (s: ReturnType<typeof import('../shared/types.js').SHAMState>['intelligence']) => void;
+  onUpdateIntelligenceState: (s: SHAMState['intelligence']) => void;
   onAppendIntelligenceOutput: (lines: string[]) => void;
-  onUpdateAutonomyState: (s: ReturnType<typeof import('../shared/types.js').SHAMState>['autonomy']) => void;
+  onUpdateAutonomyState: (s: SHAMState['autonomy']) => void;
   onAppendAutonomyOutput: (lines: string[]) => void;
 }
 
@@ -114,7 +116,7 @@ export function PanelRouter(props: PanelRouterProps) {
       return (
         <TerminalPanel
           output={state.terminalOutput}
-          onAppendOutput={(lines) => state.setState?.((prev: ReturnType<typeof import('../shared/types.js').SHAMState>) => ({ ...prev, terminalOutput: [...prev.terminalOutput, ...lines] }))}
+          onAppendOutput={() => {}}
         />
       );
     case 'agents':

@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import type { SHAMState, TreeNode } from '../shared/types.js';
+import type { SHAMState } from '../../shared/types.js';
+import type { TreeNode } from './shared.js';
 import { Icon } from '../Icon.js';
 import { WORKSPACE_TREE, getFileIcon } from './shared.js';
 

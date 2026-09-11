@@ -21,7 +21,7 @@ export interface CanvasNode {
 
 export interface SnapPanelProps {
   snapshotJson: string | null;
-  onDismiss: () => void;
+  onDismissSnapshot: () => void;
 }
 
 export interface ToolbarProps {

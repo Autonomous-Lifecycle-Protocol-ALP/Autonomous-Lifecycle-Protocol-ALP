@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import type { IntelligenceSuggestion } from '../shared/types.js';
+import type { IntelligenceSuggestion } from '../../shared/types.js';
 
 interface DiagnoseTabProps {
   diagnoseInput: string;

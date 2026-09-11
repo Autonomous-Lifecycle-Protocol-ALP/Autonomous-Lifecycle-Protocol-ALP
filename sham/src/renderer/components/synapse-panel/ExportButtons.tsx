@@ -3,6 +3,8 @@ import { Icon } from '../Icon.js';
 import { COLORS } from './shared.js';
 
 interface ExportButtonsProps {
+  vaultFiles?: unknown[];
+  canvasData?: unknown;
   onExportVault: () => void;
   onDownloadCanvas: () => void;
   onCopyMermaid: () => void;

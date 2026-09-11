@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Icon } from '../Icon.js';
-import type { AutonomyDecision } from '../shared/types.js';
+import type { AutonomyDecision } from '../../shared/types.js';
 import { RunForm } from './RunForm.js';
 import { ResultsView } from './ResultsView.js';
 

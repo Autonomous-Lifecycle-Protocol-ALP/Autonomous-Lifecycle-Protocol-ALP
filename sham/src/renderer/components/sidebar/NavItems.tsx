@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SHAMState } from '../shared/types.js';
+import type { SHAMState } from '../../shared/types.js';
 import { Icon } from '../Icon.js';
 import { getFileIcon } from './shared.js';
 

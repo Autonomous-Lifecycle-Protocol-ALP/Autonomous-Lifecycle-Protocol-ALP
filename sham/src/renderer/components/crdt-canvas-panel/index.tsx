@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CRDTCanvasEngine, CanvasEdge } from '@autonomous-lifecycle-protocol-alp/parser';
+import { Icon } from '../Icon.js';
 import { Peer, CanvasNode } from './shared.js';
 import { Toolbar } from './Toolbar.js';
 import { CanvasView } from './CanvasView.js';

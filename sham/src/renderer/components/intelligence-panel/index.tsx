@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Icon } from '../Icon.js';
-import type { IntelligenceSuggestion } from '../shared/types.js';
+import type { IntelligenceSuggestion } from '../../shared/types.js';
 import { SuggestTab } from './SuggestTab.js';
 import { DiagnoseTab } from './DiagnoseTab.js';
 

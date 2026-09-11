@@ -1,4 +1,4 @@
-import type { SHAMState } from '../shared/types.js';
+import type { SHAMState } from '../../shared/types.js';
 
 export interface SidebarProps {
   state: SHAMState;

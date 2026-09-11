@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from '../Icon.js';
 import { CanvasViewProps, TYPE_COLORS, getNodeCenter, styles } from './shared.js';
 
 export function CanvasView({ nodes, edges, peers, selectedNode, snapshotJson, onSelectNode, onDismissSnapshot }: CanvasViewProps) {

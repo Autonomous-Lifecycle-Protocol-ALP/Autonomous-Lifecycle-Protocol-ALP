@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import type { AutonomyDecision } from '../shared/types.js';
+import type { AutonomyDecision } from '../../shared/types.js';
 import {
   autonomyRun,
   autonomyHeal,

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { autonomyDecisions } from '../../shared/alp-client.js';
-import type { AutonomyDecision } from '../shared/types.js';
+import type { AutonomyDecision } from '../../shared/types.js';
 
 interface ResultsViewProps {
   decisions: AutonomyDecision[];
