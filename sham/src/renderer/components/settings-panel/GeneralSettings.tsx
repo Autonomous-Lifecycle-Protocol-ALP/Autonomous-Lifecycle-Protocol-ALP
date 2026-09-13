@@ -80,7 +80,7 @@ export function GeneralSettings(): React.JSX.Element {
         <div style={ABOUT_TEXT_STYLE}>
           <div><strong style={{ color: 'var(--text-primary)' }}>SHAM IDE</strong> v0.1.0</div>
           <div>ALP Runtime v40.0.0</div>
-          <div>Electron {process.versions.electron || 'latest'}</div>
+          <div>Electron {typeof process !== 'undefined' && (process as any)?.versions?.electron ? (process as any).versions.electron : 'latest'}</div>
           <div style={{ marginTop: 8 }} className="flex-wrap-gap">
             <span className="badge badge-info badge-responsive">Catppuccin</span>
             <span className="badge badge-muted badge-responsive">v40 IDE Intelligence</span>

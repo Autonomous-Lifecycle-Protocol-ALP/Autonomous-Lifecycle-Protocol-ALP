@@ -55,4 +55,29 @@ export function registerAlpLanguage(monaco: any): void {
       { open: '"', close: '"' },
     ],
   });
+
+  if (monaco.editor?.defineTheme) {
+    monaco.editor.defineTheme('alp-dark', {
+      base: 'vs-dark',
+      inherit: true,
+      rules: [
+        { token: 'keyword', foreground: 'f38ba8', fontStyle: 'bold' },
+        { token: 'type', foreground: '89dceb', fontStyle: 'bold' },
+        { token: 'comment', foreground: '6c7086', fontStyle: 'italic' },
+        { token: 'string', foreground: 'a6e3a1' },
+        { token: 'number', foreground: 'fab387', fontStyle: 'bold' },
+        { token: 'delimiter', foreground: '94a3b8' },
+        { token: 'identifier', foreground: 'cdd6f4' },
+      ],
+      colors: {
+        'editor.background': '#181825',
+        'editor.foreground': '#cdd6f4',
+        'editorCursor.foreground': '#89b4fa',
+        'editorLineNumber.foreground': '#585b70',
+        'editorLineNumber.activeForeground': '#89b4fa',
+        'editor.selectionBackground': '#31324480',
+      },
+    });
+  }
 }
+

@@ -106,7 +106,7 @@ export function CopilotPanel({
     container: { display: 'flex', flexDirection: 'column' as const, height: '100%', background: 'var(--bg-primary)', color: 'var(--text-primary)', fontFamily: 'Inter, sans-serif', boxSizing: 'border-box' as const },
     header: { padding: 'var(--spacing-sm) var(--spacing-md)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 10 },
     tabs: { display: 'flex', borderBottom: '1px solid var(--border)', flexWrap: 'wrap' },
-    tab: (active: boolean) => ({ padding: '8px 16px', cursor: 'pointer', fontSize: 'var(--font-size-sm)', color: active ? 'var(--accent)' : 'var(--text-muted)', borderBottom: active ? '2px solid var(--accent)' : '2px solid transparent', background: 'transparent', border: 'none', fontFamily: 'inherit' }),
+    tab: (active: boolean) => ({ padding: '8px 16px', cursor: 'pointer', fontSize: 'var(--font-size-sm)', color: active ? 'var(--accent)' : 'var(--text-muted)', borderBottom: active ? '2px solid var(--accent)' : '2px solid transparent', borderTop: 'none', borderLeft: 'none', borderRight: 'none', background: 'transparent', fontFamily: 'inherit' }),
     body: { flex: 1, overflowY: 'auto' as const, padding: 'var(--spacing-sm)', boxSizing: 'border-box' as const },
     intentBadge: (i: CopilotIntent) => ({ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 12px', borderRadius: 20, background: INTENT_COLORS[i] + '22', color: INTENT_COLORS[i], fontSize: 'var(--font-size-xs)', fontWeight: 600, border: `1px solid ${INTENT_COLORS[i]}44` }),
     planStep: { display: 'flex', gap: 12, padding: '10px 0', borderBottom: '1px solid var(--border)' },

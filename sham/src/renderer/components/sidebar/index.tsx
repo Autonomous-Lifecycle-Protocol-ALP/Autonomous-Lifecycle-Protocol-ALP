@@ -5,12 +5,23 @@ import { NavItems } from './NavItems.js';
 import { NavCategory } from './NavCategory.js';
 import { Icon } from '../Icon.js';
 
-export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActivePanel }: SidebarProps): React.JSX.Element {
+export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActivePanel, onOpenPanelsDrawer }: SidebarProps): React.JSX.Element {
   return (
     <div className="sidebar" style={{ background: 'linear-gradient(to bottom, rgba(24, 24, 37, 0.8), rgba(17, 17, 27, 0.9))', boxShadow: 'inset -1px 0 0 rgba(255,255,255,0.05)' }}>
       <NavItems state={state} onOpenFile={onOpenFile} onCloseFile={onCloseFile} />
       <NavCategory state={state} onOpenFile={onOpenFile} />
       <div className="sidebar-footer">
+        {onOpenPanelsDrawer && (
+          <button
+            className="sidebar-footer-item sidebar-drawer-launcher-btn"
+            onClick={onOpenPanelsDrawer}
+            title="Open All Panels & Tools Drawer (31)"
+          >
+            <Icon name="layers" size={14} color="var(--accent)" />
+            <span style={{ flex: 1 }}>All Panels Drawer</span>
+            <span className="sidebar-drawer-badge">31</span>
+          </button>
+        )}
         {['editor', 'terminal', 'agents', 'synapse', 'multimodal', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'refactor', 'marketplace', 'zk', 'partition', 'crdtCanvas', 'wasmAst', 'edgeDebug', 'telemetryInspector', 'chaosEngine', 'featureFlags', 'workflowReplay', 'localStorage', 'selfHealingMesh', 'intelligence', 'autonomy', 'test-runner', 'debugger', 'git', 'search', 'pro', 'settings'].map((panel) => (
           <button
             key={panel}

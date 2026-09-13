@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, screen, cleanup } from '@testing-library/react';
+import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import { Sidebar } from '../src/renderer/components/Sidebar';
 import type { SHAMState } from '../src/renderer/shared/types';
 
@@ -122,4 +122,83 @@ describe('Sidebar', () => {
     const footerAgents = agentsButtons[agentsButtons.length - 1];
     expect(footerAgents.className).toContain('active');
   });
+
+  it('renders All Panels Drawer launcher with badge and calls onOpenPanelsDrawer', () => {
+    const onOpenPanelsDrawer = vi.fn();
+    render(
+      <Sidebar
+        state={baseState}
+        onOpenFile={vi.fn()}
+        onCloseFile={vi.fn()}
+        activePanel="editor"
+        setActivePanel={vi.fn()}
+        onOpenPanelsDrawer={onOpenPanelsDrawer}
+      />
+    );
+    const drawerBtn = screen.getByTitle(/Open All Panels & Tools Drawer \(31\)/i);
+    expect(drawerBtn).toBeDefined();
+    expect(drawerBtn.textContent).toContain('All Panels Drawer');
+    expect(drawerBtn.textContent).toContain('31');
+
+    fireEvent.click(drawerBtn);
+    expect(onOpenPanelsDrawer).toHaveBeenCalledTimes(1);
+  });
+
+  it('toggles search input in workspace tree and filters files', () => {
+    render(
+      <Sidebar
+        state={baseState}
+        onOpenFile={vi.fn()}
+        onCloseFile={vi.fn()}
+        activePanel="editor"
+        setActivePanel={vi.fn()}
+      />
+    );
+
+    // Click the search toggle button in Workspace header
+    const searchToggleBtn = screen.getByTitle('Filter Workspace Files');
+    expect(searchToggleBtn).toBeDefined();
+    fireEvent.click(searchToggleBtn);
+
+    // Search input should appear
+    const searchInput = screen.getByPlaceholderText('Filter files...');
+    expect(searchInput).toBeDefined();
+
+    // Type filter query
+    fireEvent.change(searchInput, { target: { value: 'package' } });
+    expect(screen.getByText('package.json')).toBeDefined();
+    expect(screen.queryByText('hello.alp')).toBeNull();
+
+    // Clear filter
+    const clearBtn = screen.getByTitle('Clear');
+    fireEvent.click(clearBtn);
+    expect((searchInput as HTMLInputElement).value).toBe('');
+    expect(screen.getByText('hello.alp')).toBeDefined();
+
+    // Close search
+    const closeSearchBtn = screen.getByTitle('Close Search');
+    fireEvent.click(closeSearchBtn);
+    expect(screen.queryByPlaceholderText('Filter files...')).toBeNull();
+  });
+
+  it('displays empty state when workspace filter has no matches', () => {
+    render(
+      <Sidebar
+        state={baseState}
+        onOpenFile={vi.fn()}
+        onCloseFile={vi.fn()}
+        activePanel="editor"
+        setActivePanel={vi.fn()}
+      />
+    );
+
+    const searchToggleBtn = screen.getByTitle('Filter Workspace Files');
+    fireEvent.click(searchToggleBtn);
+
+    const searchInput = screen.getByPlaceholderText('Filter files...');
+    fireEvent.change(searchInput, { target: { value: 'unknown-random-file' } });
+
+    expect(screen.getByText('No matching files found')).toBeDefined();
+  });
 });
+

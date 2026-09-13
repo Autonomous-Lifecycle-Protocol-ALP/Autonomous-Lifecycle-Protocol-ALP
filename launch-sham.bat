@@ -1,0 +1,9 @@
+@echo off
+title Launching SHAM Desktop IDE...
+cd /d "%~dp0sham"
+set ELECTRON_RUN_AS_NODE=
+echo Building SHAM components...
+call npm run build
+echo Starting SHAM Electron Desktop App...
+start "" npx electron .
+exit /b 0

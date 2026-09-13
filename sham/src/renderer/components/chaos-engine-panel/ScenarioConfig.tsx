@@ -23,7 +23,7 @@ export function ScenarioConfig({ experiment }: ScenarioConfigProps) {
         <div className="table-responsive">
           <table className="table">
             <tbody>
-              <tr><td style={{ color: 'var(--text-muted)' }}>Type:</td><td style={{ color: TYPE_META[experiment.type].color }}>{TYPE_META[experiment.type].label}</td></tr>
+              <tr><td style={{ color: 'var(--text-muted)' }}>Type:</td><td style={{ color: TYPE_META[experiment.type]?.color || 'var(--text-muted)' }}>{TYPE_META[experiment.type]?.label || experiment.type}</td></tr>
               <tr><td style={{ color: 'var(--text-muted)' }}>Target:</td><td style={{ fontFamily: 'monospace' }}>{experiment.target}</td></tr>
               <tr><td style={{ color: 'var(--text-muted)' }}>Blast Radius:</td><td>{experiment.blastRadius}</td></tr>
               <tr><td style={{ color: 'var(--text-muted)' }}>Intensity:</td><td>{(experiment.intensity * 100).toFixed(0)}%</td></tr>

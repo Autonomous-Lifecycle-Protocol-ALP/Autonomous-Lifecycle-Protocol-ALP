@@ -7,6 +7,7 @@ export interface SidebarProps {
   onSelectAgent: (id: string) => void;
   activePanel: string;
   setActivePanel: (panel: string) => void;
+  onOpenPanelsDrawer?: () => void;
 }
 
 export interface TreeNode {

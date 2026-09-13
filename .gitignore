@@ -85,6 +85,7 @@ agent-workspace/
 token.txt
 login.json
 create-workspace.json
+manualsetup.md
 
 # Downloaded toolchains and build artifacts
 maven/

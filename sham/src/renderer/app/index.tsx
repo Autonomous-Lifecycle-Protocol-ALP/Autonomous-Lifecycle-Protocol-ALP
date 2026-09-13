@@ -1,8 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Sidebar } from '../components/Sidebar.js';
 import { CommandPalette } from '../components/CommandPalette.js';
 import { TerminalPanel } from '../components/TerminalPanel.js';
 import { DebugPanel } from '../components/DebugPanel.js';
+import { PanelsDrawer } from '../components/PanelsDrawer.js';
 import { Icon } from '../components/Icon.js';
 import { PanelRouter } from './PanelRouter.js';
 import { useAppState } from './useAppState.js';
@@ -24,8 +25,51 @@ export function App(_props: AppProps): React.JSX.Element {
   const [activePanel, setActivePanel] = useState<PanelId>('editor');
   const [showWelcome, setShowWelcome] = useState(true);
   const [showCommandPalette, setShowCommandPalette] = useState(false);
+  const [showPanelsDrawer, setShowPanelsDrawer] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [bottomPanel, setBottomPanel] = useState<BottomTabId | null>('terminal');
   const [bottomActiveTab, setBottomActiveTab] = useState<BottomTabId>('terminal');
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
+        e.preventDefault();
+        setSidebarOpen((prev) => !prev);
+      } else if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'P' || e.key === 'p')) {
+        e.preventDefault();
+        setShowCommandPalette((prev) => !prev);
+      } else if (
+        (e.ctrlKey || e.metaKey) &&
+        ((e.shiftKey && (e.key === 'O' || e.key === 'o')) || (e.altKey && (e.key === 'p' || e.key === 'P')))
+      ) {
+        e.preventDefault();
+        setShowPanelsDrawer((prev) => !prev);
+      } else if ((e.ctrlKey || e.metaKey) && e.key === '`') {
+        e.preventDefault();
+        setBottomPanel((prev) => (prev ? null : 'terminal'));
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const onOpenFile = useCallback((filePath: string) => {
+    handleOpenFile(filePath);
+    setActivePanel('editor');
+    setShowWelcome(false);
+  }, [handleOpenFile]);
+
+  const onCloseFile = useCallback((filePath: string) => {
+    handleCloseFile(filePath);
+    if (state.openFiles.length <= 1) {
+      setShowWelcome(true);
+    }
+  }, [handleCloseFile, state.openFiles.length]);
+
+  const handleSelectPanel = useCallback((panel: PanelId) => {
+    setActivePanel(panel);
+    setShowWelcome(false);
+  }, []);
 
   const onUpdateCollabSession = useCallback((session: typeof defaultState.collab.session) => {
     setState((prev) => ({ ...prev, collab: { ...prev.collab, session } }));
@@ -139,6 +183,14 @@ export function App(_props: AppProps): React.JSX.Element {
   return (
     <div className="app">
       <header className="app-header">
+        <button
+          className={`header-btn header-sidebar-toggle ${sidebarOpen ? 'active' : ''}`}
+          onClick={() => setSidebarOpen((prev) => !prev)}
+          title="Toggle Sidebar (Ctrl+B)"
+          aria-label="Toggle Sidebar"
+        >
+          <Icon name="sidebar" size={16} />
+        </button>
         <div className="app-header-logo">
           <div className="app-header-logo-icon">S</div>
           <span>SHAM</span>
@@ -146,6 +198,15 @@ export function App(_props: AppProps): React.JSX.Element {
         <span className="app-header-title">v80.0.0 — IDE Intelligence</span>
         <div className="app-header-spacer" />
         <div className="app-header-actions">
+          <button
+            className={`header-btn header-drawer-btn ${showPanelsDrawer ? 'active' : ''}`}
+            onClick={() => setShowPanelsDrawer((prev) => !prev)}
+            title="Panels & Workspaces Drawer (Ctrl+Shift+O)"
+          >
+            <Icon name="layers" size={15} />
+            <span>Panels</span>
+            <span className="navbar-badge">31</span>
+          </button>
           <button className="header-btn" onClick={() => setShowCommandPalette(true)} title="Command Palette (Ctrl+Shift+P)">
             <Icon name="menu" size={16} /> Commands
           </button>
@@ -153,23 +214,34 @@ export function App(_props: AppProps): React.JSX.Element {
             <button
               key={panel.id}
               className={`header-btn ${activePanel === panel.id ? 'active' : ''}`}
-              onClick={() => setActivePanel(panel.id)}
+              onClick={() => handleSelectPanel(panel.id)}
             >
               {panel.label}
             </button>
           ))}
+          <button
+            className={`header-btn ${bottomPanel ? 'active' : ''}`}
+            onClick={() => setBottomPanel((prev) => (prev ? null : 'terminal'))}
+            title="Toggle Bottom Terminal Drawer (Ctrl+`)"
+            aria-label="Toggle Bottom Panel"
+          >
+            <Icon name="terminal" size={15} />
+          </button>
         </div>
       </header>
 
       <div className="app-body">
-        <Sidebar
-          state={state}
-          onOpenFile={handleOpenFile}
-          onCloseFile={handleCloseFile}
-          onSelectAgent={(id) => setState((prev) => ({ ...prev, selectedAgent: id }))}
-          activePanel={activePanel}
-          setActivePanel={(panel: string) => setActivePanel(panel as PanelId)}
-        />
+        {sidebarOpen && (
+          <Sidebar
+            state={state}
+            onOpenFile={onOpenFile}
+            onCloseFile={onCloseFile}
+            onSelectAgent={(id) => setState((prev) => ({ ...prev, selectedAgent: id }))}
+            activePanel={activePanel}
+            setActivePanel={(panel: string) => handleSelectPanel(panel as PanelId)}
+            onOpenPanelsDrawer={() => setShowPanelsDrawer(true)}
+          />
+        )}
         <div className="main-area">
           {!showWelcome && state.openFiles.length > 0 && (
             <div className="tab-bar">
@@ -177,14 +249,14 @@ export function App(_props: AppProps): React.JSX.Element {
                 <div
                   key={file}
                   className={`tab ${state.activeFile === file ? 'active' : ''}`}
-                  onClick={() => handleOpenFile(file)}
+                  onClick={() => onOpenFile(file)}
                 >
                   <span className="tab-label">{file}</span>
                   <button
                     className="tab-close"
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleCloseFile(file);
+                      onCloseFile(file);
                     }}
                   >
                     ×
@@ -199,7 +271,7 @@ export function App(_props: AppProps): React.JSX.Element {
                 activePanel={activePanel}
                 showWelcome={showWelcome}
                 state={state}
-                onOpenFile={handleOpenFile}
+                onOpenFile={onOpenFile}
                 onValidate={handleValidate}
                 onCursorChange={handleCursorChange}
                 onRunAgent={handleRunAgent}
@@ -313,7 +385,15 @@ export function App(_props: AppProps): React.JSX.Element {
           </span>
           {state.activeFile && <span className="status-bar-item">{state.activeFile}</span>}
           {state.diagnostics.length > 0 && (
-            <span className="status-bar-item" style={{ color: 'var(--accent-red)' }}>
+            <span
+              className="status-bar-item"
+              style={{ color: 'var(--accent-red)', cursor: 'pointer' }}
+              onClick={() => {
+                setBottomPanel('problems');
+                setBottomActiveTab('problems');
+              }}
+              title="Click to view problems"
+            >
               {state.diagnostics.length} problem{state.diagnostics.length !== 1 ? 's' : ''}
             </span>
           )}
@@ -332,17 +412,18 @@ export function App(_props: AppProps): React.JSX.Element {
 
       {showCommandPalette && (
         <CommandPalette onClose={() => setShowCommandPalette(false)} onSelect={(cmd) => {
-          if (cmd === 'settings') setActivePanel('settings');
-          else if (cmd === 'git') setActivePanel('git');
-          else if (cmd === 'search') setActivePanel('search');
+          if (cmd === 'settings') handleSelectPanel('settings');
+          else if (cmd === 'git') handleSelectPanel('git');
+          else if (cmd === 'search') handleSelectPanel('search');
           else if (cmd === 'terminal.toggle') setBottomPanel((prev) => (prev === 'terminal' ? null : 'terminal'));
-          else if (cmd === 'editor.new') { handleOpenFile('untitled.alp'); setActivePanel('editor'); }
+          else if (cmd === 'editor.new') { onOpenFile('untitled.alp'); }
           else if (cmd === 'editor.save') { /* placeholder */ }
-          else if (cmd === 'workbench.focusSidebar') { /* placeholder */ }
-          else if (cmd === 'debugger.start') { setActivePanel('debugger'); }
+          else if (cmd === 'workbench.focusSidebar' || cmd === 'sidebar.toggle') { setSidebarOpen((prev) => !prev); }
+          else if (cmd === 'panels.drawer' || cmd === 'workbench.panels') { setShowPanelsDrawer(true); }
+          else if (cmd === 'debugger.start') { handleSelectPanel('debugger'); }
           else if (cmd === 'debugger.stop') { setState((prev) => ({ ...prev, debug: { session: null, output: [] } })); }
-          else if (cmd === 'tests.run') { setActivePanel('test-runner'); }
-          else if (cmd === 'collab.start') { setActivePanel('collab'); }
+          else if (cmd === 'tests.run') { handleSelectPanel('test-runner'); }
+          else if (cmd === 'collab.start') { handleSelectPanel('collab'); }
           else if (cmd === 'collab.share') {
             if (state.collab.session) {
               navigator.clipboard.writeText(`sham://collab/join/${state.collab.session.id}`).catch(() => {});
@@ -351,6 +432,13 @@ export function App(_props: AppProps): React.JSX.Element {
           setShowCommandPalette(false);
         }} />
       )}
+
+      <PanelsDrawer
+        isOpen={showPanelsDrawer}
+        onClose={() => setShowPanelsDrawer(false)}
+        activePanel={activePanel}
+        onSelectPanel={handleSelectPanel}
+      />
     </div>
   );
 }

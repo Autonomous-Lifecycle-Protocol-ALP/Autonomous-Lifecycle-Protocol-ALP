@@ -38,7 +38,12 @@ vi.mock('@monaco-editor/react', () => ({
       data-options={JSON.stringify(options)}
     />
   ),
+  loader: {
+    init: () => Promise.resolve({}),
+    config: () => {},
+  },
 }));
+
 
 describe('EditorPanel', () => {
   it('renders the active file name in the header', () => {

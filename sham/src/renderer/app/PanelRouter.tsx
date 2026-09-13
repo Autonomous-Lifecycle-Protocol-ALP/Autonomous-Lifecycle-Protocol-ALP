@@ -3,6 +3,7 @@ import { EditorPanel } from '../components/EditorPanel.js';
 import { TerminalPanel } from '../components/TerminalPanel.js';
 import { WelcomeScreen } from '../components/WelcomeScreen.js';
 import { ProPanel } from '../components/ProPanel.js';
+import { DebugPanel } from '../components/DebugPanel.js';
 import { PanelSuspense, type PanelId } from './shared.js';
 
 const AgentPanel = React.lazy(() => import('../components/AgentPanel.js').then((m) => ({ default: m.AgentPanel })));
@@ -15,7 +16,6 @@ const RefactorPanel = React.lazy(() => import('../components/RefactorPanel.js').
 const SettingsPanel = React.lazy(() => import('../components/SettingsPanel.js').then((m) => ({ default: m.SettingsPanel })));
 const GitPanel = React.lazy(() => import('../components/GitPanel.js').then((m) => ({ default: m.GitPanel })));
 const SearchPanel = React.lazy(() => import('../components/SearchPanel.js').then((m) => ({ default: m.SearchPanel })));
-const DebugPanel = React.lazy(() => import('../components/DebugPanel.js').then((m) => ({ default: m.DebugPanel })));
 const TestRunnerPanel = React.lazy(() => import('../components/TestRunnerPanel.js').then((m) => ({ default: m.TestRunnerPanel })));
 const SwarmMarketplacePanel = React.lazy(() => import('../components/SwarmMarketplacePanel.js').then((m) => ({ default: m.SwarmMarketplacePanel })));
 const ZKProofPanel = React.lazy(() => import('../components/ZKProofPanel.js').then((m) => ({ default: m.ZKProofPanel })));
@@ -99,7 +99,7 @@ export function PanelRouter(props: PanelRouterProps) {
     onAppendAutonomyOutput,
   } = props;
 
-  if (showWelcome) {
+  if (showWelcome && activePanel === 'editor' && (!state.activeFile || state.openFiles.length === 0)) {
     return <WelcomeScreen onOpenFile={onOpenFile} />;
   }
 
@@ -120,13 +120,29 @@ export function PanelRouter(props: PanelRouterProps) {
         />
       );
     case 'agents':
-      return <AgentPanel agents={state.agents} onRunAgent={onRunAgent} />;
+      return (
+        <PanelSuspense>
+          <AgentPanel agents={state.agents} onRunAgent={onRunAgent} />
+        </PanelSuspense>
+      );
     case 'synapse':
-      return <SynapsePanel parsedObjects={state.parseResult?.objects || null} />;
+      return (
+        <PanelSuspense>
+          <SynapsePanel parsedObjects={state.parseResult?.objects || null} />
+        </PanelSuspense>
+      );
     case 'multimodal':
-      return <MultiModalPanel parsedObjects={state.parseResult?.objects || null} />;
+      return (
+        <PanelSuspense>
+          <MultiModalPanel parsedObjects={state.parseResult?.objects || null} />
+        </PanelSuspense>
+      );
     case 'mcp':
-      return <MCPBrowser tools={state.mcpTools} />;
+      return (
+        <PanelSuspense>
+          <MCPBrowser tools={state.mcpTools} />
+        </PanelSuspense>
+      );
     case 'collab':
       return (
         <PanelSuspense>

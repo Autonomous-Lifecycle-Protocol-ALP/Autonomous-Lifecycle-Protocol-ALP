@@ -138,6 +138,7 @@ export type IconName = keyof typeof iconMap;
 
 const iconMap = {
   edit: FiEdit3,
+  edit3: FiEdit3,
   terminal: FiTerminal,
   users: FiUsers,
   cpu: FiCpu,
@@ -173,6 +174,7 @@ const iconMap = {
   square: FiSquare,
   share2: FiShare2,
   panelLeft: FiSidebar,
+  sidebar: FiSidebar,
   chevronRight: FiChevronRight,
   chevronDown: FiChevronDown,
   x: FiX,
