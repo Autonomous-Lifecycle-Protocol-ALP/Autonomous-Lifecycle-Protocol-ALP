@@ -58,6 +58,31 @@ describe('alp codegen (PHP / C++)', () => {
     }
   });
 
+  it('generates C++ with sanitized hyphenated dependencies and contract interfaces', () => {
+    const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'alp-codegen-cpp-hyphen-'));
+    const spec = '@feature\n  id: feat-user-auth\n@feature\n  id: task-management\n  depends_on:\n    - -> feat-user-auth\n@contract\n  id: contract-service-boundary\n';
+    try {
+      fs.mkdirSync(path.join(tmp, '.alp'), { recursive: true });
+      fs.writeFileSync(path.join(tmp, '.alp', 'spec.alp'), spec, 'utf-8');
+
+      execFileSync('node', [CLI, 'codegen', '--target', 'cpp'], {
+        cwd: tmp,
+        encoding: 'utf-8',
+        timeout: 30000,
+      });
+
+      const featHeader = fs.readFileSync(path.join(tmp, 'alp-codegen', 'cpp', 'Task_managementFeature.hpp'), 'utf-8');
+      expect(featHeader).toContain('feat_user_authType_');
+      expect(featHeader).not.toContain('feat-user-authType_');
+
+      const contractHeader = fs.readFileSync(path.join(tmp, 'alp-codegen', 'cpp', 'Contract_service_boundaryContract.hpp'), 'utf-8');
+      expect(contractHeader).toContain('#include "IContract_service_boundaryContract.hpp"');
+      expect(contractHeader).toContain('public IContract_service_boundaryContract');
+    } finally {
+      fs.rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+
   it('fails cleanly when --target is missing', () => {
     const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'alp-codegen-bad-'));
     try {

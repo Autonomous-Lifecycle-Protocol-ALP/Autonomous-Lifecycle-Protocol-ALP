@@ -71,7 +71,6 @@ export * from './eval-suite';
 export * from './prompt-optimizer';
 export * from './consensus-vote';
 export * from './code-transform';
-export * from './codegen';
 export * from './event-mesh';
 export * from './swarm-marketplace';
 export * from './multimodal';

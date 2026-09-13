@@ -95,7 +95,11 @@ export class CppGenerator extends BaseGenerator {
 
   private generateImplFile(className: string, body: string): GeneratedFile {
     const implHeader = `#include "${className}${this.headerExt}"\n\n`;
-    const content = `${implHeader}${body}`;
+    const namespace = this.generateNamespace();
+    const nsFooter = this.generateNamespaceFooter();
+    const content = body.trim()
+      ? `${implHeader}${namespace}\n${body}${nsFooter}`
+      : `${implHeader}`;
     return {
       path: `${this.options.outputDir}/${className}${this.implExt}`,
       content,
@@ -114,16 +118,22 @@ export class CppGenerator extends BaseGenerator {
     const idToClassName: Record<string, string> = {};
     const typeCounts: Record<string, number> = {};
 
+    // Pre-count types so useQualified is consistent for all objects
+    for (const obj of objects) {
+      const type = obj._type || 'Object';
+      typeCounts[type] = (typeCounts[type] || 0) + 1;
+    }
+
     for (const obj of objects) {
       const type = obj._type || 'Object';
       const rawId = obj.id || 'Unnamed';
       const sanitizedId = this.sanitizeId(rawId);
       const baseClassName = this.mapType(type);
-      typeCounts[type] = (typeCounts[type] || 0) + 1;
       const useQualified = typeCounts[type] > 1 || type === 'contract';
       const capitalizedId = sanitizedId.charAt(0).toUpperCase() + sanitizedId.slice(1);
       const className = useQualified ? `${capitalizedId}${baseClassName}` : baseClassName;
       idToClassName[rawId] = className;
+      idToClassName[sanitizedId] = className;
     }
 
     // First pass: collect types and build class bodies
@@ -243,17 +253,17 @@ export class CppGenerator extends BaseGenerator {
       // Constructor with dependencies
       if (deps.length > 0) {
         const depParams = deps.map((d, i) => {
-          const depId = depIds[i];
+          const depId = this.sanitizeId(depIds[i]);
           const paramName = depId.charAt(0).toLowerCase() + depId.slice(1) + 'Type';
           return `${d} ${paramName}`;
         }).join(', ');
         const depInit = deps.map((d, i) => {
-          const depId = depIds[i];
+          const depId = this.sanitizeId(depIds[i]);
           const memberName = depId.charAt(0).toLowerCase() + depId.slice(1) + 'Type_';
           return `${memberName}(std::move(${depId.charAt(0).toLowerCase() + depId.slice(1)}Type))`;
         }).join(', ');
         const depMembers = deps.map((d, i) => {
-          const depId = depIds[i];
+          const depId = this.sanitizeId(depIds[i]);
           const memberName = depId.charAt(0).toLowerCase() + depId.slice(1) + 'Type_';
           return `${this.options.indent}${d} ${memberName};\n`;
         }).join('');
@@ -296,7 +306,7 @@ export class CppGenerator extends BaseGenerator {
       // Methods in header + impl
       if (methods[className]) {
         for (const method of methods[className]) {
-          const signature = method.replace(/\(([^)]*)\) \{[\s\S]*\}/, '($1);');
+          const signature = method.trim().replace(/\(([^)]*)\)[\s\S]*$/, '($1);');
           headerBody += `${this.options.indent}${signature}\n`;
           implBody += `${className}::${method}\n`;
         }
@@ -306,7 +316,11 @@ export class CppGenerator extends BaseGenerator {
       const classDecl = this.generateClassDeclaration(className, ifaces);
       const classFooter = this.generateClassFooter();
       const fullHeader = classDecl + headerBody + classFooter;
-      const headerFile = this.generateHeaderFile(className, fullHeader, classIncludes[className] || []);
+      const includes = [...(classIncludes[className] || [])];
+      if (className.endsWith('Contract')) {
+        includes.unshift(`"I${className}${this.headerExt}"`);
+      }
+      const headerFile = this.generateHeaderFile(className, fullHeader, includes);
       files.push(headerFile);
       const implFile = this.generateImplFile(className, implBody);
       files.push(implFile);
