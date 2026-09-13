@@ -238,7 +238,10 @@ export function initAlpLanguage(): void {
 
   monaco.languages.registerCompletionItemProvider('alp', {
     triggerCharacters: ['@', ':', ' '],
-    provideCompletionItems: (_model, position) => {
+    provideCompletionItems: (
+      _model: monaco.editor.ITextModel,
+      position: monaco.Position
+    ) => {
       const wordInfo = _model.getWordUntilPosition(position);
       const textUntil = _model.getValueInRange({
         startLineNumber: 1,
@@ -331,7 +334,10 @@ export function initAlpLanguage(): void {
   });
 
   monaco.languages.registerHoverProvider('alp', {
-    provideHover: (_model, position) => {
+    provideHover: (
+      _model: monaco.editor.ITextModel,
+      position: monaco.Position
+    ) => {
       const word = _model.getWordAtPosition(position);
       if (!word) return null;
 

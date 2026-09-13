@@ -22,7 +22,11 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
+      external: ['monaco-editor'],
       output: {
+        globals: {
+          'monaco-editor': 'monaco',
+        },
         manualChunks(id: string) {
           if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/')) {
             return 'react-vendor';
