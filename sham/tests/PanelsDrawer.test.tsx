@@ -22,7 +22,7 @@ describe('PanelsDrawer Component', () => {
     expect(screen.queryByTestId('panels-drawer-overlay')).toBeNull();
   });
 
-  it('renders correctly when isOpen is true with all 31 panels', () => {
+  it('renders correctly when isOpen is true with all panels', () => {
     render(
       <PanelsDrawer
         isOpen={true}
@@ -33,7 +33,7 @@ describe('PanelsDrawer Component', () => {
     );
     expect(screen.getByRole('dialog')).toBeDefined();
     expect(screen.getByText('Panels & Workspaces')).toBeDefined();
-    expect(screen.getByText(/Access all 31 specialized/i)).toBeDefined();
+    expect(screen.getByText(new RegExp(`Access all ${ALL_PANELS.length} specialized`, 'i'))).toBeDefined();
     expect(screen.getByText(`${ALL_PANELS.length} / ${ALL_PANELS.length} Available`)).toBeDefined();
   });
 
@@ -114,7 +114,7 @@ describe('PanelsDrawer Component', () => {
     fireEvent.click(clearBtn);
 
     expect((searchInput as HTMLInputElement).value).toBe('');
-    expect(screen.getByText('31 / 31 Available')).toBeDefined();
+    expect(screen.getByText(`${ALL_PANELS.length} / ${ALL_PANELS.length} Available`)).toBeDefined();
   });
 
   it('filters panels by category pill click', () => {
@@ -154,7 +154,7 @@ describe('PanelsDrawer Component', () => {
     fireEvent.click(resetBtn);
 
     expect((searchInput as HTMLInputElement).value).toBe('');
-    expect(screen.getByText('31 / 31 Available')).toBeDefined();
+    expect(screen.getByText(`${ALL_PANELS.length} / ${ALL_PANELS.length} Available`)).toBeDefined();
   });
 
   it('calls onSelectPanel and onClose when a panel card is clicked', () => {

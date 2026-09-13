@@ -33,6 +33,9 @@ const IntelligencePanel = React.lazy(() => import('../components/IntelligencePan
 const AutonomyPanel = React.lazy(() => import('../components/AutonomyPanel.js').then((m) => ({ default: m.AutonomyPanel })));
 const SynapsePanel = React.lazy(() => import('../components/SynapsePanel.js').then((m) => ({ default: m.SynapsePanel })));
 const MultiModalPanel = React.lazy(() => import('../components/MultiModalPanel.js').then((m) => ({ default: m.MultiModalPanel })));
+const AgentStudioPanel = React.lazy(() => import('../components/AgentStudioPanel.js').then((m) => ({ default: m.AgentStudioPanel })));
+const ModelHubPanel = React.lazy(() => import('../components/ModelHubPanel.js').then((m) => ({ default: m.ModelHubPanel })));
+const SOCSentinelPanel = React.lazy(() => import('../components/SOCSentinelPanel.js').then((m) => ({ default: m.SOCSentinelPanel })));
 
 import type { SHAMState } from '../shared/types.js';
 
@@ -275,6 +278,12 @@ export function PanelRouter(props: PanelRouterProps) {
           />
         </PanelSuspense>
       );
+    case 'agentStudio':
+      return <PanelSuspense><AgentStudioPanel /></PanelSuspense>;
+    case 'modelHub':
+      return <PanelSuspense><ModelHubPanel /></PanelSuspense>;
+    case 'socSentinel':
+      return <PanelSuspense><SOCSentinelPanel /></PanelSuspense>;
     default:
       return <PanelSuspense><ProPanel /></PanelSuspense>;
   }

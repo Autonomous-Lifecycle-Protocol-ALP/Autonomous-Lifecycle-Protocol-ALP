@@ -4,6 +4,7 @@ import { panelIcons } from './shared.js';
 import { NavItems } from './NavItems.js';
 import { NavCategory } from './NavCategory.js';
 import { Icon } from '../Icon.js';
+import { ALL_PANELS } from '../../app/shared.js';
 
 export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActivePanel, onOpenPanelsDrawer }: SidebarProps): React.JSX.Element {
   return (
@@ -15,14 +16,14 @@ export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActive
           <button
             className="sidebar-footer-item sidebar-drawer-launcher-btn"
             onClick={onOpenPanelsDrawer}
-            title="Open All Panels & Tools Drawer (31)"
+            title={`Open All Panels & Tools Drawer (${ALL_PANELS.length})`}
           >
             <Icon name="layers" size={14} color="var(--accent)" />
             <span style={{ flex: 1 }}>All Panels Drawer</span>
-            <span className="sidebar-drawer-badge">31</span>
+            <span className="sidebar-drawer-badge">{ALL_PANELS.length}</span>
           </button>
         )}
-        {['editor', 'terminal', 'agents', 'synapse', 'multimodal', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'refactor', 'marketplace', 'zk', 'partition', 'crdtCanvas', 'wasmAst', 'edgeDebug', 'telemetryInspector', 'chaosEngine', 'featureFlags', 'workflowReplay', 'localStorage', 'selfHealingMesh', 'intelligence', 'autonomy', 'test-runner', 'debugger', 'git', 'search', 'pro', 'settings'].map((panel) => (
+        {['editor', 'terminal', 'agents', 'synapse', 'multimodal', 'agentStudio', 'modelHub', 'socSentinel', 'mcp', 'collab', 'plugins', 'profiler', 'copilot', 'refactor', 'marketplace', 'zk', 'partition', 'crdtCanvas', 'wasmAst', 'edgeDebug', 'telemetryInspector', 'chaosEngine', 'featureFlags', 'workflowReplay', 'localStorage', 'selfHealingMesh', 'intelligence', 'autonomy', 'test-runner', 'debugger', 'git', 'search', 'pro', 'settings'].map((panel) => (
           <button
             key={panel}
             className={`sidebar-footer-item ${activePanel === panel ? 'active' : ''}`}
@@ -41,6 +42,9 @@ export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActive
              panel === 'localStorage' ? 'Storage' :
              panel === 'selfHealingMesh' ? 'Healing' :
              panel === 'multimodal' ? 'MultiModal' :
+             panel === 'agentStudio' ? 'Studio' :
+             panel === 'modelHub' ? 'Model Hub' :
+             panel === 'socSentinel' ? 'Sentinel' :
              panel === 'test-runner' ? 'Tests' :
              panel.charAt(0).toUpperCase() + panel.slice(1)}
           </button>

@@ -32,7 +32,10 @@ export type PanelId =
   | 'localStorage'
   | 'selfHealingMesh'
   | 'intelligence'
-  | 'autonomy';
+  | 'autonomy'
+  | 'agentStudio'
+  | 'modelHub'
+  | 'socSentinel';
 
 export const defaultState: SHAMState = {
   activeFile: null,
@@ -103,6 +106,8 @@ export const ALL_PANELS: PanelDefinition[] = [
   { id: 'autonomy', label: 'Autonomy', icon: 'zap', category: 'intelligence', description: 'Autonomous agent decision trees and execution policies' },
   { id: 'synapse', label: 'Synapse Graph', icon: 'network', category: 'intelligence', description: 'Visual neural connection topology and state flow explorer' },
   { id: 'multimodal', label: 'MultiModal', icon: 'camera', category: 'intelligence', description: 'Vision models, image generation, and audio artifact inspector' },
+  { id: 'agentStudio', label: 'Agent Studio', icon: 'palette', category: 'intelligence', description: 'Visual low-code DAG agent designer with cycle-detecting topological validation', badge: 'NEW' },
+  { id: 'modelHub', label: 'Model Hub', icon: 'cpu', category: 'intelligence', description: 'Curated AI model marketplace, prompt benchmarking, and head-to-head A/B testing', badge: 'AI' },
 
   // Swarm & Distributed
   { id: 'marketplace', label: 'Marketplace', icon: 'shoppingBag', category: 'swarm', description: 'Decentralized skills, agent templates, and protocol extensions' },
@@ -121,6 +126,7 @@ export const ALL_PANELS: PanelDefinition[] = [
 
   // Platform & Security
   { id: 'zk', label: 'ZK Proof', icon: 'lock', category: 'platform', description: 'Zero-knowledge succinct proofs and state verification' },
+  { id: 'socSentinel', label: 'SOC Sentinel', icon: 'shield', category: 'platform', description: 'Real-time threat detection, incident response, and agent swarm attack surface monitoring', badge: 'SOC' },
   { id: 'wasmAst', label: 'WASM AST', icon: 'zap', category: 'platform', description: 'WebAssembly bytecode abstract syntax tree disassembly' },
   { id: 'featureFlags', label: 'Feature Flags', icon: 'flag', category: 'platform', description: 'Dynamic runtime feature toggles and canary rollout control' },
   { id: 'localStorage', label: 'Local Storage', icon: 'hardDrive', category: 'platform', description: 'Embedded persistent key-value store and cache inspector' },
@@ -134,6 +140,9 @@ export const panels: { id: PanelId; label: string }[] = [
   { id: 'editor', label: 'Editor' },
   { id: 'terminal', label: 'Terminal' },
   { id: 'agents', label: 'Agents' },
+  { id: 'agentStudio', label: 'Agent Studio' },
+  { id: 'modelHub', label: 'Model Hub' },
+  { id: 'socSentinel', label: 'SOC Sentinel' },
   { id: 'synapse', label: 'Synapse' },
   { id: 'mcp', label: 'MCP' },
   { id: 'intelligence', label: 'Intelligence' },

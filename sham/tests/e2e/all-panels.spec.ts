@@ -21,6 +21,8 @@ const ALL_31_PANELS = [
   { id: 'autonomy', label: 'Autonomy' },
   { id: 'synapse', label: 'Synapse Graph' },
   { id: 'multimodal', label: 'MultiModal' },
+  { id: 'agentStudio', label: 'Agent Studio' },
+  { id: 'modelHub', label: 'Model Hub' },
 
   // Swarm & Distributed
   { id: 'marketplace', label: 'Marketplace' },
@@ -39,6 +41,7 @@ const ALL_31_PANELS = [
 
   // Platform & Security
   { id: 'zk', label: 'ZK Proof' },
+  { id: 'socSentinel', label: 'SOC Sentinel' },
   { id: 'wasmAst', label: 'WASM AST' },
   { id: 'featureFlags', label: 'Feature Flags' },
   { id: 'localStorage', label: 'Local Storage' },
@@ -48,7 +51,7 @@ const ALL_31_PANELS = [
   { id: 'pro', label: 'Pro Suite' },
 ];
 
-test.describe('All 31 Panels Rendering Verification', () => {
+test.describe('All 34 Panels Rendering Verification', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('domcontentloaded');
@@ -56,7 +59,7 @@ test.describe('All 31 Panels Rendering Verification', () => {
   });
 
   test(`all ${ALL_31_PANELS.length} panels are defined`, () => {
-    expect(ALL_31_PANELS.length).toBe(31);
+    expect(ALL_31_PANELS.length).toBe(34);
   });
 
   // Collect console errors per panel

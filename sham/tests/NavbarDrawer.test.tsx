@@ -4,7 +4,7 @@ import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import { PanelsDrawer } from '../src/renderer/components/PanelsDrawer';
 import { App } from '../src/renderer/app/index';
 import { Sidebar } from '../src/renderer/components/Sidebar';
-import { defaultState } from '../src/renderer/app/shared';
+import { defaultState, ALL_PANELS } from '../src/renderer/app/shared';
 
 afterEach(() => {
   cleanup();
@@ -23,7 +23,7 @@ describe('PanelsDrawer Component', () => {
     expect(screen.queryByRole('dialog')).toBeNull();
   });
 
-  it('renders all 31 panels when isOpen is true', () => {
+  it('renders all panels when isOpen is true', () => {
     render(
       <PanelsDrawer
         isOpen={true}
@@ -34,7 +34,7 @@ describe('PanelsDrawer Component', () => {
     );
     expect(screen.getByRole('dialog')).toBeDefined();
     expect(screen.getByText('Panels & Workspaces')).toBeDefined();
-    expect(screen.getByText(/31 \/ 31 Available/)).toBeDefined();
+    expect(screen.getByText(new RegExp(`${ALL_PANELS.length} \\/ ${ALL_PANELS.length} Available`))).toBeDefined();
   });
 
   it('filters panels when searching', () => {

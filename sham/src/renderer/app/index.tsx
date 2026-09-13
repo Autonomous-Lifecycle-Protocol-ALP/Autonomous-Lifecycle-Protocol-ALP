@@ -7,7 +7,7 @@ import { PanelsDrawer } from '../components/PanelsDrawer.js';
 import { Icon } from '../components/Icon.js';
 import { PanelRouter } from './PanelRouter.js';
 import { useAppState } from './useAppState.js';
-import { PanelSuspense, type PanelId, type BottomTabId, defaultState, panels, bottomTabs, type AppProps } from './shared.js';
+import { PanelSuspense, type PanelId, type BottomTabId, defaultState, panels, bottomTabs, type AppProps, ALL_PANELS } from './shared.js';
 import '../styles/global.css';
 import '../styles/layout.css';
 
@@ -205,7 +205,7 @@ export function App(_props: AppProps): React.JSX.Element {
           >
             <Icon name="layers" size={15} />
             <span>Panels</span>
-            <span className="navbar-badge">31</span>
+            <span className="navbar-badge">{ALL_PANELS.length}</span>
           </button>
           <button className="header-btn" onClick={() => setShowCommandPalette(true)} title="Command Palette (Ctrl+Shift+P)">
             <Icon name="menu" size={16} /> Commands

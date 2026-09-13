@@ -90,19 +90,19 @@ test.describe('SHAM Desktop E2E', () => {
     await expect(page.locator('.sidebar').getByText('hello.alp')).toBeVisible();
   });
 
-  test('footer "All Panels Drawer" button opens 31 panels modal and Escape closes it', async ({ page }) => {
+  test('footer "All Panels Drawer" button opens panels modal and Escape closes it', async ({ page }) => {
     await page.goto('/');
     await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(1000);
 
     const drawerBtn = page.locator('.sidebar-drawer-launcher-btn');
     await expect(drawerBtn).toBeVisible();
-    await expect(drawerBtn).toContainText('31');
+    await expect(drawerBtn).toContainText('34');
     await drawerBtn.click();
 
     const dialog = page.locator('div[role="dialog"][aria-label="Panels and Tools Drawer"]');
     await expect(dialog).toBeVisible();
-    await expect(dialog).toContainText('31 / 31 Available');
+    await expect(dialog).toContainText('34 / 34 Available');
 
     // Filter panels by search query
     const searchInput = page.locator('.panels-drawer-search-input');

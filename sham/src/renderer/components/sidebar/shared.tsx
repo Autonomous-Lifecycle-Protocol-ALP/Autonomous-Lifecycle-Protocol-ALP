@@ -58,6 +58,9 @@ export const panelIcons: Record<string, string> = {
   pro: 'star',
   synapse: 'network',
   multimodal: 'camera',
+  agentStudio: 'palette',
+  modelHub: 'cpu',
+  socSentinel: 'shield',
 };
 
 export const FILE_ICONS: Record<string, string> = {

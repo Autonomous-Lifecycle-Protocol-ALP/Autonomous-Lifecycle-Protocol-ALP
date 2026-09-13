@@ -2,6 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen, cleanup, fireEvent } from '@testing-library/react';
 import { Sidebar } from '../src/renderer/components/Sidebar';
+import { ALL_PANELS } from '../src/renderer/app/shared';
 import type { SHAMState } from '../src/renderer/shared/types';
 
 const baseState: SHAMState = {
@@ -135,10 +136,10 @@ describe('Sidebar', () => {
         onOpenPanelsDrawer={onOpenPanelsDrawer}
       />
     );
-    const drawerBtn = screen.getByTitle(/Open All Panels & Tools Drawer \(31\)/i);
+    const drawerBtn = screen.getByTitle(new RegExp(`Open All Panels & Tools Drawer \\(${ALL_PANELS.length}\\)`, 'i'));
     expect(drawerBtn).toBeDefined();
     expect(drawerBtn.textContent).toContain('All Panels Drawer');
-    expect(drawerBtn.textContent).toContain('31');
+    expect(drawerBtn.textContent).toContain(String(ALL_PANELS.length));
 
     fireEvent.click(drawerBtn);
     expect(onOpenPanelsDrawer).toHaveBeenCalledTimes(1);

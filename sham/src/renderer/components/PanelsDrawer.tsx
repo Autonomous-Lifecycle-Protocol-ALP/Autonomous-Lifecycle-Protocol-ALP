@@ -98,7 +98,7 @@ export function PanelsDrawer({
             <div>
               <h2 className="panels-drawer-title">Panels & Workspaces</h2>
               <p className="panels-drawer-subtitle">
-                Access all 31 specialized ALP & IDE environments
+                Access all {ALL_PANELS.length} specialized ALP & IDE environments
               </p>
             </div>
           </div>
