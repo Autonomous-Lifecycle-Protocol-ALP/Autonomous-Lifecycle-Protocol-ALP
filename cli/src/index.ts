@@ -477,4 +477,20 @@ program
   .option('--out <dir>', 'Output directory (default: alp-codegen/<target>)')
   .action((opts) => commands.codegenCommand(opts));
 
+// ── Feature: SHAM IDE & Studio Commands ─────────────────────────────
+program
+  .command('sham')
+  .description('Launch the SHAM Desktop IDE (Smart Hosted Agent Manager)')
+  .option('--dev', 'Launch in developer mode instead of pre-packaged binary')
+  .action((opts) => commands.shamCommand(opts));
+
+program
+  .command('studio')
+  .description('Access and launch ALP web studios, portals, and playgrounds')
+  .argument('[target]', 'Studio target: portal, playground, server, docs (default: portal)', 'portal')
+  .option('--open', 'Open service in default browser')
+  .option('--start', 'Start the local development service in background')
+  .option('--port <port>', 'Custom port override')
+  .action((target, opts) => commands.studioCommand(target, opts));
+
 program.parse(process.argv);

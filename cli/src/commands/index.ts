@@ -63,3 +63,4 @@ export * from './crdt-sync';
 export * from './heal';
 export * from './formal-verify';
 export * from './codegen';
+export * from './studio';
