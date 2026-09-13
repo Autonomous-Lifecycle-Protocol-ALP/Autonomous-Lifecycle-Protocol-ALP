@@ -104,6 +104,11 @@ export * from './feature-flags';
 export * from './local-storage-container';
 export * from './reasoning-core';
 
+// ── AI Product Engines ────────────────────────────────────────────────────────
+export * from './agent-studio';
+export * from './model-hub';
+export * from './soc-sentinel';
+
 
 export type { AlpObject };
 export { AlpReader };

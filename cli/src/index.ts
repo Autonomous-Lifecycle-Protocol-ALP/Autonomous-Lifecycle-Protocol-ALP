@@ -486,11 +486,64 @@ program
 
 program
   .command('studio')
-  .description('Access and launch ALP web studios, portals, and playgrounds')
-  .argument('[target]', 'Studio target: portal, playground, server, docs (default: portal)', 'portal')
+  .description('Access and launch ALP web studios OR visual DAG Agent Studio')
+  .argument('[target]', 'Studio target / subcommand: create, add-node, connect, validate, export, templates, capabilities, portal, playground, server, docs', 'portal')
+  .argument('[args...]', 'Subcommand arguments')
   .option('--open', 'Open service in default browser')
   .option('--start', 'Start the local development service in background')
   .option('--port <port>', 'Custom port override')
-  .action((target, opts) => commands.studioCommand(target, opts));
+  .option('--template <template>', 'Template ID for agent studio')
+  .option('--category <category>', 'Category filter for capabilities')
+  .option('--label <label>', 'Edge or node label')
+  .action((target, extraArgs, opts) => {
+    const studioSubcommands = ['create', 'add-node', 'connect', 'validate', 'export', 'templates', 'capabilities'];
+    if (studioSubcommands.includes(target)) {
+      commands.agentStudioCommand(target, Array.isArray(extraArgs) ? extraArgs : [], opts);
+    } else {
+      commands.studioCommand(target, opts);
+    }
+  });
+
+program
+  .command('agent-studio')
+  .description('ALP Agent Studio visual DAG builder')
+  .argument('<subcommand>', 'create | add-node | connect | validate | export | templates | capabilities')
+  .argument('[args...]', 'Subcommand arguments')
+  .option('--template <template>', 'Template ID for agent studio')
+  .option('--category <category>', 'Category filter for capabilities')
+  .option('--label <label>', 'Edge or node label')
+  .action((subcommand, extraArgs, opts) => {
+    commands.agentStudioCommand(subcommand, Array.isArray(extraArgs) ? extraArgs : [], opts);
+  });
+
+// ── Feature: ALP AI Model Hub ───────────────────────────────────────
+program
+  .command('hub')
+  .description('ALP AI Model Hub — Curated model marketplace, benchmarking, and A/B testing')
+  .argument('<subcommand>', 'search | info | invoke | benchmark | ab | usage')
+  .argument('[args...]', 'Subcommand arguments')
+  .option('--task <task>', 'Filter by task type')
+  .option('--provider <provider>', 'Filter by model provider')
+  .option('--model-a <modelA>', 'First model ID for A/B testing')
+  .option('--model-b <modelB>', 'Second model ID for A/B testing')
+  .option('--input <input>', 'Input prompt for invocation or A/B testing')
+  .option('--model <modelId>', 'Model ID for usage report')
+  .action((subcommand, extraArgs, opts) => {
+    commands.modelHubCommand(subcommand, Array.isArray(extraArgs) ? extraArgs : [], opts);
+  });
+
+// ── Feature: ALP SOC Sentinel AI ────────────────────────────────────
+program
+  .command('sentinel')
+  .description('ALP SOC Sentinel AI — Threat detection, incident response & attack surface monitoring')
+  .argument('<subcommand>', 'rules | scan | alerts | incident | remediate | dashboard')
+  .argument('[args...]', 'Subcommand arguments')
+  .option('--severity <severity>', 'Filter or set severity level (CRITICAL, HIGH, MEDIUM, LOW, INFO)')
+  .option('--pattern <pattern>', 'Detection pattern regex or substring')
+  .option('--action <action>', 'Remediation action')
+  .option('--auto', 'Automatically apply suggested remediation')
+  .action((subcommand, extraArgs, opts) => {
+    commands.socSentinelCommand(subcommand, Array.isArray(extraArgs) ? extraArgs : [], opts);
+  });
 
 program.parse(process.argv);

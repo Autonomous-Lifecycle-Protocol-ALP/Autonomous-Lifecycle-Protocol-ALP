@@ -64,3 +64,6 @@ export * from './heal';
 export * from './formal-verify';
 export * from './codegen';
 export * from './studio';
+export * from './agent-studio';
+export * from './model-hub';
+export * from './soc-sentinel';
