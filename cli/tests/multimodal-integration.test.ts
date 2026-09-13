@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { runMultimodalVLADemo } from '../../examples/multimodal-vla/src/index';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
@@ -196,28 +197,21 @@ describe('E2E: multimodal CLI commands', () => {
 
 describe('E2E: multimodal example runner', () => {
   it('runs the multimodal-vla example script against real .alp files', async () => {
-    const exampleDir = path.resolve(__dirname, '..', '..', 'examples', 'multimodal-vla');
-    const runnerPath = path.join(exampleDir, 'src', 'index.ts');
-
-    const result = await new Promise<{ code: number; stdout: string }>((resolve) => {
-      const child = spawn('npx.cmd', ['tsx', runnerPath], {
-        cwd: path.resolve(__dirname, '..'),
-        stdio: ['ignore', 'pipe', 'pipe'],
-        shell: true,
-      });
-      let stdout = '';
-      child.stdout.on('data', (d) => (stdout += d));
-      child.stderr.on('data', (d) => (stdout += d));
-      child.on('close', (code) => resolve({ code: code || 0, stdout }));
+    let stdout = '';
+    const logSpy = vi.spyOn(console, 'log').mockImplementation((...args: any[]) => {
+      stdout += args.join(' ') + '\n';
     });
-
-    expect(result.code).toBe(0);
-    expect(result.stdout).toContain('MULTI-MODAL VLA ORCHESTRATOR DEMO');
-    expect(result.stdout).toContain('Parsing 5 ALP specification files');
-    expect(result.stdout).toContain('Validating Multi-Modal & VLA Specifications');
-    expect(result.stdout).toContain('Compiling Synapse Knowledge Graph');
-    expect(result.stdout).toContain('Generating Synapse Markdown Vault');
-    expect(result.stdout).toContain('Generating Interactive JSON Canvas');
-    expect(result.stdout).toContain('completed successfully');
+    try {
+      await runMultimodalVLADemo();
+      expect(stdout).toContain('MULTI-MODAL VLA ORCHESTRATOR DEMO');
+      expect(stdout).toContain('Parsing 5 ALP specification files');
+      expect(stdout).toContain('Validating Multi-Modal & VLA Specifications');
+      expect(stdout).toContain('Compiling Synapse Knowledge Graph');
+      expect(stdout).toContain('Generating Synapse Markdown Vault');
+      expect(stdout).toContain('Generating Interactive JSON Canvas');
+      expect(stdout).toContain('completed successfully');
+    } finally {
+      logSpy.mockRestore();
+    }
   });
 });

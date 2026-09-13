@@ -10,14 +10,25 @@ export function sendJson(res: http.ServerResponse, data: unknown, status = 200) 
   res.end(JSON.stringify(data));
 }
 
+const MAX_BODY_BYTES = 10 * 1024 * 1024; // 10MB limit
+
 export function readBody(req: http.IncomingMessage): Promise<any> {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     let raw = '';
-    req.on('data', (c) => (raw += c));
+    let size = 0;
+    req.on('data', (c) => {
+      size += typeof c === 'string' ? Buffer.byteLength(c) : c.length;
+      if (size > MAX_BODY_BYTES) {
+        req.destroy(new Error('Payload too large'));
+        return resolve({});
+      }
+      raw += c;
+    });
     req.on('end', () => {
       if (!raw) return resolve({});
       try { resolve(JSON.parse(raw)); } catch { resolve({}); }
     });
+    req.on('error', () => resolve({}));
   });
 }
 
