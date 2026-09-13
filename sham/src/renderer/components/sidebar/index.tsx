@@ -6,9 +6,35 @@ import { NavCategory } from './NavCategory.js';
 import { Icon } from '../Icon.js';
 import { ALL_PANELS } from '../../app/shared.js';
 
-export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActivePanel, onOpenPanelsDrawer }: SidebarProps): React.JSX.Element {
+export function Sidebar({ state, onOpenFile, onCloseFile, activePanel, setActivePanel, onOpenPanelsDrawer, onToggleSidebar, width }: SidebarProps): React.JSX.Element {
   return (
-    <div className="sidebar" style={{ background: 'linear-gradient(to bottom, rgba(24, 24, 37, 0.8), rgba(17, 17, 27, 0.9))', boxShadow: 'inset -1px 0 0 rgba(255,255,255,0.05)' }}>
+    <div
+      className="sidebar"
+      style={{
+        width: width ? `${width}px` : undefined,
+        minWidth: width ? `${width}px` : undefined,
+        background: 'linear-gradient(to bottom, rgba(24, 24, 37, 0.95), rgba(17, 17, 27, 0.98))',
+        boxShadow: 'inset -1px 0 0 rgba(255,255,255,0.05)',
+      }}
+    >
+      <div className="sidebar-header-bar">
+        <div className="sidebar-header-title">
+          <Icon name="sidebar" size={13} color="var(--accent)" />
+          <span>PRIMARY SIDEBAR</span>
+        </div>
+        <div className="sidebar-header-actions">
+          {onToggleSidebar && (
+            <button
+              className="sidebar-collapse-btn"
+              onClick={onToggleSidebar}
+              title="Hide Primary Sidebar (Ctrl+B)"
+              aria-label="Hide Primary Sidebar"
+            >
+              <Icon name="chevronLeft" size={14} />
+            </button>
+          )}
+        </div>
+      </div>
       <NavItems state={state} onOpenFile={onOpenFile} onCloseFile={onCloseFile} />
       <NavCategory state={state} onOpenFile={onOpenFile} />
       <div className="sidebar-footer">

@@ -13,10 +13,31 @@ export function NavItems({ state, onOpenFile, onCloseFile }: NavItemsProps): Rea
   return (
     <div className="sidebar-section">
       <div className="sidebar-section-title">
-        Explorer
-        <button className="sidebar-section-action" onClick={() => onOpenFile('untitled.alp')} title="New ALP File">
-          <Icon name="plus" size={14} />
-        </button>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span>Explorer</span>
+          {state.openFiles.length > 0 && (
+            <span className="sidebar-count-badge" title={`${state.openFiles.length} open files`}>
+              {state.openFiles.length}
+            </span>
+          )}
+        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          {state.openFiles.length > 1 && (
+            <button
+              className="sidebar-section-action"
+              onClick={() => {
+                [...state.openFiles].forEach((f) => onCloseFile(f));
+              }}
+              title="Close All Files"
+              aria-label="Close All Files"
+            >
+              <Icon name="xCircle" size={13} />
+            </button>
+          )}
+          <button className="sidebar-section-action" onClick={() => onOpenFile('untitled.alp')} title="New ALP File" aria-label="New ALP File">
+            <Icon name="plus" size={14} />
+          </button>
+        </div>
       </div>
       <div className="sidebar-list">
         {state.openFiles.map((file) => (

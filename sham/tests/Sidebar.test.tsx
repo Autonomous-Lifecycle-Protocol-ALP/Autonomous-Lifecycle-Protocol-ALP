@@ -201,5 +201,26 @@ describe('Sidebar', () => {
 
     expect(screen.getByText('No matching files found')).toBeDefined();
   });
+
+  it('renders Primary Sidebar header and calls onToggleSidebar when collapse button is clicked', () => {
+    const onToggleSidebar = vi.fn();
+    render(
+      <Sidebar
+        state={baseState}
+        onOpenFile={vi.fn()}
+        onCloseFile={vi.fn()}
+        activePanel="editor"
+        setActivePanel={vi.fn()}
+        onToggleSidebar={onToggleSidebar}
+      />
+    );
+
+    expect(screen.getByText('PRIMARY SIDEBAR')).toBeDefined();
+    const collapseBtn = screen.getByTitle('Hide Primary Sidebar (Ctrl+B)');
+    expect(collapseBtn).toBeDefined();
+
+    fireEvent.click(collapseBtn);
+    expect(onToggleSidebar).toHaveBeenCalledTimes(1);
+  });
 });
 

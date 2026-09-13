@@ -8,6 +8,8 @@ export interface SidebarProps {
   activePanel: string;
   setActivePanel: (panel: string) => void;
   onOpenPanelsDrawer?: () => void;
+  onToggleSidebar?: () => void;
+  width?: number;
 }
 
 export interface TreeNode {

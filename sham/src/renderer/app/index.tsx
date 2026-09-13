@@ -1,5 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Sidebar } from '../components/Sidebar.js';
+import { SecondarySidebar } from '../components/SecondarySidebar.js';
+import { ShortcutsModal } from '../components/ShortcutsModal.js';
 import { CommandPalette } from '../components/CommandPalette.js';
 import { TerminalPanel } from '../components/TerminalPanel.js';
 import { DebugPanel } from '../components/DebugPanel.js';
@@ -27,14 +29,25 @@ export function App(_props: AppProps): React.JSX.Element {
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [showPanelsDrawer, setShowPanelsDrawer] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [secondarySidebarOpen, setSecondarySidebarOpen] = useState(false);
+  const [zenMode, setZenMode] = useState(false);
+  const [showShortcutsModal, setShowShortcutsModal] = useState(false);
   const [bottomPanel, setBottomPanel] = useState<BottomTabId | null>('terminal');
   const [bottomActiveTab, setBottomActiveTab] = useState<BottomTabId>('terminal');
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
+      // Secondary Sidebar toggle: Ctrl+Alt+B
+      if ((e.ctrlKey || e.metaKey) && e.altKey && (e.key === 'b' || e.key === 'B')) {
+        e.preventDefault();
+        setSecondarySidebarOpen((prev) => !prev);
+      } else if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
+        // Primary Sidebar toggle: Ctrl+B
         e.preventDefault();
         setSidebarOpen((prev) => !prev);
+      } else if (e.key === 'F1' || ((e.ctrlKey || e.metaKey) && (e.key === '/' || e.key === '?'))) {
+        e.preventDefault();
+        setShowShortcutsModal((prev) => !prev);
       } else if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'P' || e.key === 'p')) {
         e.preventDefault();
         setShowCommandPalette((prev) => !prev);
@@ -198,6 +211,52 @@ export function App(_props: AppProps): React.JSX.Element {
         <span className="app-header-title">v80.0.0 — IDE Intelligence</span>
         <div className="app-header-spacer" />
         <div className="app-header-actions">
+          <div className="header-layout-controls">
+            <button
+              className={`header-btn header-layout-btn ${sidebarOpen && !zenMode ? 'active' : ''}`}
+              onClick={() => setSidebarOpen((prev) => !prev)}
+              title="Toggle Primary Sidebar (Ctrl+B)"
+              aria-label="Toggle Primary Sidebar"
+            >
+              <Icon name="sidebar" size={14} />
+            </button>
+            <button
+              className={`header-btn header-layout-btn ${Boolean(bottomPanel) && !zenMode ? 'active' : ''}`}
+              onClick={() => setBottomPanel((prev) => (prev ? null : 'terminal'))}
+              title="Toggle Bottom Terminal Drawer (Ctrl+`)"
+              aria-label="Toggle Bottom Panel"
+            >
+              <Icon name="terminal" size={14} />
+            </button>
+            <button
+              className={`header-btn header-layout-btn header-secondary-sidebar-toggle ${secondarySidebarOpen && !zenMode ? 'active' : ''}`}
+              onClick={() => setSecondarySidebarOpen((prev) => !prev)}
+              title="Toggle Secondary Sidebar (Ctrl+Alt+B)"
+              aria-label="Toggle Secondary Sidebar"
+            >
+              <Icon name="panelRight" size={14} />
+            </button>
+          </div>
+
+          <button
+            className={`header-btn ${zenMode ? 'active' : ''}`}
+            onClick={() => setZenMode((prev) => !prev)}
+            title="Toggle Distraction-Free Zen Mode"
+            aria-label="Toggle Zen Mode"
+          >
+            <Icon name="zenMode" size={14} />
+            <span>Zen</span>
+          </button>
+
+          <button
+            className="header-btn"
+            onClick={() => setShowShortcutsModal(true)}
+            title="Keyboard Shortcuts & Help (F1)"
+            aria-label="Shortcuts Help"
+          >
+            <Icon name="helpCircle" size={14} />
+          </button>
+
           <button
             className={`header-btn header-drawer-btn ${showPanelsDrawer ? 'active' : ''}`}
             onClick={() => setShowPanelsDrawer((prev) => !prev)}
@@ -219,19 +278,11 @@ export function App(_props: AppProps): React.JSX.Element {
               {panel.label}
             </button>
           ))}
-          <button
-            className={`header-btn ${bottomPanel ? 'active' : ''}`}
-            onClick={() => setBottomPanel((prev) => (prev ? null : 'terminal'))}
-            title="Toggle Bottom Terminal Drawer (Ctrl+`)"
-            aria-label="Toggle Bottom Panel"
-          >
-            <Icon name="terminal" size={15} />
-          </button>
         </div>
       </header>
 
-      <div className="app-body">
-        {sidebarOpen && (
+      <div className={`app-body ${zenMode ? 'zen-mode' : ''}`}>
+        {!zenMode && sidebarOpen && (
           <Sidebar
             state={state}
             onOpenFile={onOpenFile}
@@ -240,9 +291,46 @@ export function App(_props: AppProps): React.JSX.Element {
             activePanel={activePanel}
             setActivePanel={(panel: string) => handleSelectPanel(panel as PanelId)}
             onOpenPanelsDrawer={() => setShowPanelsDrawer(true)}
+            onToggleSidebar={() => setSidebarOpen(false)}
           />
         )}
+        {!zenMode && !sidebarOpen && (
+          <button
+            className="sidebar-edge-pill sidebar-edge-pill-left"
+            onClick={() => setSidebarOpen(true)}
+            title="Open Primary Sidebar (Ctrl+B)"
+            aria-label="Open Primary Sidebar"
+          >
+            <Icon name="chevronRight" size={13} />
+            <span>Explorer</span>
+          </button>
+        )}
+
         <div className="main-area">
+          <div className="breadcrumbs-bar">
+            <div className="breadcrumbs-path">
+              <span className="breadcrumb-root">SHAM</span>
+              <span className="breadcrumb-separator">/</span>
+              {state.activeFile ? (
+                <>
+                  {state.activeFile.split('/').slice(0, -1).map((seg, idx) => (
+                    <React.Fragment key={idx}>
+                      <span className="breadcrumb-folder">{seg}</span>
+                      <span className="breadcrumb-separator">/</span>
+                    </React.Fragment>
+                  ))}
+                  <span className="breadcrumb-file">{state.activeFile.split('/').pop()}</span>
+                </>
+              ) : (
+                <span className="breadcrumb-file">Overview</span>
+              )}
+            </div>
+            <div className="breadcrumbs-meta">
+              {state.activeFile && <span className="breadcrumbs-badge">UTF-8</span>}
+              <span className="breadcrumbs-badge">{activePanel.toUpperCase()}</span>
+            </div>
+          </div>
+
           {!showWelcome && state.openFiles.length > 0 && (
             <div className="tab-bar">
               {state.openFiles.map((file) => (
@@ -299,7 +387,7 @@ export function App(_props: AppProps): React.JSX.Element {
               />
             </PanelSuspense>
           </div>
-          {bottomPanel && (
+          {!zenMode && bottomPanel && (
             <div className="bottom-panel">
               <div className="bottom-panel-header">
                 <div className="bottom-panel-tabs">
@@ -375,6 +463,38 @@ export function App(_props: AppProps): React.JSX.Element {
             </div>
           )}
         </div>
+
+        {!zenMode && secondarySidebarOpen && (
+          <SecondarySidebar
+            state={state}
+            onOpenFile={onOpenFile}
+            onRunAgent={handleRunAgent}
+            onClose={() => setSecondarySidebarOpen(false)}
+          />
+        )}
+        {!zenMode && !secondarySidebarOpen && (
+          <button
+            className="sidebar-edge-pill sidebar-edge-pill-right"
+            onClick={() => setSecondarySidebarOpen(true)}
+            title="Open Secondary Sidebar (Ctrl+Alt+B)"
+            aria-label="Open Secondary Sidebar"
+          >
+            <Icon name="chevronLeft" size={13} />
+            <span>Assistant</span>
+          </button>
+        )}
+
+        {zenMode && (
+          <button
+            className="zen-mode-exit-pill"
+            onClick={() => setZenMode(false)}
+            title="Exit Zen Mode (Distraction-Free)"
+            aria-label="Exit Zen Mode"
+          >
+            <Icon name="zenMode" size={13} />
+            <span>Exit Zen Mode</span>
+          </button>
+        )}
       </div>
 
       <footer className="status-bar">
@@ -399,6 +519,30 @@ export function App(_props: AppProps): React.JSX.Element {
           )}
         </div>
         <div className="status-bar-right">
+          <span
+            className="status-bar-item status-bar-interactive"
+            onClick={() => setSidebarOpen((prev) => !prev)}
+            title="Status Bar: Toggle Primary Sidebar (Ctrl+B)"
+          >
+            <Icon name="sidebar" size={11} />
+            <span>Primary: {sidebarOpen ? 'On' : 'Off'}</span>
+          </span>
+          <span
+            className="status-bar-item status-bar-interactive"
+            onClick={() => setSecondarySidebarOpen((prev) => !prev)}
+            title="Status Bar: Toggle Secondary Sidebar (Ctrl+Alt+B)"
+          >
+            <Icon name="panelRight" size={11} />
+            <span>Secondary: {secondarySidebarOpen ? 'On' : 'Off'}</span>
+          </span>
+          <span
+            className="status-bar-item status-bar-interactive"
+            onClick={() => setShowShortcutsModal(true)}
+            title="Status Bar: Shortcuts & Tips (F1)"
+          >
+            <Icon name="helpCircle" size={11} />
+            <span>Shortcuts</span>
+          </span>
           {state.collab.session?.status === 'running' && (
             <span className="status-bar-item" style={{ color: 'var(--accent-green)' }}>
               ● Collab: {state.collab.session.id.slice(0, 8)}
@@ -419,6 +563,9 @@ export function App(_props: AppProps): React.JSX.Element {
           else if (cmd === 'editor.new') { onOpenFile('untitled.alp'); }
           else if (cmd === 'editor.save') { /* placeholder */ }
           else if (cmd === 'workbench.focusSidebar' || cmd === 'sidebar.toggle') { setSidebarOpen((prev) => !prev); }
+          else if (cmd === 'secondarySidebar.toggle' || cmd === 'workbench.secondarySidebar') { setSecondarySidebarOpen((prev) => !prev); }
+          else if (cmd === 'zenMode.toggle' || cmd === 'workbench.zenMode') { setZenMode((prev) => !prev); }
+          else if (cmd === 'help.shortcuts' || cmd === 'workbench.shortcuts') { setShowShortcutsModal(true); }
           else if (cmd === 'panels.drawer' || cmd === 'workbench.panels') { setShowPanelsDrawer(true); }
           else if (cmd === 'debugger.start') { handleSelectPanel('debugger'); }
           else if (cmd === 'debugger.stop') { setState((prev) => ({ ...prev, debug: { session: null, output: [] } })); }
@@ -438,6 +585,11 @@ export function App(_props: AppProps): React.JSX.Element {
         onClose={() => setShowPanelsDrawer(false)}
         activePanel={activePanel}
         onSelectPanel={handleSelectPanel}
+      />
+
+      <ShortcutsModal
+        isOpen={showShortcutsModal}
+        onClose={() => setShowShortcutsModal(false)}
       />
     </div>
   );

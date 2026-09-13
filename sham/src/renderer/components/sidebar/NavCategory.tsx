@@ -109,20 +109,30 @@ export function NavCategory({ state, onOpenFile }: NavCategoryProps): React.JSX.
   return (
     <div className="sidebar-section" style={{ flex: 1, overflow: 'auto', borderBottom: 'none' }}>
       <div className="sidebar-section-title">
-        <span>Workspace</span>
-        <button
-          className="sidebar-section-action"
-          onClick={() => {
-            setShowSearch((prev) => {
-              if (prev) setSearch('');
-              return !prev;
-            });
-          }}
-          title={showSearch ? 'Close Search' : 'Filter Workspace Files'}
-          style={{ opacity: showSearch ? 1 : undefined }}
-        >
-          <Icon name={showSearch ? 'x' : 'search'} size={12} />
-        </button>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span>Workspace</span>
+          {search && visibleTree.length > 0 && (
+            <span className="sidebar-count-badge" title={`${visibleTree.length} matched`}>
+              {visibleTree.length}
+            </span>
+          )}
+        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <button
+            className="sidebar-section-action"
+            onClick={() => {
+              setShowSearch((prev) => {
+                if (prev) setSearch('');
+                return !prev;
+              });
+            }}
+            title={showSearch ? 'Close Search' : 'Filter Workspace Files'}
+            aria-label={showSearch ? 'Close Search' : 'Filter Workspace Files'}
+            style={{ opacity: showSearch ? 1 : undefined }}
+          >
+            <Icon name={showSearch ? 'x' : 'search'} size={12} />
+          </button>
+        </div>
       </div>
 
       {showSearch && (
