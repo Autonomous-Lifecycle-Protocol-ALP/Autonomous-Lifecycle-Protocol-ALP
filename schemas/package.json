@@ -3,8 +3,19 @@
   "version": "80.0.0",
   "type": "module",
   "description": "JSON Schema definitions for the Autonomous Lifecycle Protocol (ALP)",
-  "main": "index.js",
+  "main": "index.cjs",
+  "module": "index.js",
   "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.cjs",
+      "default": "./index.cjs"
+    },
+    "./*.json": "./*.json",
+    "./*": "./*"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP.git"

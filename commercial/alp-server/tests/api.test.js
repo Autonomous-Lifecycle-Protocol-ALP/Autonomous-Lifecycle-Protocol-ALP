@@ -12,7 +12,7 @@ let userId;
 let mongod;
 
 beforeAll(async () => {
-  mongod = await MongoMemoryServer.create({ binary: { version: '8.2.6' } });
+  mongod = await MongoMemoryServer.create({});
   const uri = mongod.getUri();
   process.env.MONGO_URI = uri;
   process.env.JWT_SECRET = 'test-jwt-secret';

@@ -18,7 +18,7 @@ export function registerAssetCommand(program: Command) {
       const bundle = engine.bundleAsset(id, type as AssetType, mimeType, content);
       const prompt = engine.encodeContextPrompt(bundle);
 
-      console.log('\n🎨 Multi-Modal Asset Bundle Created (v24.0.0)');
+      console.log('\n[STYLE] Multi-Modal Asset Bundle Created (v24.0.0)');
       console.log('============================================');
       console.log(`  Asset ID:   ${bundle.id}`);
       console.log(`  Type:       ${bundle.assetType}`);
@@ -46,9 +46,9 @@ export function registerAssetCommand(program: Command) {
       });
 
       if (isValid) {
-        console.log('\n✅ Asset Integrity Verified: SHA-256 digest matches payload!');
+        console.log('\n[OK] Asset Integrity Verified: SHA-256 digest matches payload!');
       } else {
-        console.log('\n❌ Asset Integrity Check Failed: SHA-256 digest mismatch.');
+        console.log('\n[FAIL] Asset Integrity Check Failed: SHA-256 digest mismatch.');
       }
     });
 }

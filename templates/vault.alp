@@ -1,0 +1,12 @@
+!alp-version: 3.0.0
+
+// VAULT TEMPLATE
+// Sealed secret repository with encrypted recipient public keys.
+
+@vault
+  id: vault-example-credentials
+  name: "Example Secret Vault"
+  recipients:
+    - "maintainer.pub"
+    - "ci-bot.pub"
+  algorithm: "aes-256-gcm"

@@ -33,11 +33,11 @@ export function registerCollabCommand(program: Command) {
       const presence = engine.joinSession(docId, options.agent);
 
       if (presence) {
-        console.log(`\n✅ Agent '${presence.agentId}' joined session '${docId}'`);
+        console.log(`\n[OK] Agent '${presence.agentId}' joined session '${docId}'`);
         console.log(`   Color:  ${presence.color}`);
         console.log(`   Status: ${presence.status}\n`);
       } else {
-        console.error(`❌ Session '${docId}' not found`);
+        console.error(`[FAIL] Session '${docId}' not found`);
       }
     });
 
@@ -50,11 +50,11 @@ export function registerCollabCommand(program: Command) {
       const session = engine.getSession(docId);
 
       if (!session) {
-        console.log(`\n⚠️  No active session for '${docId}'\n`);
+        console.log(`\n[WARN]  No active session for '${docId}'\n`);
         return;
       }
 
-      console.log(`\n📊 Session Status: ${docId}`);
+      console.log(`\n[STATS] Session Status: ${docId}`);
       console.log(`   Agents:     ${session.agents.size}`);
       console.log(`   Operations: ${session.operations.length}`);
       console.log(`   Branches:   ${session.branches.size}\n`);
@@ -70,16 +70,16 @@ export function registerCollabCommand(program: Command) {
       const result = engine.mergeBranch(docId, branchId);
 
       if (!result) {
-        console.error(`❌ Could not merge: session or branch not found`);
+        console.error(`[FAIL] Could not merge: session or branch not found`);
         return;
       }
 
-      console.log(`\n🔀 Merge Complete`);
+      console.log(`\n[MERGE] Merge Complete`);
       console.log(`   Operations applied: ${result.operationsApplied}`);
       console.log(`   Conflicts:          ${result.conflicts.length}`);
       if (result.conflicts.length > 0) {
         result.conflicts.forEach((c) => {
-          console.log(`     ⚠️  ${c.path}: ${c.resolution} (local=${c.localValue}, remote=${c.remoteValue})`);
+          console.log(`     [WARN]  ${c.path}: ${c.resolution} (local=${c.localValue}, remote=${c.remoteValue})`);
         });
       }
       console.log('');
@@ -97,7 +97,7 @@ export function registerCollabCommand(program: Command) {
       engine.createSession(docId);
       const comment = engine.addComment(docId, path, options.agent, text);
 
-      console.log(`\n💬 Comment Added`);
+      console.log(`\n[MSG] Comment Added`);
       console.log(`   ID:       ${comment.id}`);
       console.log(`   Path:     ${comment.path}`);
       console.log(`   Author:   ${comment.authorId}`);
@@ -113,7 +113,7 @@ export function registerCollabCommand(program: Command) {
       const engine = new CollaborationEngine();
       const comments = engine.getComments(docId, options.path);
 
-      console.log(`\n💬 Comments for ${docId}: ${comments.length}`);
+      console.log(`\n[MSG] Comments for ${docId}: ${comments.length}`);
       comments.forEach((c) => {
         console.log(`   [${c.id}] ${c.path} by ${c.authorId}: ${c.text} (resolved=${c.resolved})`);
       });
@@ -130,9 +130,9 @@ export function registerCollabCommand(program: Command) {
       const ok = engine.resolveComment(commentId, options.agent);
 
       if (ok) {
-        console.log(`\n✅ Comment ${commentId} resolved by ${options.agent}\n`);
+        console.log(`\n[OK] Comment ${commentId} resolved by ${options.agent}\n`);
       } else {
-        console.error(`\n❌ Could not resolve comment ${commentId}\n`);
+        console.error(`\n[FAIL] Could not resolve comment ${commentId}\n`);
       }
     });
 
@@ -148,7 +148,7 @@ export function registerCollabCommand(program: Command) {
       engine.createSession(docId);
       const thread = engine.createReviewThread(docId, path, options.agent, text);
 
-      console.log(`\n🧵 Review Thread Created`);
+      console.log(`\n[THREAD] Review Thread Created`);
       console.log(`   Thread ID: ${thread.id}`);
       console.log(`   Path:      ${thread.path}`);
       console.log(`   Status:    ${thread.status}`);
@@ -163,7 +163,7 @@ export function registerCollabCommand(program: Command) {
       const engine = new CollaborationEngine();
       const threads = engine.getReviewThreads(docId);
 
-      console.log(`\n🧵 Review Threads for ${docId}: ${threads.length}`);
+      console.log(`\n[THREAD] Review Threads for ${docId}: ${threads.length}`);
       threads.forEach((t) => {
         console.log(`   [${t.id}] ${t.path} — ${t.status} (${t.comments.length} comments)`);
       });
@@ -181,11 +181,11 @@ export function registerCollabCommand(program: Command) {
       const comment = engine.replyToThread(threadId, options.agent, text);
 
       if (comment) {
-        console.log(`\n💬 Reply Added`);
+        console.log(`\n[MSG] Reply Added`);
         console.log(`   Comment ID: ${comment.id}`);
         console.log(`   Author:     ${comment.authorId}\n`);
       } else {
-        console.error(`\n❌ Thread ${threadId} not found\n`);
+        console.error(`\n[FAIL] Thread ${threadId} not found\n`);
       }
     });
 
@@ -199,9 +199,9 @@ export function registerCollabCommand(program: Command) {
       const ok = engine.resolveThread(threadId, options.agent);
 
       if (ok) {
-        console.log(`\n✅ Thread ${threadId} resolved by ${options.agent}\n`);
+        console.log(`\n[OK] Thread ${threadId} resolved by ${options.agent}\n`);
       } else {
-        console.error(`\n❌ Could not resolve thread ${threadId}\n`);
+        console.error(`\n[FAIL] Could not resolve thread ${threadId}\n`);
       }
     });
 
@@ -253,9 +253,9 @@ export function registerCollabCommand(program: Command) {
       const ok = engine.revokePermission(docId, agentId, options.by);
 
       if (ok) {
-        console.log(`\n❌ Permission revoked for ${agentId} on ${docId}\n`);
+        console.log(`\n[FAIL] Permission revoked for ${agentId} on ${docId}\n`);
       } else {
-        console.error(`\n⚠️  No permission found for ${agentId} on ${docId}\n`);
+        console.error(`\n[WARN]  No permission found for ${agentId} on ${docId}\n`);
       }
     });
 
@@ -267,7 +267,7 @@ export function registerCollabCommand(program: Command) {
       const engine = new CollaborationEngine();
       const perms = engine.getPermissions(docId);
 
-      console.log(`\n🔐 Permissions for ${docId}:`);
+      console.log(`\n[LOCK] Permissions for ${docId}:`);
       perms.forEach((p) => {
         console.log(`   ${p.agentId}: ${p.permission} (granted by ${p.grantedBy})`);
       });
@@ -284,7 +284,7 @@ export function registerCollabCommand(program: Command) {
       engine.createSession(docId);
       const session = engine.startLiveShare(docId, options.host);
 
-      console.log(`\n🔗 Live Share Started`);
+      console.log(`\n[LINK] Live Share Started`);
       console.log(`   Session ID: ${session.sessionId}`);
       console.log(`   Document:   ${session.docId}`);
       console.log(`   Host:       ${session.hostId}`);
@@ -301,9 +301,9 @@ export function registerCollabCommand(program: Command) {
       const ok = engine.joinLiveShare(sessionId, options.guest);
 
       if (ok) {
-        console.log(`\n✅ Agent '${options.guest}' joined live share '${sessionId}'\n`);
+        console.log(`\n[OK] Agent '${options.guest}' joined live share '${sessionId}'\n`);
       } else {
-        console.error(`\n❌ Live share session '${sessionId}' not found or ended\n`);
+        console.error(`\n[FAIL] Live share session '${sessionId}' not found or ended\n`);
       }
     });
 
@@ -317,9 +317,9 @@ export function registerCollabCommand(program: Command) {
       const ok = engine.endLiveShare(sessionId, options.by);
 
       if (ok) {
-        console.log(`\n🛑 Live share '${sessionId}' ended by ${options.by}\n`);
+        console.log(`\n[STOP] Live share '${sessionId}' ended by ${options.by}\n`);
       } else {
-        console.error(`\n❌ Could not end live share '${sessionId}'\n`);
+        console.error(`\n[FAIL] Could not end live share '${sessionId}'\n`);
       }
     });
 
@@ -331,7 +331,7 @@ export function registerCollabCommand(program: Command) {
       const engine = new CollaborationEngine();
       const shares = engine.getLiveShares(docId);
 
-      console.log(`\n🔗 Live Shares for ${docId}: ${shares.length}`);
+      console.log(`\n[LINK] Live Shares for ${docId}: ${shares.length}`);
       shares.forEach((s) => {
         console.log(`   [${s.sessionId}] host=${s.hostId} guests=${s.guests.join(',')} status=${s.status}`);
       });
@@ -362,7 +362,7 @@ export function registerCollabCommand(program: Command) {
         console.log(engine.exportAuditLog());
       } else {
         const events = engine.queryAuditLog(opts);
-        console.log(`\n📋 Audit Log for ${docId}: ${events.length} events`);
+        console.log(`\n[LIST] Audit Log for ${docId}: ${events.length} events`);
         events.forEach((e) => {
           console.log(`   [${e.id}] ${new Date(e.timestamp).toISOString()} ${e.actorId} -> ${e.action} on ${e.target}`);
         });

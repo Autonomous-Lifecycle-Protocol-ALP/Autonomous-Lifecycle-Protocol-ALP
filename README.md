@@ -8,7 +8,7 @@
    [![Status](https://img.shields.io/badge/status-stable-success.svg)](#)
      [![Version](https://img.shields.io/badge/version-80.0.0-blue.svg)](#)
      [![License](https://img.shields.io/badge/license-MIT-green.svg)](#)
-     [![Tests](https://img.shields.io/badge/tests-1793%20passed-brightgreen.svg)](#)
+     [![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](#)
     [![Docs](https://img.shields.io/badge/docs-live-green.svg)](https://autonomous-lifecycle-protocol-alp.github.io/Autonomous-Lifecycle-Protocol-ALP/)
 </div>
 
@@ -155,7 +155,7 @@ alp verify task-auth
 | [`@autonomous-lifecycle-protocol-alp/cli`](cli/) | Terminal interface (`run`, `serve`, `feature-flag`, `replay`, `vault`, `verify`) | `80.0.0` |
 | [`@autonomous-lifecycle-protocol-alp/parser`](parser/) | High-performance DAG parser & Kahn topological sorting engine | `80.0.0` |
 | [`@autonomous-lifecycle-protocol-alp/mcp-server`](mcp-server/) | Model Context Protocol server for Claude Desktop, Cursor, and IDEs | `80.0.0` |
-| [`@autonomous-lifecycle-protocol-alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `80.0.0` |
+| [`@autonomous-lifecycle-protocol-alp/vscode`](vscode/) | Official VS Code extension with IntelliSense & AST navigation | `45.0.0` |
 | [`@autonomous-lifecycle-protocol-alp/sdk`](sdk/) | Official TypeScript SDK | `80.0.0` |
 | [`alp-sdk`](sdk/python/) | Official Python SDK with complete 1:1 parity | `80.0.0` |
 | [`alp-go`](sdk/go/) | Official Go SDK | `0.46.0` |

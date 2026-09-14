@@ -1,0 +1,20 @@
+!alp-version: 3.0.0
+
+@multimodal
+  id: mm-warehouse-inspection
+  modalities:
+    - vision
+    - sensor
+    - spatial
+  resolution: "1920x1080"
+  fps: 30
+  sample_rate_hz: 1000
+  assets:
+    - s3://warehouse-robot/cameras/front_1080p.mp4
+    - s3://warehouse-robot/lidar/shelf_a.pcd
+    - udp://warehouse-robot/sensors/temperature
+  embedding_dim: 768
+  metadata:
+    location: warehouse_zone_a
+    battery_level: 0.85
+    operator: "@agent-inspection-orchestrator"

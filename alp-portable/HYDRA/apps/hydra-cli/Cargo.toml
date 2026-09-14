@@ -1,0 +1,28 @@
+[package]
+name = "hydra-cli"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "hydra"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+tokio.workspace = true
+tonic.workspace = true
+prost.workspace = true
+async-stream = "0.3"
+hydra-core = { path = "../../crates/hydra-core" }
+hydra-orchestrator = { path = "../../crates/hydra-orchestrator" }
+hydra-runtime = { path = "../../crates/hydra-runtime" }
+hydra-scheduler = { path = "../../crates/hydra-scheduler" }
+hydra-agents = { path = "../../crates/hydra-agents" }
+hydra-skills = { path = "../../crates/hydra-skills" }
+hydra-sandbox = { path = "../../crates/hydra-sandbox" }
+hydra-security = { path = "../../crates/hydra-security" }
+hydra-evolution = { path = "../../crates/hydra-evolution" }
+hydra-recovery = { path = "../../crates/hydra-recovery" }
+hydra-daemon = { path = "../../apps/hydra-daemon" }

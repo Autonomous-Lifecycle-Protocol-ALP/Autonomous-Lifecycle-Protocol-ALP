@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Icon } from './Icon.js';
 import type { ALPAgent } from '../shared/types.js';
+import { AgentCreator } from './agent-creator/index.js';
 
 interface AgentPanelProps {
   agents: ALPAgent[];
   onRunAgent: (agentId: string, config: Record<string, unknown>) => void;
+  onCreateAgent?: (data: {
+    name: string;
+    role: string;
+    model: string;
+    permissions: string[];
+    description: string;
+    template?: string;
+  }) => void;
 }
 
-export function AgentPanel({ agents, onRunAgent }: AgentPanelProps): React.JSX.Element {
-  const [newAgentName, setNewAgentName] = React.useState('');
+export function AgentPanel({ agents, onRunAgent, onCreateAgent }: AgentPanelProps): React.JSX.Element {
+  const [newAgentName, setNewAgentName] = useState('');
+  const [showCreator, setShowCreator] = useState(false);
 
   const handleAddAgent = () => {
     if (newAgentName.trim()) {
@@ -21,6 +31,20 @@ export function AgentPanel({ agents, onRunAgent }: AgentPanelProps): React.JSX.E
       onRunAgent(agent.id, agent.config);
       setNewAgentName('');
     }
+  };
+
+  const handleCreatorSubmit = (data: {
+    name: string;
+    role: string;
+    model: string;
+    permissions: string[];
+    description: string;
+    template?: string;
+  }) => {
+    if (onCreateAgent) {
+      onCreateAgent(data);
+    }
+    setShowCreator(false);
   };
 
   return (
@@ -36,8 +60,17 @@ export function AgentPanel({ agents, onRunAgent }: AgentPanelProps): React.JSX.E
             style={{ flex: 1, minWidth: '120px' }}
           />
           <button className="btn btn-primary btn-responsive" onClick={handleAddAgent}>Add</button>
+          <button className="btn btn-secondary btn-responsive" onClick={() => setShowCreator(true)}>Create</button>
         </div>
       </div>
+      {showCreator && (
+        <div style={{ marginBottom: '12px' }}>
+          <AgentCreator
+            onSubmit={handleCreatorSubmit}
+            onCancel={() => setShowCreator(false)}
+          />
+        </div>
+      )}
       <div style={{ flex: 1, overflowY: 'auto' }}>
         {agents.length === 0 ? (
           <div className="empty-state">

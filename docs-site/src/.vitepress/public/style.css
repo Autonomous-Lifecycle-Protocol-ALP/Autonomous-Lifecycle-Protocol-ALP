@@ -722,3 +722,41 @@ html.dark .alp-eco-card:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Video Placeholder ── */
+
+.video-placeholder {
+  margin: 1.2em 0;
+}
+
+.video-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 12px;
+  color: var(--vp-c-text-2);
+  font-size: 0.95rem;
+}
+
+.play-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--vp-c-brand-1);
+  color: #fff;
+  font-size: 0.8rem;
+  line-height: 1;
+  padding-left: 2px;
+}
+
+html.dark .play-icon {
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
+}
+

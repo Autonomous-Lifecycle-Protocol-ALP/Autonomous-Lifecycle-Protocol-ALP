@@ -1,0 +1,14 @@
+[package]
+name = "hydra-vision"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+tokio.workspace = true
+async-trait = "0.1"
+hydra-tools = { path = "../hydra-tools" }

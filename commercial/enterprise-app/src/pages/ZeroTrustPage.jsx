@@ -1,3 +1,4 @@
+import { FiClipboard, FiLock } from 'react-icons/fi';
 import { useState, useEffect } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -132,12 +133,12 @@ export default function ZeroTrustPage() {
             <p className="text-sm text-gray-400 mt-1">SPIFFE/SPIRE identities for every agent, service, and task execution.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">🔐</div>
+            <div className="text-2xl mb-2"><FiLock className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Mutual TLS Everywhere</h3>
             <p className="text-sm text-gray-400 mt-1">Automatic mTLS between all runtime components with short-lived certs.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">📋</div>
+            <div className="text-2xl mb-2"><FiClipboard className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Immutable Audit Trail</h3>
             <p className="text-sm text-gray-400 mt-1">W3C Verifiable Credentials for compliance and forensics.</p>
           </div>

@@ -33,7 +33,7 @@ export function registerCodeTransformCommand(program: Command) {
         options.newSymbol || 'activeCounter'
       );
 
-      console.log('\n⚡ Code Transformation Applied (v34.0.0)');
+      console.log('\n[FAST] Code Transformation Applied (v34.0.0)');
       console.log('=======================================');
       console.log(`  Transform ID:   ${res.id}`);
       console.log(`  Transform Type: ${res.transformType}`);

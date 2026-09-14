@@ -1,0 +1,11 @@
+!alp-version: 3.0.0
+
+// TIMELINE TEMPLATE
+// Scheduled cron execution trigger for automated agent health and maintenance.
+
+@timeline
+  id: tl-nightly-maintenance
+  name: "Nightly Automated Maintenance"
+  cron: "0 2 * * *"
+  status: [ ]
+  description: "Nightly test execution, dependency audit, and database cleanup"

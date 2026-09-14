@@ -32,16 +32,6 @@ ALP aims to become the **standard protocol for autonomous software engineering**
 - **Autonomous Orchestration Panel**: Self-healing DAGs, adaptive runtime tuning, edge-native execution
 - **Enhanced SHAM IDE**: v80.0.0 release with integrated intelligence and autonomy tools
 
-### V80.0.0 — Autonomous Orchestration
-
-**Theme:** Self-governing, self-healing AI workflows
-
-- Autonomy Controller with self-healing DAGs
-- Workflow Mutator with policy guardrails
-- Adaptive Engine for runtime tuning
-- Intelligence Engine for AI-powered diagnostics
-- SHAM IDE cross-platform release
-
 ### V40.0.0 — Native Desktop & SHAM IDE
 
 **Theme:** Unified desktop experience

@@ -37,7 +37,7 @@ export function registerDIDCommand(program: Command) {
       console.log(`  DID URI:     ${receipt.didUri}`);
       console.log(`  Block Hash:  ${receipt.blockHash}`);
       console.log(`  Tx Hash:     ${receipt.transactionHash}`);
-      console.log(`  Status:      ${receipt.status === 'CONFIRMED' ? '✅ CONFIRMED' : '⏳ PENDING'}\n`);
+      console.log(`  Status:      ${receipt.status === 'CONFIRMED' ? '[OK] CONFIRMED' : '⏳ PENDING'}\n`);
     });
 }
 

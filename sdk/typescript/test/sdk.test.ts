@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest';
+import * as path from 'path';
 import { AlpWorkspace, PolicyEnforcer, DocumentValidator } from '../src/index';
 
 describe('@autonomous-lifecycle-protocol-alp/sdk — AlpWorkspace', () => {
   const workspace = new AlpWorkspace();
-  workspace.load('examples/todo-app');
+  workspace.load(path.join(__dirname, '..', '..', '..', 'examples', 'todo-app'));
 
   it('should load all .alp objects (including nested feature files)', () => {
     expect(workspace.objects.length).toBeGreaterThan(0);
@@ -62,7 +63,7 @@ describe('PolicyEnforcer', () => {
 
   it('govern() should scan workspace objects', () => {
     const workspace = new AlpWorkspace();
-    workspace.load('examples/todo-app');
+    workspace.load(path.join(__dirname, '..', '..', '..', 'examples', 'todo-app'));
     const enforcer = new PolicyEnforcer({ requiredFields: ['_type', 'id'] });
     const result = enforcer.govern(workspace);
     expect(result.objectsScanned).toBe(workspace.objects.length);

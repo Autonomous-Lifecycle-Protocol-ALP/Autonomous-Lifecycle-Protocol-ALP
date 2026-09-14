@@ -18,7 +18,7 @@ export function registerStorageCommand(program: Command) {
       container.set('default', 'agent_role', 'autonomous-architect');
       container.set('agent-cache', 'ast_version', '78.0.0');
 
-      console.log('\n📦 Local Storage Container & Namespace Manager (v78.0.0)');
+      console.log('\n[PKG] Local Storage Container & Namespace Manager (v78.0.0)');
       console.log('========================================================');
 
       if (options.set) {

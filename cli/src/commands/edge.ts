@@ -23,7 +23,7 @@ export function registerEdgeCommand(program: Command) {
       console.log(`  Model Name:   ${config.modelName}`);
       console.log(`  GGUF File:    ${config.ggufPath}`);
       console.log(`  Quantization: ${config.quantization}`);
-      console.log(`  Offline Mode: 🔒 ZERO-CLOUD RELIANCE\n`);
+      console.log(`  Offline Mode: [LOCK] ZERO-CLOUD RELIANCE\n`);
     });
 
   edge
@@ -37,11 +37,11 @@ export function registerEdgeCommand(program: Command) {
 
       const result = engine.executeOfflineInference(modelId, prompt);
 
-      console.log('\n⚡ Edge Local Inference Result (v29.0.0)');
+      console.log('\n[FAST] Edge Local Inference Result (v29.0.0)');
       console.log('=======================================');
       console.log(`  Model ID:    ${result.modelId}`);
       console.log(`  Tokens/Sec:  ${result.tokPerSec} tok/s`);
-      console.log(`  Offline:     ${result.offline ? '✅ YES' : '❌ NO'}`);
+      console.log(`  Offline:     ${result.offline ? '[OK] YES' : '[FAIL] NO'}`);
       console.log(`\n  Output:\n  ${result.completion}\n`);
     });
 }

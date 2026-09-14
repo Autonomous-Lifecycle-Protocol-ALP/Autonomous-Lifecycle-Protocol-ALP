@@ -1,0 +1,37 @@
+[package]
+name = "hydra-e2e"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+uuid.workspace = true
+reqwest = { version = "0.12", features = ["json"] }
+axum.workspace = true
+tower.workspace = true
+tower-http.workspace = true
+hydra-core = { path = "../hydra-core" }
+hydra-runtime = { path = "../hydra-runtime" }
+hydra-scheduler = { path = "../hydra-scheduler" }
+hydra-security = { path = "../hydra-security" }
+hydra-sandbox = { path = "../hydra-sandbox" }
+hydra-orchestrator = { path = "../hydra-orchestrator" }
+hydra-inference = { path = "../hydra-inference" }
+hydra-daemon = { path = "../../apps/hydra-daemon" }
+tempfile = "3"
+
+[[test]]
+name = "e2e"
+path = "tests/e2e.rs"
+
+[[test]]
+name = "error_paths"
+path = "tests/error_paths.rs"
+
+[[test]]
+name = "model_integration"
+path = "tests/model_integration.rs"

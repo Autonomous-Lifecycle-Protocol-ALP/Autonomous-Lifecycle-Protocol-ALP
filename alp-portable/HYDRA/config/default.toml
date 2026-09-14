@@ -1,0 +1,34 @@
+[system]
+mode = "balanced"
+offline = true
+
+[compute]
+max_cpu_percent = 80
+max_memory_mb = 8192
+
+[network]
+enabled = false
+
+[security]
+approval_mode = "balanced"
+
+[sandbox]
+default_timeout = 1800
+network = "none"
+
+[memory]
+enabled = true
+
+[paths]
+root = "~/.hydra"
+data_dir = "~/.hydra/data"
+model_dir = "~/.hydra/models"
+cache_dir = "~/.hydra/cache"
+projects_dir = "~/.hydra/projects"
+
+[logging]
+level = "INFO"
+
+[limits]
+max_concurrency = 2
+default_timeout = 600

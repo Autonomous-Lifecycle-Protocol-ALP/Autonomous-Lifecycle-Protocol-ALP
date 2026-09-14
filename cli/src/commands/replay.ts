@@ -19,7 +19,7 @@ export function registerReplayCommand(program: Command) {
       const seekIndex = parseInt(options.seek, 10);
       const step = engine.seekToStep(trace.traceId, seekIndex);
 
-      console.log('\n⏱️ Temporal Workflow Replay Engine (v58.0.0)');
+      console.log('\n[TIME] Temporal Workflow Replay Engine (v58.0.0)');
       console.log('============================================');
       console.log(`  Workflow ID:    ${options.workflow}`);
       console.log(`  Trace ID:       ${trace.traceId}`);

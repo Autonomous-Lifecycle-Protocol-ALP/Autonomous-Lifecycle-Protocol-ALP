@@ -68,12 +68,12 @@ export function verifyCommand(taskId: string, options?: VerifyOptions) {
   }
 
   if (!targetObj.verify || !Array.isArray(targetObj.verify) || targetObj.verify.length === 0) {
-    console.log(`✅ Task '${taskId}' has no verification gates defined. Considering it verified.`);
+    console.log(`[OK] Task '${taskId}' has no verification gates defined. Considering it verified.`);
     writeTaskStatus(targetFile, taskId, '[x]');
     return;
   }
 
-  console.log(`\n🔍 Verifying Task: ${taskId}`);
+  console.log(`\n[SCAN] Verifying Task: ${taskId}`);
   console.log(`   Running ${targetObj.verify.length} quality gate(s)...\n`);
 
   const policyEngine = new PolicyEngine(allObjects);
@@ -91,10 +91,10 @@ export function verifyCommand(taskId: string, options?: VerifyOptions) {
       const decision = policyEngine.evaluate({ kind: 'command', value: String(cmd), agent: owner });
       if (!decision.allowed) {
         for (const reason of decision.reasons) {
-          console.error(`   ${decision.blocked ? '⛔' : '⚠️ '} ${reason}`);
+          console.error(`   ${decision.blocked ? '[BLOCK]' : '[WARN] '} ${reason}`);
         }
         if (decision.blocked) {
-          console.error(`   ❌ Blocked by policy — not executed.\n`);
+          console.error(`   [FAIL] Blocked by policy — not executed.\n`);
           allPassed = false;
           break;
         }
@@ -103,19 +103,19 @@ export function verifyCommand(taskId: string, options?: VerifyOptions) {
 
     try {
       execSync(cmd, { stdio: 'inherit', cwd: process.cwd() });
-      console.log(`   ✅ Passed\n`);
+      console.log(`   [OK] Passed\n`);
     } catch (err) {
-      console.error(`   ❌ Failed\n`);
+      console.error(`   [FAIL] Failed\n`);
       allPassed = false;
       break;
     }
   }
 
   if (allPassed) {
-    console.log(`🎉 All verification gates passed for '${taskId}'. Marking as done [x].`);
+    console.log(`[DONE] All verification gates passed for '${taskId}'. Marking as done [x].`);
     writeTaskStatus(targetFile, taskId, '[x]');
   } else {
-    console.log(`🚨 Verification failed for '${taskId}'. Marking as blocked [!].`);
+    console.log(`[ALERT] Verification failed for '${taskId}'. Marking as blocked [!].`);
     writeTaskStatus(targetFile, taskId, '[!]');
     process.exit(1);
   }
@@ -125,12 +125,12 @@ function runFormalVerification(policyId: string, objects: AlpObject[]) {
   const checker = new PolicyModelChecker(objects);
   const proof = checker.verify(policyId);
 
-  console.log(`\n🔬 Formal Verification: ${policyId}`);
+  console.log(`\n[VERIFY] Formal Verification: ${policyId}`);
   console.log(`   Passed: ${proof.passed}`);
   console.log(`   Checked at: ${proof.checkedAt}\n`);
 
   for (const prop of proof.properties) {
-    const icon = prop.passed ? '✅' : '❌';
+    const icon = prop.passed ? '[OK]' : '[FAIL]';
     console.log(`   ${icon} ${prop.name}: ${prop.message}`);
   }
 
@@ -142,7 +142,7 @@ function runFormalVerification(policyId: string, objects: AlpObject[]) {
     process.exit(1);
   }
 
-  console.log('\n🎉 All formal invariants passed.');
+  console.log('\n[DONE] All formal invariants passed.');
 }
 
 /**

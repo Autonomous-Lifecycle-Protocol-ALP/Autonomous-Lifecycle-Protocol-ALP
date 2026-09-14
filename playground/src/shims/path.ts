@@ -23,4 +23,8 @@ export function basename(p: string): string {
   return i === -1 ? p : p.slice(i + 1);
 }
 
-export default { sep, join, resolve, dirname, basename };
+export function isAbsolute(p: string): boolean {
+  return p.startsWith('/') || /^[a-zA-Z]:[\\/]/.test(p);
+}
+
+export default { sep, join, resolve, dirname, basename, isAbsolute };

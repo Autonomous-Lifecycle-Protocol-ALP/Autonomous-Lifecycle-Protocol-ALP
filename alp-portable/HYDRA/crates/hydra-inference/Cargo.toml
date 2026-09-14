@@ -1,0 +1,17 @@
+[package]
+name = "hydra-inference"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+serde.workspace = true
+llama-cpp-2 = { version = "0.1", optional = true }
+
+[features]
+default = []
+real-llama = ["llama-cpp-2"]
+
+[dev-dependencies]
+tokio.workspace = true

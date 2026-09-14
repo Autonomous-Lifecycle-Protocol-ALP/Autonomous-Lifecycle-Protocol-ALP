@@ -16,7 +16,7 @@ export function registerEvolvePolicyCommand(program: Command) {
       const optimizer = new PolicyOptimizer();
       const result = optimizer.evolve(allowPaths, denyPaths, undefined, generations);
 
-      console.log('\n🧬 Genetic Algorithm Policy Evolution (v52.0.0)');
+      console.log('\n[DNA] Genetic Algorithm Policy Evolution (v52.0.0)');
       console.log('================================================');
       console.log(`  Generations Evaluated: ${result.generationsEvaluated}`);
       console.log(`  Best Candidate ID:     ${result.bestPolicy.id}`);

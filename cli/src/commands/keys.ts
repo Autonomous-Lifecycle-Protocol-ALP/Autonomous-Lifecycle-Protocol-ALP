@@ -79,7 +79,7 @@ function keysTrustCommand(rest: string[]) {
     const trust = raw.startsWith('alp1') ? raw : fingerprint(resolvePublicKey(raw));
     rc.trustedKeys[normalizedNs] = trust;
     fs.writeFileSync(rcPath, JSON.stringify(rc, null, 2));
-    console.log(`🔒 Trusted ${normalizedNs} -> ${trust}`);
+    console.log(`[LOCK] Trusted ${normalizedNs} -> ${trust}`);
     console.log(`   written to ${rcPath}`);
     return;
   }

@@ -17,10 +17,10 @@ export function registerHealCommand(program: Command) {
       console.log('\n🩺 Self-Healing AST Diagnostics (v22.0.0)');
       console.log('==========================================');
       if (diagnostics.length === 0) {
-        console.log('  ✅ No issues detected.\n');
+        console.log('  [OK] No issues detected.\n');
       } else {
         diagnostics.forEach((d) => {
-          const icon = d.severity === 'error' ? '❌' : d.severity === 'warning' ? '⚠️' : 'ℹ️';
+          const icon = d.severity === 'error' ? '[FAIL]' : d.severity === 'warning' ? '[WARN] ' : 'ℹ️';
           console.log(`  ${icon} Line ${d.line}: ${d.message}`);
         });
         console.log('');
@@ -36,7 +36,7 @@ export function registerHealCommand(program: Command) {
       const patches = engine.generatePatches(content);
       const healed = engine.applyPatches(content, patches);
 
-      console.log('\n🔧 Self-Healing Auto-Patch Report (v22.0.0)');
+      console.log('\n[FIX] Self-Healing Auto-Patch Report (v22.0.0)');
       console.log('============================================');
       console.log(`  Patches Generated: ${patches.length}`);
       console.log(`  Patches Applied:   ${patches.filter((p) => p.applied).length}`);

@@ -1,0 +1,20 @@
+[system]
+mode = "lite"
+offline = true
+
+[compute]
+max_cpu_percent = 50
+max_memory_mb = 4096
+
+[network]
+enabled = false
+
+[security]
+approval_mode = "strict"
+
+[sandbox]
+default_timeout = 900
+network = "none"
+
+[memory]
+enabled = true

@@ -398,6 +398,8 @@ export interface WorkflowStep {
   config: Record<string, unknown>;
   dependencies?: string[];
   retries?: number;
+  backoffFactor?: number;
+  maxRetryDelayMs?: number;
   timeoutMs?: number;
 }
 
@@ -409,12 +411,22 @@ export interface WorkflowDefinition {
   triggers: string[];
 }
 
+export interface WorkflowStepEvent {
+  stepId: string;
+  timestamp: string;
+  event: "start" | "success" | "failure" | "retry";
+  attempt?: number;
+  error?: string;
+}
+
 export interface WorkflowRun {
   runId: string;
   workflowId: string;
   status: "pending" | "running" | "completed" | "failed" | "cancelled";
   currentStep?: string;
+  completedSteps?: string[];
   results: Record<string, unknown>;
+  stepEvents?: WorkflowStepEvent[];
   startedAt?: string;
   completedAt?: string;
   error?: string;

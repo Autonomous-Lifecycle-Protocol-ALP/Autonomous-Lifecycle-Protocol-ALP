@@ -34,7 +34,7 @@ export function registerChaosCommand(program: Command) {
         { metric: 'throughput_rps', operator: 'GTE', threshold: 100 },
       ]);
 
-      console.log('\n💥 Chaos Engineering Engine (v72.0.0)');
+      console.log('\n[CRASH] Chaos Engineering Engine (v72.0.0)');
       console.log('=======================================\n');
       console.log(`  Experiment:     ${exp.name}`);
       console.log(`  ID:             ${exp.experimentId}`);
@@ -49,7 +49,7 @@ export function registerChaosCommand(program: Command) {
       // Run the experiment
       const result = engine.runExperiment(exp.experimentId);
 
-      console.log('📊 Experiment Results:');
+      console.log('[STATS] Experiment Results:');
       console.log('─────────────────────────────────────────');
       console.log(`  Injected Faults:       ${result.result!.injectedFaults}`);
       console.log(`  Recovered Faults:      ${result.result!.recoveredFaults}`);
@@ -61,7 +61,7 @@ export function registerChaosCommand(program: Command) {
       console.log(`  Resilience Score:      [${scoreBar}] ${score}%`);
       console.log();
 
-      console.log('🔍 Observations:');
+      console.log('[SCAN] Observations:');
       for (const obs of result.result!.observations) {
         console.log(`  • ${obs}`);
       }
@@ -69,13 +69,13 @@ export function registerChaosCommand(program: Command) {
 
       // Validate steady-state
       const hypotheses = engine.validateSteadyState(exp.experimentId);
-      console.log('📐 Steady-State Hypothesis Validation:');
+      console.log('[CALC] Steady-State Hypothesis Validation:');
       console.log('─────────────────────────────────────────');
       for (const h of hypotheses) {
-        const icon = h.passed ? '✅' : '❌';
+        const icon = h.passed ? '[OK]' : '[FAIL]';
         console.log(`  ${icon} ${h.metric} ${h.operator} ${h.threshold} → actual: ${h.actual} [${h.passed ? 'PASS' : 'FAIL'}]`);
       }
       console.log();
-      console.log('✅ Chaos experiment complete.\n');
+      console.log('[OK] Chaos experiment complete.\n');
     });
 }

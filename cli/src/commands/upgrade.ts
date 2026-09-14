@@ -8,7 +8,7 @@ export function upgradeCommand() {
     process.exit(1);
   }
 
-  console.log('🚀 ALP Upgrade: Checking for older protocol versions...\n');
+  console.log('[START] ALP Upgrade: Checking for older protocol versions...\n');
 
   let upgradedCount = 0;
 
@@ -41,7 +41,7 @@ export function upgradeCommand() {
 
         if (needsUpgrade) {
           fs.writeFileSync(fullPath, content, 'utf-8');
-          console.log(`✅ Upgraded ${path.relative(process.cwd(), fullPath)} to v3.0.0`);
+          console.log(`[OK] Upgraded ${path.relative(process.cwd(), fullPath)} to v3.0.0`);
           upgradedCount++;
         }
       }
@@ -51,8 +51,8 @@ export function upgradeCommand() {
   upgradeDir(alpDir);
 
   if (upgradedCount === 0) {
-    console.log('✅ All files are already up-to-date with the latest ALP version.');
+    console.log('[OK] All files are already up-to-date with the latest ALP version.');
   } else {
-    console.log(`\n🎉 Successfully upgraded ${upgradedCount} files to ALP v3.0.0!`);
+    console.log(`\n[DONE] Successfully upgraded ${upgradedCount} files to ALP v3.0.0!`);
   }
 }

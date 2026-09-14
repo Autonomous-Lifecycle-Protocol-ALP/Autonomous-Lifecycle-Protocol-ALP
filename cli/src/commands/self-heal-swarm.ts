@@ -19,7 +19,7 @@ export function registerSelfHealSwarmCommand(program: Command) {
       const failures = mesh.detectFailures();
       const plan = mesh.generateSelfHealingPlan();
 
-      console.log('\n🛡️ Autonomous Swarm Self-Healing Mesh (v80.0.0)');
+      console.log('\n[SHIELD] Autonomous Swarm Self-Healing Mesh (v80.0.0)');
       console.log('==============================================');
       console.log(`  Failed Nodes:   ${plan.failedNodes.length} (${plan.failedNodes.join(', ')})`);
       console.log(`  Healthy Nodes:  ${plan.healthyNodes.length} (${plan.healthyNodes.join(', ')})`);

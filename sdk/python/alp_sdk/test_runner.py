@@ -7,6 +7,7 @@ from typing import List, Optional
 
 @dataclass
 class TestCase:
+    __test__ = False
     id: str
     description: str
     passed: bool
@@ -16,6 +17,7 @@ class TestCase:
 
 @dataclass
 class TestSuiteResult:
+    __test__ = False
     file: str
     passed: int = 0
     failed: int = 0
@@ -33,6 +35,7 @@ class CoverageReport:
 
 
 class TestRunner:
+    __test__ = False
     def __init__(self):
         from .reader import AlpParser
         self.parser = AlpParser()

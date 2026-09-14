@@ -76,6 +76,18 @@ Once connected, your IDE gains access to the following tools:
 | `alp_memory_query` | Query the memory mesh for relevant memories |
 | `alp_memory_stats` | Return memory mesh statistics |
 
+### Multi-Modal & VLA — v82+
+
+| Tool | Description |
+| :--- | :--- |
+| `alp_multimodal_inspect` | Inspect all `@multimodal`, `@action_space`, and `@vision_model` objects |
+| `alp_multimodal_validate` | Validate multimodal specs for required fields, asset URIs, and token budgets |
+| `alp_action_space_check` | Verify action space safety guards and flag unconfirmed critical actions |
+| `alp_token_cost` | Estimate token costs for modalities and assets against vision model caps |
+| `alp_synapse_export` | Export workspace as a Synapse markdown vault and interactive JSON canvas |
+| `alp_synapse_graph` | Generate graph topology in JSON, Mermaid, DOT, or Canvas format |
+| `alp_synapse_stats` | Compute graph centrality, density, orphan nodes, and broken links |
+
 In addition, the server exposes the workspace `.alp` files as MCP **resources** (`file://` URIs) so a client can read raw object files directly.
 
 ## Usage with Claude Desktop

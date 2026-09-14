@@ -15,13 +15,13 @@ export function registerPQSignCommand(program: Command) {
       const signature = engine.sign(statement, keyPair);
       const verified = engine.verify(statement, signature);
 
-      console.log('\n🔐 Quantum-Resistant Cryptographic Signature (v54.0.0)');
+      console.log('\n[LOCK] Quantum-Resistant Cryptographic Signature (v54.0.0)');
       console.log('========================================================');
       console.log(`  Statement:      "${statement}"`);
       console.log(`  Algorithm:      ${signature.algorithm}`);
       console.log(`  Key ID:         ${keyPair.keyId}`);
       console.log(`  Payload Hash:   ${signature.payloadHash.slice(0, 32)}...`);
       console.log(`  Signature:      ${signature.signature.slice(0, 40)}...`);
-      console.log(`  Verification:   ${verified ? '✅ VALID (QUANTUM-SAFE)' : '❌ INVALID'}\n`);
+      console.log(`  Verification:   ${verified ? '[OK] VALID (QUANTUM-SAFE)' : '[FAIL] INVALID'}\n`);
     });
 }

@@ -1,3 +1,5 @@
+import { FiTrendingUp, FiUpload } from 'react-icons/fi';
+import { SavingsIcon } from "../components/Icons.jsx";
 import { useState, useEffect } from "react";
 import { PRODUCTS } from "./ProductsPage.jsx";
 import ProductPageTemplate from "./ProductPageTemplate.jsx";
@@ -12,12 +14,7 @@ const ANALYTICS_MODULES = [
   { name: "Predictive Planning", desc: "Forecast resource needs and identify bottlenecks before they impact delivery" },
 ];
 
-const REPORT_TYPES = [
-  { report: "Sprint Velocity", freq: "Per sprint" },
-  { report: "Cost Attribution", freq: "Daily" },
-  { report: "Agent ROI", freq: "Weekly" },
-  { report: "Quality Trends", freq: "Per release" },
-];
+
 
 const DATA_SOURCES = [
   { source: "ALP Event Mesh", type: "Real-time" },
@@ -153,17 +150,17 @@ export default function AnalyticsBiPage() {
         <h2 className="text-lg font-semibold mb-4 text-gray-200">Key Benefits</h2>
         <div className="grid md:grid-cols-3 gap-4">
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">📈</div>
+            <div className="text-2xl mb-2"><FiTrendingUp className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">Predictive Planning</h3>
             <p className="text-sm text-gray-400 mt-1">Forecast completion dates and resource needs before they impact delivery.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">💰</div>
+            <div className="text-2xl mb-2 text-emerald-400"><SavingsIcon size="xl" /></div>
             <h3 className="font-medium text-gray-200">Cost Optimization</h3>
             <p className="text-sm text-gray-400 mt-1">Identify overspending and get actionable recommendations to reduce API spend.</p>
           </div>
           <div className="border border-gray-700 rounded-lg p-4">
-            <div className="text-2xl mb-2">📤</div>
+            <div className="text-2xl mb-2"><FiUpload className='inline-block mr-1' /></div>
             <h3 className="font-medium text-gray-200">BI Export</h3>
             <p className="text-sm text-gray-400 mt-1">Export to Tableau, Looker, and Power BI with pre-built templates.</p>
           </div>

@@ -16,7 +16,7 @@ export function registerReasonCommand(program: Command) {
     .action((filePath: string, options: { refine: boolean }) => {
       const fullPath = path.resolve(process.cwd(), filePath);
       if (!fs.existsSync(fullPath)) {
-        console.error(`❌ Error: File not found: ${filePath}`);
+        console.error(`[FAIL] Error: File not found: ${filePath}`);
         process.exit(1);
       }
 
@@ -25,7 +25,7 @@ export function registerReasonCommand(program: Command) {
       const engine = new CritiqueEngine();
       const result = engine.critique(content, targetType);
 
-      console.log('\n🧠 ALP V82.0.0 Self-Reflection Critique Report');
+      console.log('\n[BRAIN] ALP V82.0.0 Self-Reflection Critique Report');
       console.log('==============================================');
       console.log(`  File:             ${path.basename(filePath)} (${targetType})`);
       console.log(`  Overall Score:    ${(result.overallScore * 100).toFixed(0)}%`);
@@ -36,12 +36,12 @@ export function registerReasonCommand(program: Command) {
 
       if (result.defects.length > 0) {
         console.log('\n  Defects:');
-        result.defects.forEach(d => console.log(`    ❌ ${d}`));
+        result.defects.forEach(d => console.log(`    [FAIL] ${d}`));
       }
 
       if (result.refinementSuggestions.length > 0) {
         console.log('\n  Refinement Suggestions:');
-        result.refinementSuggestions.forEach(s => console.log(`    💡 ${s}`));
+        result.refinementSuggestions.forEach(s => console.log(`    [TIP] ${s}`));
       }
 
       if (options.refine) {
@@ -50,7 +50,7 @@ export function registerReasonCommand(program: Command) {
         const base = path.basename(filePath, ext);
         const refinedPath = path.join(path.dirname(fullPath), `${base}-refined${ext}`);
         fs.writeFileSync(refinedPath, refinedContent, 'utf8');
-        console.log(`\n  ✅ Saved refined version to: ${path.basename(refinedPath)}`);
+        console.log(`\n  [OK] Saved refined version to: ${path.basename(refinedPath)}`);
       }
       console.log('');
     });
@@ -67,11 +67,11 @@ export function registerReasonCommand(program: Command) {
 
       const verification = tree.verifyTrace();
 
-      console.log('\n🛡️ ALP V82.0.0 Reasoning Trace Merkle Verification');
+      console.log('\n[SHIELD] ALP V82.0.0 Reasoning Trace Merkle Verification');
       console.log('====================================================');
       console.log(`  Chain ID:       ${chainId}`);
       console.log(`  Steps Scanned:  ${verification.stepCount}`);
       console.log(`  Merkle Root:    ${verification.computedRoot}`);
-      console.log(`  Trace Integrity: ${verification.valid ? '✅ VERIFIED VALID' : '❌ INVALID'}\n`);
+      console.log(`  Trace Integrity: ${verification.valid ? '[OK] VERIFIED VALID' : '[FAIL] INVALID'}\n`);
     });
 }

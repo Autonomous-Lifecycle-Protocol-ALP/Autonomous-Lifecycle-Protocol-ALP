@@ -1,0 +1,19 @@
+!alp-version: 3.0.0
+
+@project
+  id: data-pipeline
+  status: [~]
+  description: "An example demonstrating a multi-stage data processing pipeline orchestrated by ALP."
+  features:
+    - -> feat-data-extraction
+    - -> feat-cleaning-governance
+    - -> feat-analytics-reporting
+
+---
+
+@goal
+  id: goal-etl
+  status: [~]
+  description: "Automate daily sales data processing and reporting."
+  target: "Generate a cleaned analytics report from raw API data daily."
+  priority: medium

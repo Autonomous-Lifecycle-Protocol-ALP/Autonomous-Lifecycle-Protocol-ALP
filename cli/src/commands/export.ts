@@ -71,7 +71,7 @@ export function exportCommand(options: ExportOptions) {
   if (options.out) {
     const outPath = path.resolve(process.cwd(), options.out);
     fs.writeFileSync(outPath, outputData, 'utf-8');
-    console.log(`✅ Successfully exported ${sortedObjects.length} objects to ${options.out}`);
+    console.log(`[OK] Successfully exported ${sortedObjects.length} objects to ${options.out}`);
   } else {
     console.log(outputData);
   }

@@ -10,10 +10,10 @@ export function registerWasmAstCommand(program: Command) {
       const evaluator = new WasmAstEvaluator();
       const result = evaluator.parseAST(options.content);
 
-      console.log('\n⚡ Wasm-Compiled Local AST Evaluator (v66.0.0)');
+      console.log('\n[FAST] Wasm-Compiled Local AST Evaluator (v66.0.0)');
       console.log('==============================================');
-      console.log(`  Parse Latency:   ${result.parseLatencyMs}ms ${result.parseLatencyMs <= 5 ? '⚡ (Sub-5ms Target Hit)' : ''}`);
-      console.log(`  Offline Valid:   ${result.offlineValid ? '✅ VALID' : '❌ INVALID'}`);
+      console.log(`  Parse Latency:   ${result.parseLatencyMs}ms ${result.parseLatencyMs <= 5 ? '[FAST] (Sub-5ms Target Hit)' : ''}`);
+      console.log(`  Offline Valid:   ${result.offlineValid ? '[OK] VALID' : '[FAIL] INVALID'}`);
       console.log(`  AST Nodes:       ${result.ast.length}`);
       result.ast.forEach(node => {
         console.log(`    - [${node.kind}] ${node.name} (line ${node.line})`);

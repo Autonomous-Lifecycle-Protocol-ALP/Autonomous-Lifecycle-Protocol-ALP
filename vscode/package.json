@@ -112,6 +112,26 @@
         "category": "ALP"
       },
       {
+        "command": "alp.showMultimodal",
+        "title": "ALP: Show Multi-Modal Specs",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.showActionSpaces",
+        "title": "ALP: Show Action Spaces",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.showVisionModels",
+        "title": "ALP: Show Vision Models",
+        "category": "ALP"
+      },
+      {
+        "command": "alp.showSynapse",
+        "title": "ALP: Show Synapse Knowledge Graph",
+        "category": "ALP"
+      },
+      {
         "command": "alp.validateWorkspace",
         "title": "ALP: Validate Workspace Governance & Structure",
         "category": "ALP"
@@ -132,7 +152,8 @@
     "vscode:prepublish": "npm run compile",
     "compile": "node esbuild.js --production",
     "watch": "node esbuild.js --watch",
-    "build": "npm run compile"
+    "build": "npm run compile",
+    "package": "npx @vscode/vsce package --no-dependencies"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

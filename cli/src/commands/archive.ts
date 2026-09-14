@@ -49,7 +49,7 @@ export function archiveCommand(status: string, options?: ArchiveOptions) {
   if (archivedIds.length === 0) {
     console.log(`No objects with status '${status}' found.`);
   } else {
-    console.log(`\n📦 Archived ${archivedIds.length} object(s) with status '${status}'\n`);
+    console.log(`\n[PKG] Archived ${archivedIds.length} object(s) with status '${status}'\n`);
     for (const id of archivedIds) {
       console.log(`  ${id}`);
     }

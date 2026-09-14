@@ -16,12 +16,12 @@ export function lintCommand() {
   let errors = 0;
   const allDiagnostics: LintDiagnostic[] = [];
 
-  console.log('🔍 Linting ALP Workspace...\n');
+  console.log('[SCAN] Linting ALP Workspace...\n');
 
   for (const { file, diagnostics } of results) {
     const relative = path.relative(process.cwd(), file);
     for (const d of diagnostics) {
-      const icon = d.severity === 'error' ? '❌' : '⚠️';
+      const icon = d.severity === 'error' ? '[FAIL]' : '[WARN] ';
       const label = d.severity === 'error' ? 'ERROR' : 'WARN';
       console.log(`${icon} [${label}] ${relative}: ${d.message}`);
       if (d.severity === 'error') errors++;
@@ -31,7 +31,7 @@ export function lintCommand() {
   }
 
   if (results.length === 0) {
-    console.log('✅ No lint issues found.\n');
+    console.log('[OK] No lint issues found.\n');
   } else {
     console.log(`\nLinting complete. Found ${errors} errors and ${warnings} warnings.`);
   }

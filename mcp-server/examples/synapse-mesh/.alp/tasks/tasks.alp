@@ -1,0 +1,22 @@
+!alp-version: 3.1.0
+
+@task
+  id: task-frontend
+  title: Frontend work
+  status: [ ]
+  depends:
+    - task-backend
+
+@task
+  id: task-backend
+  title: Backend work
+  status: [ ]
+
+@agent
+  id: agent-dev
+  title: Developer agent
+
+@contract
+  id: contract-api
+  from: -> agent-frontend
+  to: -> agent-backend

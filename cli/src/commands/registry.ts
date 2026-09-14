@@ -24,17 +24,17 @@ export async function registryCommand(sub: string | undefined, target: string | 
         if (options?.url) {
           const signerKey = resolveSignerKey(options?.signKey);
           const meta = await client.publish(dir, signerKey);
-          console.log(`📦 Published ${meta.name}@${meta.tags?.latest ?? ''} to ${url}`);
+          console.log(`[PKG] Published ${meta.name}@${meta.tags?.latest ?? ''} to ${url}`);
           console.log(`   (requires the namespace token on the host — see spec/14 §4.2)`);
         } else {
           const store = new RegistryStore(cwd);
           const signerKey = resolveSignerKey(options?.signKey);
           const meta = store.publish(dir, signerKey);
-          console.log(`📦 Published ${meta.name} — ${Object.keys(meta.versions).length} version(s).`);
+          console.log(`[PKG] Published ${meta.name} — ${Object.keys(meta.versions).length} version(s).`);
           console.log(`   Serve it with: alp serve --registry`);
         }
       } catch (e: any) {
-        console.error(`❌ ${e.message}`);
+        console.error(`[FAIL] ${e.message}`);
         process.exit(1);
       }
       return;
@@ -77,9 +77,9 @@ export async function registryCommand(sub: string | undefined, target: string | 
       const trustedKey = options?.key ? fs.readFileSync(path.resolve(options.key), 'utf-8') : process.env.ALP_REGISTRY_TRUST_KEY;
       try {
         const installed = await client.install(name, alpDir, ver || 'latest', trustedKey);
-        console.log(`✅ Installed ${name}@${ver || 'latest'} -> ${installed}`);
+        console.log(`[OK] Installed ${name}@${ver || 'latest'} -> ${installed}`);
       } catch (e: any) {
-        console.error(`❌ ${e.message}`);
+        console.error(`[FAIL] ${e.message}`);
         process.exit(1);
       }
       return;
@@ -94,19 +94,19 @@ export async function registryCommand(sub: string | undefined, target: string | 
           // Remote verify: no entry download, signature checked from meta.json.
           const trustedKey = options?.key ? fs.readFileSync(path.resolve(options.key), 'utf-8') : process.env.ALP_REGISTRY_TRUST_KEY;
           const res = await client.verifyRemote(name, ver, trustedKey);
-          const tag = res.valid && res.trusted ? '✅' : '❌';
+          const tag = res.valid && res.trusted ? '[OK]' : '[FAIL]';
           console.log(`${tag} ${name}@${res.version}: signed=${res.signed} valid=${res.valid} trusted=${res.trusted} — ${res.reason}`);
           if (!(res.valid && res.trusted)) process.exit(1);
         } else {
           const store = new RegistryStore(cwd, loadAlprc(cwd).trustedKeys);
           const res = store.verifyPackage(name, ver);
           if (res.reason && !res.signed) { console.log(`ℹ️  ${name}@${ver}: ${res.reason}`); return; }
-          const tag = res.valid && res.trusted ? '✅' : '❌';
+          const tag = res.valid && res.trusted ? '[OK]' : '[FAIL]';
           console.log(`${tag} ${name}@${ver}: signed=${res.signed} valid=${res.valid} trusted=${res.trusted} — ${res.reason}`);
           if (!(res.valid && res.trusted)) process.exit(1);
         }
       } catch (e: any) {
-        console.error(`❌ ${e.message}`);
+        console.error(`[FAIL] ${e.message}`);
         process.exit(1);
       }
       return;

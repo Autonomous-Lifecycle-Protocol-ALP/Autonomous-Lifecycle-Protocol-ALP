@@ -8,10 +8,30 @@ import { HardwareManager } from "./hardware/manager";
 import { MCPClient } from "./tools/mcp-client";
 import { AgentOrchestrator } from "./agents/orchestrator";
 import { CodingAgent } from "./agents/coding-agent";
+import {
+  Orchestrator,
+  AgentRegistry,
+  agentRegistry,
+  ModelRouter,
+  SecurityKernel,
+  AuditLogger as HydraAuditLogger,
+  SandboxManager,
+  KillSwitch,
+  TenantManager,
+  BillingManager,
+  MemoryRetriever,
+  sessionStore,
+  EvolutionEngine,
+  ToolRegistry,
+  toolRegistry,
+  QualityGateEngine,
+  DEFAULT_PROVIDERS,
+} from "@autonomous-lifecycle-protocol-alp/hydra-main";
 import { CostBudgetEngine } from "./budget/cost-engine";
 import { MemoryManager } from "./memory/manager";
 import { SafetyEvaluator } from "./safety/evaluator";
-import { WorkflowEngine } from "./workflow/engine";
+import { WorkflowEngine, WorkflowPersistenceStore } from "./workflow/engine";
+import { executePythonStep } from "./tools/python";
 import { ResearchWorkbench } from "./research/workbench";
 import { AuditLogger } from "./governance/audit-log";
 import { CostManager } from "./governance/cost-manager";
@@ -81,9 +101,24 @@ export class EnterprisePlatform {
   readonly cost: CostManager;
   readonly voice: VoiceMultimodalEngine;
   readonly distributed: DistributedAgentNetwork;
-  readonly selfImproving: SelfImprovingCodebase;
+    readonly selfImproving: SelfImprovingCodebase;
+    readonly hydra: {
+      orchestrator: Orchestrator;
+      agents: AgentRegistry;
+      models: ModelRouter;
+      security: SecurityKernel;
+      audit: HydraAuditLogger;
+      sandbox: SandboxManager;
+      killSwitch: KillSwitch;
+      tenant: TenantManager;
+      billing: BillingManager;
+      memory: MemoryRetriever;
+      tools: ToolRegistry;
+      verification: QualityGateEngine;
+      evolution: EvolutionEngine;
+    };
 
-  constructor() {
+  constructor(persistenceStore?: WorkflowPersistenceStore) {
     this.vendors = new VendorAdapterRegistry();
     this.software = new SoftwarePlanningEngine();
     this.hardware = new HardwarePlanningEngine();
@@ -97,13 +132,34 @@ export class EnterprisePlatform {
     this.memory = new MemoryManager();
     this.coding = new CodingAgent({ workspaceRoot: "" });
     this.safety = new SafetyEvaluator();
-    this.workflow = new WorkflowEngine();
+    this.workflow = new WorkflowEngine({}, persistenceStore);
     this.research = new ResearchWorkbench();
     this.audit = new AuditLogger();
     this.cost = new CostManager();
     this.voice = new VoiceMultimodalEngine();
     this.distributed = new DistributedAgentNetwork();
     this.selfImproving = new SelfImprovingCodebase();
+    this.hydra = {
+      orchestrator: new Orchestrator(undefined, {
+        agentRegistry,
+        modelRouter: new ModelRouter(),
+        toolRegistry,
+      }),
+      agents: agentRegistry,
+      models: new ModelRouter(),
+      security: new SecurityKernel(),
+      audit: new HydraAuditLogger(),
+      sandbox: new SandboxManager(),
+      killSwitch: new KillSwitch(),
+      tenant: new TenantManager(),
+      billing: new BillingManager(),
+      memory: new MemoryRetriever(sessionStore),
+      tools: toolRegistry,
+      verification: new QualityGateEngine(),
+      evolution: new EvolutionEngine(agentRegistry, toolRegistry),
+    };
+
+    this.workflow.registerExecutor("python", executePythonStep);
 
     this.registerDefaults();
   }

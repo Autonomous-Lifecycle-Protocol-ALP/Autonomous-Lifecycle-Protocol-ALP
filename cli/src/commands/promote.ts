@@ -54,5 +54,5 @@ export function promoteCommand(objectId: string, newType: string, options?: Prom
   lines[objectStart] = `@${newType}`;
   const updated = lines.join('\n');
   fs.writeFileSync(targetFile, updated, 'utf-8');
-  console.log(`✅ Promoted '${objectId}' from @${oldType} to @${newType} in ${targetFile}`);
+  console.log(`[OK] Promoted '${objectId}' from @${oldType} to @${newType} in ${targetFile}`);
 }

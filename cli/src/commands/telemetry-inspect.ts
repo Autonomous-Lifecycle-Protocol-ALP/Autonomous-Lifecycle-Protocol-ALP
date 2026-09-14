@@ -27,7 +27,7 @@ export function registerTelemetryInspectCommand(program: Command) {
       inspector.updateSubscriptionHealth('sub-payments-1', 'payments.processed', 'payment-gateway', 'DEGRADED', 12);
       inspector.updateSubscriptionHealth('sub-email-1', 'notifications.email', 'email-worker', 'HEALTHY', 2);
 
-      console.log('\n📡 Pub/Sub Telemetry Inspector (v70.0.0)');
+      console.log('\n[SIGNAL] Pub/Sub Telemetry Inspector (v70.0.0)');
       console.log('=========================================\n');
 
       // Topic Metrics
@@ -36,7 +36,7 @@ export function registerTelemetryInspectCommand(program: Command) {
         ? metrics.filter(m => m.topic === options.topic)
         : metrics;
 
-      console.log('📊 Topic Metrics:');
+      console.log('[STATS] Topic Metrics:');
       console.log('─────────────────────────────────────────────────────────────────');
       console.log('  Topic                     Published  Delivered  Failed  Throughput');
       console.log('─────────────────────────────────────────────────────────────────');
@@ -52,10 +52,10 @@ export function registerTelemetryInspectCommand(program: Command) {
       // Subscription Health
       if (options.subscriptions !== false) {
         const subs = inspector.getSubscriptionHealth();
-        console.log('🔗 Subscription Health:');
+        console.log('[LINK] Subscription Health:');
         console.log('─────────────────────────────────────────────────────────────────');
         for (const s of subs) {
-          const statusIcon = s.status === 'HEALTHY' ? '🟢' : s.status === 'DEGRADED' ? '🟡' : '🔴';
+          const statusIcon = s.status === 'HEALTHY' ? '[UP]' : s.status === 'DEGRADED' ? '[WARN]' : '[DOWN]';
           console.log(`  ${statusIcon} ${s.subscriptionId.padEnd(22)} ${s.topic.padEnd(26)} ${s.status.padEnd(10)} unacked: ${s.unackedCount}`);
         }
         console.log();
@@ -64,18 +64,18 @@ export function registerTelemetryInspectCommand(program: Command) {
       // DLQ Alerts
       const dlqAlerts = inspector.getDLQAlerts();
       if (dlqAlerts.length > 0 || options.dlq) {
-        console.log('🚨 Dead-Letter Queue Alerts:');
+        console.log('[ALERT] Dead-Letter Queue Alerts:');
         console.log('─────────────────────────────────────────────────────────────────');
         if (dlqAlerts.length === 0) {
           console.log('  No DLQ alerts. All messages delivered successfully.');
         } else {
           for (const a of dlqAlerts) {
-            console.log(`  ⚠️  [${a.alertId}] topic=${a.topic} reason="${a.reason}"`);
+            console.log(`  [WARN]  [${a.alertId}] topic=${a.topic} reason="${a.reason}"`);
           }
         }
         console.log();
       }
 
-      console.log('✅ Telemetry inspection complete.\n');
+      console.log('[OK] Telemetry inspection complete.\n');
     });
 }

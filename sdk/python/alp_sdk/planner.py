@@ -247,7 +247,7 @@ class Reflector:
                 if match:
                     target = match.group(1)
                 proposals.append(ImprovementProposal(
-                    proposal_id=f"prop-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{__import__('random').random().hex()[2:6]}",
+                    proposal_id=f"prop-{__import__('datetime').datetime.now(__import__('datetime').timezone.utc).strftime('%Y%m%d%H%M%S')}-{__import__('random').random().hex()[2:6]}",
                     lesson_id=lesson.lesson_id,
                     target_node_id=target,
                     action="add_dependency",
@@ -260,7 +260,7 @@ class Reflector:
                 if match:
                     target = match.group(1)
                 proposals.append(ImprovementProposal(
-                    proposal_id=f"prop-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{__import__('random').random().hex()[2:6]}",
+                    proposal_id=f"prop-{__import__('datetime').datetime.now(__import__('datetime').timezone.utc).strftime('%Y%m%d%H%M%S')}-{__import__('random').random().hex()[2:6]}",
                     lesson_id=lesson.lesson_id,
                     target_node_id=target,
                     action="reassign",
@@ -269,7 +269,7 @@ class Reflector:
                 ))
             if "handoff" in lesson.tags:
                 proposals.append(ImprovementProposal(
-                    proposal_id=f"prop-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{__import__('random').random().hex()[2:6]}",
+                    proposal_id=f"prop-{__import__('datetime').datetime.now(__import__('datetime').timezone.utc).strftime('%Y%m%d%H%M%S')}-{__import__('random').random().hex()[2:6]}",
                     lesson_id=lesson.lesson_id,
                     action="add_node",
                     detail="Add automation gate to reduce human handoff frequency.",
@@ -312,7 +312,7 @@ class ReasoningStep:
         self.observation = observation
         self.confidence = confidence
         self.dependencies = dependencies or []
-        self.timestamp = timestamp or __import__("datetime").datetime.utcnow().isoformat() + "Z"
+        self.timestamp = timestamp or __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat().replace("+00:00", "Z")
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -334,7 +334,7 @@ class ReasoningChain:
         self.chain_id = chain_id
         self.goal = goal
         self.steps: List[ReasoningStep] = []
-        self.created_at = __import__("datetime").datetime.utcnow().isoformat() + "Z"
+        self.created_at = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat().replace("+00:00", "Z")
         self.status: str = "draft"
         self.result: Optional[str] = None
 
@@ -357,7 +357,7 @@ class ReasoningTracer:
         self._step_counter = 0
 
     def create_chain(self, goal: str) -> ReasoningChain:
-        chain_id = f"chain-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{self._step_counter:04d}"
+        chain_id = f"chain-{__import__('datetime').datetime.now(__import__('datetime').timezone.utc).strftime('%Y%m%d%H%M%S')}-{self._step_counter:04d}"
         chain = ReasoningChain(chain_id=chain_id, goal=goal)
         self._chains[chain_id] = chain
         return chain

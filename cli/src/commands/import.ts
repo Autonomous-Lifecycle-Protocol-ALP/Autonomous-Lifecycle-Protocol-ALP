@@ -17,11 +17,11 @@ export function importCommand(file?: string) {
   }
 
   if (!targetFile) {
-    console.error(`❌ [ERROR] No legacy rule files found. Tried: ${targets.join(', ')}`);
+    console.error(`[FAIL] [ERROR] No legacy rule files found. Tried: ${targets.join(', ')}`);
     process.exit(1);
   }
 
-  console.log(`🚀 ALP Import: Reading legacy rules from ${path.basename(targetFile)}...\n`);
+  console.log(`[START] ALP Import: Reading legacy rules from ${path.basename(targetFile)}...\n`);
   
   const content = fs.readFileSync(targetFile, 'utf-8');
   const lines = content.split('\n');
@@ -67,7 +67,7 @@ export function importCommand(file?: string) {
   finishRule(); // flush the last rule
 
   if (rules.length === 0) {
-    console.log('⚠️ No rules could be parsed from the file.');
+    console.log('[WARN] No rules could be parsed from the file.');
     return;
   }
 
@@ -92,6 +92,6 @@ export function importCommand(file?: string) {
   const outPath = path.join(rulesDir, 'imported.alp');
   fs.writeFileSync(outPath, alpContent, 'utf-8');
 
-  console.log(`✅ Successfully imported ${rules.length} rules!`);
-  console.log(`📄 Wrote generated ALP rules to ${path.relative(cwd, outPath)}`);
+  console.log(`[OK] Successfully imported ${rules.length} rules!`);
+  console.log(`[FILE] Wrote generated ALP rules to ${path.relative(cwd, outPath)}`);
 }

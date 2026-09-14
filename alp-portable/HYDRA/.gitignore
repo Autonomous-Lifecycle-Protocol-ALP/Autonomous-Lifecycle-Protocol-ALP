@@ -1,0 +1,39 @@
+# Rust
+target/
+Cargo.lock
+*.rs.bk
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Node
+node_modules/
+dist/
+npm-debug.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Models (large files should not be in git)
+*.gguf
+*.safetensors
+*.bin
+*.ckpt
+*.glb
+*.obj
+
+# Tauri
+src-tauri/gen/

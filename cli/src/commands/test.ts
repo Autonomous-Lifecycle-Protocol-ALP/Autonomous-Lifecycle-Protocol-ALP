@@ -24,13 +24,13 @@ export function testCommand(options?: TestOptions) {
   let totalFailed = 0;
   let totalDuration = 0;
 
-  console.log('🧪 Running ALP Tests...\n');
+  console.log('[TEST] Running ALP Tests...\n');
 
   for (const suite of results) {
     const relative = path.relative(cwd, suite.file);
-    console.log(`\n📄 ${relative}`);
+    console.log(`\n[FILE] ${relative}`);
     for (const test of suite.tests) {
-      const icon = test.passed ? '✅' : '❌';
+      const icon = test.passed ? '[OK]' : '[FAIL]';
       console.log(`  ${icon} ${test.id}: ${test.description}${test.error ? ` (${test.error})` : ''}`);
       if (test.passed) totalPassed++;
       else totalFailed++;
@@ -40,12 +40,12 @@ export function testCommand(options?: TestOptions) {
   }
 
   const summary = runner.getSummary();
-  console.log(`\n📊 Test Summary: ${summary.totalPassed} passed, ${summary.totalFailed} failed, ${summary.totalTests} total`);
+  console.log(`\n[STATS] Test Summary: ${summary.totalPassed} passed, ${summary.totalFailed} failed, ${summary.totalTests} total`);
   console.log(`   Pass rate: ${summary.passRate}% | Duration: ${totalDuration}ms`);
 
   if (options?.coverage) {
     const coverage = runner.getCoverage(alpDir);
-    console.log(`\n📈 Coverage: ${coverage.coveredObjects}/${coverage.totalObjects} objects (${coverage.coveragePercent}%) across ${coverage.files} files`);
+    console.log(`\n[STATS] Coverage: ${coverage.coveredObjects}/${coverage.totalObjects} objects (${coverage.coveragePercent}%) across ${coverage.files} files`);
   }
 
   if (totalFailed > 0) {

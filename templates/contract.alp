@@ -1,0 +1,16 @@
+!alp-version: 3.0.0
+
+// CONTRACT TEMPLATE
+// Defines inter-agent service communication boundaries and allowed action interfaces.
+
+@contract
+  id: contract-service-boundary
+  name: "Service Boundary Interface Contract"
+  from: "@agent-frontend"
+  to: "@agent-backend"
+  allows:
+    - "api.v1.*"
+    - "graphql.query.*"
+  denies:
+    - "admin.system.*"
+    - "db.direct_write.*"

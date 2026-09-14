@@ -254,6 +254,19 @@ const DataPipelineSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
+const WorkflowRunSchema = new mongoose.Schema({
+  organization: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: true },
+  workflowId: { type: String, required: true },
+  runId: { type: String, required: true, unique: true },
+  status: { type: String, enum: ['queued', 'running', 'success', 'failed', 'cancelled'], default: 'queued' },
+  context: Object,
+  completedSteps: [String],
+  logs: [Object],
+  startedAt: { type: Date, default: Date.now },
+  finishedAt: Date,
+  updatedAt: { type: Date, default: Date.now }
+});
+
 const PipelineRunSchema = new mongoose.Schema({
   organization: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: true },
   pipelineId: { type: mongoose.Schema.Types.ObjectId, ref: 'DataPipeline', required: true },
@@ -395,5 +408,6 @@ module.exports = {
   ChipDesign: mongoose.model('ChipDesign', ChipDesignSchema),
   SOCAlert: mongoose.model('SOCAlert', SOCAlertSchema),
   ThreatIntelReport: mongoose.model('ThreatIntelReport', ThreatIntelReportSchema),
-  TrustIdentity: mongoose.model('TrustIdentity', TrustIdentitySchema)
+  TrustIdentity: mongoose.model('TrustIdentity', TrustIdentitySchema),
+  WorkflowRun: mongoose.model('WorkflowRun', WorkflowRunSchema)
 };

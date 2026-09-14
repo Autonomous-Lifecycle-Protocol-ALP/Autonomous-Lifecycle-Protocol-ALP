@@ -24,18 +24,45 @@ function walk(dir) {
   return results;
 }
 
-function fixJs(code) {
-  code = code.replace(
-    /(?<=from\s+['"])(\.[^'"]+)(?=['"])/g,
-    (match, p1) => (p1.endsWith('.js') ? match : `${p1}.js`)
-  );
-  return code;
-}
-
-function fixDts(code) {
+function fixJs(code, fullPath) {
+  const dir = path.dirname(fullPath);
   return code.replace(
     /(?<=from\s+['"])(\.[^'"]+)(?=['"])/g,
-    (match, p1) => (p1.endsWith('.d.ts') ? match : `${p1}.d.ts`)
+    (match, p1) => {
+      if (p1.endsWith('.js')) return match;
+      try {
+        const fileTarget = path.resolve(dir, `${p1}.js`);
+        if (fs.existsSync(fileTarget) && fs.statSync(fileTarget).isFile()) {
+          return `${p1}.js`;
+        }
+        const dirTarget = path.resolve(dir, p1);
+        if (fs.existsSync(dirTarget) && fs.statSync(dirTarget).isDirectory()) {
+          return `${p1}/index.js`;
+        }
+      } catch {}
+      return `${p1}.js`;
+    }
+  );
+}
+
+function fixDts(code, fullPath) {
+  const dir = path.dirname(fullPath);
+  return code.replace(
+    /(?<=from\s+['"])(\.[^'"]+)(?=['"])/g,
+    (match, p1) => {
+      if (p1.endsWith('.d.ts')) return match;
+      try {
+        const fileTarget = path.resolve(dir, `${p1}.d.ts`);
+        if (fs.existsSync(fileTarget) && fs.statSync(fileTarget).isFile()) {
+          return `${p1}.d.ts`;
+        }
+        const dirTarget = path.resolve(dir, p1);
+        if (fs.existsSync(dirTarget) && fs.statSync(dirTarget).isDirectory()) {
+          return `${p1}/index.d.ts`;
+        }
+      } catch {}
+      return `${p1}.d.ts`;
+    }
   );
 }
 
@@ -50,9 +77,9 @@ for (const dir of targets) {
     const original = code;
 
     if (file.endsWith('.js')) {
-      code = fixJs(code);
+      code = fixJs(code, full);
     } else if (file.endsWith('.d.ts')) {
-      code = fixDts(code);
+      code = fixDts(code, full);
     }
 
     if (code !== original) {

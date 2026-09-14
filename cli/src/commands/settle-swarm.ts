@@ -36,6 +36,6 @@ export function registerSettleSwarmCommand(program: Command) {
       console.log(`  Provider:       ${options.provider} (balance: ${providerAcc?.balance.toFixed(2)})`);
       console.log(`  Escrow ID:      ${escrow?.escrowId || 'N/A'}`);
       console.log(`  Invoice ID:     ${invoice.invoiceId}`);
-      console.log(`  Settlement:     ${settled ? '✅ SETTLED' : '❌ REJECTED'}\n`);
+      console.log(`  Settlement:     ${settled ? '[OK] SETTLED' : '[FAIL] REJECTED'}\n`);
     });
 }

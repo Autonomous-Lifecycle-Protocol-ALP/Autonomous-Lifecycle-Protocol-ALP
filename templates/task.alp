@@ -1,44 +1,20 @@
-!alp-version: 0.1.0
+!alp-version: 3.0.0
 
-// ----------------------------------------------------------------------------
 // TASK TEMPLATE
-// Tasks are atomic units of work. They can be placed in a feature file
-// or kept separate.
-// ----------------------------------------------------------------------------
+// Atomic units of work with status, difficulty, and verification rules.
 
 @task
-  id: task-example                // Use kebab-case (e.g., task-login-ui)
+  id: task-example
   name: "Example Task"
-  
-  // Current status
-  // [ ] pending, [~] in_progress, [x] completed, 
-  // [!] blocked, [?] needs_review, [-] skipped
   status: [ ]
-  
-  priority: medium                // critical, high, medium, low
-  difficulty: medium              // trivial, easy, medium, hard, complex
-  estimated_time: 4h              // e.g., 2h, 1d
-  
-  description: |
-    Detailed instructions for the agent performing this task.
-  
-  feature: -> feat-example        // The feature this task belongs to
-  owner: -> agent-developer       // The agent assigned to this task
-  
-  // Tasks that must complete before this one starts
-  depends_on: []
-    // - -> task-another-one
-  
-  // Specific criteria the agent must satisfy
-  @accept
-    - [ ] Condition 1 is met
-    - [ ] Condition 2 is met
-  
-  // Automated commands to verify the work
-  @verify
-    - type: test
-      command: "npm test -- --filter=example"
-      required: true
-    - type: lint
-      command: "eslint path/to/file.ts"
-      required: true
+  priority: medium
+  difficulty: medium
+  estimated_time: "4h"
+  description: "Detailed instructions for the agent performing this task."
+  feature: -> feat-example
+  owner: -> agent-developer
+  accept:
+    - "Condition 1 is met"
+    - "Condition 2 is met"
+  verify_command: "npm test"
+  verify_type: test

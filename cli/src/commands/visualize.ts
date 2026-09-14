@@ -40,7 +40,7 @@ export function visualizeCommand(id: string | undefined, opts: { format?: string
   }
 
   if (workflows.length === 0) {
-    console.log('📭 No @workflow objects found to visualize.');
+    console.log('[EMPTY] No @workflow objects found to visualize.');
     return;
   }
 
@@ -48,7 +48,7 @@ export function visualizeCommand(id: string | undefined, opts: { format?: string
 
   if (opts.out) {
     fs.writeFileSync(opts.out, output, 'utf-8');
-    console.log(`✅ Wrote ${format} diagram for ${workflows.length} workflow(s) to ${opts.out}`);
+    console.log(`[OK] Wrote ${format} diagram for ${workflows.length} workflow(s) to ${opts.out}`);
   } else {
     console.log(output);
   }

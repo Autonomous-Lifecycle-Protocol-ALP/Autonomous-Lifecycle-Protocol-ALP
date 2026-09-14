@@ -84,7 +84,7 @@ export function testHarnessCommand(opts: { executable?: string; suite?: string }
   let passed = 0;
   let failed = 0;
   for (const r of results) {
-    const icon = r.passed ? '✅' : '❌';
+    const icon = r.passed ? '[OK]' : '[FAIL]';
     if (r.passed) passed++;
     else failed++;
     let line = `${icon} [${r.kind}] ${r.file}`;

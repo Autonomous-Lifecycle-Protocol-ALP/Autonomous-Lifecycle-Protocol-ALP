@@ -25,7 +25,7 @@ export function registerMacroCommand(program: Command) {
       };
       const expanded = engine.expand(sample);
 
-      console.log('\n🔄 Macro Expansion (v37.0.0)');
+      console.log('\n[SYNC] Macro Expansion (v37.0.0)');
       console.log('============================');
       console.log(`  Macro ID:    ${sample.id}`);
       console.log(`  Iterate:     ${sample.iterate_over}`);
@@ -52,13 +52,13 @@ export function registerMacroCommand(program: Command) {
 
       try {
         const expanded = engine.expand(macro);
-        console.log(`\n🔍 Dry Run: ${expanded.length} objects would be generated\n`);
+        console.log(`\n[SCAN] Dry Run: ${expanded.length} objects would be generated\n`);
         expanded.forEach((obj, i) => {
           console.log(`  [${i + 1}] ${JSON.stringify(obj)}`);
         });
         console.log('');
       } catch (err: any) {
-        console.error(`❌ ${err.message}`);
+        console.error(`[FAIL] ${err.message}`);
       }
     });
 }

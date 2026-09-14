@@ -77,7 +77,7 @@ export function deduplicateCommand(options?: DeduplicateOptions) {
   if (totalRemoved === 0) {
     console.log('No duplicate objects found.');
   } else {
-    console.log(`\n🧹 Deduplicated ${totalRemoved} object(s)\n`);
+    console.log(`\n[CLEAN] Deduplicated ${totalRemoved} object(s)\n`);
     for (const id of removedIds) {
       console.log(`  Removed duplicate: ${id}`);
     }

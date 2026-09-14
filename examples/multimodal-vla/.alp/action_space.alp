@@ -1,0 +1,15 @@
+!alp-version: 3.0.0
+
+@action_space
+  id: as-warehouse-robot
+  agent: "@agent-warehouse-bot"
+  domain: robotics
+  max_concurrency: 4
+  safety_guards:
+    - enforce-human-in-the-loop
+    - strict-boundary
+  actions:
+    - navigate_to
+    - scan_shelf
+    - pick_item
+    - emergency_stop

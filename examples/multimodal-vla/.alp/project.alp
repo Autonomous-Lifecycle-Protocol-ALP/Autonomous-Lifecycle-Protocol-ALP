@@ -1,0 +1,8 @@
+!alp-version: 3.0.0
+
+@project
+  id: warehouse-vision-inspection
+  status: [~]
+  description: "Autonomous warehouse robot vision inspection system using Multi-Modal & VLA protocols"
+  repository: "https://github.com/Autonomous-Lifecycle-Protocol-ALP/Autonomous-Lifecycle-Protocol-ALP"
+  owner: "@agent-inspection-orchestrator"

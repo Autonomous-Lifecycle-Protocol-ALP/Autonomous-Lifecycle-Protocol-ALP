@@ -1,0 +1,18 @@
+!alp-version: 3.0.0
+
+@memory
+  id: mem-user-preferences
+  strategy: long_term
+  scope: global
+  format: json
+  retention: "30d"
+  description: "Stores user preferences and context across multiple chat sessions."
+
+---
+
+@memory
+  id: mem-active-session
+  strategy: short_term
+  scope: task
+  format: text
+  description: "Maintains the conversational context window for the current chat."

@@ -47,7 +47,7 @@ export function policyCommand(options?: PolicyOptions) {
       console.log('Add one to govern which paths/commands agents may touch.');
       return;
     }
-    console.log(`\n🛡️  ALP Policies (${policies.length})\n`);
+    console.log(`\n[SHIELD]  ALP Policies (${policies.length})\n`);
     for (const p of policies) {
       const applies = (p as any).applies_to ?? '*';
       console.log(`  • ${p.id}  (applies_to: ${JSON.stringify(applies)}, enforcement: ${(p as any).enforcement ?? 'strict'})`);
@@ -67,18 +67,18 @@ export function policyCommand(options?: PolicyOptions) {
       : undefined;
     const decision = engine.evaluateProposal(options.proposal, trust);
     console.log(
-      `\n🛡️  Proposal check: "${options.proposal}"` +
+      `\n[SHIELD]  Proposal check: "${options.proposal}"` +
         `${options.agent ? ` (agent: ${options.agent})` : ''}\n`
     );
     if (decision.allowed) {
-      console.log(`   ✅ Proposal allowed${options.trust ? ' (signature verified).' : '.'}`);
+      console.log(`   [OK] Proposal allowed${options.trust ? ' (signature verified).' : '.'}`);
       if (decision.audit) {
-        console.log(`   📝 audit: ${JSON.stringify(decision.audit)}`);
+        console.log(`   [NOTE] audit: ${JSON.stringify(decision.audit)}`);
       }
       return;
     }
-    for (const reason of decision.reasons) console.log(`   ⛔ ${reason}`);
-    console.log('\n   ⛔ Proposal DENIED.\n');
+    for (const reason of decision.reasons) console.log(`   [BLOCK] ${reason}`);
+    console.log('\n   [BLOCK] Proposal DENIED.\n');
     process.exit(1);
   }
 
@@ -98,22 +98,22 @@ export function policyCommand(options?: PolicyOptions) {
 
   const decision = engine.evaluate({ kind, value, agent: options?.agent });
 
-  console.log(`\n🛡️  Policy check: ${kind} "${value}"${options?.agent ? ` (agent: ${options.agent})` : ''}\n`);
+  console.log(`\n[SHIELD]  Policy check: ${kind} "${value}"${options?.agent ? ` (agent: ${options.agent})` : ''}\n`);
 
   if (decision.allowed) {
-    console.log('   ✅ Allowed.');
+    console.log('   [OK] Allowed.');
     return;
   }
 
   for (const reason of decision.reasons) {
-    console.log(`   ${decision.blocked ? '⛔' : '⚠️ '} ${reason}`);
+    console.log(`   ${decision.blocked ? '[BLOCK]' : '[WARN] '} ${reason}`);
   }
 
   if (decision.blocked) {
-    console.log('\n   ❌ Action BLOCKED by a strict policy.\n');
+    console.log('\n   [FAIL] Action BLOCKED by a strict policy.\n');
     process.exit(1);
   } else {
-    console.log('\n   ⚠️  Action allowed with warnings (no strict policy blocked it).\n');
+    console.log('\n   [WARN]  Action allowed with warnings (no strict policy blocked it).\n');
   }
 }
 

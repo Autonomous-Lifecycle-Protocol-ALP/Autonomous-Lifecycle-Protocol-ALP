@@ -40,11 +40,11 @@ export function registerSwarmMarketplaceCommand(program: Command) {
       const result = engine.invokeSkill(listingId, callerAgent, input);
 
       if (!result) {
-        console.log('❌ Skill listing not found.');
+        console.log('[FAIL] Skill listing not found.');
         return;
       }
 
-      console.log('\n⚡ Skill Invocation Result (v36.0.0)');
+      console.log('\n[FAST] Skill Invocation Result (v36.0.0)');
       console.log('===================================');
       console.log(`  Listing ID:     ${result.listingId}`);
       console.log(`  Caller Agent:   ${result.callerAgent}`);

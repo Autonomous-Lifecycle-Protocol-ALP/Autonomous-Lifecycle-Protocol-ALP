@@ -1,0 +1,17 @@
+{
+  "name": "@alp/test-core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "playwright": "^1.62.0",
+    "tiny-glob": "^0.2.9"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.10"
+  }
+}
