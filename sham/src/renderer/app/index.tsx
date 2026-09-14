@@ -35,10 +35,71 @@ export function App(_props: AppProps): React.JSX.Element {
   const [bottomPanel, setBottomPanel] = useState<BottomTabId | null>('terminal');
   const [bottomActiveTab, setBottomActiveTab] = useState<BottomTabId>('terminal');
 
+  // Editor enhancement state
+  const [splitFile, setSplitFile] = useState<string | null>(null);
+  const [isDiffMode, setIsDiffMode] = useState(false);
+  const [wordWrap, setWordWrap] = useState(false);
+  const [dirtyFiles, setDirtyFiles] = useState<Set<string>>(new Set());
+  const [pinnedFiles, setPinnedFiles] = useState<string[]>([]);
+  const [tabContextMenu, setTabContextMenu] = useState<{ x: number; y: number; file: string } | null>(null);
+  const [saveToast, setSaveToast] = useState<string | null>(null);
+
+  // Save toast auto-dismiss
+  useEffect(() => {
+    if (saveToast) {
+      const timer = setTimeout(() => setSaveToast(null), 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [saveToast]);
+
+  // Close context menu on click outside
+  useEffect(() => {
+    if (!tabContextMenu) return;
+    const close = () => setTabContextMenu(null);
+    window.addEventListener('click', close);
+    return () => window.removeEventListener('click', close);
+  }, [tabContextMenu]);
+
+  // Warn before unloading if there are dirty files
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (dirtyFiles.size > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, [dirtyFiles]);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+S: Save file
+      if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S') && !e.shiftKey && !e.altKey) {
+        e.preventDefault();
+        if (state.activeFile && dirtyFiles.has(state.activeFile)) {
+          setDirtyFiles((prev) => {
+            const next = new Set(prev);
+            next.delete(state.activeFile!);
+            return next;
+          });
+          setSaveToast(state.activeFile);
+        }
+      // Ctrl+\: Toggle split editor
+      } else if ((e.ctrlKey || e.metaKey) && e.key === '\\') {
+        e.preventDefault();
+        setSplitFile((prev) => {
+          if (prev) return null;
+          // Pick the next open file or the active file
+          const other = state.openFiles.find((f) => f !== state.activeFile);
+          return other ?? state.activeFile ?? null;
+        });
+      // Ctrl+Alt+D: Toggle diff mode
+      } else if ((e.ctrlKey || e.metaKey) && e.altKey && (e.key === 'd' || e.key === 'D')) {
+        e.preventDefault();
+        setIsDiffMode((prev) => !prev);
       // Secondary Sidebar toggle: Ctrl+Alt+B
-      if ((e.ctrlKey || e.metaKey) && e.altKey && (e.key === 'b' || e.key === 'B')) {
+      } else if ((e.ctrlKey || e.metaKey) && e.altKey && (e.key === 'b' || e.key === 'B')) {
         e.preventDefault();
         setSecondarySidebarOpen((prev) => !prev);
       } else if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
@@ -64,7 +125,7 @@ export function App(_props: AppProps): React.JSX.Element {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [state.activeFile, state.openFiles, dirtyFiles]);
 
   const onOpenFile = useCallback((filePath: string) => {
     handleOpenFile(filePath);
@@ -333,12 +394,23 @@ export function App(_props: AppProps): React.JSX.Element {
 
           {!showWelcome && state.openFiles.length > 0 && (
             <div className="tab-bar">
-              {state.openFiles.map((file) => (
+              {/* Pinned tabs first */}
+              {[...pinnedFiles.filter(f => state.openFiles.includes(f)), ...state.openFiles.filter(f => !pinnedFiles.includes(f))].map((file) => (
                 <div
                   key={file}
-                  className={`tab ${state.activeFile === file ? 'active' : ''}`}
+                  className={`tab ${state.activeFile === file ? 'active' : ''} ${pinnedFiles.includes(file) ? 'pinned' : ''}`}
                   onClick={() => onOpenFile(file)}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                    setTabContextMenu({ x: e.clientX, y: e.clientY, file });
+                  }}
                 >
+                  {pinnedFiles.includes(file) && (
+                    <span className="tab-pinned" title="Pinned"><Icon name="bookmark" size={8} /></span>
+                  )}
+                  {dirtyFiles.has(file) && (
+                    <span className="tab-dirty-dot" title="Unsaved changes" />
+                  )}
                   <span className="tab-label">{file}</span>
                   <button
                     className="tab-close"
@@ -384,6 +456,31 @@ export function App(_props: AppProps): React.JSX.Element {
                 onAppendIntelligenceOutput={onAppendIntelligenceOutput}
                 onUpdateAutonomyState={onUpdateAutonomyState}
                 onAppendAutonomyOutput={onAppendAutonomyOutput}
+                splitFile={splitFile}
+                isDiffMode={isDiffMode}
+                wordWrap={wordWrap}
+                onToggleSplit={() => setSplitFile((prev) => {
+                  if (prev) return null;
+                  const other = state.openFiles.find((f) => f !== state.activeFile);
+                  return other ?? state.activeFile ?? null;
+                })}
+                onToggleDiff={() => setIsDiffMode((prev) => !prev)}
+                onToggleWordWrap={() => setWordWrap((prev) => !prev)}
+                onRunAlp={(filePath) => {
+                  setBottomPanel('terminal');
+                  setBottomActiveTab('terminal');
+                  const timestamp = new Date().toLocaleTimeString();
+                  setState((prev) => ({
+                    ...prev,
+                    terminalOutput: [...prev.terminalOutput, `[${timestamp}] $ alp run ${filePath}`, `[${timestamp}] ▸ Agent execution started...`],
+                  }));
+                }}
+                onCopyPath={(filePath) => {
+                  try { navigator.clipboard.writeText(filePath); } catch { /* ignore */ }
+                }}
+                onMarkDirty={(filePath) => {
+                  setDirtyFiles((prev) => new Set(prev).add(filePath));
+                }}
               />
             </PanelSuspense>
           </div>
@@ -468,7 +565,7 @@ export function App(_props: AppProps): React.JSX.Element {
           <SecondarySidebar
             state={state}
             onOpenFile={onOpenFile}
-            onRunAgent={handleRunAgent}
+            onRunAgent={(agentId) => handleRunAgent(agentId, {})}
             onClose={() => setSecondarySidebarOpen(false)}
           />
         )}
@@ -496,6 +593,85 @@ export function App(_props: AppProps): React.JSX.Element {
           </button>
         )}
       </div>
+
+      {/* Tab Context Menu */}
+      {tabContextMenu && (
+        <div
+          className="tab-context-menu"
+          style={{ left: tabContextMenu.x, top: tabContextMenu.y }}
+          data-testid="tab-context-menu"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button className="tab-context-item" onClick={() => { onCloseFile(tabContextMenu.file); setTabContextMenu(null); }}>
+            <Icon name="x" size={12} /> Close
+          </button>
+          <button className="tab-context-item" onClick={() => {
+            state.openFiles.filter((f) => f !== tabContextMenu.file).forEach(onCloseFile);
+            setTabContextMenu(null);
+          }}>
+            <Icon name="x" size={12} /> Close Others
+          </button>
+          <button className="tab-context-item" onClick={() => {
+            const idx = state.openFiles.indexOf(tabContextMenu.file);
+            state.openFiles.slice(idx + 1).forEach(onCloseFile);
+            setTabContextMenu(null);
+          }}>
+            <Icon name="x" size={12} /> Close to the Right
+          </button>
+          <button className="tab-context-item danger" onClick={() => {
+            state.openFiles.forEach(onCloseFile);
+            setTabContextMenu(null);
+          }}>
+            <Icon name="trash" size={12} /> Close All
+          </button>
+          <div className="tab-context-separator" />
+          <button className="tab-context-item" onClick={() => {
+            setPinnedFiles((prev) =>
+              prev.includes(tabContextMenu.file)
+                ? prev.filter((f) => f !== tabContextMenu.file)
+                : [...prev, tabContextMenu.file]
+            );
+            setTabContextMenu(null);
+          }}>
+            <Icon name="bookmark" size={12} />
+            {pinnedFiles.includes(tabContextMenu.file) ? 'Unpin Tab' : 'Pin Tab'}
+          </button>
+          <button className="tab-context-item" onClick={() => {
+            setSplitFile(tabContextMenu.file);
+            setTabContextMenu(null);
+          }}>
+            <Icon name="columns" size={12} /> Split Right
+            <span className="ctx-shortcut">Ctrl+\</span>
+          </button>
+          <div className="tab-context-separator" />
+          <button className="tab-context-item" onClick={() => {
+            try { navigator.clipboard.writeText(tabContextMenu.file); } catch { /* ignore */ }
+            setTabContextMenu(null);
+          }}>
+            <Icon name="copy" size={12} /> Copy Path
+          </button>
+          <button className="tab-context-item" onClick={() => {
+            setDirtyFiles((prev) => {
+              const next = new Set(prev);
+              next.delete(tabContextMenu.file);
+              return next;
+            });
+            setSaveToast(tabContextMenu.file);
+            setTabContextMenu(null);
+          }}>
+            <Icon name="save" size={12} /> Save File
+            <span className="ctx-shortcut">Ctrl+S</span>
+          </button>
+        </div>
+      )}
+
+      {/* Save Toast Notification */}
+      {saveToast && (
+        <div className="save-toast" data-testid="save-toast">
+          <Icon name="check" size={14} />
+          Saved: {saveToast}
+        </div>
+      )}
 
       <footer className="status-bar">
         <div className="status-bar-left">
@@ -561,7 +737,34 @@ export function App(_props: AppProps): React.JSX.Element {
           else if (cmd === 'search') handleSelectPanel('search');
           else if (cmd === 'terminal.toggle') setBottomPanel((prev) => (prev === 'terminal' ? null : 'terminal'));
           else if (cmd === 'editor.new') { onOpenFile('untitled.alp'); }
-          else if (cmd === 'editor.save') { /* placeholder */ }
+          else if (cmd === 'editor.save') {
+            if (state.activeFile) {
+              setDirtyFiles((prev) => {
+                const next = new Set(prev);
+                next.delete(state.activeFile!);
+                return next;
+              });
+              setSaveToast(state.activeFile);
+            }
+          }
+          else if (cmd === 'editor.split') {
+            setSplitFile((prev) => {
+              if (prev) return null;
+              const other = state.openFiles.find((f) => f !== state.activeFile);
+              return other ?? state.activeFile ?? null;
+            });
+          }
+          else if (cmd === 'editor.diff') {
+            setIsDiffMode((prev) => !prev);
+          }
+          else if (cmd === 'editor.wrap') {
+            setWordWrap((prev) => !prev);
+          }
+          else if (cmd === 'editor.copyPath') {
+            if (state.activeFile) {
+              try { navigator.clipboard.writeText(state.activeFile); } catch { /* ignore */ }
+            }
+          }
           else if (cmd === 'workbench.focusSidebar' || cmd === 'sidebar.toggle') { setSidebarOpen((prev) => !prev); }
           else if (cmd === 'secondarySidebar.toggle' || cmd === 'workbench.secondarySidebar') { setSecondarySidebarOpen((prev) => !prev); }
           else if (cmd === 'zenMode.toggle' || cmd === 'workbench.zenMode') { setZenMode((prev) => !prev); }

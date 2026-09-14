@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, screen, cleanup } from '@testing-library/react';
+import { render, screen, cleanup, within } from '@testing-library/react';
 import { EditorPanel } from '../src/renderer/components/EditorPanel';
 import type { SHAMState } from '../src/renderer/shared/types';
 
@@ -83,5 +83,107 @@ describe('EditorPanel', () => {
     const stateNoFile: SHAMState = { ...baseState, activeFile: null };
     render(<EditorPanel state={stateNoFile} onValidate={vi.fn()} />);
     expect(screen.getByText('No file open')).toBeDefined();
+  });
+});
+
+describe('EditorPanel - Editor Action Toolbar', () => {
+  it('renders the editor action toolbar', () => {
+    render(<EditorPanel state={baseState} onValidate={vi.fn()} />);
+    expect(screen.getByTestId('editor-action-toolbar')).toBeDefined();
+  });
+
+  it('renders Run ALP toolbar button', () => {
+    render(<EditorPanel state={baseState} onValidate={vi.fn()} onRunAlp={vi.fn()} />);
+    expect(screen.getByTestId('toolbar-run-alp')).toBeDefined();
+  });
+
+  it('renders Validate toolbar button', () => {
+    render(<EditorPanel state={baseState} onValidate={vi.fn()} />);
+    expect(screen.getByTestId('toolbar-validate')).toBeDefined();
+  });
+
+  it('renders Format toolbar button', () => {
+    render(<EditorPanel state={baseState} onValidate={vi.fn()} onFormatCode={vi.fn()} />);
+    expect(screen.getByTestId('toolbar-format')).toBeDefined();
+  });
+
+  it('renders Word Wrap toggle button', () => {
+    render(<EditorPanel state={baseState} onValidate={vi.fn()} wordWrap={false} onToggleWordWrap={vi.fn()} />);
+    expect(screen.getByTestId('toolbar-word-wrap')).toBeDefined();
+  });
+
+  it('renders Split toggle button', () => {
+    render(<EditorPanel state={baseState} onValidate={vi.fn()} onToggleSplit={vi.fn()} />);
+    expect(screen.getByTestId('toolbar-split')).toBeDefined();
+  });
+
+  it('renders Diff toggle button', () => {
+    render(<EditorPanel state={baseState} onValidate={vi.fn()} onToggleDiff={vi.fn()} />);
+    expect(screen.getByTestId('toolbar-diff')).toBeDefined();
+  });
+
+  it('renders Copy Path button', () => {
+    render(<EditorPanel state={baseState} onValidate={vi.fn()} onCopyPath={vi.fn()} />);
+    expect(screen.getByTestId('toolbar-copy-path')).toBeDefined();
+  });
+
+  it('renders editor metrics pill', () => {
+    render(<EditorPanel state={baseState} onValidate={vi.fn()} />);
+    expect(screen.getByTestId('editor-metrics')).toBeDefined();
+  });
+});
+
+describe('EditorPanel - Split Editor', () => {
+  it('renders split editor container when splitFile is provided', () => {
+    render(
+      <EditorPanel
+        state={baseState}
+        onValidate={vi.fn()}
+        splitFile="src/agents/hello.alp"
+        onToggleSplit={vi.fn()}
+      />
+    );
+    expect(screen.getByTestId('editor-split-container')).toBeDefined();
+    expect(screen.getByTestId('editor-pane-primary')).toBeDefined();
+    expect(screen.getByTestId('editor-pane-secondary')).toBeDefined();
+  });
+
+  it('shows split pane labels with file names', () => {
+    render(
+      <EditorPanel
+        state={baseState}
+        onValidate={vi.fn()}
+        splitFile="src/agents/hello.alp"
+      />
+    );
+    const splitContainer = screen.getByTestId('editor-split-container');
+    expect(within(splitContainer).getByText('src/index.ts')).toBeDefined();
+    expect(within(splitContainer).getByText('src/agents/hello.alp')).toBeDefined();
+  });
+});
+
+describe('EditorPanel - Diff View', () => {
+  it('renders diff view container when isDiffMode is true', () => {
+    render(
+      <EditorPanel
+        state={baseState}
+        onValidate={vi.fn()}
+        isDiffMode={true}
+        onToggleDiff={vi.fn()}
+      />
+    );
+    expect(screen.getByTestId('diff-view-container')).toBeDefined();
+  });
+
+  it('shows diff panes for original and modified', () => {
+    render(
+      <EditorPanel
+        state={baseState}
+        onValidate={vi.fn()}
+        isDiffMode={true}
+      />
+    );
+    expect(screen.getByTestId('diff-pane-original')).toBeDefined();
+    expect(screen.getByTestId('diff-pane-modified')).toBeDefined();
   });
 });

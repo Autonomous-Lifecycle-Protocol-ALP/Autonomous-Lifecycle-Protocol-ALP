@@ -134,6 +134,7 @@ import {
   FiHash,
   FiPercent,
   FiDollarSign,
+  FiAlignJustify,
 } from 'react-icons/fi';
 
 export type IconName = keyof typeof iconMap;
@@ -292,6 +293,7 @@ const iconMap = {
   poundSterling: FiDollarSign,
   yen: FiDollarSign,
   bitcoin: FiDollarSign,
+  wrapText: FiAlignJustify,
 } as const;
 
 export { iconMap };

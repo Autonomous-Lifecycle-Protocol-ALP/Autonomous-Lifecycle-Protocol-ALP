@@ -4138,5 +4138,684 @@
   color: var(--text-muted);
 }
 
+/* ================================================================
+   EDITOR ACTION TOOLBAR
+   ================================================================ */
+.editor-action-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 10px;
+  background: linear-gradient(180deg, rgba(30, 30, 46, 0.85) 0%, rgba(24, 24, 37, 0.95) 100%);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  min-height: 32px;
+  overflow-x: auto;
+  backdrop-filter: blur(8px);
+}
+
+.editor-action-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.editor-action-toolbar-separator {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  margin: 0 6px;
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.editor-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  height: 24px;
+}
+
+.editor-action-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.06);
+  transform: translateY(-1px);
+}
+
+.editor-action-btn:active {
+  transform: scale(0.96);
+}
+
+.editor-action-btn.active {
+  background: rgba(137, 180, 250, 0.12);
+  color: var(--accent);
+  border-color: rgba(137, 180, 250, 0.25);
+}
+
+.editor-action-btn.run-btn {
+  color: var(--accent-green);
+  font-weight: 600;
+}
+
+.editor-action-btn.run-btn:hover {
+  background: rgba(166, 227, 161, 0.12);
+  color: var(--accent-green);
+  box-shadow: 0 0 8px rgba(166, 227, 161, 0.15);
+}
+
+.editor-action-btn.validate-btn {
+  color: var(--accent-yellow);
+}
+
+.editor-action-btn.validate-btn:hover {
+  background: rgba(249, 226, 175, 0.1);
+}
+
+.editor-metrics-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px;
+  background: rgba(17, 17, 27, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  margin-left: auto;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.editor-metrics-pill span + span::before {
+  content: '·';
+  margin: 0 4px;
+  opacity: 0.4;
+}
+
+/* ================================================================
+   SPLIT EDITOR DUAL-PANE
+   ================================================================ */
+.editor-split-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.editor-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  position: relative;
+}
+
+.editor-pane + .editor-pane {
+  border-left: 2px solid var(--accent);
+}
+
+.editor-pane-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  background: rgba(17, 17, 27, 0.6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  font-size: 10px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.editor-pane-label .pane-badge {
+  padding: 1px 6px;
+  background: rgba(137, 180, 250, 0.12);
+  color: var(--accent);
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 9px;
+}
+
+.split-resize-handle {
+  width: 4px;
+  background: var(--border);
+  cursor: col-resize;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.split-resize-handle:hover {
+  background: var(--accent);
+}
+
+/* ================================================================
+   DIFF VIEW
+   ================================================================ */
+.diff-view-container {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.diff-pane {
+  flex: 1;
+  overflow: auto;
+  padding: 8px 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  min-width: 0;
+}
+
+.diff-pane + .diff-pane {
+  border-left: 2px solid rgba(137, 180, 250, 0.3);
+}
+
+.diff-pane-header {
+  padding: 6px 12px;
+  background: rgba(17, 17, 27, 0.7);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.diff-line {
+  display: flex;
+  padding: 0 12px;
+  min-height: 20px;
+}
+
+.diff-line-num {
+  width: 40px;
+  text-align: right;
+  padding-right: 12px;
+  color: var(--text-muted);
+  opacity: 0.5;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.diff-line-content {
+  flex: 1;
+  white-space: pre;
+  min-width: 0;
+}
+
+.diff-line-added {
+  background: rgba(166, 227, 161, 0.08);
+}
+
+.diff-line-added .diff-line-content {
+  color: var(--accent-green);
+}
+
+.diff-line-removed {
+  background: rgba(243, 139, 168, 0.08);
+}
+
+.diff-line-removed .diff-line-content {
+  color: var(--accent-red);
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.diff-line-unchanged .diff-line-content {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.diff-header-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(17, 17, 27, 0.6);
+  border-bottom: 1px solid var(--border);
+}
+
+.diff-stat-badge {
+  padding: 1px 8px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.diff-stat-badge.added {
+  background: rgba(166, 227, 161, 0.15);
+  color: var(--accent-green);
+}
+
+.diff-stat-badge.removed {
+  background: rgba(243, 139, 168, 0.15);
+  color: var(--accent-red);
+}
+
+/* ================================================================
+   TAB CONTEXT MENU
+   ================================================================ */
+.tab-context-menu {
+  position: fixed;
+  z-index: 9999;
+  min-width: 200px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.1);
+  padding: 4px 0;
+  backdrop-filter: blur(16px);
+  animation: ctxMenuIn 0.12s ease-out;
+}
+
+@keyframes ctxMenuIn {
+  from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.tab-context-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: all 0.1s ease;
+}
+
+.tab-context-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.tab-context-item .ctx-shortcut {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  opacity: 0.6;
+}
+
+.tab-context-item.danger {
+  color: var(--accent-red);
+}
+
+.tab-context-item.danger:hover {
+  background: rgba(243, 139, 168, 0.1);
+}
+
+.tab-context-separator {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+/* Tab dirty dot & pinned indicator */
+.tab-dirty-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-yellow);
+  box-shadow: 0 0 6px var(--accent-yellow);
+  margin-right: 4px;
+  vertical-align: middle;
+  animation: dirtyPulse 2s ease-in-out infinite;
+}
+
+@keyframes dirtyPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.tab-pinned {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  background: rgba(137, 180, 250, 0.15);
+  color: var(--accent);
+  font-size: 9px;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.tab.pinned {
+  border-bottom: 2px solid var(--accent);
+}
+
+/* Save notification toast */
+.save-toast {
+  position: fixed;
+  bottom: 44px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(30, 30, 46, 0.95);
+  border: 1px solid rgba(166, 227, 161, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--accent-green);
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px);
+  z-index: 9999;
+  animation: toastSlideIn 0.25s ease-out;
+}
+
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================================================================
+   VISUAL SWARM TOPOLOGY
+   ================================================================ */
+.swarm-topology-canvas {
+  position: relative;
+  width: 100%;
+  min-height: 340px;
+  background: radial-gradient(ellipse at center, rgba(30, 30, 46, 0.6) 0%, rgba(17, 17, 27, 0.9) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.swarm-topology-canvas .swarm-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(137, 180, 250, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(137, 180, 250, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+.swarm-edge-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.swarm-edge-svg line {
+  stroke: rgba(137, 180, 250, 0.2);
+  stroke-width: 1.5;
+  stroke-dasharray: 6 4;
+  animation: edgeFlow 2s linear infinite;
+}
+
+@keyframes edgeFlow {
+  to { stroke-dashoffset: -20; }
+}
+
+.swarm-edge-svg line.consensus {
+  stroke: rgba(166, 227, 161, 0.35);
+  stroke-width: 2;
+  stroke-dasharray: 3 3;
+}
+
+.swarm-node-card {
+  position: absolute;
+  width: 130px;
+  background: rgba(30, 30, 46, 0.92);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.swarm-node-card:hover {
+  border-color: var(--accent);
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(137, 180, 250, 0.15);
+}
+
+.swarm-node-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 24px rgba(137, 180, 250, 0.25), inset 0 0 12px rgba(137, 180, 250, 0.05);
+}
+
+.swarm-node-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.swarm-node-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.swarm-node-status-dot.online {
+  background: var(--accent-green);
+  box-shadow: 0 0 8px var(--accent-green);
+}
+
+.swarm-node-status-dot.warning {
+  background: var(--accent-yellow);
+  box-shadow: 0 0 8px var(--accent-yellow);
+}
+
+.swarm-node-status-dot.offline {
+  background: var(--accent-red);
+  box-shadow: 0 0 8px var(--accent-red);
+}
+
+.swarm-node-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.swarm-node-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 9.5px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+
+.swarm-node-metrics span {
+  display: flex;
+  justify-content: space-between;
+}
+
+.swarm-node-actions {
+  margin-top: 6px;
+  display: flex;
+  gap: 4px;
+}
+
+.swarm-node-action-btn {
+  flex: 1;
+  padding: 3px 0;
+  background: rgba(137, 180, 250, 0.08);
+  border: 1px solid rgba(137, 180, 250, 0.15);
+  border-radius: 4px;
+  color: var(--accent);
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.swarm-node-action-btn:hover {
+  background: rgba(137, 180, 250, 0.18);
+  transform: translateY(-1px);
+}
+
+.swarm-node-action-btn.danger {
+  color: var(--accent-red);
+  background: rgba(243, 139, 168, 0.08);
+  border-color: rgba(243, 139, 168, 0.15);
+}
+
+.swarm-node-action-btn.danger:hover {
+  background: rgba(243, 139, 168, 0.18);
+}
+
+.swarm-topology-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(17, 17, 27, 0.5);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.swarm-topology-control-btn {
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.swarm-topology-control-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.swarm-topology-control-btn.active {
+  background: rgba(137, 180, 250, 0.12);
+  color: var(--accent);
+  border-color: rgba(137, 180, 250, 0.25);
+}
+
+.swarm-node-inspector {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(17, 17, 27, 0.6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.swarm-node-inspector-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.swarm-node-inspector-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+  font-size: 11px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.swarm-node-inspector-row .label {
+  color: var(--text-muted);
+}
+
+.swarm-node-inspector-row .value {
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.swarm-topology-packet-flow {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+  z-index: 3;
+  pointer-events: none;
+  animation: packetTravel 3s ease-in-out infinite;
+}
+
+@keyframes packetTravel {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.swarm-topology-view-toggle {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(17, 17, 27, 0.5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.swarm-topology-view-toggle button {
+  padding: 4px 10px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.swarm-topology-view-toggle button.active {
+  background: rgba(137, 180, 250, 0.12);
+  color: var(--accent);
+}
+
+.swarm-topology-view-toggle button:hover:not(.active) {
+  color: var(--text-primary);
+}
 
 

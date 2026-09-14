@@ -68,7 +68,19 @@ interface PanelRouterProps {
   onAppendIntelligenceOutput: (lines: string[]) => void;
   onUpdateAutonomyState: (s: SHAMState['autonomy']) => void;
   onAppendAutonomyOutput: (lines: string[]) => void;
+  // Editor enhancements
+  splitFile?: string | null;
+  isDiffMode?: boolean;
+  wordWrap?: boolean;
+  onToggleSplit?: () => void;
+  onToggleDiff?: () => void;
+  onToggleWordWrap?: () => void;
+  onRunAlp?: (filePath: string) => void;
+  onCopyPath?: (filePath: string) => void;
+  onFormatCode?: () => void;
+  onMarkDirty?: (filePath: string) => void;
 }
+
 
 export function PanelRouter(props: PanelRouterProps) {
   const {
@@ -100,6 +112,16 @@ export function PanelRouter(props: PanelRouterProps) {
     onAppendIntelligenceOutput,
     onUpdateAutonomyState,
     onAppendAutonomyOutput,
+    splitFile,
+    isDiffMode,
+    wordWrap,
+    onToggleSplit,
+    onToggleDiff,
+    onToggleWordWrap,
+    onRunAlp,
+    onCopyPath,
+    onFormatCode,
+    onMarkDirty,
   } = props;
 
   if (showWelcome && activePanel === 'editor' && (!state.activeFile || state.openFiles.length === 0)) {
@@ -113,6 +135,16 @@ export function PanelRouter(props: PanelRouterProps) {
           state={state}
           onValidate={onValidate}
           onCursorChange={onCursorChange}
+          splitFile={splitFile}
+          isDiffMode={isDiffMode}
+          wordWrap={wordWrap}
+          onToggleSplit={onToggleSplit}
+          onToggleDiff={onToggleDiff}
+          onToggleWordWrap={onToggleWordWrap}
+          onRunAlp={onRunAlp}
+          onCopyPath={onCopyPath}
+          onFormatCode={onFormatCode}
+          onMarkDirty={onMarkDirty}
         />
       );
     case 'terminal':

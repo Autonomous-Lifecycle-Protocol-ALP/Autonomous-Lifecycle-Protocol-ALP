@@ -3,11 +3,13 @@ import { Icon } from '../Icon.js';
 import { sampleSkills } from './shared.js';
 import { SkillList } from './SkillList.js';
 import { SkillDetail } from './SkillDetail.js';
+import { SwarmTopology } from '../SwarmTopology.js';
 
 export function SwarmMarketplacePanel(): React.JSX.Element {
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [selectedSkill, setSelectedSkill] = useState<{ id: string; name: string; category: string; costPerCall: number; rating: number; description: string } | null>(null);
   const [invocationLog, setInvocationLog] = useState<string[]>([]);
+  const [topologyView, setTopologyView] = useState<'grid' | 'topology'>('grid');
 
   const handleInvoke = (skill: { id: string; name: string; category: string; costPerCall: number; rating: number; description: string }) => {
     const timestamp = new Date().toLocaleTimeString();
@@ -26,15 +28,32 @@ export function SwarmMarketplacePanel(): React.JSX.Element {
         Discover, invoke, and monitor autonomous agent skills with micro-metered transaction billing.
       </p>
 
-      <SkillList
-        filterCategory={filterCategory}
-        selectedSkill={selectedSkill}
-        onFilterChange={setFilterCategory}
-        onSelectSkill={setSelectedSkill}
-        onInvoke={handleInvoke}
-      />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+        <div className="swarm-topology-view-toggle">
+          <button className={topologyView === 'grid' ? 'active' : ''} onClick={() => setTopologyView('grid')}>
+            Grid View
+          </button>
+          <button className={topologyView === 'topology' ? 'active' : ''} onClick={() => setTopologyView('topology')}>
+            Topology Graph
+          </button>
+        </div>
+      </div>
 
-      <SkillDetail invocationLog={invocationLog} />
+      {topologyView === 'topology' ? (
+        <SwarmTopology />
+      ) : (
+        <>
+          <SkillList
+            filterCategory={filterCategory}
+            selectedSkill={selectedSkill}
+            onFilterChange={setFilterCategory}
+            onSelectSkill={setSelectedSkill}
+            onInvoke={handleInvoke}
+          />
+
+          <SkillDetail invocationLog={invocationLog} />
+        </>
+      )}
     </div>
   );
 }

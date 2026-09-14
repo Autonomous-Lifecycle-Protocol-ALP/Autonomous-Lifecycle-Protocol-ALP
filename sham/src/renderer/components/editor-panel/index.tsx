@@ -6,9 +6,33 @@ interface EditorPanelProps {
   state: SHAMState;
   onValidate: (content: string, filePath: string) => Promise<unknown>;
   onCursorChange?: (position: { line: number; column: number }) => void;
+  splitFile?: string | null;
+  isDiffMode?: boolean;
+  wordWrap?: boolean;
+  onToggleSplit?: () => void;
+  onToggleDiff?: () => void;
+  onToggleWordWrap?: () => void;
+  onRunAlp?: (filePath: string) => void;
+  onCopyPath?: (filePath: string) => void;
+  onFormatCode?: () => void;
+  onMarkDirty?: (filePath: string) => void;
 }
 
-export function EditorPanel({ state, onValidate, onCursorChange }: EditorPanelProps): React.JSX.Element {
+export function EditorPanel({
+  state,
+  onValidate,
+  onCursorChange,
+  splitFile = null,
+  isDiffMode = false,
+  wordWrap = false,
+  onToggleSplit,
+  onToggleDiff,
+  onToggleWordWrap,
+  onRunAlp,
+  onCopyPath,
+  onFormatCode,
+  onMarkDirty,
+}: EditorPanelProps): React.JSX.Element {
   return (
     <div className="panel-container" style={{ background: 'var(--bg-primary)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
       <div className="panel-header" style={{ 
@@ -37,6 +61,16 @@ export function EditorPanel({ state, onValidate, onCursorChange }: EditorPanelPr
         activeFile={state.activeFile}
         onValidate={onValidate}
         onCursorChange={onCursorChange}
+        splitFile={splitFile}
+        isDiffMode={isDiffMode}
+        wordWrap={wordWrap}
+        onToggleSplit={onToggleSplit}
+        onToggleDiff={onToggleDiff}
+        onToggleWordWrap={onToggleWordWrap}
+        onRunAlp={onRunAlp}
+        onCopyPath={onCopyPath}
+        onFormatCode={onFormatCode}
+        onMarkDirty={onMarkDirty}
       />
     </div>
   );
