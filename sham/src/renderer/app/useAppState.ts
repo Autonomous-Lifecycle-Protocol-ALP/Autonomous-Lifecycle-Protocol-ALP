@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { fetchBlockTypes, runAgent, validateALPFile, onAppReady, collabCursorMove } from '../shared/alp-client.js';
-import type { SHAMState } from '../shared/types.js';
+import type { SHAMState, ALPAgent } from '../shared/types.js';
 import { defaultState } from './shared.js';
 
 export function useAppState() {
@@ -58,6 +58,29 @@ export function useAppState() {
     }
   }, []);
 
+  const handleCreateAgent = useCallback((data: {
+    name: string;
+    role: string;
+    model: string;
+    permissions: string[];
+    description: string;
+    template?: string;
+  }) => {
+    const agent: ALPAgent = {
+      id: `agent-${Date.now()}`,
+      name: data.name,
+      status: 'idle',
+      config: {
+        role: data.role,
+        model: data.model,
+        permissions: data.permissions,
+        description: data.description,
+        ...(data.template ? { template: data.template } : {}),
+      },
+    };
+    setState((prev) => ({ ...prev, agents: [...prev.agents, agent] }));
+  }, []);
+
   const handleValidate = useCallback(async (content: string, filePath: string) => {
     const result = await validateALPFile(content, filePath);
     if (result.success) {
@@ -77,6 +100,7 @@ export function useAppState() {
     handleOpenFile,
     handleCloseFile,
     handleRunAgent,
+    handleCreateAgent,
     handleValidate,
     handleCursorChange,
   };

@@ -4,9 +4,7 @@ import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { AgentPanel } from '../src/renderer/components/AgentPanel';
 import type { ALPAgent } from '../src/renderer/shared/types';
 
-afterEach(() => {
-  cleanup();
-});
+afterEach(() => { cleanup(); });
 
 describe('AgentPanel', () => {
   it('renders the Agent Manager title', () => {
@@ -35,6 +33,40 @@ describe('AgentPanel', () => {
     render(<AgentPanel agents={[]} onRunAgent={onRunAgent} />);
     fireEvent.click(screen.getByRole('button', { name: 'Add' }));
     expect(onRunAgent).not.toHaveBeenCalled();
+  });
+
+  it('renders a Create button to open the agent creator dialog', () => {
+    render(<AgentPanel agents={[]} onRunAgent={vi.fn()} />);
+    expect(screen.getByRole('button', { name: 'Create' })).toBeDefined();
+  });
+
+  it('opens the AgentCreator dialog when Create is clicked', () => {
+    render(<AgentPanel agents={[]} onRunAgent={vi.fn()} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+    expect(screen.getByPlaceholderText('Agent name...')).toBeDefined();
+    expect(screen.getByRole('button', { name: 'Create Agent' })).toBeDefined();
+  });
+
+  it('creates an agent via the dialog with full config', () => {
+    const onCreateAgent = vi.fn();
+    render(<AgentPanel agents={[]} onRunAgent={vi.fn()} onCreateAgent={onCreateAgent} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+    const nameInput = screen.getByPlaceholderText('Agent name...');
+    fireEvent.change(nameInput, { target: { value: 'Full Agent' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Create Agent' }));
+    expect(onCreateAgent).toHaveBeenCalledTimes(1);
+    expect(onCreateAgent.mock.calls[0][0].name).toBe('Full Agent');
+    expect(onCreateAgent.mock.calls[0][0].role).toBe('developer');
+    expect(onCreateAgent.mock.calls[0][0].model).toBe('gpt-4o');
+    expect(onCreateAgent.mock.calls[0][0].permissions).toEqual(['read', 'write']);
+  });
+
+  it('closes the dialog on Cancel', () => {
+    render(<AgentPanel agents={[]} onRunAgent={vi.fn()} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+    expect(screen.getByPlaceholderText('Agent name...')).toBeDefined();
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    expect(screen.queryByPlaceholderText('Agent name...')).toBeNull();
   });
 
   it('renders a list of existing agents', () => {

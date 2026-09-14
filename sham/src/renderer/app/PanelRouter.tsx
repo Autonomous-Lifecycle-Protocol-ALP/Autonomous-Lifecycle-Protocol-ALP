@@ -47,6 +47,14 @@ interface PanelRouterProps {
   onValidate: (content: string, filePath: string) => Promise<void>;
   onCursorChange: (position: { line: number; column: number }) => Promise<void>;
   onRunAgent: (agentId: string, config: Record<string, unknown>) => Promise<void>;
+  onCreateAgent?: (data: {
+    name: string;
+    role: string;
+    model: string;
+    permissions: string[];
+    description: string;
+    template?: string;
+  }) => void;
   onUpdateCollabSession: (session: SHAMState['collab']['session']) => void;
   onAppendCollabOutput: (lines: string[]) => void;
   onUpdateCollabPresence: (presence: SHAMState['collab']['presence']) => void;
@@ -91,6 +99,7 @@ export function PanelRouter(props: PanelRouterProps) {
     onValidate,
     onCursorChange,
     onRunAgent,
+    onCreateAgent,
     onUpdateCollabSession,
     onAppendCollabOutput,
     onUpdateCollabPresence,
@@ -157,7 +166,7 @@ export function PanelRouter(props: PanelRouterProps) {
     case 'agents':
       return (
         <PanelSuspense>
-          <AgentPanel agents={state.agents} onRunAgent={onRunAgent} />
+          <AgentPanel agents={state.agents} onRunAgent={onRunAgent} onCreateAgent={onCreateAgent} />
         </PanelSuspense>
       );
     case 'synapse':

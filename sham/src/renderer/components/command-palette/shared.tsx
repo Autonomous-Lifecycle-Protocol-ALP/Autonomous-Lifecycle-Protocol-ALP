@@ -23,6 +23,7 @@ export const commands: Command[] = [
   { id: 'search.files', label: 'Search: Find in Files', icon: 'search', shortcut: ['Ctrl', 'Shift', 'F'], category: 'Search' },
   { id: 'search.symbols', label: 'Search: Go to Symbol', icon: 'star', shortcut: ['Ctrl', 'Shift', 'O'], category: 'Search' },
   { id: 'copilot.suggest', label: 'Copilot: Get Suggestions', icon: 'cpu', category: 'AI' },
+  { id: 'agent.create', label: 'Agent: Create New Agent', icon: 'bot', category: 'AI' },
   { id: 'profiler.start', label: 'Profiler: Start Trace', icon: 'activity', category: 'Tools' },
   { id: 'debugger.start', label: 'Debug: Start Debugging', icon: 'play', category: 'Debug' },
   { id: 'debugger.stop', label: 'Debug: Stop Debugging', icon: 'square', category: 'Debug' },

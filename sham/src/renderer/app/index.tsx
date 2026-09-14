@@ -20,6 +20,7 @@ export function App(_props: AppProps): React.JSX.Element {
     handleOpenFile,
     handleCloseFile,
     handleRunAgent,
+    handleCreateAgent,
     handleValidate,
     handleCursorChange,
   } = useAppState();
@@ -435,6 +436,7 @@ export function App(_props: AppProps): React.JSX.Element {
                 onValidate={handleValidate}
                 onCursorChange={handleCursorChange}
                 onRunAgent={handleRunAgent}
+                onCreateAgent={handleCreateAgent}
                 onUpdateCollabSession={onUpdateCollabSession}
                 onAppendCollabOutput={onAppendCollabOutput}
                 onUpdateCollabPresence={onUpdateCollabPresence}
@@ -765,6 +767,7 @@ export function App(_props: AppProps): React.JSX.Element {
               try { navigator.clipboard.writeText(state.activeFile); } catch { /* ignore */ }
             }
           }
+          else if (cmd === 'agent.create') { handleSelectPanel('agents'); }
           else if (cmd === 'workbench.focusSidebar' || cmd === 'sidebar.toggle') { setSidebarOpen((prev) => !prev); }
           else if (cmd === 'secondarySidebar.toggle' || cmd === 'workbench.secondarySidebar') { setSecondarySidebarOpen((prev) => !prev); }
           else if (cmd === 'zenMode.toggle' || cmd === 'workbench.zenMode') { setZenMode((prev) => !prev); }
